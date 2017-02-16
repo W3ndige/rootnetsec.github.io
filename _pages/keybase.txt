@@ -1,0 +1,71 @@
+---
+permalink: "/keybase.txt"
+---
+==================================================================
+https://keybase.io/w3ndige
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://www.rootnetsec.com
+  * I am w3ndige (https://keybase.io/w3ndige) on keybase.
+  * I have a public key with fingerprint 0F72 C0AB DD9E 7707 CCF8  1B23 FAB8 FFE6 7F8E 157B
+
+To do so, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "eldest_kid": "0101da315e30f722218718f278660c0dbfa7fad4b54d140ec507c6c5a957134c79280a",
+            "fingerprint": "0f72c0abdd9e7707ccf81b23fab8ffe67f8e157b",
+            "host": "keybase.io",
+            "key_id": "fab8ffe67f8e157b",
+            "kid": "0101da315e30f722218718f278660c0dbfa7fad4b54d140ec507c6c5a957134c79280a",
+            "uid": "a3743f065ead46b30e5d2e3aed13b619",
+            "username": "w3ndige"
+        },
+        "service": {
+            "hostname": "www.rootnetsec.com",
+            "protocol": "https:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1481738664,
+    "expire_in": 157680000,
+    "prev": "a60781f3d35295968f5e50148297171f48ca5f16515397be85755bd1dbe2bc0b",
+    "seqno": 3,
+    "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: Keybase OpenPGP v2.0.61
+Comment: https://keybase.io/crypto
+
+yMIrAnicrZJbSBVBGMePeaPTVbJEioo1fPFoMzs7O3uWLoSZRFEImRHFYS8zpyXd
+Pe2ux0QiqSgreqkQIqMbRRcKu2hREWWWRBcSswwtKoxCi6Jekq6zUm89Ni/DfPP/
+/ef/fUz7mNRQOKVx9OtO/OTFq5R7N5uqQyvKtp+oE3THrBXUOmEtHd5opUk9P7bW
+MgVVABBAU0MQUwQYEUURKgQqTCSKLAMDmDrTCNNMSceSCSVADQyIIRtYi2ICkWSQ
+qKgATYgIzLLj1E24lu0HttzLAJpumlFKCEcMpkBdREzTFcaoTJhCISY6B9c4XkDw
+cLrm0SLL4TV+iA3H+4f+P+euHrbTEJEQAzKmnJF1BCg2RYo0akKkyzAaCD3q2loV
+5eoaZJtWnAobIgIvJi2DBnMNGvkrqKkpch3Ht6nvUaPIcKq4QcJ1fMdwKvn9Gt9P
+eGrA+7WJYYDqsT9WMd3i7nacE0nqepZjCyrkSsO3Am8oKZAg3qUUEej6hOXSmBUo
+MJEVwFfwDk0GLcmAKJAhE2ExiqOywjDFgONilEACmaQYGmZQxhCjKNGpggnGuglN
+nYq6AYJRe3Sd7Qgq4jG1OLf0rLit+dUu77ztxqq0UEo4lJE+IvhkofDI8X+/3qS9
+mb8Sl6b1jb35dAnaeajj3ODQ966m/hHXGm4PFfSO+rE4mZF3B+TOf9ZRPLe9csJy
+tfVsSZr3tc87U7hUPHZ91Iz7x/tLmo/msWUzByZEpj8oNrYoc9519rXe8rOfXVTr
+S04S1Ss4Pak3O/X8QPGeBbvc3PRTTv7c7pVX4vNawvkbF26ufdOd25lnLimd/f5T
+S9vWe1+Ke/JzVmb0FD7/vC2redOsxwfUiqzsC8meMqkpEp7dWPitq2v9ifrUcbkf
+7+6++qizrj3zzsOq5x8GF7RljT9YN7V7XE7F5N5Fiw+3lqPu5UdAzVCsald5y+Up
+b/evnpPXUVrxsmDHvp8TZXa5Qf12QT6W+Ru620Iz
+=TJq+
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/w3ndige
+
+==================================================================

@@ -1,0 +1,24 @@
+---
+layout: page
+title: "Archive"
+description: "Search for any topic."
+header-img: "img/archive-header.jpg"
+permalink: "/archive/"
+---
+
+
+
+<div class="row">
+  <div class="col-lg-12">
+      <h1 class="page-header">Archive</h1>
+  </div>
+</div>
+{% for post in site.posts %}
+  {% capture month %}{{ post.date | date: '%m%Y' }}{% endcapture %}
+  {% capture nmonth %}{{ post.next.date | date: '%m%Y' }}{% endcapture %}
+    {% if month != nmonth %}
+      {% if forloop.index != 1 %}</ul>{% endif %}
+      <h3>{{ post.date | date: '%B %Y' }}</h3><ul>
+    {% endif %}
+  <li><span><b>{{ post.date | date: "%d/%m/%Y" }}</b></span><a href="{{ post.url }}"> {{ post.title }}</a></li>
+{% endfor %}

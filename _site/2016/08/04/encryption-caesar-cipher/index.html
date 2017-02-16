@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!">
+    <meta name="author" content="W3ndige">
+    <title>Let's Talk Encryption - Root Network Security</title>
+
+    <link rel="canonical" href="http://localhost:4000/2016/08/04/encryption-caesar-cipher/">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.png">
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/clean-blog.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//https://fonts.googleapis.com/css?family=Nunito:400,700i" rel="stylesheet">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Root Network Security" />
+
+</head>
+
+
+<body>
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Root Network Security</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="/about/">About</a>
+                </li>
+
+                <li>
+                    <a href="/archive/">Archive</a>
+                </li>
+
+                <li>
+                    <a href="/contact/">Contact</a>
+                </li>
+
+                <li>
+                    <a href="/projects/">Projects</a>
+                </li>
+
+                <li>
+                    <a href="/resources/">Resources</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+    <!-- Post Header -->
+<header class="intro-header" style="background-image: url('/img/encryption-caesar-header.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Let's Talk Encryption</h1>
+                    
+                    <h2 class="subheading">Part 1 - Caesar Cipher</h2>
+                    
+                    <span class="meta">Posted by W3ndige on August 4, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+				<h1>How the Ceasar cipher works?</h1>
+<p><b>The Caesar cipher</b>, also called <b>Caesar's code</b>, <b>shift cipher</b> or <b>Caesar shift</b>, is one of the simplest and most known forms of encryption. It is a <b>substitution cipher</b> where each letter in the <b>plaintext</b> (original message) is replaced with a letter corresponding to a certain number of letters up or down in the alphabet creating a <b>cipher text</b>. </p>
+
+<p><img src="/img/encryption-caesar/Caesar-cipher-shift.png" alt="caesar-shift" class="img-responsive" /></p>
+
+<p>Caesar cipher, due to the fact that the key is very small is vulnerable to the brute force attack, where attacker has to try only 25 combinations in order to decrypt the message. In addition, the original structure of the plaintext remains intact, so a person trying to decrypt the message can perform a frequency analysis - method to decrypt by analysing the frequency of each letter and comparing it with the frequency of each letter in certain alphabet. For example in English alphabet letter <i>e</i> is the most common one, and by comparing the most common letter in the cipher with letter <i>e</i> we can try to discover the shift that was used. Read more at: </p>
+<p><a href="https://en.wikipedia.org/wiki/Letter_frequency">Letter-Frequency</a></p>
+
+<h1>History behind Caesar Cipher</h1>
+<p>This cipher is named after Julius Caesar, who used it to protect his communication with generals during military campaigns. According to Suetonius, who wrote a book about life of the Roman emperor, Julius used the substituation cipher to a shift of three, meaning shifted each letter 3 places through the alphabet where D becomes A and so on.</p>
+
+<p><blockquote>If he had anything confidential to say, he wrote it in cipher, that is, by so changing the order of the letters of the alphabet, that not a word could be made out. If anyone wishes to decipher these, and get at their meaning, he must substitute the fourth letter of the alphabet, namely D, for A, and so with the others.
+<p>Suetonius, Life of Julius Caesar 56</p>
+</blockquote></p>
+
+<h1>Programming Caesar cipher tools</h1>
+<p>Great way to learn how this cipher works is to create your own tools to encrypt, decrypt or even brute force the message. You can do this in any programming language you know, but I'm gonna stick with Python as it's my favourite one.</p>
+<p>Firsty let's create a function to encrypt the message with a certain shift.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/python</span>
+
+<span class="n">key</span> <span class="o">=</span> <span class="s">'abcdefghijklmnopqrstuvwxyz'</span>
+
+<span class="k">def</span> <span class="nf">encrypt</span><span class="p">(</span><span class="n">plaintext</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="s">''</span>
+
+    <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">plaintext</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">letter</span><span class="p">)</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span> <span class="o">%</span> <span class="mi">26</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">except</span> <span class="nb">ValueError</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">letter</span>
+
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></code></pre></figure>
+
+<p>Firstly we declare a variable key that is English aplhabet. Adding the algorith to check if the character exists in our alphabet will allow us to use punctuation, spaces without encrypting them.</p>
+<p>Now let's add to this <i>main</i> function that will use function <i>encrypt</i> and will display the results.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">plaintext</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="n">encrypted</span> <span class="o">=</span> <span class="n">encrypt</span><span class="p">(</span><span class="n">plaintext</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'[*] Shift: </span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">n</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'[*] Plaintext: </span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">plaintext</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'[*] Ciphertext: </span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">encrypted</span><span class="p">)</span></code></pre></figure>
+
+<p>And the last step: providing input for the message and the key.</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">plaintext</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">'Please enter your message: '</span><span class="p">)</span>
+    <span class="n">shift</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s">'Enter the shift: '</span><span class="p">))</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">plaintext</span><span class="p">,</span> <span class="n">shift</span><span class="p">)</span></code></pre></figure>
+
+<p>Great! It works and the message is encrypted. </p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>python3 caesar-encode.py
+Please enter your message: No one will ever <span class="nb">read </span>this!
+Enter the <span class="nb">shift</span>: 15
+<span class="o">[</span><span class="k">*</span><span class="o">]</span> Shift: 15
+<span class="o">[</span><span class="k">*</span><span class="o">]</span> Plaintext: No one will ever <span class="nb">read </span>this!
+<span class="o">[</span><span class="k">*</span><span class="o">]</span> Ciphertext: <span class="nb">cd </span>dct lxaa tktg gtps iwxh!</code></pre></figure>
+
+<p>But what if we get the encrypted message from a friend, with a provided key? </p>
+<p>Let's create a decrypt script!</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/python</span>
+
+<span class="n">key</span> <span class="o">=</span> <span class="s">'abcdefghijklmnopqrstuvwxyz'</span>
+
+<span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">ciphertext</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="s">''</span>
+
+    <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">ciphertext</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">letter</span><span class="p">)</span> <span class="o">-</span> <span class="n">n</span><span class="p">)</span> <span class="o">%</span> <span class="mi">26</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">except</span> <span class="nb">ValueError</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="n">letter</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">encrypted</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="n">decrypted</span> <span class="o">=</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">encrypted</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'[*] Shift: </span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">n</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'[*] Encrypted: </span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">encrypted</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">'[*] Decrypted: </span><span class="si">%</span><span class="s">s'</span> <span class="o">%</span> <span class="n">decrypted</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">'__main__'</span><span class="p">:</span>
+    <span class="n">encrypted</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">'Please enter your encrypted message: '</span><span class="p">)</span>
+    <span class="n">shift</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">(</span><span class="s">'Enter the shift: '</span><span class="p">))</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">encrypted</span><span class="p">,</span> <span class="n">shift</span><span class="p">)</span></code></pre></figure>
+
+<p>As you can see it's mostly the same as the encrypt script. Let's test this!</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>python3 caesar-decode.py
+Please enter your encrypted message: <span class="nb">cd </span>dct lxaa tktg gtps iwxh!
+Enter the <span class="nb">shift</span>: 15
+<span class="o">[</span><span class="k">*</span><span class="o">]</span> Shift: 15
+<span class="o">[</span><span class="k">*</span><span class="o">]</span> Encrypted: <span class="nb">cd </span>dct lxaa tktg gtps iwxh!
+<span class="o">[</span><span class="k">*</span><span class="o">]</span> Decrypted: no one will ever <span class="nb">read </span>this!</code></pre></figure>
+
+<p>Great! We decrypted the secret message! But what if we don't have a key but our curiosity won't let us leave this message unread. We can try to analyse frequency of letters but it may take some time. So why not to try and brute force it?</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#!/usr/bin/python</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">ciphertext</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s">"[*] Enter your ciphertext: "</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+<span class="n">alphabet</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="s">"ABCDEFGHIJKLMNOPQRSTUVWXYZ"</span><span class="p">)</span>
+<span class="n">plaintext</span> <span class="o">=</span> <span class="s">""</span>
+<span class="n">shift</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="k">while</span> <span class="n">shift</span> <span class="o">&lt;=</span> <span class="mi">26</span><span class="p">:</span>
+ <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">ciphertext</span><span class="p">:</span>
+  <span class="k">if</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">alphabet</span><span class="p">:</span>
+   <span class="n">plaintext</span> <span class="o">+=</span> <span class="n">alphabet</span><span class="p">[(</span><span class="n">alphabet</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">letter</span><span class="p">)</span><span class="o">+</span><span class="n">shift</span><span class="p">)</span><span class="o">%</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">alphabet</span><span class="p">))]</span>
+ <span class="k">print</span><span class="p">(</span><span class="s">"Shift: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">shift</span><span class="p">))</span>
+ <span class="k">print</span><span class="p">(</span><span class="s">"Ciphertext: "</span> <span class="o">+</span> <span class="n">ciphertext</span><span class="p">)</span>
+ <span class="k">print</span><span class="p">(</span><span class="s">"Plaintext: "</span> <span class="o">+</span> <span class="n">plaintext</span><span class="p">)</span>
+ <span class="n">shift</span> <span class="o">=</span> <span class="n">shift</span> <span class="o">+</span> <span class="mi">1</span>
+ <span class="n">plaintext</span> <span class="o">=</span> <span class="s">""</span></code></pre></figure>
+
+<p>This script is not as advanced as the previous ones becouse as you'll see it 'eats' the spaces but it is capable of trying all combinations so let's give it a try.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">$ </span>python3 caesar-brute.py
+<span class="o">[</span><span class="k">*</span><span class="o">]</span> Enter your ciphertext: <span class="nb">cd </span>dct lxaa tktg gtps iwxh!
+Shift: 1
+Ciphertext: CD DCT LXAA TKTG GTPS IWXH!
+Plaintext: DEEDUMYBBULUHHUQTJXYI
+Shift: 2
+Ciphertext: CD DCT LXAA TKTG GTPS IWXH!
+Plaintext: EFFEVNZCCVMVIIVRUKYZJ
+Shift: 3
+Ciphertext: CD DCT LXAA TKTG GTPS IWXH!
+Plaintext: FGGFWOADDWNWJJWSVLZAK
+Shift: 4
+Ciphertext: CD DCT LXAA TKTG GTPS IWXH!
+Plaintext: GHHGXPBEEXOXKKXTWMABL
+Shift: 5
+Ciphertext: CD DCT LXAA TKTG GTPS IWXH!
+Plaintext: HIIHYQCFFYPYLLYUXNBCM
+Shift: 6
+Ciphertext: CD DCT LXAA TKTG GTPS IWXH!
+Plaintext: IJJIZRDGGZQZMMZVYOCDN
+Shift: 7
+Ciphertext: CD DCT LXAA TKTG GTPS IWXH!
+Plaintext: JKKJASEHHARANNAWZPDEO
+Shift: 8
+Ciphertext: CD DCT LXAA TKTG GTPS IWXH!
+Plaintext: KLLKBTFIIBSBOOBXAQEFP
+Shift: 9
+Ciphertext: CD DCT LXAA TKTG GTPS IWXH!
+Plaintext: LMMLCUGJJCTCPPCYBRFGQ
+Shift: 10
+Ciphertext: CD DCT LXAA TKTG GTPS IWXH!
+Plaintext: MNNMDVHKKDUDQQDZCSGHR
+Shift: 11
+Ciphertext: CD DCT LXAA TKTG GTPS IWXH!
+Plaintext: NOONEWILLEVERREADTHIS</code></pre></figure>
+
+<p>As always I hoped you enjoyed exploring this topic with me and it brough you some clarity about how the ciphers worked back then, how to write encoding, decoding and brute forcing scripts using shift cipher. In the next part of <i>Let's Talk Encryption</i> series we're going to explore more present ciphers.</p>
+
+<p><b>UPDATE!</b></p>
+<p>Check out my newest Caesar tool at Github!</p>
+<p><a href="https://github.com/W3ndige/encryption-tools" title="Github">Github</a></p>
+
+<p>~Stay safe!</p>
+
+
+                <hr>
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/07/30/vulnhub-mr-robot-write-up/" data-toggle="tooltip" data-placement="top" title="Vulnhub.com - Mr.Robot 1">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/08/09/encryption-vigenere-cipher/" data-toggle="tooltip" data-placement="top" title="Let's Talk Encryption">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+<hr>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    <li>
+                        <a href="/feed.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/w3ndige">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a href="mailto:w3ndige@protonmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <p class="copyright text-muted">Copyright &copy; RootNetSec 2016 - 2017</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/clean-blog.min.js "></script>
+
+
+</body>
+
+</html>

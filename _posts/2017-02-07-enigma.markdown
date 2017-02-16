@@ -1,0 +1,88 @@
+---
+layout:     post
+title:      "Enigma"
+subtitle:   "Introduction to modern cryptography"
+date:       2017-02-07 00:00:00
+author:     "W3ndige"
+header-img: "img/enigma-header.jpg"
+---
+
+<h1>Brief history behind Enigma</h1>
+
+<p>The first Enigma machine was discovered by <b>Arthur Scherbius</b>, German engineer who acquired the patent in 1918. Name of this device originated from Greek word - riddle.  It was used commercially from the early 1920s, and was also adopted by the military and governmental services of a number of nations — most famously German Army. Communication during those days was sent over radio which means that everyone could easily listen. But at that moment no one could spy on Nazi messages - Scherbius' Enigma provided them with the strongest cryptographic cipher of the world. </p>
+
+![Scherbius](/img/enigma/scherbius.jpg){:class="img-responsive center-block"}
+<p class="text-center"><small>Arthur Scherbius</small></p>
+
+<p>Since 1926 English cryptanalysts were eavesdropping German radio messages, unfortunately without being able to extract their meaning. But Polish officials, afraid of German attack started working on analyzing and breaking the cipher in office called Cipher Bureau (Biuro Szyfrów). By 1933 <b>Marian Rejewski</b>, <b>Henryk Zygalski</b> and <b>Jerzy Różycki</b> broke Enigma, by exploiting a fatal flaw of how Enigma operators sent their messages, and were able to determine the daily keys of almost every message that was intercepted. </p>
+
+![Polish-cryptanalysts](/img/enigma/polish-crypto-breakers.jpg){:class="img-responsive center-block"}
+<p class="text-center"><small>From left: Jerzy Różycki, Henryk Zygalski and Marian Rejewski</small></p>
+
+<p> They even developed a machine called the Bombe (Bomba), that made the process of codebreaking much faster. But back then keys were changing only once every few months, while during the war keys were changing at least once a day. In July 1939, just before the start of war Poles decided to inform the British and French about their research, also asking for help.   </p>
+
+![Enigma-photo](/img/enigma/enigma-machine.jpg){:class="img-responsive center-block"}
+<p class="text-center"><small>Enigma</small></p>
+
+<p>At Bletchley Park <b>Alan Turing</b>, together with fellow code-breaker <b>Gordon Welchman</b> invented different version of Bombe. When an Enigma message was intercepted, codebreakers had to search for so-called cribs, which were presumed pieces of plain text within the encrypted message. That way Turing Bombe would search for the enigma settings for a given piece of plain and cipher text. Although the British bombe actually owes little to the Bomba, Poles contributed a lot by supplying the internal wiring of the Enigma's rotors. They also demonstrated that Enigma can be broked using another machine. It has been estimated that the efforts of Turing and his fellow code-breakers shortened the war by several years. What is certain is that they saved countless lives and helped to determine the course and outcome of the conflict.</p>
+
+![British-bombe](/img/enigma/bombe.jpeg){:class="img-responsive center-block"}
+<p class="text-center"><small>British Bombe</small></p>
+
+<p>But let's head back from the history to something more technical. </p>
+
+<h1>Cryptography</h1>
+
+<p>Firstly, let's find out how Enigma has worked. </p>
+
+<p>When sender sends the message, Enigma creates an electrical signal that goes through the wiring of the machine. First step for this signal is plugboard which attempts to get around frequency analysis. Some of the letters on the plugboard would be wired to other letters (plugs). Signal going through one of these plugs change original input into different letter, but also leaving some of the original letters unmoved. </p>
+
+![Enigma-plugboard](/img/enigma/plugboard.jpg){:class="img-responsive center-block"}
+<p class="text-center"><small>View on the plugboard</small></p>
+
+<p>The next step is the static rotor, which simply turns wires into static contacts, making the signal pass only when the contacts touch. But after that, things are getting a little bit more complicated. There are 5 rotors, with the possibility to choose 3 of them, for three positions - left, middle and right. Each rotor has their own set of inner, and outer rings of contacts. The outer ring contacts connect to the next rotor, together with its own inner ring. Purpose of these rings is to even more scramble the signal, resulting in more letter substitutions.  </p>
+
+![Enigma-rotors](/img/enigma/rotors.png){:class="img-responsive center-block"}
+<p class="text-center"><small>Rotor electrical view</small></p>
+
+<p>In addition, as each letter is entered, the rotors rotate by one position, so that the same letters are never connected together in the same message. And even more, each rotor has notches in different positions which, when reached, cause the next rotor to its left to step forward too.</p>
+
+<p>Last step that electrical signal takes before going back to the light board is the reflector. In Enigma machine there are 2 possible reflectors, each wired differently and producing different letter when reflected back. Journey back through the rotors works exactly the same way in reverse. Signal remains the same when passing through the static rotor, then going through the plugboard on the same principles. After that, signal goes to lightboard, where the light, corresponding for each letter, lits up.   </p>
+
+<p><b>But how would you decrypt the message? </b></p>
+
+<p>To decode your message, you would need to know what rotor and plugboard settings were used during encryption. This was possible with use of monthly sheets, containing basic settings for every day of the month. They were in the custody of an officer, responsible for setting up the machine rotors and ringsettings. After setup, he could lock the machine front panel with a key. The operator of Enigma could only select the rotor start position.  </p>
+
+![Key-sheets](/img/enigma/key-sheets.jpg){:class="img-responsive center-block"}
+<p class="text-center"><small>Example of Wehrmacht Enigma key sheet</small></p>
+
+<h1>Mathematical Security of Enigma</h1>
+
+<p>Now, how secure is Enigma? Let's count all of the possibilities. </p>
+
+<p>Enigma has 5 rotors, from which 3 are used. </p>
+
+![First-equation](/img/enigma/equation_1.png){:class="img-responsive"}
+
+<p>Then all 3 rotors have 26 positions, one for each letter of the alphabet. </p>
+
+![Second-equation](/img/enigma/equation_2.png){:class="img-responsive"}
+
+<p>Quite a large number, right? Yet, we have to calculate all possibilities with the plug board. </p>
+
+![Third-equation](/img/enigma/equation_3.png){:class="img-responsive"}
+
+<p>And lastly, multiply them all together. This gives us quite a lot of combinations.  </p>
+
+![Possibilities](/img/enigma/possibilities.png){:class="img-responsive"}<br>
+
+<h1>Last Words</h1>
+
+<p>Enigma, was without doubt machine with great encryption capabilities. This war could have last much longer, or even end completely different, without hard work of great cryptanalytic minds working together on this operation. </p>
+
+<p>~ Stay safe!</p>
+
+<h1>References</h1>
+<p>[1] <a href="https://en.wikipedia.org/wiki/Enigma_machine"><b>Wikipedia</b></a></p>
+<p>[2] Singh Simon (2000) <b>The Code Book: The Science of Secrecy from Ancient Egypt to Quantum Cryptography</b></p>
+<p>[3] Rejewski Marian (1981) <b>How the Polish Mathematicians Broke the Enigma. Annals of the History of Computing.</b></p>

