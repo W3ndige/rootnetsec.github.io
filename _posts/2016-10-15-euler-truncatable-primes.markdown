@@ -5,6 +5,7 @@ subtitle:   "Project Euler Solutions"
 date:       2016-10-15 2:00:00
 author:     "W3ndige"
 header-img: "img/euler-header.jpg"
+category: Programmig
 ---
 
 <h1>Introduction</h1>

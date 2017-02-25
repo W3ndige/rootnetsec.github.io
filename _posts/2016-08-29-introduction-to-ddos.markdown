@@ -5,6 +5,7 @@ subtitle:   "Introduction to DDOS Attacks"
 date:       2016-08-29 6:00:00
 author:     "W3ndige"
 header-img: "img/introduction-to-ddos-header.png"
+category: Networking
 ---
 <p>Denial of Service attacks (DOS) are one of the simplest ways to paralylze network infrastructure of the victim. Although  many attacks are connected with destroying data or stealing credentials (or any kind of sensitive information), DOS attacks can cause equally big financial loss. Properly prepared, in particular Distributed Denial of Service, can cause catastrophic harm to the victim company. In addition - even though they are one of the earliest kinds of network attacks - they are getting more and more sophisticated and harder to prevent. </p>
 

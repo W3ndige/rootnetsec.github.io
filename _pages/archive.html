@@ -6,19 +6,25 @@ header-img: "img/archive-header.jpg"
 permalink: "/archive/"
 ---
 
+<div>
+  {% assign categories = site.categories | sort %}
+  {% for category in categories %}
+   <span class="site-tag">
+      <a href="#{{ category | first | slugify }}">
+              {{ category[0] }} ({{ category | last | size }})
+      </a>
+  </span>
+  {% endfor %}
+</div>
 
-
-<div class="row">
-  <div class="col-lg-12">
-      <h1 class="page-header">Archive</h1>
+<div>
+    {% for category in categories %}
+      <h2 id="{{ category[0] | slugify }}">{{ category[0] }}</h2>
+      <ul>
+        {% for post in category[1] %}
+          <li><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }} <small class>{{ post.date | date_to_string }}</small></a></li>
+        {% endfor %}
+      </ul>
+    {% endfor %}
   </div>
 </div>
-{% for post in site.posts %}
-  {% capture month %}{{ post.date | date: '%m%Y' }}{% endcapture %}
-  {% capture nmonth %}{{ post.next.date | date: '%m%Y' }}{% endcapture %}
-    {% if month != nmonth %}
-      {% if forloop.index != 1 %}</ul>{% endif %}
-      <h3>{{ post.date | date: '%B %Y' }}</h3><ul>
-    {% endif %}
-  <li><span><b>{{ post.date | date: "%d/%m/%Y" }}</b></span><a href="{{ post.url }}"> {{ post.title }}</a></li>
-{% endfor %}

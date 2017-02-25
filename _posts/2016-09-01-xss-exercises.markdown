@@ -5,6 +5,7 @@ subtitle:   "XSS Write-Up"
 date:       2016-09-01 6:00:00
 author:     "W3ndige"
 header-img: "img/cross-site-scripting-header.jpg"
+category: Write-Ups
 ---
 
 <p>Today we're going to continue our journey through the word of web application security - more accurately XSS exercises from <a href="https://pentesterlab.com/">PentesterLab</a>. It's great way to practice what we have learned so far and also - good challenge. Let's jump into the first one!</p>

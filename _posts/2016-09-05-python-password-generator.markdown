@@ -5,6 +5,7 @@ subtitle:   "Using Python Programming Language"
 date:       2016-09-05 12:00:00
 author:     "W3ndige"
 header-img: "img/python-password-generator-header.png"
+category: Programming
 ---
 
 <h1>Introduction</h1>

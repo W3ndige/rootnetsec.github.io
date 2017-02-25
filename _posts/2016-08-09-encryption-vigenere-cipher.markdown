@@ -5,6 +5,7 @@ subtitle:   "Part 2 - Vigenère cipher"
 date:       2016-08-09 12:00:00
 author:     "W3ndige"
 header-img: "img/encryption-vigenere-header.jpg"
+category: Cryptography
 ---
 <h1>Vigenère cipher - how it works?</h1>
 <p>Vigenère cipher is an method of encrypting message by using series of different Caesar ciphers based on the letters of a keyword. Basically to encrypt a message using the Vigenère cipher you first need to choose a keyword. After that repeat this keyword over and over until it is the same length as your secret message. </p>

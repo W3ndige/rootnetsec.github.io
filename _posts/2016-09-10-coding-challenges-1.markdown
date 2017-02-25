@@ -5,6 +5,7 @@ subtitle:   "Largest Prime Factor, Largest Palindrom Product and 10001st Prime"
 date:       2016-09-10 12:00:00
 author:     "W3ndige"
 header-img: "img/coding-challenges-1-header.jpg"
+category: Programming
 ---
 
 <h1>Introduction</h1>

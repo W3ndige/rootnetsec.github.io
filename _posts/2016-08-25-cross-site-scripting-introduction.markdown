@@ -5,6 +5,7 @@ subtitle:   "Introduction to XSS"
 date:       2016-08-25 6:00:00
 author:     "W3ndige"
 header-img: "img/cross-site-scripting-header.jpg"
+category: [Web Security]
 ---
 <h1>What is XSS?</h1>
 <p>Cross Site Scripting (XSS) is a name of one of the most common vulnerability in web applications. It's third in the list of the newest <a href="https://www.owasp.org/index.php/Top10">OWASP Top Ten</a> document so it's essential to know how it works. </p>

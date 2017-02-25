@@ -5,6 +5,7 @@ subtitle:   "Introduction to modern cryptography"
 date:       2016-08-13 19:00:00
 author:     "W3ndige"
 header-img: "img/diffie-hellman-pgp-header.jpg"
+category: Cryptography
 ---
 <h1>Introduction to Diffie-Hellman</h1>
 

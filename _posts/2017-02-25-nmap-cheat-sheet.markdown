@@ -10,7 +10,7 @@ category: [Cheat Sheets]
 
 <h1>What is Nmap?</h1>
 
-<p><b>Nmap</b>, short for network mapper, is an open source security tool for network exploration, security scanning and auditing. It was originally written by Gordon Lyon AKA Fyodor, firstly published in September 1997 in an <a href="http://phrack.org/issues/51/11.html">Phrack Magazine</a>, with included source code. </p>
+<p><b>Nmap</b>, short for network mapper, is an open source security tool for network exploration, security scanning and auditing. It was originally written by Gordon Lyon AKA Fyodor, firstly published in September 1997 in a <a href="http://phrack.org/issues/51/11.html">Phrack Magazine</a>, with included source code. </p>
 
 <p>It uses raw IP packets in novel ways to determine what hosts are available on the network, what services those hosts are running, OS detection, what type of packet filters/firewalls are in use, and many others. </p>
 
@@ -390,13 +390,13 @@ category: [Cheat Sheets]
 <p><b>Auth</b> - utilize credentials or bypass authentication on target
 hosts.</p>
 
-<p><b>broadcast</b> - discover hosts not includedon command line bybroadcasting on local network. </p>
+<p><b>broadcast</b> - discover hosts not includedon command line by broadcasting on local network. </p>
 
 <p><b>brute</b> - attempt to guess passwords on target systems, for avariety of protocols, including http, SNMP, IAX, MySQL, VNC,etc.</p>
 
 <p><b>default</b> - scripts run automatically when -sC or-A are used.</p>
 
-<p><b>discovery</b> - try to learn more information about target hoststhrough public sources of information, SNMP, directory services, and more. </p>
+<p><b>discovery</b> - try to learn more information about target hosts through public sources of information, SNMP, directory services, and more. </p>
 
 <p><b>dos</b> - may cause denial of service conditions in target hosts. </p>
 
@@ -408,7 +408,7 @@ hosts.</p>
 
 <p><b>intrusive</b> - may crash target, consume excessive resources, or otherwise impact target machines in a malicious fashion. </p>
 
-<p><b>malware</b> - look for signs of malware infection on the targethosts. </p>
+<p><b>malware</b> - look for signs of malware infection on the target hosts. </p>
 
 <p><b>safe</b> - designed not to impact target in a negative fashion. </p>
 
@@ -505,6 +505,6 @@ hosts.</p>
 
 <h1>Last words and references</h1>
 
-<p>Firstly, I can recommend this great piece of information <a href="https://nmap.org/book/toc.html">Nmap Network Scanning Digital Version</a>, which covers a lot of topics in this amazing tool. In addition I will keep this cheat sheet as update as possible, with new content coming as soon as I'll learn more so stay updated! And...</p>
+<p>Firstly, I can recommend this great piece of information <a href="https://nmap.org/book/toc.html">Nmap Network Scanning Digital Version</a>, which covers a lot of topics in this amazing tool. In addition I will keep this cheat sheet as update as possible, with new content coming as soon as I'll learn more, so stay updated! And...</p>
 
 <p>~ Stay safe!</p>

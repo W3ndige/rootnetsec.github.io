@@ -5,6 +5,7 @@ subtitle:   "Write-Up"
 date:       2017-02-12 00:00:00
 author:     "W3ndige"
 header-img: "img/64base-header.jpeg"
+category: Write-Ups
 ---
 
 <h1>Introduction</h1>

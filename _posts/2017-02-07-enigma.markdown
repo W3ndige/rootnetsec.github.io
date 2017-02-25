@@ -5,6 +5,7 @@ subtitle:   "Introduction to modern cryptography"
 date:       2017-02-07 00:00:00
 author:     "W3ndige"
 header-img: "img/enigma-header.jpg"
+category: Cryptography
 ---
 
 <h1>Brief history behind Enigma</h1>

@@ -5,6 +5,7 @@ subtitle:   "Security Headers"
 date:       2016-10-26 0:00:00
 author:     "W3ndige"
 header-img: "img/web-application-security-intro-header.jpg"
+category: [Web Security]
 ---
 <h1>Introduction</h1>
 
