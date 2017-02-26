@@ -10,7 +10,7 @@ github_username:  w3ndige
 email_username:  w3ndige@protonmail.com
 # Google Analytics
 # To enable google analytics, uncomment below line with a valid Google Tracking ID
-# google_tracking_id:
+google_tracking_id: UA-92681943-1
 
 # Build settings
 markdown: kramdown

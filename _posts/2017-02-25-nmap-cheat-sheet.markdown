@@ -5,7 +5,7 @@ subtitle:   "Cheat Sheet"
 date:       2017-02-25 00:00:00
 author:     "W3ndige"
 header-img: "img/nmap-header.jpg"
-category: [Cheat Sheets]
+category: "Cheat Sheets"
 ---
 
 <h1>What is Nmap?</h1>
