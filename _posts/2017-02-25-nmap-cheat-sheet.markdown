@@ -383,7 +383,7 @@ category: [Cheat Sheets]
   </table>
 </div>
 
-<h1 id="nmap-scripting">Nmap Scripting</h1>
+<h1 id="scripting">Nmap Scripting</h1>
 
 <p>Firstly, let's discuss different categories of scripting in Nmap. </p>
 

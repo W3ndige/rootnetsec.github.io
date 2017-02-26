@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-02-25T23:18:36+01:00</updated><id>http://localhost:4000//</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Nmap</title><link href="http://localhost:4000/cheat%20sheets/2017/02/25/nmap-cheat-sheet/" rel="alternate" type="text/html" title="Nmap" /><published>2017-02-25T01:00:00+01:00</published><updated>2017-02-25T01:00:00+01:00</updated><id>http://localhost:4000/cheat%20sheets/2017/02/25/nmap-cheat-sheet</id><content type="html" xml:base="http://localhost:4000/cheat%20sheets/2017/02/25/nmap-cheat-sheet/">&lt;h1&gt;What is Nmap?&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-02-26T09:04:16+01:00</updated><id>http://localhost:4000//</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Nmap</title><link href="http://localhost:4000/cheat%20sheets/2017/02/25/nmap-cheat-sheet/" rel="alternate" type="text/html" title="Nmap" /><published>2017-02-25T01:00:00+01:00</published><updated>2017-02-25T01:00:00+01:00</updated><id>http://localhost:4000/cheat%20sheets/2017/02/25/nmap-cheat-sheet</id><content type="html" xml:base="http://localhost:4000/cheat%20sheets/2017/02/25/nmap-cheat-sheet/">&lt;h1&gt;What is Nmap?&lt;/h1&gt;
 
 &lt;p&gt;&lt;b&gt;Nmap&lt;/b&gt;, short for network mapper, is an open source security tool for network exploration, security scanning and auditing. It was originally written by Gordon Lyon AKA Fyodor, firstly published in September 1997 in a &lt;a href=&quot;http://phrack.org/issues/51/11.html&quot;&gt;Phrack Magazine&lt;/a&gt;, with included source code. &lt;/p&gt;
 
@@ -371,7 +371,7 @@
   &lt;/table&gt;
 &lt;/div&gt;
 
-&lt;h1 id=&quot;nmap-scripting&quot;&gt;Nmap Scripting&lt;/h1&gt;
+&lt;h1 id=&quot;scripting&quot;&gt;Nmap Scripting&lt;/h1&gt;
 
 &lt;p&gt;Firstly, let's discuss different categories of scripting in Nmap. &lt;/p&gt;
 
