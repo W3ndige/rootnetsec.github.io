@@ -2,7 +2,7 @@
 layout:     post
 title:      "Overthewire.org - Narnia 3 -> 4"
 subtitle:   "Write-Up"
-date:       2017-02-28 0:00:00
+date:       2017-03-05 0:00:00
 author:     "W3ndige"
 header-img: "img/overthewire-header.png"
 category: Write-Ups
@@ -68,7 +68,8 @@ int main(int argc, char **argv){
 }
 {% endhighlight %}
 
-<p>This code may look complicated at the first. But, after taking a closer look, we can see a potential buffer overflow vulnerability in <b>ifile</b> buffer, which is 32 bytes in size. </p>
+<p>This code may look complicated at the first. But, after taking a closer look, we can see a potential buffer overflow vulnerability in <b>ifile</b> buffer, which is 32 bytes in size
+. </p>
 
 <p>Because <b>strcpy()</b> does not perform any checks of the length of the input, if I give a file name longer than 32 bytes in length, I would be able to overwrite the <b>ofile</b> from <b>/dev/null</b> to another file. </p>
 
