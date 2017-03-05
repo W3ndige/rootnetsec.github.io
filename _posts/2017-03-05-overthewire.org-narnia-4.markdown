@@ -10,18 +10,18 @@ category: Write-Ups
 
 <h1>Introduction</h1>
 
-<p>Let's go back to another reverse engineering challenge from OverTheWire. This time we'll be dealing with a little different type of buffer overflow.  </p>
+<p>Let's go back to another reverse engineering challenge from OverTheWire. Today we'll be dealing with a little different type of buffer overflow.  </p>
 
 <h1>Challenge</h1>
 
-<p>This time, let's start the program firstly. </p>
+<p>This time, we can start by firstly running the program. </p>
 
 {% highlight text %}
 narnia3@melinda:/narnia$ ./narnia3
 usage, ./narnia3 file, will send contents of file 2 /dev/null
 {% endhighlight %}
 
-<p>Now let's take a look at the source code. </p>
+<p>But what can we see in the source code? </p>
 
 {% highlight c %}
 #include <stdio.h>
@@ -68,8 +68,7 @@ int main(int argc, char **argv){
 }
 {% endhighlight %}
 
-<p>This code may look complicated at the first. But, after taking a closer look, we can see a potential buffer overflow vulnerability in <b>ifile</b> buffer, which is 32 bytes in size
-. </p>
+<p>This code may look complicated at first. But, after taking a closer look, we can see a potential buffer overflow vulnerability in <b>ifile</b> buffer, which is 32 bytes in size. </p>
 
 <p>Because <b>strcpy()</b> does not perform any checks of the length of the input, if I give a file name longer than 32 bytes in length, I would be able to overwrite the <b>ofile</b> from <b>/dev/null</b> to another file. </p>
 
@@ -84,7 +83,7 @@ narnia3@melinda:~$ cd /tmp
 narnia3@melinda:/tmp$ touch w3ndige
 {% endhighlight %}
 
-<p>Then, I'm going to use Python, and calculate how long the directory should be, together with <b>/tmp/</b> beggining. We can also generate letters for our directory name. </p>
+<p>Then, I'm going to use Python and calculate how long the directory should be, together with <b>/tmp/</b> beggining. We can also generate letters for our directory name. </p>
 
 {% highlight python %}
 >>> 32 - len("/tmp/")
