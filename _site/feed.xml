@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-03-05T21:16:47+01:00</updated><id>http://localhost:4000//</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Overthewire.org - Narnia 3 -&amp;gt; 4</title><link href="http://localhost:4000/write-ups/2017/02/28/overthewire.org-narnia-4/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 3 -&gt; 4" /><published>2017-02-28T01:00:00+01:00</published><updated>2017-02-28T01:00:00+01:00</updated><id>http://localhost:4000/write-ups/2017/02/28/overthewire.org-narnia-4</id><content type="html" xml:base="http://localhost:4000/write-ups/2017/02/28/overthewire.org-narnia-4/">&lt;h1&gt;Introduction&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-03-06T21:20:13+01:00</updated><id>http://localhost:4000//</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Overthewire.org - Narnia 3 -&amp;gt; 4</title><link href="http://localhost:4000/write-ups/2017/03/05/overthewire.org-narnia-4/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 3 -&gt; 4" /><published>2017-03-05T01:00:00+01:00</published><updated>2017-03-05T01:00:00+01:00</updated><id>http://localhost:4000/write-ups/2017/03/05/overthewire.org-narnia-4</id><content type="html" xml:base="http://localhost:4000/write-ups/2017/03/05/overthewire.org-narnia-4/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
-&lt;p&gt;Let's go back to another reverse engineering challenge from OverTheWire. This time we'll be dealing with a little different type of buffer overflow.  &lt;/p&gt;
+&lt;p&gt;Let's go back to another reverse engineering challenge from OverTheWire. Today we'll be dealing with a little different type of buffer overflow.  &lt;/p&gt;
 
 &lt;h1&gt;Challenge&lt;/h1&gt;
 
-&lt;p&gt;This time, let's start the program firstly. &lt;/p&gt;
+&lt;p&gt;This time, we can start by firstly running the program. &lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia3@melinda:/narnia$ ./narnia3
 usage, ./narnia3 file, will send contents of file 2 /dev/null&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Now let's take a look at the source code. &lt;/p&gt;
+&lt;p&gt;But what can we see in the source code? &lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
 #include &amp;lt;sys/types.h&amp;gt;
@@ -54,7 +54,7 @@ usage, ./narnia3 file, will send contents of file 2 /dev/null&lt;/code&gt;&lt;/p
         &lt;span class=&quot;n&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;This code may look complicated at the first. But, after taking a closer look, we can see a potential buffer overflow vulnerability in &lt;b&gt;ifile&lt;/b&gt; buffer, which is 32 bytes in size. &lt;/p&gt;
+&lt;p&gt;This code may look complicated at first. But, after taking a closer look, we can see a potential buffer overflow vulnerability in &lt;b&gt;ifile&lt;/b&gt; buffer, which is 32 bytes in size. &lt;/p&gt;
 
 &lt;p&gt;Because &lt;b&gt;strcpy()&lt;/b&gt; does not perform any checks of the length of the input, if I give a file name longer than 32 bytes in length, I would be able to overwrite the &lt;b&gt;ofile&lt;/b&gt; from &lt;b&gt;/dev/null&lt;/b&gt; to another file. &lt;/p&gt;
 
@@ -67,7 +67,7 @@ usage, ./narnia3 file, will send contents of file 2 /dev/null&lt;/code&gt;&lt;/p
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia3@melinda:~$ cd /tmp
 narnia3@melinda:/tmp$ touch w3ndige&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Then, I'm going to use Python, and calculate how long the directory should be, together with &lt;b&gt;/tmp/&lt;/b&gt; beggining. We can also generate letters for our directory name. &lt;/p&gt;
+&lt;p&gt;Then, I'm going to use Python and calculate how long the directory should be, together with &lt;b&gt;/tmp/&lt;/b&gt; beggining. We can also generate letters for our directory name. &lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/tmp/&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;mi&quot;&gt;27&lt;/span&gt;
