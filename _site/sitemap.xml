@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>http://localhost:4000/write-ups/2016/07/20/overthewire.org-bandit/</loc>
+<loc>http://localhost:4000/overthewire/2016/07/20/overthewire.org-bandit/</loc>
 <lastmod>2016-07-20T14:00:00+02:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/write-ups/2016/07/25/overthewire.org-leviathan/</loc>
+<loc>http://localhost:4000/overthewire/2016/07/25/overthewire.org-leviathan/</loc>
 <lastmod>2016-07-25T12:00:00+02:00</lastmod>
 </url>
 <url>
@@ -77,7 +77,7 @@
 <lastmod>2016-10-29T02:00:00+02:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/write-ups/2016/11/19/overthewire.org-krypton/</loc>
+<loc>http://localhost:4000/overthewire/2016/11/19/overthewire.org-krypton/</loc>
 <lastmod>2016-11-19T01:00:00+01:00</lastmod>
 </url>
 <url>
@@ -89,19 +89,19 @@
 <lastmod>2016-12-14T01:00:00+01:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/write-ups/2016/12/25/overthewire.org-natas/</loc>
+<loc>http://localhost:4000/overthewire/2016/12/25/overthewire.org-natas/</loc>
 <lastmod>2016-12-25T01:00:00+01:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/write-ups/2017/01/01/overthewire.org-narnia-1/</loc>
+<loc>http://localhost:4000/overthewire/2017/01/01/overthewire.org-narnia-1/</loc>
 <lastmod>2017-01-01T01:00:00+01:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/write-ups/2017/02/02/overthewire.org-narnia-2/</loc>
+<loc>http://localhost:4000/overthewire/2017/02/02/overthewire.org-narnia-2/</loc>
 <lastmod>2017-02-02T01:00:00+01:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/write-ups/2017/02/03/overthewire.org-narnia-3/</loc>
+<loc>http://localhost:4000/overthewire/2017/02/03/overthewire.org-narnia-3/</loc>
 <lastmod>2017-02-03T01:00:00+01:00</lastmod>
 </url>
 <url>
@@ -117,8 +117,12 @@
 <lastmod>2017-02-25T01:00:00+01:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/write-ups/2017/03/05/overthewire.org-narnia-4/</loc>
+<loc>http://localhost:4000/overthewire/2017/03/05/overthewire.org-narnia-4/</loc>
 <lastmod>2017-03-05T01:00:00+01:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/overthewire/2017/03/09/overthewire.org-narnia-5/</loc>
+<lastmod>2017-03-09T01:00:00+01:00</lastmod>
 </url>
 <url>
 <loc>http://localhost:4000/about/</loc>
@@ -152,5 +156,8 @@
 </url>
 <url>
 <loc>http://localhost:4000/page6/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/page7/</loc>
 </url>
 </urlset>

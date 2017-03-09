@@ -5,7 +5,7 @@ subtitle:   "Write-Up"
 date:       2016-07-25 10:00:00
 author:     "W3ndige"
 header-img: "img/overthewire-header.png"
-category: Write-Ups
+category: Overthewire
 ---
 
 <h1>Introduction</h1>

