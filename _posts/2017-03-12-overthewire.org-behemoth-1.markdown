@@ -9,7 +9,7 @@ category: Overthewire
 ---
 <h1>Introduction</h1>
 
-<p>Today we're going to be attacking another reverse engineering challenge, this time from the <b>Behemoth</b> series. </p>
+<p>Today we're going to attack another reverse engineering challenge, this time from the <b>Behemoth</b> series. </p>
 
 <p><i>This wargame deals with a lot of regular vulnerabilities found commonly 'out
 in the wild'. While the game makes no attempts at emulating a real environment
