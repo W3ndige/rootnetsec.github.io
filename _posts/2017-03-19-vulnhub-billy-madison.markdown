@@ -2,7 +2,7 @@
 layout:     post
 title:      "Vulnhub.com - Billy Madison 1.1"
 subtitle:   "Write-Up"
-date:       2017-03-15 2:00:00
+date:       2017-03-19 2:00:00
 author:     "W3ndige"
 header-img: "img/billy-madison-header.jpeg"
 category: Write-Ups
@@ -72,7 +72,7 @@ Ncat: Connection refused.
 
 ![Billy's Website](/img/billy-madison/billy-website.png){:class="img-responsive center-block"}
 
-<p>Unfortunately I don't see anything useful here, apart from random quotes coming from <i>Billy Madison</i>. film. Maybe <b>Nikto</b> will tell us something more useful?</p>
+<p>Unfortunately I don't see anything useful here, apart from random quotes coming from <i>Billy Madison</i> film. Maybe <b>Nikto</b> will tell us something more useful?</p>
 
 {% highlight bash %}
 root@kali:~# nikto -h 10.0.2.4
@@ -190,7 +190,7 @@ Y
 
 <h2>Exschmenuating?</h2>
 
-<p>After a while of thinking I've found that there is additional page in Billys website - <b>http://10.0.2.4/exschmenuating/</b>. Maybe we'll get more clues on this one? </p>
+<p>After a while of thinking I've found that there is additional page in Billy's website - <b>http://10.0.2.4/exschmenuating/</b>. Maybe we'll get more clues on this one? </p>
 
 ![Billy's Exschmenuating Subpage](/img/billy-madison/billy-exschmenuating.png){:class="img-responsive center-block"}
 
