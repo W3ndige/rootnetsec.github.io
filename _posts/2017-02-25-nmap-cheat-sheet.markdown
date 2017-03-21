@@ -244,7 +244,7 @@ category: "Cheat Sheets"
       </tr>
     </thead>
     <tr>
-      <th><span class="text-danger">-Ss</span> </th>
+      <th><span class="text-danger">-sS</span> </th>
       <th>TCP SYN Scan</th>
     </tr>
     <tr>

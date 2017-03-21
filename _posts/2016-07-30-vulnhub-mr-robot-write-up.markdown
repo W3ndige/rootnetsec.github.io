@@ -5,7 +5,7 @@ subtitle:   "Write-Up"
 date:       2016-07-30 12:00:00
 author:     "W3ndige"
 header-img: "img/mr-robot-1-header.jpg"
-category: Write-Ups
+category: Vulnhub
 ---
 <h1>Introduction</h1>
 <p>This VM is a great way to celebrate the upcoming of a season 2 of Mr. Robot. As it's designed for beginners-intermediate it will be fun challenge and opportunity to learn something new. Our task is to find three different keys located somewhere in the machine. </p>

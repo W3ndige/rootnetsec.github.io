@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-03-19T09:45:38+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Vulnhub.com - Billy Madison 1.1</title><link href="http://localhost:4000/write-ups/2017/03/15/vulnhub-billy-madison/" rel="alternate" type="text/html" title="Vulnhub.com - Billy Madison 1.1" /><published>2017-03-15T02:00:00+00:00</published><updated>2017-03-15T02:00:00+00:00</updated><id>http://localhost:4000/write-ups/2017/03/15/vulnhub-billy-madison</id><content type="html" xml:base="http://localhost:4000/write-ups/2017/03/15/vulnhub-billy-madison/">&lt;h1&gt;Introduction&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-03-21T19:38:01+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Vulnhub.com - Billy Madison 1.1</title><link href="http://localhost:4000/vulnhub/2017/03/19/vulnhub-billy-madison/" rel="alternate" type="text/html" title="Vulnhub.com - Billy Madison 1.1" /><published>2017-03-19T02:00:00+00:00</published><updated>2017-03-19T02:00:00+00:00</updated><id>http://localhost:4000/vulnhub/2017/03/19/vulnhub-billy-madison</id><content type="html" xml:base="http://localhost:4000/vulnhub/2017/03/19/vulnhub-billy-madison/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;Today we're going to try and root another machine from Vulnhub called &lt;a href=&quot;https://www.vulnhub.com/entry/billy-madison-11,161/&quot;&gt;&lt;b&gt;Billy Madison&lt;/b&gt;&lt;/a&gt;. Our objective is to figure out how Eric took over the machine, undo his changes and recover Billy's 12th grade final project. Sounds great! &lt;/p&gt;
 
@@ -56,7 +56,7 @@ Ncat: Connection refused.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;&lt;img src=&quot;/img/billy-madison/billy-website.png&quot; alt=&quot;Billy's Website&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Unfortunately I don't see anything useful here, apart from random quotes coming from &lt;i&gt;Billy Madison&lt;/i&gt;. film. Maybe &lt;b&gt;Nikto&lt;/b&gt; will tell us something more useful?&lt;/p&gt;
+&lt;p&gt;Unfortunately I don't see anything useful here, apart from random quotes coming from &lt;i&gt;Billy Madison&lt;/i&gt; film. Maybe &lt;b&gt;Nikto&lt;/b&gt; will tell us something more useful?&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nikto -h 10.0.2.4
 - Nikto v2.1.6
@@ -167,7 +167,7 @@ Y
 
 &lt;h2&gt;Exschmenuating?&lt;/h2&gt;
 
-&lt;p&gt;After a while of thinking I've found that there is additional page in Billys website - &lt;b&gt;http://10.0.2.4/exschmenuating/&lt;/b&gt;. Maybe we'll get more clues on this one? &lt;/p&gt;
+&lt;p&gt;After a while of thinking I've found that there is additional page in Billy's website - &lt;b&gt;http://10.0.2.4/exschmenuating/&lt;/b&gt;. Maybe we'll get more clues on this one? &lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/img/billy-madison/billy-exschmenuating.png&quot; alt=&quot;Billy's Exschmenuating Subpage&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
 
@@ -884,7 +884,7 @@ https://www.youtube.com/watch?v=BlPw6MKvvIc
 
 &lt;h2&gt;Cleanup&lt;/h2&gt;
 
-&lt;p&gt;Our task was to also undo Eric's changes. Fistly let's disable &lt;b&gt;ssh&lt;/b&gt;. &lt;/p&gt;
+&lt;p&gt;Our task was to also undo Eric's changes. Firstly let's disable &lt;b&gt;ssh&lt;/b&gt;. &lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@BM:~# &lt;/span&gt;update-rc.d ssh disable
 insserv: warning: current start runlevel&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;empty&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; of script &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;ssh&lt;span class=&quot;s1&quot;&gt;' overrides LSB defaults (2 3 4 5).
@@ -906,9 +906,9 @@ insserv: warning: current stop runlevel(s) (2 3 4 5) of script `ssh'&lt;/span&gt
 
 &lt;h1&gt;Last words&lt;/h1&gt;
 
-&lt;p&gt;It was great fun to participate in this Vulnhub machine. Much thanks to &lt;a href=&quot;https://twitter.com/7MinSec&quot;&gt;Brian Johnson&lt;/a&gt; for creating this challenge and to &lt;b&gt;Yodak#2187&lt;/b&gt; for bringing up some ideas. I'm looking forward to try more machines and root them all! &lt;/p&gt;
+&lt;p&gt;It was great fun to participate in this Vulnhub machine. Much thanks to &lt;a href=&quot;https://twitter.com/7MinSec&quot;&gt;&lt;b&gt;Brian Johnson&lt;/b&gt;&lt;/a&gt; for creating this challenge and to &lt;b&gt;Yodak#2187&lt;/b&gt; for bringing up some ideas. I'm looking forward to try more machines and root them all! &lt;/p&gt;
 
-&lt;p&gt;Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Write-Ups" /><summary type="html">Introduction</summary></entry><entry><title type="html">Overthewire.org - Behemoth 0 -&amp;gt; 1</title><link href="http://localhost:4000/overthewire/2017/03/12/overthewire.org-behemoth-1/" rel="alternate" type="text/html" title="Overthewire.org - Behemoth 0 -&gt; 1" /><published>2017-03-12T00:00:00+00:00</published><updated>2017-03-12T00:00:00+00:00</updated><id>http://localhost:4000/overthewire/2017/03/12/overthewire.org-behemoth-1</id><content type="html" xml:base="http://localhost:4000/overthewire/2017/03/12/overthewire.org-behemoth-1/">&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Vulnhub" /><summary type="html">Introduction</summary></entry><entry><title type="html">Overthewire.org - Behemoth 0 -&amp;gt; 1</title><link href="http://localhost:4000/overthewire/2017/03/12/overthewire.org-behemoth-1/" rel="alternate" type="text/html" title="Overthewire.org - Behemoth 0 -&gt; 1" /><published>2017-03-12T00:00:00+00:00</published><updated>2017-03-12T00:00:00+00:00</updated><id>http://localhost:4000/overthewire/2017/03/12/overthewire.org-behemoth-1</id><content type="html" xml:base="http://localhost:4000/overthewire/2017/03/12/overthewire.org-behemoth-1/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;Today we're going to attack another reverse engineering challenge, this time from the &lt;b&gt;Behemoth&lt;/b&gt; series. &lt;/p&gt;
 
@@ -1439,7 +1439,7 @@ narnia3@melinda:/tmp/AAAAAAAAAAAAAAAAAAAAAAAAAAW/tmp$ cat /tmp/w3ndige
       &lt;/tr&gt;
     &lt;/thead&gt;
     &lt;tr&gt;
-      &lt;th&gt;&lt;span class=&quot;text-danger&quot;&gt;-Ss&lt;/span&gt; &lt;/th&gt;
+      &lt;th&gt;&lt;span class=&quot;text-danger&quot;&gt;-sS&lt;/span&gt; &lt;/th&gt;
       &lt;th&gt;TCP SYN Scan&lt;/th&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
@@ -1702,7 +1702,7 @@ hosts.&lt;/p&gt;
 
 &lt;p&gt;Firstly, I can recommend this great piece of information &lt;a href=&quot;https://nmap.org/book/toc.html&quot;&gt;Nmap Network Scanning Digital Version&lt;/a&gt;, which covers a lot of topics in this amazing tool. In addition I will keep this cheat sheet as update as possible, with new content coming as soon as I'll learn more, so stay updated! And...&lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Cheat Sheets" /><summary type="html">What is Nmap?</summary></entry><entry><title type="html">Vulnhub.com - 64Base 1.0.1</title><link href="http://localhost:4000/write-ups/2017/02/12/vulnhub-64base-writeup/" rel="alternate" type="text/html" title="Vulnhub.com - 64Base 1.0.1" /><published>2017-02-12T00:00:00+00:00</published><updated>2017-02-12T00:00:00+00:00</updated><id>http://localhost:4000/write-ups/2017/02/12/vulnhub-64base-writeup</id><content type="html" xml:base="http://localhost:4000/write-ups/2017/02/12/vulnhub-64base-writeup/">&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Cheat Sheets" /><summary type="html">What is Nmap?</summary></entry><entry><title type="html">Vulnhub.com - 64Base 1.0.1</title><link href="http://localhost:4000/vulnhub/2017/02/12/vulnhub-64base-writeup/" rel="alternate" type="text/html" title="Vulnhub.com - 64Base 1.0.1" /><published>2017-02-12T00:00:00+00:00</published><updated>2017-02-12T00:00:00+00:00</updated><id>http://localhost:4000/vulnhub/2017/02/12/vulnhub-64base-writeup</id><content type="html" xml:base="http://localhost:4000/vulnhub/2017/02/12/vulnhub-64base-writeup/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;Today we're going to try and complete another challenge from Vulnhub, called 64Base. There are two objectives: the main one is to steal the plans for the Death Star before it's too late, and secondary quest consits of collecting all 6 flags. So without further suppression, let's jump in! &lt;/p&gt;
 
@@ -2168,7 +2168,7 @@ base64 -d /var/local/.luke|less.real&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;p&gt;64Base was an awesome challenge, with lots of tricks, some hard, some easy, but all really entertaining and interesting. Big thanks to &lt;a href=&quot;https://3mrgnc3.ninja/2016/12/64base/&quot;&gt;&lt;b&gt;3mrgnc3&lt;/b&gt;&lt;/a&gt; for creating this challenge, and &lt;a href=&quot;https://www.vulnhub.com&quot;&gt;&lt;b&gt;VulnHub&lt;/b&gt;&lt;/a&gt; for hosting it! &lt;/p&gt;
 &lt;p&gt;I also hope, that you've enjoyed this write-up, I'll definitely do more of these in the future, so stay updated. And as always... &lt;/p&gt;
 
-&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Write-Ups" /><summary type="html">Introduction</summary></entry><entry><title type="html">Enigma</title><link href="http://localhost:4000/cryptography/2017/02/07/enigma/" rel="alternate" type="text/html" title="Enigma" /><published>2017-02-07T00:00:00+00:00</published><updated>2017-02-07T00:00:00+00:00</updated><id>http://localhost:4000/cryptography/2017/02/07/enigma</id><content type="html" xml:base="http://localhost:4000/cryptography/2017/02/07/enigma/">&lt;h1&gt;Brief history behind Enigma&lt;/h1&gt;
+&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Vulnhub" /><summary type="html">Introduction</summary></entry><entry><title type="html">Enigma</title><link href="http://localhost:4000/cryptography/2017/02/07/enigma/" rel="alternate" type="text/html" title="Enigma" /><published>2017-02-07T00:00:00+00:00</published><updated>2017-02-07T00:00:00+00:00</updated><id>http://localhost:4000/cryptography/2017/02/07/enigma</id><content type="html" xml:base="http://localhost:4000/cryptography/2017/02/07/enigma/">&lt;h1&gt;Brief history behind Enigma&lt;/h1&gt;
 
 &lt;p&gt;The first Enigma machine was discovered by &lt;b&gt;Arthur Scherbius&lt;/b&gt;, German engineer who acquired the patent in 1918. Name of this device originated from Greek word - riddle.  It was used commercially from the early 1920s, and was also adopted by the military and governmental services of a number of nations — most famously German Army. Communication during those days was sent over radio which means that everyone could easily listen. But at that moment no one could spy on Nazi messages - Scherbius' Enigma provided them with the strongest cryptographic cipher of the world. &lt;/p&gt;
 

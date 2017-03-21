@@ -5,7 +5,7 @@ subtitle:   "Write-Up"
 date:       2017-03-19 2:00:00
 author:     "W3ndige"
 header-img: "img/billy-madison-header.jpeg"
-category: Write-Ups
+category: Vulnhub
 ---
 
 <h1>Introduction</h1>
@@ -966,7 +966,7 @@ https://www.youtube.com/watch?v=BlPw6MKvvIc
 
 <h2>Cleanup</h2>
 
-<p>Our task was to also undo Eric's changes. Fistly let's disable <b>ssh</b>. </p>
+<p>Our task was to also undo Eric's changes. Firstly let's disable <b>ssh</b>. </p>
 
 {% highlight bash %}
 root@BM:~# update-rc.d ssh disable
@@ -994,6 +994,6 @@ root@BM:~# userdel eric
 
 <h1>Last words</h1>
 
-<p>It was great fun to participate in this Vulnhub machine. Much thanks to <a href="https://twitter.com/7MinSec">Brian Johnson</a> for creating this challenge and to <b>Yodak#2187</b> for bringing up some ideas. I'm looking forward to try more machines and root them all! </p>
+<p>It was great fun to participate in this Vulnhub machine. Much thanks to <a href="https://twitter.com/7MinSec"><b>Brian Johnson</b></a> for creating this challenge and to <b>Yodak#2187</b> for bringing up some ideas. I'm looking forward to try more machines and root them all! </p>
 
 <p>Stay safe!</p>
