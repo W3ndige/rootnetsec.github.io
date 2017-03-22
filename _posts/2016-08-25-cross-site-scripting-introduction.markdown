@@ -5,6 +5,7 @@ subtitle:   "Introduction to XSS"
 date:       2016-08-25 6:00:00
 author:     "W3ndige"
 header-img: "img/cross-site-scripting-header.jpg"
+permalink: /:title/
 category: "Web Security"
 ---
 <h1>What is XSS?</h1>

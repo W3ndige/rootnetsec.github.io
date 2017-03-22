@@ -5,6 +5,7 @@ subtitle:   "Part 1 - Caesar Cipher"
 date:       2016-08-04 12:00:00
 author:     "W3ndige"
 header-img: "img/encryption-caesar-header.jpg"
+permalink: /:title/
 category: Cryptography
 ---
 <h1>How the Ceasar cipher works?</h1>

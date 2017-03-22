@@ -5,6 +5,7 @@ subtitle:   "Write-Up"
 date:       2016-07-30 12:00:00
 author:     "W3ndige"
 header-img: "img/mr-robot-1-header.jpg"
+permalink: /:title/
 category: Vulnhub
 ---
 <h1>Introduction</h1>

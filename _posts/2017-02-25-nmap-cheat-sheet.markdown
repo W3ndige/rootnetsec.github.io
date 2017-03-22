@@ -5,6 +5,7 @@ subtitle:   "Cheat Sheet"
 date:       2017-02-25 00:00:00
 author:     "W3ndige"
 header-img: "img/nmap-header.jpg"
+permalink: /:title/
 category: "Cheat Sheets"
 ---
 

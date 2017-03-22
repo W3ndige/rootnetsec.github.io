@@ -5,6 +5,7 @@ subtitle:   "How passwords are stored?"
 date:       2016-08-18 5:00:00
 author:     "W3ndige"
 header-img: "img/hash-functions.jpg"
+permalink: /:title/
 category: Cryptography
 ---
 <h1>What Are Hash Functions?</h1>

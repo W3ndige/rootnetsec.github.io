@@ -5,6 +5,7 @@ subtitle:   "What has happened lately?"
 date:       2016-12-14 0:00:00
 author:     "W3ndige"
 header-img: "img/update-1-header.jpg"
+permalink: /:title/
 category: News
 ---
 

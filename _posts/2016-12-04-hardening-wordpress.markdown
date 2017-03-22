@@ -5,6 +5,7 @@ subtitle:   "How to secure your WordPress site?"
 date:       2016-12-04 0:00:00
 author:     "W3ndige"
 header-img: "img/hardening-wordpress-header.png"
+permalink: /:title/
 category: "Web Security"
 ---
 

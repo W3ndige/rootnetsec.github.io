@@ -5,6 +5,7 @@ subtitle:   "Part 2 - Vigenère cipher"
 date:       2016-08-09 12:00:00
 author:     "W3ndige"
 header-img: "img/encryption-vigenere-header.jpg"
+permalink: /:title/
 category: Cryptography
 ---
 <h1>Vigenère cipher - how it works?</h1>

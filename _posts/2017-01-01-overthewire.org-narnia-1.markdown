@@ -5,6 +5,7 @@ subtitle:   "Write-Up"
 date:       2017-01-01 0:00:00
 author:     "W3ndige"
 header-img: "img/overthewire-header.png"
+permalink: /:title/
 category: Overthewire
 ---
 

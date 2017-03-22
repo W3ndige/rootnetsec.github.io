@@ -5,6 +5,7 @@ subtitle:   "Introduction to Reverse Engineering"
 date:       2016-08-20 10:00:00
 author:     "W3ndige"
 header-img: "img/buffer-overflow-header.jpg"
+permalink: /:title/
 category: "Reverse Engineering"
 ---
 <h1><a name="introduction">Introductions</a></h1>

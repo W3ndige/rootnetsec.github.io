@@ -5,6 +5,7 @@ subtitle:   "Write-Up"
 date:       2016-09-15 2:00:00
 author:     "W3ndige"
 header-img: "img/stapler-header.jpeg"
+permalink: /:title/
 category: Vulnhub
 ---
 

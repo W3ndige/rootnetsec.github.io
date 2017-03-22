@@ -5,6 +5,7 @@ subtitle:   "Theory behind WPA and WPA2"
 date:       2016-10-01 2:00:00
 author:     "W3ndige"
 header-img: "img/wireless-security-wep-header.jpg"
+permalink: /:title/
 category: Networking
 ---
 

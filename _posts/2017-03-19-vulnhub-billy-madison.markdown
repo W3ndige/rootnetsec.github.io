@@ -5,6 +5,7 @@ subtitle:   "Write-Up"
 date:       2017-03-19 2:00:00
 author:     "W3ndige"
 header-img: "img/billy-madison-header.jpeg"
+permalink: /:title/
 category: Vulnhub
 ---
 
