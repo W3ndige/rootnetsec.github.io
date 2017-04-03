@@ -10,7 +10,7 @@ category: Overthewire
 ---
 <h1>Introduction</h1>
 
-<p>Today we're going to attack another reverse engineering challenge from <b>Behemoth</b> series, to improve our Wknowledge in reverse engineering.  </p>
+<p>Today we're going to attack another reverse engineering challenge from <b>Behemoth</b> series, to improve our knowledge in reverse engineering.  </p>
 
 <h1>Challenge</h1>
 
@@ -108,10 +108,10 @@ cat /etc/behemoth_pass/behemoth2
 *******
 {% endhighlight %}
 
-<p>As you may know, first try didn't work becaouse the shellcode opened the shell without any argumants, resulting in immediate close. Adding <b>cat - </b> allowed us to keep the shell open, and view the password. </p>
+<p>As you may know, the first try didn't work because the shellcode opened the shell without any arguments, resulting in immediate close. Adding <b>cat - </b> allowed us to keep the shell open, and view the password. </p>
 
 <h1>Conclusion</h1>
 <p>Fun as always, and very educational. Thanks <a href="http://overthewire.org/wargames/">OverTheWire</a>!</p>
-<p>I would also like to point out that if you're thinking about starting journey with CTF challenges <a href="https://picoctf.com/"><b>PicoCTF</b></a> is now running, with a lot of great challenges. Check that out if you're interested!</p>
+<p>I would also like to point out that if you're thinking about starting journey with CTF challenges <a href="https://picoctf.com/"><b>PicoCTF</b></a> is running now, with a lot of great challenges. Check that out if you're interested!</p>
 
 <p>~ Stay safe! </p>
