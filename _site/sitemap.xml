@@ -141,6 +141,14 @@
 <lastmod>2017-04-02T00:00:00+00:00</lastmod>
 </url>
 <url>
+<loc>http://localhost:4000/picoctf-leaked-hashes/</loc>
+<lastmod>2017-04-14T00:00:00+00:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/picoctf-weird-rsa/</loc>
+<lastmod>2017-04-14T00:00:00+00:00</lastmod>
+</url>
+<url>
 <loc>http://localhost:4000/about/</loc>
 </url>
 <url>
@@ -175,5 +183,8 @@
 </url>
 <url>
 <loc>http://localhost:4000/page7/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/page8/</loc>
 </url>
 </urlset>
