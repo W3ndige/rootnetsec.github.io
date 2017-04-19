@@ -181,6 +181,10 @@
 <lastmod>2017-04-18T00:00:00+00:00</lastmod>
 </url>
 <url>
+<loc>http://localhost:4000/picoctf-computersa/</loc>
+<lastmod>2017-04-19T00:00:00+00:00</lastmod>
+</url>
+<url>
 <loc>http://localhost:4000/about/</loc>
 </url>
 <url>
@@ -221,5 +225,8 @@
 </url>
 <url>
 <loc>http://localhost:4000/page9/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/page10/</loc>
 </url>
 </urlset>

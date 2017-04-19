@@ -1,4 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-04-18T18:23:09+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">PicoCTF - Broadcast</title><link href="http://localhost:4000/picoctf-broadcast/" rel="alternate" type="text/html" title="PicoCTF - Broadcast" /><published>2017-04-18T00:00:00+00:00</published><updated>2017-04-18T00:00:00+00:00</updated><id>http://localhost:4000/picoctf-broadcast</id><content type="html" xml:base="http://localhost:4000/picoctf-broadcast/">&lt;h1&gt;Broadcast - 120 PTS&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-04-19T07:00:12+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">PicoCTF - ComputeRSA</title><link href="http://localhost:4000/picoctf-computersa/" rel="alternate" type="text/html" title="PicoCTF - ComputeRSA" /><published>2017-04-19T00:00:00+00:00</published><updated>2017-04-19T00:00:00+00:00</updated><id>http://localhost:4000/picoctf-computersa</id><content type="html" xml:base="http://localhost:4000/picoctf-computersa/">&lt;h1&gt;ComputeRSA - 50 PTS&lt;/h1&gt;
+
+&lt;p&gt;RSA encryption/decryption is based on a formula that anyone can find and use, as long as they know the values to plug in. Given the encrypted number 150815, d = 1941, and N = 435979, what is the decrypted number?&lt;/p&gt;
+
+&lt;p&gt;In order to decrypt the message we have to take a look at this equation, as shown in &lt;a href=&quot;https://en.wikipedia.org/wiki/RSA_(cryptosystem)&quot;&gt;Wikipedia&lt;/a&gt; entry. &lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;m = c^d % n&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;So it's just a matter of computing this &lt;b&gt;m&lt;/b&gt; number, as everything is provided in the challenge. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~&amp;gt; python
+Python 3.6.0 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;default, Jan 16 2017, 12:12:55&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;GCC 6.3.1 20170109] on linux
+Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&quot;copyright&quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&quot;credits&quot;&lt;/span&gt; or &lt;span class=&quot;s2&quot;&gt;&quot;license&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;more information.
+&lt;span class=&quot;gp&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;c &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 150815
+&lt;span class=&quot;gp&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;d &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1941
+&lt;span class=&quot;gp&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;n &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 435979
+&lt;span class=&quot;gp&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;pow&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;c, d, n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+133337&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Easy and fun, right?&lt;/p&gt;
+
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">ComputeRSA - 50 PTS</summary></entry><entry><title type="html">PicoCTF - Broadcast</title><link href="http://localhost:4000/picoctf-broadcast/" rel="alternate" type="text/html" title="PicoCTF - Broadcast" /><published>2017-04-18T00:00:00+00:00</published><updated>2017-04-18T00:00:00+00:00</updated><id>http://localhost:4000/picoctf-broadcast</id><content type="html" xml:base="http://localhost:4000/picoctf-broadcast/">&lt;h1&gt;Broadcast - 120 PTS&lt;/h1&gt;
 
 &lt;p&gt;You stumbled upon a group Message. Can you figure out what they were sending? The string sent is ascii encoded as a hex number (submit the ascii string as the flag)&lt;/p&gt;
 
@@ -752,67 +774,4 @@ Zip entry offsets &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;not need adjus
 
 &lt;p&gt;Now let's write this down and submit the flag. &lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">Missing Identity - 100 PTS</summary></entry><entry><title type="html">PicoCTF - Leaked Hashes</title><link href="http://localhost:4000/picoctf-leaked-hashes/" rel="alternate" type="text/html" title="PicoCTF - Leaked Hashes" /><published>2017-04-14T00:00:00+00:00</published><updated>2017-04-14T00:00:00+00:00</updated><id>http://localhost:4000/picoctf-leaked-hashes</id><content type="html" xml:base="http://localhost:4000/picoctf-leaked-hashes/">&lt;h1&gt;Leaked Hashes - 90 PTS&lt;/h1&gt;
-
-&lt;p&gt;Someone got hacked! Check out some service's password hashes that were leaked at hashdump.txt! Do you think they chose strong passwords? We should check... The service is running at shell2017.picoctf.com:61096!&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root:be3f7de032d2e398ec542a7df71e0417
-christene:cc5847ba595f097885b2bbe5eb940e22
-nadia:f3ab9dc32a394eb1cdf922659abcdead
-myra:4dff179a4ec49e978ce72e6bf39b7d86
-sharell:05635c2378051c67022b9096e0813aeb
-lilli:05635c2378051c67022b9096e0813aeb
-ilene:b51bc648f9d5e58971705b5efdc098a5
-emiko:ee4d5bc25a2771d95fdbd24452e355ad
-lindsey:c9f01a6d41d78f79585a30fdc815bf17
-deandrea:c9dd062917d9feb763b10fbcb483abfa
-honey:74fe6370a9626ef1887c0e3ca4e6b600
-diana:9ff497405dbd1cf3c17576629cf35475
-lucretia:ac2f556a0eb415745b31e14a91d55d75
-.
-.
-.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we will have to try and crack at least one of these passwords provided in the dump, so we can log into the service. My favourite &lt;a href=&quot;https://hashkiller.co.uk/md5-decrypter.aspx&quot;&gt;Hashkiller&lt;/a&gt; website used to cracking MD5 hashes did it without any problem. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;be3f7de032d2e398ec542a7df71e0417 [Not found]
-cc5847ba595f097885b2bbe5eb940e22 [Not found]
-f3ab9dc32a394eb1cdf922659abcdead MD5 : 0u70u73r
-4dff179a4ec49e978ce72e6bf39b7d86 MD5 : s3r0w
-05635c2378051c67022b9096e0813aeb MD5 : r3v3l
-b51bc648f9d5e58971705b5efdc098a5 MD5 : p0lyp
-ee4d5bc25a2771d95fdbd24452e355ad MD5 : r3s4w
-c9f01a6d41d78f79585a30fdc815bf17 MD5 : sp337
-c9dd062917d9feb763b10fbcb483abfa [Not found]&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we can log in using &lt;i&gt;nadia:0u70u73r&lt;/i&gt; credentials. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~&amp;gt; nc shell2017.picoctf.com 61096
-enter username:
-nadia
-nadia&lt;span class=&quot;s1&quot;&gt;'s password:0u70u73r
-welcome to shady file server. would you like to access the cat ascii art database? y/n
-y
-
-     /\__/\
-    /`    '&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; 0  0 &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt;
-    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; --  /    - flag is 1ae2d736242e28658d08e8b47dbf49bf
-
-   /        &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-  /          &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
- |            |
-  &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  /
-   &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;oo__oo_/#######o
-
-              &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;-/&lt;span class=&quot;s2&quot;&gt;&quot;).___..--''&quot;&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;-._
-               &lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;6_ 6  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;   &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;-.  (     ).&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-.__.&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;)
-               (_Y_.)'  ._   )  &lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;._ &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;. &lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;``&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;-..-'
-             _..&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;--&lt;span class=&quot;s1&quot;&gt;'_..-_/  /--'&lt;/span&gt;_.&lt;span class=&quot;s1&quot;&gt;' ,'&lt;/span&gt;
-           &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;il&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;,-&lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;li&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;,&lt;span class=&quot;s1&quot;&gt;'  ((!.-'&lt;/span&gt;
-
-from http://user.xmission.com/~emailbox/ascii_cats.htm&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Here we have the flag! &lt;/p&gt;
-
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">Leaked Hashes - 90 PTS</summary></entry></feed>
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">Missing Identity - 100 PTS</summary></entry></feed>
