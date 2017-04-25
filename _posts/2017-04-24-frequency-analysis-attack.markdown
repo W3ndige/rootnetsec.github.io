@@ -13,7 +13,7 @@ category: Cryptography
 
 <p><b>Frequency analysis</b> is the study of the frequency of letters or groups of letters occuring next to each other. The most ancient description for what we know was made by Al-Kindi, dating back to the IXth century. This attack is used to break <b>monoalphabetic ciphers</b>, which work by simple and fixed substitution of letters. We now, that if the <b>a</b> in plaintext is encrypted to <b>x</b> letter, everytime in the ciphertext that <b>x</b> will convert to <b>a</b>.  </p>
 
-<p>But how can we attack the ciphertext without knowing the encryption key? Brute force? That may take to long for some, even basic, forms of encryption. What comes to the rescue is frequency analysis. With knowledge of how often each letter occurs in the language, we can try and analyze the ciphertext, substituting most occuring ones with the ones that are most frequent in specified language. Let's take a look at charts showing those frequencies in English. </p>
+<p>But how can we attack the ciphertext without knowing the encryption key? Brute force? That may take too long for some, even basic, forms of encryption. What comes to the rescue is frequency analysis. With knowledge of how often each letter occurs in the language, we can try analyzing the ciphertext, substituting most occuring ones with the ones that are most frequent in specified language. Let's take a look at charts showing those frequencies in English. </p>
 
 ![Letter frequency in English](/img/frequency-analysis/english.png){:class="img-responsive center-block"}
 
@@ -58,7 +58,7 @@ category: Cryptography
 
 <p>Here we can see a lot more, <i>whIPh</i> can be <b>which</b>, <i>GIFeN</i> can be <b>given</b>. Also <i>ItseQE</i> can be <b>itself</b> and <i>shoulB</i> should be <b>should</b>. Now I can see the first error! </p>
 
-<p>As <i>Nearln</i> should be the word <b>nearly</b>, <b>n</b> -> <b>y</b>. Again <i>INforKatIoN</i> should be <b>information</b>. Phrase <i>ieING alIMe</i> can translate to <b>being alive</b>, while word <i>oJINIoNs</i> is <b>opinions</b>. Now we are very close to the end, we have one more word <i>CudGemeNtal</i>, which is supposed to be <b>judgemental</b>. At this moement we have to take last few steps to correct this text, together with our knowledge of language. Here is the final message. </p>
+<p>As <i>Nearln</i> should be the word <b>nearly</b>, <b>n</b> -> <b>y</b>. Again <i>INforKatIoN</i> should be <b>information</b>. Phrase <i>ieING alIMe</i> can translate to <b>being alive</b>, while word <i>oJINIoNs</i> is <b>opinions</b>. Now we are very close to the end, we have one more word <i>CudGemeNtal</i>, which is supposed to be <b>judgemental</b>. At this moment we have to take last few steps to correct this text, together with our knowledge of language. Here is the final message. </p>
 
 <p><i>modern life nearly conspires against the collective. we are tormented by a relentless flow of information as well as the daily worries of an eternally insecure, unwarranted life. furthermore, we dread the thought of being alive, of sharing multiple views and opinions. as such, we are turning progressively judgemental of who we should be partnering with, on the basis that "they do not understand". in hacking, it yet implicates on the delicate subject of trust, which would require an essay on itself, given the undeniable importance the matter has acquired over the years.</i></p>
 
