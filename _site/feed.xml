@@ -1,8 +1,203 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-04-24T18:30:41+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Frequency Analysis</title><link href="http://localhost:4000/frequency-analysis-attack/" rel="alternate" type="text/html" title="Frequency Analysis " /><published>2017-04-24T00:00:00+00:00</published><updated>2017-04-24T00:00:00+00:00</updated><id>http://localhost:4000/frequency-analysis-attack</id><content type="html" xml:base="http://localhost:4000/frequency-analysis-attack/">&lt;h1&gt;Introduction&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-05-14T18:09:10+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">File Permissions</title><link href="http://localhost:4000/linux-cheat-sheet/" rel="alternate" type="text/html" title="File Permissions" /><published>2017-04-24T00:00:00+00:00</published><updated>2017-04-24T00:00:00+00:00</updated><id>http://localhost:4000/linux-cheat-sheet</id><content type="html" xml:base="http://localhost:4000/linux-cheat-sheet/">&lt;p&gt;A little break in the exams, so we have some time to discover another topic - which is file permissions on Linux. Let's fully understand how they work. &lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;h1 id=&quot;permission-types&quot;&gt;Permission Types&lt;/h1&gt;
+
+&lt;p&gt;There are three basic permission types: &lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;b&gt;read&lt;/b&gt; - modifiy whether or not user can read the content of the file.&lt;/li&gt;
+  &lt;li&gt;&lt;b&gt;write&lt;/b&gt; - modifiy whether or not user can write or modify a file/directory.&lt;/li&gt;
+  &lt;li&gt;&lt;b&gt;execute&lt;/b&gt; - modifiy whether or not user can execute the file or view the content of the directory.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now we can add these permissions to the three types of people: &lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;b&gt;owner&lt;/b&gt; - permissions apply only to the owner of the file or a directory.&lt;/li&gt;
+  &lt;li&gt;&lt;b&gt;group&lt;/b&gt; - permissions apply only to the group that has been assigned to the file or a directory.&lt;/li&gt;
+  &lt;li&gt;&lt;b&gt;others&lt;/b&gt; - permissions apply to every other user.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1&gt;View Permission&lt;/h1&gt;
+
+&lt;p&gt;In order to view permissions we're going to use &lt;b&gt;ls -l&lt;/b&gt; command. Let's take a look at a few examples. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~/P/w/img&amp;gt; ls -l about-header.jpg
+-rw-r--r-- 1 w3ndige users 107458 03-11 18:34 about-header.jpg&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And a directory. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~/P/w3ndige.github.io&amp;gt; ls -l img
+drwxr-xr-x 2 w3ndige users   4096 03-11 18:34 64base/&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As you can recon first character identifies, if that's the &lt;b&gt;file&lt;/b&gt; (-) or a &lt;b&gt;directory&lt;/b&gt; (d). Then we have 3 characters specified for a permissions to an &lt;b&gt;owner&lt;/b&gt;, 3 to the &lt;b&gt;group&lt;/b&gt; and lastly 3 for all the &lt;b&gt;other users&lt;/b&gt;. Presence of permission is presented by a coresspondig letter, lack is shown as a dash. &lt;/p&gt;
+
+&lt;h1&gt;Change Permission&lt;/h1&gt;
+
+&lt;p&gt;In order to change permissions, we can use tool called &lt;b&gt;chmod&lt;/b&gt; with this syntax &lt;b&gt;chmod PERM FILE&lt;/b&gt;. Let's take a look at examples. But firstly, let's think to who are we granting with these permissions? Owner - &lt;b&gt;u&lt;/b&gt;, group - &lt;b&gt;g&lt;/b&gt;, others - &lt;b&gt;o&lt;/b&gt;, or all - &lt;b&gt;a&lt;/b&gt;. Are we giving these permissions - &lt;b&gt;+&lt;/b&gt;, or revoking - &lt;b&gt;-&lt;/b&gt;? And lastly, which permissions? &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~&amp;gt; touch example
+w3ndige@W3ndige ~&amp;gt; ls -l example
+-rw-r--r-- 1 w3ndige users 0 05-13 18:05 example
+w3ndige@W3ndige ~&amp;gt; chmod u+x example
+w3ndige@W3ndige ~&amp;gt; ls -l example
+-rwxr--r-- 1 w3ndige users 0 05-13 18:05 example&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Execute permission for owner? No problem. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~&amp;gt; chmod o+w example
+w3ndige@W3ndige ~&amp;gt; ls -l example
+-rwxr--rw- 1 w3ndige users 0 05-13 18:05 example&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Or write permission for others? Easy task. We can also assing multiple permissions at once just like this: &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~&amp;gt; chmod a+rwx example
+w3ndige@W3ndige ~&amp;gt; ls -l example
+-rwxrwxrwx 1 w3ndige users 0 05-13 18:05 example&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1&gt;Numeric Permission&lt;/h1&gt;
+
+&lt;p&gt;In order to assign specific set of permissions faster, we can assign them as a numbers - in base 8. Firstly, we'll take a look at how to convert character permission into a numerical type. &lt;/p&gt;
+
+&lt;div class=&quot;table-responsive&quot;&gt;
+  &lt;table class=&quot;table&quot;&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Octal&lt;/th&gt;
+        &lt;th&gt;Binary&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;0&lt;/th&gt;
+      &lt;th&gt;000&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;th&gt;001&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;2&lt;/th&gt;
+      &lt;th&gt;010&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;3&lt;/th&gt;
+      &lt;th&gt;011&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4&lt;/th&gt;
+      &lt;th&gt;100&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;5&lt;/th&gt;
+      &lt;th&gt;101&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;6&lt;/th&gt;
+      &lt;th&gt;110&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;7&lt;/th&gt;
+      &lt;th&gt;111&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Looking at that conversion table, we can notice a pattern - it is possible to write combinations of a permission in a single number - for example 7 will stand for read, write and execute, while number 5 will be only read and execute. Each bit in the binary represents the presence of permision. Now we have to only write this number 3 times, to represent each piece of users - owner, group and others. &lt;/p&gt;
+
+&lt;div class=&quot;table-responsive&quot;&gt;
+  &lt;table class=&quot;table&quot;&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Parameter&lt;/th&gt;
+        &lt;th&gt;&lt;/th&gt;
+        &lt;th&gt;Description&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;777&lt;/th&gt;
+      &lt;th&gt;rwxrwxrwx&lt;/th&gt;
+      &lt;th&gt;Full access&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;755&lt;/th&gt;
+      &lt;th&gt;rwxr-xr-x&lt;/th&gt;
+      &lt;th&gt;Owner has full access, everyone else can read and execute the file&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;700&lt;/th&gt;
+      &lt;th&gt;rwx------&lt;/th&gt;
+      &lt;th&gt;Only owner has full access&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;644&lt;/th&gt;
+      &lt;th&gt;rw-r--r--&lt;/th&gt;
+      &lt;th&gt;Owner can read and write, everyone else can read&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;600&lt;/th&gt;
+      &lt;th&gt;rw-------&lt;/th&gt;
+      &lt;th&gt;Owner can read and write, otherwise no access&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now we are able to assign multiple permissions at the same time using &lt;b&gt;chmod&lt;/b&gt;. Let's take a look at few examples. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~&amp;gt; chmod 777 example
+w3ndige@W3ndige ~&amp;gt; ls -l example
+-rwxrwxrwx 1 w3ndige users 0 05-13 18:05 example&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Full access to everyone. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~&amp;gt; ls -l example
+-rwxrwx--- 1 w3ndige users 0 05-13 18:05 example&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After realizing what a mistake it is, we revoked full access from others. Easy, right? We can also take a look at some useful permissions for directories. &lt;/p&gt;
+
+&lt;div class=&quot;table-responsive&quot;&gt;
+  &lt;table class=&quot;table&quot;&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Parameter&lt;/th&gt;
+        &lt;th&gt;&lt;/th&gt;
+        &lt;th&gt;Description&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;777&lt;/th&gt;
+      &lt;th&gt;rwxrwxrwx&lt;/th&gt;
+      &lt;th&gt;Everyone is able to list files, create new ones and delete them&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;755&lt;/th&gt;
+      &lt;th&gt;rwxr-xr-x&lt;/th&gt;
+      &lt;th&gt;Owner has full access, while all others can only list the directory &lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;700&lt;/th&gt;
+      &lt;th&gt;rwx------&lt;/th&gt;
+      &lt;th&gt;Only owner can do anything, others have no access &lt;/th&gt;
+    &lt;/tr&gt;
+
+  &lt;/table&gt;
+&lt;/div&gt;
+
+&lt;h1&gt;Changing ownership&lt;/h1&gt;
+
+&lt;p&gt;Usually, owner is the one who created the file, but we can change the person using &lt;b&gt;chown&lt;/b&gt; command. We can also change the group ownership using &lt;b&gt;chgrp&lt;/b&gt; command. Remember that in order to change these, you have to be the superuser. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~&amp;gt; chown USER FILE
+w3ndige@W3ndige ~&amp;gt; chgrp GROUP FILE&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;File permissions are great way to improve security on your system, so it's great to know how they work, and how to apply them. See you in the next one! &lt;/p&gt;
+
+&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Linux" /><summary type="html">A little break in the exams, so we have some time to discover another topic - which is file permissions on Linux. Let's fully understand how they work.</summary></entry><entry><title type="html">Frequency Analysis</title><link href="http://localhost:4000/frequency-analysis-attack/" rel="alternate" type="text/html" title="Frequency Analysis" /><published>2017-04-24T00:00:00+00:00</published><updated>2017-04-24T00:00:00+00:00</updated><id>http://localhost:4000/frequency-analysis-attack</id><content type="html" xml:base="http://localhost:4000/frequency-analysis-attack/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;&lt;b&gt;Frequency analysis&lt;/b&gt; is the study of the frequency of letters or groups of letters occuring next to each other. The most ancient description for what we know was made by Al-Kindi, dating back to the IXth century. This attack is used to break &lt;b&gt;monoalphabetic ciphers&lt;/b&gt;, which work by simple and fixed substitution of letters. We now, that if the &lt;b&gt;a&lt;/b&gt; in plaintext is encrypted to &lt;b&gt;x&lt;/b&gt; letter, everytime in the ciphertext that &lt;b&gt;x&lt;/b&gt; will convert to &lt;b&gt;a&lt;/b&gt;.  &lt;/p&gt;
 
-&lt;p&gt;But how can we attack the ciphertext without knowing the encryption key? Brute force? That may take to long for some, even basic, forms of encryption. What comes to the rescue is frequency analysis. With knowledge of how often each letter occurs in the language, we can try and analyze the ciphertext, substituting most occuring ones with the ones that are most frequent in specified language. Let's take a look at charts showing those frequencies in English. &lt;/p&gt;
+&lt;p&gt;But how can we attack the ciphertext without knowing the encryption key? Brute force? That may take too long for some, even basic, forms of encryption. What comes to the rescue is frequency analysis. With knowledge of how often each letter occurs in the language, we can try analyzing the ciphertext, substituting most occuring ones with the ones that are most frequent in specified language. Let's take a look at charts showing those frequencies in English. &lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/img/frequency-analysis/english.png&quot; alt=&quot;Letter frequency in English&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
 
@@ -47,7 +242,7 @@
 
 &lt;p&gt;Here we can see a lot more, &lt;i&gt;whIPh&lt;/i&gt; can be &lt;b&gt;which&lt;/b&gt;, &lt;i&gt;GIFeN&lt;/i&gt; can be &lt;b&gt;given&lt;/b&gt;. Also &lt;i&gt;ItseQE&lt;/i&gt; can be &lt;b&gt;itself&lt;/b&gt; and &lt;i&gt;shoulB&lt;/i&gt; should be &lt;b&gt;should&lt;/b&gt;. Now I can see the first error! &lt;/p&gt;
 
-&lt;p&gt;As &lt;i&gt;Nearln&lt;/i&gt; should be the word &lt;b&gt;nearly&lt;/b&gt;, &lt;b&gt;n&lt;/b&gt; -&amp;gt; &lt;b&gt;y&lt;/b&gt;. Again &lt;i&gt;INforKatIoN&lt;/i&gt; should be &lt;b&gt;information&lt;/b&gt;. Phrase &lt;i&gt;ieING alIMe&lt;/i&gt; can translate to &lt;b&gt;being alive&lt;/b&gt;, while word &lt;i&gt;oJINIoNs&lt;/i&gt; is &lt;b&gt;opinions&lt;/b&gt;. Now we are very close to the end, we have one more word &lt;i&gt;CudGemeNtal&lt;/i&gt;, which is supposed to be &lt;b&gt;judgemental&lt;/b&gt;. At this moement we have to take last few steps to correct this text, together with our knowledge of language. Here is the final message. &lt;/p&gt;
+&lt;p&gt;As &lt;i&gt;Nearln&lt;/i&gt; should be the word &lt;b&gt;nearly&lt;/b&gt;, &lt;b&gt;n&lt;/b&gt; -&amp;gt; &lt;b&gt;y&lt;/b&gt;. Again &lt;i&gt;INforKatIoN&lt;/i&gt; should be &lt;b&gt;information&lt;/b&gt;. Phrase &lt;i&gt;ieING alIMe&lt;/i&gt; can translate to &lt;b&gt;being alive&lt;/b&gt;, while word &lt;i&gt;oJINIoNs&lt;/i&gt; is &lt;b&gt;opinions&lt;/b&gt;. Now we are very close to the end, we have one more word &lt;i&gt;CudGemeNtal&lt;/i&gt;, which is supposed to be &lt;b&gt;judgemental&lt;/b&gt;. At this moment we have to take last few steps to correct this text, together with our knowledge of language. Here is the final message. &lt;/p&gt;
 
 &lt;p&gt;&lt;i&gt;modern life nearly conspires against the collective. we are tormented by a relentless flow of information as well as the daily worries of an eternally insecure, unwarranted life. furthermore, we dread the thought of being alive, of sharing multiple views and opinions. as such, we are turning progressively judgemental of who we should be partnering with, on the basis that &quot;they do not understand&quot;. in hacking, it yet implicates on the delicate subject of trust, which would require an essay on itself, given the undeniable importance the matter has acquired over the years.&lt;/i&gt;&lt;/p&gt;
 
@@ -693,60 +888,4 @@ wigle: SQLite 3.x database, last written using SQLite version 3008007&lt;/code&g
 
 &lt;p&gt;After taking a closer look, we can see that the flag is FLAG{F0UND_M3_33DE7930}. &lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">Connect The Wiggle - 140 PTS</summary></entry><entry><title type="html">PicoCTF - Biscuit</title><link href="http://localhost:4000/picoctf-biscuit/" rel="alternate" type="text/html" title="PicoCTF - Biscuit" /><published>2017-04-15T00:00:00+00:00</published><updated>2017-04-15T00:00:00+00:00</updated><id>http://localhost:4000/picoctf-biscuit</id><content type="html" xml:base="http://localhost:4000/picoctf-biscuit/">&lt;h1&gt;Biscuit - 75 PTS&lt;/h1&gt;
-
-&lt;p&gt;Your friend has a personal website. Fortunately for you, he is a bit of a noob when it comes to hosting a website. Can you find out what he is hiding? &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/picoctf/biscuit-web.png&quot; alt=&quot;Website&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Let's view the source. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&amp;gt;&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Storing stuff in the same directory as your web server doesn't seem like a good idea --&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- Thankfully, we use a hidden one that is super PRIVATE, to protect our cookies.sqlite file --&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;style&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    	&lt;span class=&quot;nl&quot;&gt;background-image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;sx&quot;&gt;url(&quot;private/image.png&quot;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/style&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;body&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'background:white;margin: auto;border: 1px solid red;width: 600px; margin-top: 20%;'&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-      &lt;span class=&quot;nt&quot;&gt;&amp;lt;center&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;form&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;font-size: 40px; &quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-        Access Denied&lt;span class=&quot;nt&quot;&gt;&amp;lt;/form&amp;gt;&lt;/span&gt;
-      &lt;span class=&quot;nt&quot;&gt;&amp;lt;/center&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;That's some pretty obvious stuff here. Let's jump to the &lt;b&gt;private&lt;/b&gt; directory, and download the &lt;b&gt;cookies.sqlite&lt;/b&gt;. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;http://shell2017.picoctf.com:30027/private/cookies.sqlite&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we have to try and extract the cookies from the file. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~/Pobrane&amp;gt; sqlite3 cookies.sqlite
-SQLite version 3.18.0 2017-03-28 18:48:43
-Enter &lt;span class=&quot;s2&quot;&gt;&quot;.help&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;usage hints.
-sqlite&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Great! It's working. Now we can view the tables existing in this database, and then extract the password. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;&lt;span class=&quot;n&quot;&gt;sqlite&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sqlite_master&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'table'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;table&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;moz_cookies&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;moz_cookies&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;moz_cookies&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INTEGER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;PRIMARY&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;KEY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;baseDomain&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TEXT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;appId&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INTEGER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;DEFAULT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;inBrowserElement&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INTEGER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;DEFAULT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TEXT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TEXT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;host&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TEXT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;path&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TEXT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;expiry&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INTEGER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lastAccessed&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INTEGER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;creationTime&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INTEGER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isSecure&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INTEGER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isHttpOnly&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INTEGER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;CONSTRAINT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;moz_uniqueid&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;UNIQUE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;appId&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;inBrowserElement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;sqlite&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;moz_cookies&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;localhost&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;F3MAqpWxIvESiUNLHsflVd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;localhost&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|/|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1489365457&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1489279130600290&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1489279057101857&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;sqlite&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;One last step would be editing our cookies using &lt;a href=&quot;http://www.editthiscookie.com/&quot;&gt;EditThisCookie&lt;/a&gt; extension. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/picoctf/biscuit-edit.png&quot; alt=&quot;EditThisCookie&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;And lastly reload the page. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/picoctf/biscuit-flag.png&quot; alt=&quot;Flag&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;And we have another flag to collect. &lt;/p&gt;
-
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">Biscuit - 75 PTS</summary></entry></feed>
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">Connect The Wiggle - 140 PTS</summary></entry></feed>

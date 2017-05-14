@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Frequency Analysis "
+title:      "Frequency Analysis"
 subtitle:   "Crypto Attack"
 date:       2017-04-24 0:00:00
 author:     "W3ndige"
