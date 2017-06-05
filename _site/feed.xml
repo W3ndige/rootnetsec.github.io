@@ -1,4 +1,58 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-05-14T18:09:10+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">File Permissions</title><link href="http://localhost:4000/linux-cheat-sheet/" rel="alternate" type="text/html" title="File Permissions" /><published>2017-04-24T00:00:00+00:00</published><updated>2017-04-24T00:00:00+00:00</updated><id>http://localhost:4000/linux-cheat-sheet</id><content type="html" xml:base="http://localhost:4000/linux-cheat-sheet/">&lt;p&gt;A little break in the exams, so we have some time to discover another topic - which is file permissions on Linux. Let's fully understand how they work. &lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-06-05T18:17:48+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Nebula 00</title><link href="http://localhost:4000/nebula-0/" rel="alternate" type="text/html" title="Nebula 00" /><published>2017-06-05T00:00:00+00:00</published><updated>2017-06-05T00:00:00+00:00</updated><id>http://localhost:4000/nebula-0</id><content type="html" xml:base="http://localhost:4000/nebula-0/">&lt;h1&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;Finally, exams are over so it's time to get back to security topics. Today I'm going to start documenting journey through Nebula machine from &lt;a href=&quot;https://exploit-exercises.com/&quot;&gt;Exploit Exercises&lt;/a&gt;. &lt;/p&gt;
+
+&lt;pre&gt;
+Nebula covers a variety of simple and intermediate challenges that cover Linux privilege escalation, common scripting language issues, and file system race conditions.
+Nebula is an ideal place to get started for people new to Linux exploitation.
+&lt;/pre&gt;
+
+&lt;p&gt;It would be great to have this quick reminder, so let's try it out! &lt;/p&gt;
+
+&lt;h1&gt;Challenge&lt;/h1&gt;
+
+&lt;p&gt;&lt;b&gt;About&lt;/b&gt;&lt;/p&gt;
+
+&lt;pre&gt;
+This level requires you to find a Set User ID program that will run as the “flag00” account. You could also find this by carefully looking in top level directories in / for suspicious looking directories.
+
+Alternatively, look at the find man page.
+
+To access this level, log in as level00 with the password of level00.
+&lt;/pre&gt;
+
+&lt;p&gt;&lt;b&gt;Solution&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;Common thing in CTFs and other hacking challenges is to find executable file, with suid bit set. Of course we want the faster way so let's use the find command. But firstly, what is suid bit? &lt;/p&gt;
+
+&lt;p&gt;It's an information, that an executable is being run with the permissions of the owner, not the person running it. For example, we have root user that creates a script changing some files and want to share it with other users on the system. By adding the suid bit - it's possible. Now let's find these.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;level00@nebula:~$ &lt;/span&gt;find / -perm /u&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s -user flag00 2&amp;gt;/dev/null
+/bin/.../flag00
+/rofs/bin/.../flag00
+&lt;span class=&quot;gp&quot;&gt;level00@nebula:~$ &lt;/span&gt;ls -l /bin/.../
+total 8
+-rwsr-x--- 1 flag00 level00 7358 2011-11-20 21:22 flag00&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, we've found it! Looking at permissions we know it's an suid. We can also break down the find command to better understand it.  &lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;b&gt;/&lt;/b&gt; - start at the top of directory&lt;/li&gt;
+  &lt;li&gt;&lt;b&gt;-perm /u=s&lt;/b&gt; - find all SUID set files&lt;/li&gt;
+  &lt;li&gt;&lt;b&gt;-user level00&lt;/b&gt; - specify user &lt;/li&gt;
+  &lt;li&gt;&lt;b&gt;2&amp;gt;/dev/null&lt;/b&gt; - show only 2 results&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now we have to run it, and get a flag.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;level00@nebula:~$ &lt;/span&gt;/bin/.../flag00
+Congrats, now run getflag to get your flag!
+&lt;span class=&quot;gp&quot;&gt;flag00@nebula:~$ &lt;/span&gt;getflag
+You have successfully executed getflag on a target account&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Awesome warmup, I'm definitely looking forward to the next ones.&lt;/p&gt;
+
+&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Exploit Exercises" /><summary type="html">Introduction</summary></entry><entry><title type="html">File Permissions</title><link href="http://localhost:4000/linux-file-permissions/" rel="alternate" type="text/html" title="File Permissions" /><published>2017-05-16T00:00:00+00:00</published><updated>2017-05-16T00:00:00+00:00</updated><id>http://localhost:4000/linux-file-permissions</id><content type="html" xml:base="http://localhost:4000/linux-file-permissions/">&lt;p&gt;A little break in the exams, so we have some time to discover another topic - which is file permissions on Linux. Let's fully understand how they work. &lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -848,44 +902,4 @@ Unguessably Randomized Flag: FLAG:5d968c92267e701f5846515f1b31deab&lt;/code&gt;&
 
 &lt;p&gt;Easy 100pts, right? Great challenge! &lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">JSut Duck It Up - 100 PTS</summary></entry><entry><title type="html">PicoCTF - Connect The Wiggle</title><link href="http://localhost:4000/picoctf-connect-the-wiggle/" rel="alternate" type="text/html" title="PicoCTF - Connect The Wiggle" /><published>2017-04-15T00:00:00+00:00</published><updated>2017-04-15T00:00:00+00:00</updated><id>http://localhost:4000/picoctf-connect-the-wiggle</id><content type="html" xml:base="http://localhost:4000/picoctf-connect-the-wiggle/">&lt;h1&gt;Connect The Wiggle - 140 PTS&lt;/h1&gt;
-
-&lt;p&gt;Identify the data contained within wigle and determine how to visualize it.&lt;/p&gt;
-
-&lt;p&gt;This time we get another sqlite file called &lt;b&gt;wigle&lt;/b&gt;.  &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~/Pobrane&amp;gt; file wigle
-wigle: SQLite 3.x database, last written using SQLite version 3008007&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we can open it up, and try to determine, which of the tables in a database should be our target. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;&lt;span class=&quot;n&quot;&gt;sqlite&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sqlite_master&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'table'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;table&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;android_metadata&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;android_metadata&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;android_metadata&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;locale&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;table&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;location&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_id&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bssid&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;level&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lat&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lon&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;altitude&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;accuracy&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;float&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;long&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;table&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;network&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;network&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;network&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bssid&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ssid&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;frequency&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;capabilities&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lasttime&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;long&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lastlat&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lastlon&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Great, location table, with some longitude, and latitude columns. Let's view them. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sql&quot; data-lang=&quot;sql&quot;&gt;&lt;span class=&quot;n&quot;&gt;sqlite&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lon&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;94&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;04&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;99&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;94&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;04&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;98&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;94&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;04&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;98&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;94&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;045&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;98&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;94&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;05&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;97&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;94&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;04&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;96&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;94&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;04&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;96&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;94&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;05&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;96&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;94&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;06&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;94&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;14&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;99&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;94&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;14&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Mysterious list of long coordinates. We can try to plot them using &lt;a href=&quot;https://www.darrinward.com/lat-long/&quot;&gt;Darrinward&lt;/a&gt; website. But firstly, we will have to change all the &lt;b&gt;|&lt;/b&gt; characters into the &lt;b&gt;,&lt;/b&gt;. Then we're ready to plot them on a map.  &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/picoctf/darrinward.png&quot; alt=&quot;Plot&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;After taking a closer look, we can see that the flag is FLAG{F0UND_M3_33DE7930}. &lt;/p&gt;
-
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">Connect The Wiggle - 140 PTS</summary></entry></feed>
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">JSut Duck It Up - 100 PTS</summary></entry></feed>

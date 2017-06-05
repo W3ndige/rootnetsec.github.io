@@ -1,0 +1,70 @@
+---
+layout:     post
+title:      "Nebula 00"
+subtitle:   "Exploit Exercises Write-Up"
+date:       2017-06-05 0:00:00
+author:     "W3ndige"
+header-img: "img/nebula-header.jpg"
+permalink: /:title/
+category: "Exploit Exercises"
+---
+
+<h1>Introduction</h1>
+
+<p>Finally, exams are over so it's time to get back to security topics. Today I'm going to start documenting journey through Nebula machine from <a href="https://exploit-exercises.com/">Exploit Exercises</a>. </p>
+
+<pre>
+Nebula covers a variety of simple and intermediate challenges that cover Linux privilege escalation, common scripting language issues, and file system race conditions.
+Nebula is an ideal place to get started for people new to Linux exploitation.
+</pre>
+
+<p>It would be great to have this quick reminder, so let's try it out! </p>
+
+<h1>Challenge</h1>
+
+<p><b>About</b></p>
+
+<pre>
+This level requires you to find a Set User ID program that will run as the “flag00” account. You could also find this by carefully looking in top level directories in / for suspicious looking directories.
+
+Alternatively, look at the find man page.
+
+To access this level, log in as level00 with the password of level00.
+</pre>
+
+<p><b>Solution</b></p>
+
+<p>Common thing in CTFs and other hacking challenges is to find executable file, with suid bit set. Of course we want the faster way so let's use the find command. But firstly, what is suid bit? </p>
+
+<p>It's an information, that an executable is being run with the permissions of the owner, not the person running it. For example, we have root user that creates a script changing some files and want to share it with other users on the system. By adding the suid bit - it's possible. Now let's find these.  </p>
+
+{% highlight bash %}
+level00@nebula:~$ find / -perm /u=s -user flag00 2>/dev/null
+/bin/.../flag00
+/rofs/bin/.../flag00
+level00@nebula:~$ ls -l /bin/.../
+total 8
+-rwsr-x--- 1 flag00 level00 7358 2011-11-20 21:22 flag00
+{% endhighlight %}
+
+<p>Great, we've found it! Looking at permissions we know it's an suid. We can also break down the find command to better understand it.  </p>
+
+<ul>
+  <li><b>/</b> - start at the top of directory</li>
+  <li><b>-perm /u=s</b> - find all SUID set files</li>
+  <li><b>-user level00</b> - specify user </li>
+  <li><b>2>/dev/null</b> - show only 2 results</li>
+</ul>
+
+<p>Now we have to run it, and get a flag.</p>
+
+{% highlight bash %}
+level00@nebula:~$ /bin/.../flag00
+Congrats, now run getflag to get your flag!
+flag00@nebula:~$ getflag
+You have successfully executed getflag on a target account
+{% endhighlight %}
+
+<p>Awesome warmup, I'm definitely looking forward to the next ones.</p>
+
+<p>~ Stay safe! </p>
