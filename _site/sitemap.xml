@@ -197,8 +197,12 @@
 <lastmod>2017-05-16T00:00:00+00:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/nebula-0/</loc>
+<loc>http://localhost:4000/nebula-00/</loc>
 <lastmod>2017-06-05T00:00:00+00:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/nebula-1/</loc>
+<lastmod>2017-06-07T00:00:00+00:00</lastmod>
 </url>
 <url>
 <loc>http://localhost:4000/about/</loc>
@@ -244,5 +248,8 @@
 </url>
 <url>
 <loc>http://localhost:4000/page10/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/page11/</loc>
 </url>
 </urlset>
