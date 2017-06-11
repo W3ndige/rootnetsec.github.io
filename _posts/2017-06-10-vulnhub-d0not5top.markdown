@@ -305,7 +305,7 @@ GENERATED WORDS: 4612
 
 {% endhighlight %}
 
-<p>Now, as I've tried to look in every diretory possible, I've found that in the <b>/control/js</b> folder was the file called <b>README.MadBro</b></p>
+<p>As I've tried to look in every directory possible, I've found that in the <b>/control/js</b> folder was the file called <b>README.MadBro</b>. What's that?</p>
 
 {% highlight html %}
 
