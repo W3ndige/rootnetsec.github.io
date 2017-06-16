@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="http://jekyllrb.com" version="3.4.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-06-10T18:31:25+00:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Vulnhub.com - D0not5top 1.2</title><link href="http://localhost:4000/vulnhub-d0not5top/" rel="alternate" type="text/html" title="Vulnhub.com - D0not5top 1.2" /><published>2017-06-10T02:00:00+00:00</published><updated>2017-06-10T02:00:00+00:00</updated><id>http://localhost:4000/vulnhub-d0not5top</id><content type="html" xml:base="http://localhost:4000/vulnhub-d0not5top/">&lt;h1&gt;Introduction&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-06-16T20:27:38+02:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Vulnhub.com - D0not5top 1.2</title><link href="http://localhost:4000/vulnhub-d0not5top/" rel="alternate" type="text/html" title="Vulnhub.com - D0not5top 1.2" /><published>2017-06-10T04:00:00+02:00</published><updated>2017-06-10T04:00:00+02:00</updated><id>http://localhost:4000/vulnhub-d0not5top</id><content type="html" xml:base="http://localhost:4000/vulnhub-d0not5top/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;Today we're going to play with another machine from &lt;a href=&quot;&quot;&gt;Vulnhub&lt;/a&gt; called &lt;a href=&quot;https://www.vulnhub.com/entry/d0not5top-12,191/&quot;&gt;D0not5top&lt;/a&gt;. Our aim is to find all 7 flags, and root the box. It seems to be a little harder then the previous ones, but all we want is a good challenge, right? &lt;/p&gt;
 
@@ -277,7 +277,7 @@ GENERATED WORDS: 4612
   &lt;span class=&quot;c&quot;&gt;&amp;lt;!-- M3gusta said he hasn't had time to get this w0rKING.
   Don't think he's quite in the 20n3 these days since his MadBro made that 7r4n5f3r, Just Couldnt H@cxk Da D0Not5topMe.ctf --!&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Now, as I've tried to look in every diretory possible, I've found that in the &lt;b&gt;/control/js&lt;/b&gt; folder was the file called &lt;b&gt;README.MadBro&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;As I've tried to look in every directory possible, I've found that in the &lt;b&gt;/control/js&lt;/b&gt; folder was the file called &lt;b&gt;README.MadBro&lt;/b&gt;. What's that?&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;  ###########################################################
   # MadBro MadBro MadBro MadBro MadBro MadBro MadBro MadBro #
@@ -802,7 +802,7 @@ RUN /aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
 &lt;p&gt;It was really frustrating, long and amazingly fun machine. I really enjoyed solving the challenges, even though they were taking me a lot of time and few headaches. Thanks a lot to &lt;a href=&quot;https://3mrgnc3.ninja/&quot;&gt;&lt;b&gt;3mrgnc3&lt;/b&gt;&lt;/a&gt; for creating this challenge, and to &lt;a href=&quot;https://www.vulnhub.com/&quot;&gt;&lt;b&gt;Vulnhub&lt;/b&gt;&lt;/a&gt;, for hosting it. Hope you had fun reading this, and as always... &lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Vulnhub" /><summary type="html">Introduction</summary></entry><entry><title type="html">Nebula 01</title><link href="http://localhost:4000/nebula-1/" rel="alternate" type="text/html" title="Nebula 01" /><published>2017-06-07T00:00:00+00:00</published><updated>2017-06-07T00:00:00+00:00</updated><id>http://localhost:4000/nebula-1</id><content type="html" xml:base="http://localhost:4000/nebula-1/">&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Vulnhub" /><summary type="html">Introduction</summary></entry><entry><title type="html">Nebula 01</title><link href="http://localhost:4000/nebula-1/" rel="alternate" type="text/html" title="Nebula 01" /><published>2017-06-07T02:00:00+02:00</published><updated>2017-06-07T02:00:00+02:00</updated><id>http://localhost:4000/nebula-1</id><content type="html" xml:base="http://localhost:4000/nebula-1/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;Let's start another challenge from Nebula machine and see what's our target this time. &lt;/p&gt;
 
@@ -866,7 +866,7 @@ You have successfully executed getflag on a target account&lt;/code&gt;&lt;/pre&
 
 &lt;p&gt;Another challenge completed! &lt;/p&gt;
 
-&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Exploit Exercises" /><summary type="html">Introduction</summary></entry><entry><title type="html">Nebula 00</title><link href="http://localhost:4000/nebula-00/" rel="alternate" type="text/html" title="Nebula 00" /><published>2017-06-05T00:00:00+00:00</published><updated>2017-06-05T00:00:00+00:00</updated><id>http://localhost:4000/nebula-00</id><content type="html" xml:base="http://localhost:4000/nebula-00/">&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Exploit Exercises" /><summary type="html">Introduction</summary></entry><entry><title type="html">Nebula 00</title><link href="http://localhost:4000/nebula-00/" rel="alternate" type="text/html" title="Nebula 00" /><published>2017-06-05T02:00:00+02:00</published><updated>2017-06-05T02:00:00+02:00</updated><id>http://localhost:4000/nebula-00</id><content type="html" xml:base="http://localhost:4000/nebula-00/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;Finally, exams are over so it's time to get back to security topics. Today I'm going to start documenting journey through Nebula machine from &lt;a href=&quot;https://exploit-exercises.com/&quot;&gt;Exploit Exercises&lt;/a&gt;. &lt;/p&gt;
 
@@ -920,7 +920,7 @@ You have successfully executed getflag on a target account&lt;/code&gt;&lt;/pre&
 
 &lt;p&gt;Awesome warmup, I'm definitely looking forward to the next ones.&lt;/p&gt;
 
-&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Exploit Exercises" /><summary type="html">Introduction</summary></entry><entry><title type="html">File Permissions</title><link href="http://localhost:4000/linux-file-permissions/" rel="alternate" type="text/html" title="File Permissions" /><published>2017-05-16T00:00:00+00:00</published><updated>2017-05-16T00:00:00+00:00</updated><id>http://localhost:4000/linux-file-permissions</id><content type="html" xml:base="http://localhost:4000/linux-file-permissions/">&lt;p&gt;A little break in the exams, so we have some time to discover another topic - which is file permissions on Linux. Let's fully understand how they work. &lt;/p&gt;
+&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Exploit Exercises" /><summary type="html">Introduction</summary></entry><entry><title type="html">File Permissions</title><link href="http://localhost:4000/linux-file-permissions/" rel="alternate" type="text/html" title="File Permissions" /><published>2017-05-16T02:00:00+02:00</published><updated>2017-05-16T02:00:00+02:00</updated><id>http://localhost:4000/linux-file-permissions</id><content type="html" xml:base="http://localhost:4000/linux-file-permissions/">&lt;p&gt;A little break in the exams, so we have some time to discover another topic - which is file permissions on Linux. Let's fully understand how they work. &lt;/p&gt;
 
 &lt;hr /&gt;
 
@@ -1115,7 +1115,7 @@ w3ndige@W3ndige ~&amp;gt; chgrp GROUP FILE&lt;/code&gt;&lt;/pre&gt;&lt;/figure&g
 
 &lt;p&gt;File permissions are great way to improve security on your system, so it's great to know how they work, and how to apply them. See you in the next one! &lt;/p&gt;
 
-&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Linux" /><summary type="html">A little break in the exams, so we have some time to discover another topic - which is file permissions on Linux. Let's fully understand how they work.</summary></entry><entry><title type="html">Frequency Analysis</title><link href="http://localhost:4000/frequency-analysis-attack/" rel="alternate" type="text/html" title="Frequency Analysis" /><published>2017-04-24T00:00:00+00:00</published><updated>2017-04-24T00:00:00+00:00</updated><id>http://localhost:4000/frequency-analysis-attack</id><content type="html" xml:base="http://localhost:4000/frequency-analysis-attack/">&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Linux" /><summary type="html">A little break in the exams, so we have some time to discover another topic - which is file permissions on Linux. Let's fully understand how they work.</summary></entry><entry><title type="html">Frequency Analysis</title><link href="http://localhost:4000/frequency-analysis-attack/" rel="alternate" type="text/html" title="Frequency Analysis" /><published>2017-04-24T02:00:00+02:00</published><updated>2017-04-24T02:00:00+02:00</updated><id>http://localhost:4000/frequency-analysis-attack</id><content type="html" xml:base="http://localhost:4000/frequency-analysis-attack/">&lt;h1&gt;Introduction&lt;/h1&gt;
 
 &lt;p&gt;&lt;b&gt;Frequency analysis&lt;/b&gt; is the study of the frequency of letters or groups of letters occuring next to each other. The most ancient description for what we know was made by Al-Kindi, dating back to the IXth century. This attack is used to break &lt;b&gt;monoalphabetic ciphers&lt;/b&gt;, which work by simple and fixed substitution of letters. We now, that if the &lt;b&gt;a&lt;/b&gt; in plaintext is encrypted to &lt;b&gt;x&lt;/b&gt; letter, everytime in the ciphertext that &lt;b&gt;x&lt;/b&gt; will convert to &lt;b&gt;a&lt;/b&gt;.  &lt;/p&gt;
 
@@ -1170,7 +1170,7 @@ w3ndige@W3ndige ~&amp;gt; chgrp GROUP FILE&lt;/code&gt;&lt;/pre&gt;&lt;/figure&g
 
 &lt;p&gt;Great, we broke the cipher and got the message! Thanks &lt;a href=&quot;http://www.phrack.org/issues/69/6.html#article&quot;&gt;Phrack&lt;/a&gt;! &lt;/p&gt;
 
-&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Cryptography" /><summary type="html">Introduction</summary></entry><entry><title type="html">PicoCTF - SmallRSA</title><link href="http://localhost:4000/picoctf-smallrsa/" rel="alternate" type="text/html" title="PicoCTF - SmallRSA" /><published>2017-04-19T00:00:00+00:00</published><updated>2017-04-19T00:00:00+00:00</updated><id>http://localhost:4000/picoctf-smallrsa</id><content type="html" xml:base="http://localhost:4000/picoctf-smallrsa/">&lt;h1&gt;SmallRSA - 120 PTS&lt;/h1&gt;
+&lt;p&gt;~ Stay safe! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Cryptography" /><summary type="html">Introduction</summary></entry><entry><title type="html">PicoCTF - SmallRSA</title><link href="http://localhost:4000/picoctf-smallrsa/" rel="alternate" type="text/html" title="PicoCTF - SmallRSA" /><published>2017-04-19T02:00:00+02:00</published><updated>2017-04-19T02:00:00+02:00</updated><id>http://localhost:4000/picoctf-smallrsa</id><content type="html" xml:base="http://localhost:4000/picoctf-smallrsa/">&lt;h1&gt;SmallRSA - 120 PTS&lt;/h1&gt;
 
 &lt;p&gt;You intercepted a single message. However, it appears to be encrypted. Can you decrypt it? Message&lt;/p&gt;
 
@@ -1264,7 +1264,7 @@ Hacked_d &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  32235945868266575508970
 
 &lt;p&gt;Great, we have another flag!&lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">SmallRSA - 120 PTS</summary></entry><entry><title type="html">PicoCTF - ComputeRSA</title><link href="http://localhost:4000/picoctf-computersa/" rel="alternate" type="text/html" title="PicoCTF - ComputeRSA" /><published>2017-04-19T00:00:00+00:00</published><updated>2017-04-19T00:00:00+00:00</updated><id>http://localhost:4000/picoctf-computersa</id><content type="html" xml:base="http://localhost:4000/picoctf-computersa/">&lt;h1&gt;ComputeRSA - 50 PTS&lt;/h1&gt;
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">SmallRSA - 120 PTS</summary></entry><entry><title type="html">PicoCTF - ComputeRSA</title><link href="http://localhost:4000/picoctf-computersa/" rel="alternate" type="text/html" title="PicoCTF - ComputeRSA" /><published>2017-04-19T02:00:00+02:00</published><updated>2017-04-19T02:00:00+02:00</updated><id>http://localhost:4000/picoctf-computersa</id><content type="html" xml:base="http://localhost:4000/picoctf-computersa/">&lt;h1&gt;ComputeRSA - 50 PTS&lt;/h1&gt;
 
 &lt;p&gt;RSA encryption/decryption is based on a formula that anyone can find and use, as long as they know the values to plug in. Given the encrypted number 150815, d = 1941, and N = 435979, what is the decrypted number?&lt;/p&gt;
 
@@ -1286,7 +1286,7 @@ Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt;, &lt;span cl
 
 &lt;p&gt;Easy and fun, right?&lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">ComputeRSA - 50 PTS</summary></entry><entry><title type="html">PicoCTF - Broadcast</title><link href="http://localhost:4000/picoctf-broadcast/" rel="alternate" type="text/html" title="PicoCTF - Broadcast" /><published>2017-04-18T00:00:00+00:00</published><updated>2017-04-18T00:00:00+00:00</updated><id>http://localhost:4000/picoctf-broadcast</id><content type="html" xml:base="http://localhost:4000/picoctf-broadcast/">&lt;h1&gt;Broadcast - 120 PTS&lt;/h1&gt;
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">ComputeRSA - 50 PTS</summary></entry><entry><title type="html">PicoCTF - Broadcast</title><link href="http://localhost:4000/picoctf-broadcast/" rel="alternate" type="text/html" title="PicoCTF - Broadcast" /><published>2017-04-18T02:00:00+02:00</published><updated>2017-04-18T02:00:00+02:00</updated><id>http://localhost:4000/picoctf-broadcast</id><content type="html" xml:base="http://localhost:4000/picoctf-broadcast/">&lt;h1&gt;Broadcast - 120 PTS&lt;/h1&gt;
 
 &lt;p&gt;You stumbled upon a group Message. Can you figure out what they were sending? The string sent is ascii encoded as a hex number (submit the ascii string as the flag)&lt;/p&gt;
 
@@ -1486,7 +1486,7 @@ broadcast_with_small_e_is_killer_40332300191
 
 &lt;p&gt;Amazing crypto challenge, and we have another flag!&lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">Broadcast - 120 PTS</summary></entry><entry><title type="html">PicoCTF - I’ve Got A Secret</title><link href="http://localhost:4000/picoctf-ive-got-a-secret/" rel="alternate" type="text/html" title="PicoCTF - I've Got A Secret" /><published>2017-04-17T00:00:00+00:00</published><updated>2017-04-17T00:00:00+00:00</updated><id>http://localhost:4000/picoctf-ive-got-a-secret</id><content type="html" xml:base="http://localhost:4000/picoctf-ive-got-a-secret/">&lt;h1&gt;I've got a secret - 75 PTS&lt;/h1&gt;
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">Broadcast - 120 PTS</summary></entry><entry><title type="html">PicoCTF - I’ve Got A Secret</title><link href="http://localhost:4000/picoctf-ive-got-a-secret/" rel="alternate" type="text/html" title="PicoCTF - I've Got A Secret" /><published>2017-04-17T02:00:00+02:00</published><updated>2017-04-17T02:00:00+02:00</updated><id>http://localhost:4000/picoctf-ive-got-a-secret</id><content type="html" xml:base="http://localhost:4000/picoctf-ive-got-a-secret/">&lt;h1&gt;I've got a secret - 75 PTS&lt;/h1&gt;
 
 &lt;p&gt;Hopefully you can find the right format for my secret! Source. Connect on shell2017.picoctf.com:10750.&lt;/p&gt;
 
@@ -1575,7 +1575,7 @@ Wow, you got it!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Another one! &lt;/p&gt;
 
-&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">I've got a secret - 75 PTS</summary></entry><entry><title type="html">PicoCTF - A Happy Union</title><link href="http://localhost:4000/picoctf-a-happy-union/" rel="alternate" type="text/html" title="PicoCTF - A Happy Union" /><published>2017-04-16T00:00:00+00:00</published><updated>2017-04-16T00:00:00+00:00</updated><id>http://localhost:4000/picoctf-a-happy-union</id><content type="html" xml:base="http://localhost:4000/picoctf-a-happy-union/">&lt;h1&gt;A Happy Union - 110 PTS&lt;/h1&gt;
+&lt;p&gt;~ Stay safe!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">I've got a secret - 75 PTS</summary></entry><entry><title type="html">PicoCTF - A Happy Union</title><link href="http://localhost:4000/picoctf-a-happy-union/" rel="alternate" type="text/html" title="PicoCTF - A Happy Union" /><published>2017-04-16T02:00:00+02:00</published><updated>2017-04-16T02:00:00+02:00</updated><id>http://localhost:4000/picoctf-a-happy-union</id><content type="html" xml:base="http://localhost:4000/picoctf-a-happy-union/">&lt;h1&gt;A Happy Union - 110 PTS&lt;/h1&gt;
 
 &lt;p&gt;I really need access to website, but I forgot my password and there is no reset. Can you help? I like lite sql :)&lt;/p&gt;
 
