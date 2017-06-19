@@ -67,7 +67,7 @@ https://mindreader.web.ctfcompetition.com/?f=flag
 ?>
 {% endhighlight %}
 
-<p>As we now know the basics, let's try to get some files using this attack and see if it works. First one - <b>/etc/passwd</b>. </p>
+<p>As we now know the basics, let's try to get some files using this attack and see if it works. First one - <b>/etc/passwd</b>. To get this working you have to enter ../../../../etc/passwd path in the input box, click submit and webpage will redirect you to the file. That's how we'll be trying to access this and other resources.  </p>
 
 {% highlight html %}
 https://mindreader.web.ctfcompetition.com/?f=..%2F..%2F..%2F..%2Fetc%2Fpasswd
