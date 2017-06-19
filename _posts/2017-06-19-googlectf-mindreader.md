@@ -2,7 +2,7 @@
 layout:     post
 title:      "GoogleCTF - Mindreader"
 subtitle:   "Write-Ups"
-date:       2017-06-18 8:00:00
+date:       2017-06-19 8:00:00
 author:     "W3ndige"
 header-img: "img/googlectf-header.jpeg"
 permalink: /:title/
