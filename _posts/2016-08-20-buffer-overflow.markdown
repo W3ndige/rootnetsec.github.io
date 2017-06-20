@@ -156,4 +156,3 @@ Segmentation Fault
 
 <p>That's the logic behind basic buffer overflows, as you may know there are more advanced cases like injecting machine code that can provide us with root shell and so on. We will explore this together in the next part of reverse engineering series. </p>
 <p>As always I hope you enjoyed exploring this topic with me and keep tuned for the next part about shellcodes!</p>
-<p>~Stay safe!</p>

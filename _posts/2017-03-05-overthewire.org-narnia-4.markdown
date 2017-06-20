@@ -125,5 +125,3 @@ narnia3@melinda:/tmp/AAAAAAAAAAAAAAAAAAAAAAAAAAW/tmp$ cat /tmp/w3ndige
 
 <h1>Conclusion</h1>
 <p>Once gain thanks <a href="http://overthewire.org/wargames/">OverTheWire</a>! I'm definitely looking forward to new challenges from <b>Narnia</b>, as I'm getting more and more interested in reverse engineering. </p>
-
-<p>~ Stay safe!</p>

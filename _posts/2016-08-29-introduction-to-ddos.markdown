@@ -82,5 +82,3 @@ category: Networking
 [Netflow Incident Detection](https://www.first.org/global/practices/Netflow.pdf "Netflow Incident Detection")<br>
 
 <p>Thanks for exploring this topic with me, I hope you enjoyed and now understand how DDOS attacks work.  As they are getting more and more common it's good to know how they work and how to prevent them from happening. </p>
-
-<p>~ Stay safe!</p>

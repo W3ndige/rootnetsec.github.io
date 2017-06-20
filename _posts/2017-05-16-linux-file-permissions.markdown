@@ -220,5 +220,3 @@ w3ndige@W3ndige ~> chgrp GROUP FILE
 {% endhighlight%}
 
 <p>File permissions are great way to improve security on your system, so it's great to know how they work, and how to apply them. See you in the next one! </p>
-
-<p>~ Stay safe! </p>

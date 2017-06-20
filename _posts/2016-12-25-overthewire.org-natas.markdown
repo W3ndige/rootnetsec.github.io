@@ -286,5 +286,3 @@ dictionary.txt:Allah's
 <p>And that's the point where I had to end this part of Natas exercises. I'll come back soon with another part, as they are really interesting and completely different from others at OverTheWire. </p>
 
 <p>See you in the next one!</p>
-
-<p>~ Stay safe!</p>

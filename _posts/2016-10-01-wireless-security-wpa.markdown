@@ -113,7 +113,4 @@ category: Networking
 <p>Security of the wireless networks also depends on the software handling this work (drivers, libraries etc). Because of the fact that network architecture is getting more and more complicated - code is also getting much more complex which may result in flaws that attacker can use to exploit. </p>
 
 <hr>
-<p>I hope that you gained better understanding of how WPA and WPA2 works. In next part we're going to actually try and attack protected wireless network. Thanks for reading and keep tuned for more! </p>
-
-
-<p>~ Stay safe! </p>
+<p>I hope that you gained better understanding of how WPA and WPA2 works. In next part we're going to actually try and attack protected wireless network.  </p>

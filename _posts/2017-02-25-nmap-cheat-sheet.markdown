@@ -506,6 +506,4 @@ hosts.</p>
 
 <h1>Last words and references</h1>
 
-<p>Firstly, I can recommend this great piece of information <a href="https://nmap.org/book/toc.html">Nmap Network Scanning Digital Version</a>, which covers a lot of topics in this amazing tool. In addition I will keep this cheat sheet as update as possible, with new content coming as soon as I'll learn more, so stay updated! And...</p>
-
-<p>~ Stay safe!</p>
+<p>Firstly, I can recommend this great piece of information <a href="https://nmap.org/book/toc.html">Nmap Network Scanning Digital Version</a>, which covers a lot of topics in this amazing tool. In addition I will keep this cheat sheet as update as possible, with new content coming as soon as I'll learn more, so stay updated! </p>

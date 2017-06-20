@@ -237,5 +237,4 @@ UAHMYjsAtGoQKPk+ChRSxXP79Ub9O96zM8H9VcJaxdicE9H1t8aws7E22U0Ygwo8
 
 <p>And we're ready, that's how the message should look like. Now you're ready to send sensitive information without possibility that someone may read this.</p>
 
-<p>I hope you enjoyed this topic, and it gave you some insight in how Diffie-Hellman works, how to create PGP keys, and how to encrypt messages using PGP. Always send sensitive information over PGP as it gives you certainty that no one will ever read this message. As always remember and... </p>
-<p>~Stay safe!</p>
+<p>I hope you enjoyed this topic, and it gave you some insight in how Diffie-Hellman works, how to create PGP keys, and how to encrypt messages using PGP. Always send sensitive information over PGP as it gives you certainty that no one will ever read this message.  </p>

@@ -134,5 +134,3 @@ $ python3 viegenare.py
 <p>Now we have fully functioning Vigenère cipher tool. I hoped you enjoyed this topic as a part of the <i>Let's talk encryption</i> series. Stay tuned for more updates about encryption as well as other infosec topics. </p>
 <p><b>Part of Encryption Tools Project</B></p>
 [Github](https://github.com/W3ndige/encryption-tools "Github")
-
-<p>~Stay safe!</p>

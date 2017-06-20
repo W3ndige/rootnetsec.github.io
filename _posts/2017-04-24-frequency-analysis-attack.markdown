@@ -63,5 +63,3 @@ category: Cryptography
 <p><i>modern life nearly conspires against the collective. we are tormented by a relentless flow of information as well as the daily worries of an eternally insecure, unwarranted life. furthermore, we dread the thought of being alive, of sharing multiple views and opinions. as such, we are turning progressively judgemental of who we should be partnering with, on the basis that "they do not understand". in hacking, it yet implicates on the delicate subject of trust, which would require an essay on itself, given the undeniable importance the matter has acquired over the years.</i></p>
 
 <p>Great, we broke the cipher and got the message! Thanks <a href="http://www.phrack.org/issues/69/6.html#article">Phrack</a>! </p>
-
-<p>~ Stay safe! </p>

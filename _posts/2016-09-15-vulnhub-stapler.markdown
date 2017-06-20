@@ -572,5 +572,3 @@ b6b545dc11b7a270f4bad23432190c75162c4a2b
 <p>And yes, we've done it! We have the root access! </p>
 
 <p>It was great challenge, thanks <a href="https://www.vulnhub.com/author/g0tmi1k,21/">G0tim1k</a> for creating this boot2root machine. I hope you had as much fun reading this as I had thinking about the ways to gain root access and finish this challenge. Stay in touch for more machines from Vulnhub.com! </p>
-
-<p>~ Stay safe! </p>

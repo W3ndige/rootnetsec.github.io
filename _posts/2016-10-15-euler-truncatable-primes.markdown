@@ -177,5 +177,3 @@ Sum 748317
 
 <hr>
 <p>As a sidenote I would like to apologize for the smaller amount of content - I lack free time as I'm concentrating on programming and mathematics to pass my exams, but don't worry - I'm working on a few netsec connected posts and projects so keep tuned for more!  </p>
-
-<p>~ Stay safe! </p>

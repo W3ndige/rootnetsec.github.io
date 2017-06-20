@@ -151,6 +151,4 @@ add_filter('the_generator', 'wpmudev_remove_version');
 
 <p>Keeping your WordPress based site is very serious task, but following these tips will make it much safer than it was before, which undoubtedly will save you a lot of time in the future. But remember, there is no unhackable thing so always keep backups of your website, as in case of infection you will save more time than creating your site from scratch.  </p>
 
-<p>I hope you learned something, from this article. As always remember and...</p>
-
-<p>~ Stay safe!</p>
+<p>I hope you learned something, from this article. </p>

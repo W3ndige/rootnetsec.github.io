@@ -31,5 +31,3 @@ Type "help", "copyright", "credits" or "license" for more information.
 {% endhighlight %}
 
 <p>Easy and fun, right?</p>
-
-<p>~ Stay safe!</p>

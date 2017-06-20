@@ -12,7 +12,8 @@ layout: default
                     {% if page.subtitle %}
                     <h2 class="subheading">{{ page.subtitle }}</h2>
                     {% endif %}
-                    <span class="meta">Posted by {% if page.author %}{{ page.author }}{% else %}{{ site.title }}{% endif %} on {{ page.date | date: "%B %-d, %Y" }} as <a href='/archive#{{ page.category | downcase | replace: ' ', '-' }}'>{{ page.category }}</a></span>
+                    {% assign words = content | number_of_words %}
+                    <span class="meta">Posted on {{ page.date | date: "%B %-d, %Y" }} as <a href='/archive#{{ page.category | downcase | replace: ' ', '-' }}'>{{ page.category }}</a>. {% include readtime.html %} read.</span>
                 </div>
             </div>
         </div>
@@ -26,7 +27,8 @@ layout: default
             <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1">
 
 				{{ content }}
-
+        <p>Keep learning and stay safe!</p>
+        <p>~ {% if page.author %}{{ page.author }}{% else %}{{ site.title }}{% endif %}</p>
                 <hr>
 
                 <ul class="pager">

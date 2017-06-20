@@ -188,6 +188,3 @@ Plaintext: NOONEWILLEVERREADTHIS
 <p><b>UPDATE!</b></p>
 <p>Check out my newest Caesar tool at Github!</p>
 [Github](https://github.com/W3ndige/encryption-tools "Github")
-
-
-<p>~Stay safe!</p>

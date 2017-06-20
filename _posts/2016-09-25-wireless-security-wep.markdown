@@ -164,5 +164,3 @@ Starting PTW attack with 9651 ivs.
 <p>Notice how easy it was to gain access to the network protected with WEP? That's why you should never protect your network with this standard. </p>
 
 <p>As always thanks for reading, keep tuned for the next part about more advanced algorithms like WPA or WPA2. I also really recommend trying it out by yourself as it's the best way to understand how it works and learning by practicing is the best way to gain knowledge. </p>
-
-<p>~ Stay safe! </p>

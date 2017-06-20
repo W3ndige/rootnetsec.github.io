@@ -228,4 +228,3 @@ $
 <p>And here we go! We’ve got the password!</p>
 
 <p>Thanks for the challenge! Hope you enjoyed solving this problems as much as I had.</p>
-<p>~Stay safe!</p>

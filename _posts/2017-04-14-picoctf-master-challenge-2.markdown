@@ -103,5 +103,3 @@ Zip entry offsets do not need adjusting
 ![Flag](/img/picoctf/master-2-flag.png){:class="img-responsive center-block"}
 
 <p>Now let's write this down and submit the flag. </p>
-
-<p>~ Stay safe!</p>

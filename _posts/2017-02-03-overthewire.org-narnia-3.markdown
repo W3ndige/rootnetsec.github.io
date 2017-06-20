@@ -177,5 +177,3 @@ $ cat /etc/narnia_pass/narnia3
 
 <h1>Conclusion</h1>
 <p>The challenge was awesome, but really time consuming. It was worth every minute as I learned a lot from trying out these different ways to finish this level. Thanks <a href="http://overthewire.org/wargames/">OverTheWire</a>!</p>
-
-<p>~ Stay safe!</p>

@@ -883,5 +883,3 @@ RUN /aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 <h1>Last words</h1>
 
 <p>It was really frustrating, long and amazingly fun machine. I really enjoyed solving the challenges, even though they were taking me a lot of time and few headaches. Thanks a lot to <a href="https://3mrgnc3.ninja/"><b>3mrgnc3</b></a> for creating this challenge, and to <a href="https://www.vulnhub.com/"><b>Vulnhub</b></a>, for hosting it. Hope you had fun reading this, and as always... </p>
-
-<p>~ Stay safe!</p>

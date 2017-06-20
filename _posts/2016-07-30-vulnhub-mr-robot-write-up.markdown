@@ -75,5 +75,3 @@ find / -perm -u=s -type f 2>/dev/null
 <p>And yes, we've got the last key!</p>
 <p>It was great challenge to fulfill my knowledge hungry brain :). Thanks for Jason for creating such a great boot2root machine!</p>
 [Jason](https://www.vulnhub.com/author/jason,292/ "Jason")
-
-<p>~Stay safe!</p>

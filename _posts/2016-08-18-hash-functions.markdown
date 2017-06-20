@@ -107,4 +107,3 @@ $ md5sum message1.bin message2.bin
 <p>Basically because it's irreversible, we know the result but basically there are so many combinations that it's simply impossible to choose the correct one. For example we know that the result is 3 but both 24 mod 7 = 3 and 18 mod 5 = 3 etc. Additionally a lot of from the input is discarded due to the limited size of the hash. It would be impossible to figure out the original data of the function with just the resulting hash – as not much of that data is left. If we could reverse a hash, we would be able to compress data of any size into a few bytes of data!</p>
 <hr>
 <p>I hope that now you understand how hash functions work, what is salt and why hashes are irreversible. Tune more for the comparision between modern hashing algorithms. And remember, always salt your passwords!</p>
-<p>~Stay safe!</p>

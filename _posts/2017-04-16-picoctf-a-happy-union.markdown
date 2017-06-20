@@ -143,5 +143,3 @@ select id, user, post from posts where user = '' OR 1 = 1';
 {% endhighlight %}
 
 <p>Great SQL Injection challenge! </p>
-
-<p>~ Stay safe!</p>

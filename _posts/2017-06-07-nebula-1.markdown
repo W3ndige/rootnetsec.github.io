@@ -84,5 +84,3 @@ You have successfully executed getflag on a target account
 {% endhighlight %}
 
 <p>Another challenge completed! </p>
-
-<p>~ Stay safe! </p>

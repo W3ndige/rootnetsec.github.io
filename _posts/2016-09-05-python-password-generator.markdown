@@ -105,5 +105,3 @@ if __name__ == '__main__':
 [Github](https://github.com/W3ndige/coding-challenges/blob/master/password_generator.py "Github")<br>
 
 <p>I hope you enjoyed exploring the concept behind this small program. Remember that doing a lot of small challenges like that one will help you a lot in learning programming. Good luck with creating your own versions! </p>
-
-<p>~ Stay safe!</p>

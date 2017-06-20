@@ -215,5 +215,3 @@ broadcast_with_small_e_is_killer_40332300191
 {% endhighlight %}
 
 <p>Amazing crypto challenge, and we have another flag!</p>
-
-<p>~ Stay safe!</p>

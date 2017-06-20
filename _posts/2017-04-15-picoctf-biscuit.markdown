@@ -72,6 +72,3 @@ sqlite>
 ![Flag](/img/picoctf/biscuit-flag.png){:class="img-responsive center-block"}
 
 <p>And we have another flag to collect. </p>
-
-
-<p>~ Stay safe!</p>

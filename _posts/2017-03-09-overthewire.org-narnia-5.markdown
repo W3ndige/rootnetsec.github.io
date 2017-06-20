@@ -90,6 +90,3 @@ $ cat /etc/narnia_pass/narnia5
 
 <h1>Conclusion</h1>
 <p>Another big thanks to <a href="http://overthewire.org/wargames/">OverTheWire</a>! I'm looking forward to the next challenges! </p>
-
-
-<p>~ Stay safe!</p>

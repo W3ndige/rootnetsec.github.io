@@ -111,5 +111,3 @@ Type "help", "copyright", "credits" or "license" for more information.
 {% endhighlight %}
 
 <p>Great, we have another flag!</p>
-
-<p>~ Stay safe!</p>

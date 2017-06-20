@@ -45,6 +45,4 @@ category: News
 
 <p>I'm right know in a process of working on a few projects - especially programming oriented but I'm also planning to  take up small research about malware, which I think I'll publish during the summer 2017, so there's definitely more content coming up - keep tuned. </p>
 
-<p>If you came so far down, I wanted to say once again - thank you. And as always - stay safe, keep learning and I'll see you in a few weeks! </p>
-
-<p>~ W3ndige</p>
+<p>If you came so far down, I wanted to say once again - thank you.  </p>

@@ -95,5 +95,3 @@ cat /etc/narnia_pass/narnia1
 <h1>Last words</h1>
 
 <p>As I never tought before, this was a great challenge, and I think I got more interested in binary exploitation and reverse engineering. Can't wait to try out some other challenges, and I'll see you in the next one!</p>
-
-<p>~ Stay safe!</p>

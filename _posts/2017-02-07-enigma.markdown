@@ -82,8 +82,6 @@ category: Cryptography
 
 <p>Enigma, was without doubt machine with great encryption capabilities. This war could have last much longer, or even end completely different, without hard work of great cryptanalytic minds working together on this operation. </p>
 
-<p>~ Stay safe!</p>
-
 <h1>References</h1>
 <p>[1] <a href="https://en.wikipedia.org/wiki/Enigma_machine"><b>Wikipedia</b></a></p>
 <p>[2] Singh Simon (2000) <b>The Code Book: The Science of Secrecy from Ancient Egypt to Quantum Cryptography</b></p>

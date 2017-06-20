@@ -66,5 +66,3 @@ You have successfully executed getflag on a target account
 {% endhighlight %}
 
 <p>Awesome warmup, I'm definitely looking forward to the next ones.</p>
-
-<p>~ Stay safe! </p>

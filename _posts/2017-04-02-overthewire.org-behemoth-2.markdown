@@ -113,5 +113,3 @@ cat /etc/behemoth_pass/behemoth2
 <h1>Conclusion</h1>
 <p>Fun as always, and very educational. Thanks <a href="http://overthewire.org/wargames/">OverTheWire</a>!</p>
 <p>I would also like to point out that if you're thinking about starting journey with CTF challenges <a href="https://picoctf.com/"><b>PicoCTF</b></a> is running now, with a lot of great challenges. Check that out if you're interested!</p>
-
-<p>~ Stay safe! </p>

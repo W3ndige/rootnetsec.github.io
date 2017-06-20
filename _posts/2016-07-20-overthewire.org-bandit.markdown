@@ -741,4 +741,3 @@ bandit25@melinda:~$ ssh -i bandit26.sshkey bandit26@localhost
 
 <p>It was the great challenge, useful for learing some Linux commands, simple socket networking and SETUID binaries.</p>
 <p>Thanks for the Overthewire team for creating this one!</p>
-<p>~Stay safe!</p>

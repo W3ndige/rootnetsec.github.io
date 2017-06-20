@@ -77,5 +77,3 @@ from http://user.xmission.com/~emailbox/ascii_cats.htm
 {% endhighlight %}
 
 <p>Here we have the flag! </p>
-
-<p>~ Stay safe!</p>

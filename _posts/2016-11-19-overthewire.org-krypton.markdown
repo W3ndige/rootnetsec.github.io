@@ -237,5 +237,3 @@ Enjoy.
 <hr>
 
 <p>It was great fun to complete these challenges, Krypton 6 was unfortunately to hard to complete, but I'll definitely come back to it after gaining some more knowledge about cryptography. </p>
-
-<p>~ Stay safe! </p>

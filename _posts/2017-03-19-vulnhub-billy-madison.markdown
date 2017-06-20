@@ -996,5 +996,3 @@ root@BM:~# userdel eric
 <h1>Last words</h1>
 
 <p>It was great fun to participate in this Vulnhub machine. Much thanks to <a href="https://twitter.com/7MinSec"><b>Brian Johnson</b></a> for creating this challenge and to <b>Yodak#2187</b> for bringing up some ideas. I'm looking forward to try more machines and root them all! </p>
-
-<p>Stay safe!</p>

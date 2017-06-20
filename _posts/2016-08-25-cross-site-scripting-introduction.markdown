@@ -124,5 +124,4 @@ http://example.com/welcome.php?user=<script>alert("XSS")</script>
 {% endhighlight %}
 <p>That method will prevent most of the XSS attacks but for the most sophisticated ones it may be helpful to read <a href="https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet">XSS Prevention Sheet</a>. Another helpful thing would be prevention on the client side - like installing NoScript addition. </p>
 
-<p>As always - thanks for reading and exploring this topic with me. Now after better understanding of XSS we can look for vulnerabilities in many different web applications. Good luck and...</p>
-<p>~ Stay safe! </p>
+<p>As always - thanks for reading and exploring this topic with me. Now after better understanding of XSS we can look for vulnerabilities in many different web applications.</p>

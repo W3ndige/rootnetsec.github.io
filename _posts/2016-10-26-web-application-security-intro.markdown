@@ -123,7 +123,3 @@ Strict-Transport-Security: max-age=31536000
 
 <hr>
 <p>I hope that after this read, you gained better understanding of secure headers. In the future I'll write about Content-Security-Policy, but it is material for a whole new post, so keep tuned ;)</p>
-
-<p>Thanks for reading and as always...</p>
-
-<p>~Stay safe! </p>

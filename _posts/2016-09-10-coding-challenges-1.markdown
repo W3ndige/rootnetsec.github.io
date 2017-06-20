@@ -145,5 +145,3 @@ $ python3 prime_10001.py
 [Github](https://github.com/W3ndige/coding-challenges "Github")<br>
 
 <p>And that's the last one. I strongly encourage you to try other tasks as I'm sure that it will significantly improve your programming and mathematical knowledge. As always thanks for reading, it really motivates me to write more about. Good luck! </p>
-
-<p>~ Stay safe!</p>

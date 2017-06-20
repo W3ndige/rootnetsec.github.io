@@ -105,5 +105,3 @@ Wow, you got it!
 {% endhighlight %}
 
 <p>Another one! </p>
-
-<p>~ Stay safe!</p>

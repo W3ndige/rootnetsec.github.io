@@ -265,5 +265,3 @@ Congratulations you found the flag
 <h1>Conclusion</h1>
 
 <p>It was nice little challenge with little dose of surprises. Thanks <a href="https://twitter.com/@ryanoberto"><b>Ryan Oberto</b></a> for creating this great challenge, <a href="https://www.vulnhub.com/"><b>Vulnhub</b></a> for hosting and <b>Yodak#2187</b> for joining!  </p>
-
-<p>~ Stay safe!</p>

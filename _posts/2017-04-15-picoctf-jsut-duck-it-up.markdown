@@ -26,5 +26,3 @@ category: PicoCTF 2017
 ![JSFuck alert](/img/picoctf/jsfuck.png){:class="img-responsive center-block"}
 
 <p>Easy 100pts, right? Great challenge! </p>
-
-<p>~ Stay safe!</p>

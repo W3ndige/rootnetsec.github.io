@@ -71,5 +71,3 @@ Unguessably Randomized Flag: FLAG:5d968c92267e701f5846515f1b31deab
 {% endhighlight %}
 
 <p>Here we go. </p>
-
-<p>~ Stay safe!</p>

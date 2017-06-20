@@ -75,8 +75,3 @@ $ cat /etc/narnia_pass/narnia2
 <h1>Conclusion</h1>
 
 <p>It was another great challenge from <a href="www.overthewire.org">OverTheWire</a>. I'm looking forward to the next one, maybe something a little bit harder? We'll see!</p>
-
-<p><b>UPDATE</b></p>
-<p>To gain better insight into who visits my website, I decided to add Piwik Analytics as a way to both give me essential information, and to repsect your privacy. You can read more at the <a href="/privacy/">Privacy Policy</a>, but if you still have any questions, contact me and I'll try my best to answer. </p>
-
-<p>~ Stay safe!</p>

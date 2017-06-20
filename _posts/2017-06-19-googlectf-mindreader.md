@@ -9,6 +9,7 @@ permalink: /:title/
 category: GoogleCTF 2017
 ---
 
+
 <h1>Introduction</h1>
 <p>GoogleCTF from this year was hard. I couldn't solve most of the challenges, the ones that I made took me a lot of time to finish. But that's why we're here, to learn from a good challenge and from mistakes made during attacks. That's why I'm looking forward to write ups for other challenges and I'm publishing ones for the challenges, that I have finished. Let's start from the one with biggest number of solves - mindreader. </p>
 
@@ -51,7 +52,7 @@ https://mindreader.web.ctfcompetition.com/?f=flag
 
 <p>Can it be a hint? Maybe the code is looking for a file in the server named just as in our input. If that's the case and code is not properly implemented, it can be vulnerable to <b>local file intrusion</b> attack. </p>
 
-<p><b>LFI</b> occurs, when programmer does not correctly sanitaze the page include, which allows an attack to inject directory traversal characters and get system infromation essential to further exploit the server. Here you can see an example of such <b>bad code</b>. </p>
+<p><b>LFI</b> occurs, when programmer does not correctly sanitaze the page include, which allows an attack to inject directory traversal characters and get system information essential to further exploit the server. Here you can see an example of such <b>bad code</b>. </p>
 
 {% highlight php %}
 <?php
@@ -235,5 +236,3 @@ GAE_MEMORY_MB=614HOSTNAME=a2c5f45b98c8GAE_INSTANCE=aef-mindreader--sss6w3uqjfrcn
 {% endhighlight %}
 
 <p>And along with the environ, there's a hidden flag! </p>
-
-<p>~ Stay safe! </p>

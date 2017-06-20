@@ -53,5 +53,3 @@ sqlite> select lat, lon from location;
 ![Plot](/img/picoctf/darrinward.png){:class="img-responsive center-block"}
 
 <p>After taking a closer look, we can see that the flag is FLAG{F0UND_M3_33DE7930}. </p>
-
-<p>~ Stay safe!</p>

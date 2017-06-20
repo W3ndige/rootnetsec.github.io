@@ -154,5 +154,4 @@ http://192.168.0.12/xss/example8.php/"><script>alert("XSS")</script>
 http://192.168.0.12/xss/example9.php#<script>alert("XSs")</script>
 {% endhighlight %}
 
-<p>Thanks for tuning in! It was great challenge, and I'm sure to complete other exercise on Web for Pentester ISO. Hopefully there will be more XSS challenges as I'm really enjoying them. Stay updated for more and remember... </p>
-<p>~ Stay safe!</p>
+<p>Thanks for tuning in! It was great challenge, and I'm sure to complete other exercise on Web for Pentester ISO. Hopefully there will be more XSS challenges as I'm really enjoying them. </p>

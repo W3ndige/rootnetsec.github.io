@@ -145,5 +145,3 @@ $ cat /etc/behemoth_pass/behemoth1
 
 <h1>Conclusion</h1>
 <p>I'm definitely going to continue Behemoth wargame, as from the beginning challenges are really fun and intriguing. Thanks <a href="http://overthewire.org/wargames/">OverTheWire</a>!</p>
-
-<p>~ Stay safe! </p>

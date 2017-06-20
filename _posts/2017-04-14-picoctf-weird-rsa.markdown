@@ -109,5 +109,3 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 
 <p>Thanks <a href="http://stackoverflow.com/questions/9641440/convert-from-ascii-string-encoded-in-hex-to-plain-ascii">Andrew</a> for this snippet. Here's the flag! </p>
-
-<p>~ Stay safe!</p>

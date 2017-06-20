@@ -538,6 +538,4 @@ base64 -d /var/local/.luke|less.real
 <h1>Conclusion</h1>
 
 <p>64Base was an awesome challenge, with lots of tricks, some hard, some easy, but all really entertaining and interesting. Big thanks to <a href="https://3mrgnc3.ninja/2016/12/64base/"><b>3mrgnc3</b></a> for creating this challenge, and <a href="https://www.vulnhub.com"><b>VulnHub</b></a> for hosting it! </p>
-<p>I also hope, that you've enjoyed this write-up, I'll definitely do more of these in the future, so stay updated. And as always... </p>
-
-<p>~ Stay safe! </p>
+<p>I also hope, that you've enjoyed this write-up, I'll definitely do more of these in the future, so stay updated.  </p>
