@@ -347,6 +347,39 @@ form .row:first-child .floating-label-form-group {
   border: 1px solid #0085a1;
   color: white;
 }
+.btn--twitter {
+    color: white;
+    background-color: #55acee;
+}
+.btn--twitter:hover {
+    color: white;
+    background-color: #448abe;
+}
+
+.btn--facebook {
+    color: white;
+    background-color: #3b5998;
+}
+.btn--facebook:hover {
+    color: white;
+    background-color: #2f477a;
+}
+.btn--google-plus {
+    color: white;
+    background-color: #dd4b39;
+}
+.btn--google-plus:hover {
+    color: white;
+    background-color: #b13c2e;
+}
+.btn--reddit {
+    color: white;
+    background-color: #ff5700;
+}
+.btn--reddit:hover {
+    color: white;
+    background-color: #e64e00;
+}
 .pager {
   margin: 20px 0 0;
 }

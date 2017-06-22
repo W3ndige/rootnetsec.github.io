@@ -96,8 +96,6 @@ img.save('flag.png')
 
 <p>Now it's much better, we can finally scan it. </p>
 
-![Flag](/img/gynvael-006/flag.png){:class="img-responsive center-block"}
-
 <p><b>Mirrored QR? Seriously?!</b></p>
 
-<p>Great challenge, I woudl like to thank Gynvael for his amazing streams and this fun task! </p>
+<p>Great challenge, I would like to thank Gynvael for his amazing streams and this fun task! </p>

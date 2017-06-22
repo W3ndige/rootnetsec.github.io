@@ -29,8 +29,22 @@ layout: default
 				{{ content }}
         <p>Keep learning and stay safe!</p>
         <p>~ {% if page.author %}{{ page.author }}{% else %}{{ site.title }}{% endif %}</p>
-                <hr>
 
+                  <!-- Testing new feature -->
+                  <section>
+                    {% if site.data.ui-text[site.locale].share_on_label %}
+                      <h4>{{ site.data.ui-text[site.locale].share_on_label | default: "Share on" }}</h4>
+                    {% endif %}
+
+                    <a href="https://twitter.com/intent/tweet?{% if site.twitter.username %}via={{ site.twitter.username }}&{% endif %}text={{ page.title }} {{ page.url | absolute_url }}" class="btn btn--twitter" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} Twitter"><i class="fa fa-fw fa-twitter" aria-hidden="true"></i><span> Twitter</span></a>
+
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ page.url | absolute_url }}" class="btn btn--facebook" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} Facebook"><i class="fa fa-fw fa-facebook" aria-hidden="true"></i><span> Facebook</span></a>
+
+                    <a href="https://plus.google.com/share?url={{ page.url | absolute_url }}" class="btn btn--google-plus" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} Google Plus"><i class="fa fa-fw fa-google-plus" aria-hidden="true"></i><span> Google+</span></a>
+
+                    <a href="https://www.reddit.com/submit?url={{ page.url | absolute_url }}" class="btn btn--reddit" title="{{ site.data.ui-text[site.locale].share_on_label | default: 'Share on' }} Reddit"><i class="fa fa-fw fa-reddit" aria-hidden="true"></i><span> Reddit</span></a>
+                </section>
+                <hr>
                 <ul class="pager">
                     {% if page.previous.url %}
                     <li class="previous">
@@ -43,29 +57,6 @@ layout: default
                     </li>
                     {% endif %}
                 </ul>
-
-                <br>
-
-                <div id="disqus_thread"></div>
-                <script>
-
-                /**
-                *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-                *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
-                /*
-                var disqus_config = function () {
-                this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
-                this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-                };
-                */
-                (function() { // DON'T EDIT BELOW THIS LINE
-                var d = document, s = d.createElement('script');
-                s.src = 'https://root-network-security.disqus.com/embed.js';
-                s.setAttribute('data-timestamp', +new Date());
-                (d.head || d.body).appendChild(s);
-                })();
-                </script>
-                <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 
             </div>
         </div>
