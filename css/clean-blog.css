@@ -349,35 +349,43 @@ form .row:first-child .floating-label-form-group {
 }
 .btn--twitter {
     color: white;
+    font-size: 13px;
     background-color: #55acee;
 }
 .btn--twitter:hover {
     color: white;
+    font-size: 13px;
     background-color: #448abe;
 }
 
 .btn--facebook {
     color: white;
+    font-size: 13px;
     background-color: #3b5998;
 }
 .btn--facebook:hover {
     color: white;
+    font-size: 13px;
     background-color: #2f477a;
 }
 .btn--google-plus {
     color: white;
+    font-size: 13px;
     background-color: #dd4b39;
 }
 .btn--google-plus:hover {
     color: white;
+    font-size: 13px;
     background-color: #b13c2e;
 }
 .btn--reddit {
     color: white;
+    font-size: 13px;
     background-color: #ff5700;
 }
 .btn--reddit:hover {
     color: white;
+    font-size: 13px;
     background-color: #e64e00;
 }
 .pager {
