@@ -6,7 +6,7 @@ date:       2017-06-22 8:00:00
 author:     "W3ndige"
 header-img: "img/googlectf-header.jpeg"
 permalink: /:title/
-category: Write-Up
+category: Write-Ups
 ---
 
 <h1>Mission</h1>
