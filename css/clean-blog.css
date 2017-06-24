@@ -6,6 +6,7 @@
 
 body {
   font-family: 'Open Sans', sans-serif;
+  font-weight: lighter;
   font-size: 20px;
   color: #404040;
 }
@@ -22,7 +23,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Ubuntu Mono', monospace;
+  font-family: 'Roboto Mono', monospace;
   font-weight: 800;
 }
 a {
@@ -197,7 +198,7 @@ hr.small {
   font-weight: 600;
 }
 .intro-header .post-heading .meta {
-  font-family: 'Cabin', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   font-style: italic;
   font-weight: 300;
   font-size: 20px;
@@ -470,11 +471,8 @@ body {
 }
 
 pre, code {
-  font-family: 'Ubuntu Mono', monospace;
-  background-color: #272822;
   white-space: nowrap;
   overflow-x: auto;
-  color: #f8f8f2;
   white-space: pre-wrap;
   word-break: normal;
   word-wrap: normal;
