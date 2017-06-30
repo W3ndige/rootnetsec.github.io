@@ -92,7 +92,7 @@ img.save('flag.png')
 
 <p>And our flag image looks like QR Code now. Let's open it with Gimp to make it a little bigger. Wait, is it vertically flipped? </p>
 
-![QR Code](/img/gynvael-006/qrcode.png){:class="img-responsive center-block"}
+![QR Code](/img/gynvael-missions/qrcode.png){:class="img-responsive center-block"}
 
 <p>Now it's much better, we can finally scan it. </p>
 
