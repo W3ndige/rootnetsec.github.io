@@ -1,4 +1,61 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-06-30T18:41:29+02:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Gynvael Polish Mission 006</title><link href="http://localhost:4000/gynvael-mission-6-polish/" rel="alternate" type="text/html" title="Gynvael Polish Mission 006" /><published>2017-06-29T10:00:00+02:00</published><updated>2017-06-29T10:00:00+02:00</updated><id>http://localhost:4000/gynvael-mission-6-polish</id><content type="html" xml:base="http://localhost:4000/gynvael-mission-6-polish/">&lt;h1&gt;Mission&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-07-04T19:12:12+02:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Dudek - Polish Cipher Machine</title><link href="http://localhost:4000/tgs-1-dudek/" rel="alternate" type="text/html" title="Dudek - Polish Cipher Machine" /><published>2017-07-03T10:00:00+02:00</published><updated>2017-07-03T10:00:00+02:00</updated><id>http://localhost:4000/tgs-1-dudek</id><content type="html" xml:base="http://localhost:4000/tgs-1-dudek/">&lt;h1&gt;Let's hear the history&lt;/h1&gt;
+
+&lt;p&gt;Everyone should have heard about involvment of Polish cryptographers in breaking Enigma. But there's another great story containing cryptography - &lt;b&gt;DUDEK&lt;/b&gt; cipher machine. &lt;/p&gt;
+
+&lt;p&gt;After World War II, Polish People’s Republic was in need of system protecting undisclosed information. This task was assigned to Cipher Bureau of Ministry of Internal Affairs, so called &lt;b&gt;&quot;A&quot; Bureau&lt;/b&gt;. Many years of conducting research in cryptography and cryptanalysis, development of technologies made it the most specialized unit in whole country. Its history is still not fully revealed, but we know that in 1968 Bureau contained 5 departments and 2 independent sections. &lt;/p&gt;
+
+&lt;p&gt;In 1964, Wielkopolskie Telecommunication Factory T-7 Teletra together with Cipher Bureau planned and developed a new cryptographic device called &lt;b&gt;TgS-1 DUDEK&lt;/b&gt; - acronym for &lt;b&gt;Dalekopisowe Urządzenie Do Elektronicznego Kodowania&lt;/b&gt; (Teleprinter Device for Electronic Coding). &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/dudek-crypto/teletra.jpg&quot; alt=&quot;Teletra Factory&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt; Wielkopolskie Telecommunication Factory T-7 Teletra&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt;For encryption and decryption, it used Vernam Cipher, developed in 1918 by &lt;b&gt;Gilbert Sandford Vernam&lt;/b&gt;, and also known as One-Time Tape (OTT). In order to use OTT, you need 2 copies of the key (also known as pad), which have to be truely random data at least as long as the message. One copy of the key is kept by a user, second one has to be shared via secure channel, like meeting face to face. Then, to encrypt our data, we take corresponding characters of the message and pad, XOR them giving the first letter of the ciphertext and move on to the next characters. Recipient, after receaving the message has to reverse this operation - XOR each letter of ciphertext with each letter of the pad. Once used, pads must be completely destroyed to keep the security of the cipher. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/dudek-crypto/dudek-machine.jpg&quot; alt=&quot;Dudek Machine&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;TgS-1 DUDEK&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt;The pad must be composed of truly random data, it must never be used more than once and it must be kept secure. If it's used correctly one-time pad is truely unbreakable system. But what happens when the key is used more than once?&lt;/p&gt;
+
+&lt;p&gt;Soviet intelligence encrypted their communications with their agents in Britain using one-time pad. Cryptanalysists from &lt;b&gt;project Verona&lt;/b&gt;, which was a counterintelligence program initiated by the United States Army's Signal Intelligence Service, revealed that some of the one-time pad material had been incorrectly reused by the Soviets. In result, over a period of years, various secret communications were compromised. &lt;/p&gt;
+
+&lt;p&gt;Altough we may think that nowadays it's easy to compute random numbers, it's actually still very hard task. Current pseudo-random generators rely on the state of the machine, input-output or even network state. As a result, in practice most personal computerss are not able to produce true randomness. That's where &lt;b&gt;True Random Numbers Generators&lt;/b&gt; come in. It's a device that works on generating random numbers using physical processes such as thermal noise, quantum optics or photoelectric effects. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/dudek-crypto/trng.jpg&quot; alt=&quot;TRNG&quot; width=&quot;50%&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;Example of TRNG&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt;As we now know how Vernam Cipher works, let's come back to DUDEK. It was part of the teleprinter machine, suitable of encrypting and decrypting telegraphic character. Data could be entered manually, or using built in scanner, and it was sent with speed of 50 to 75 bits per second. Whole machine weighted 35kg with dimensions of 540x260x400mm in first version, or lighter 32kg mobile version TgS-1M with dimensions of 500x250x390mm. &lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;TgS-1 - basic version known in DDR as T-352&lt;/li&gt;
+  &lt;li&gt;TgS-1M - mobile version known in DDR as T-353&lt;/li&gt;
+  &lt;li&gt;TgS-1MS - mobile version&lt;/li&gt;
+  &lt;li&gt;TgS-3 - newer version introduced in 1980 which used TTL logic&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/dudek-crypto/dudek-controls.png&quot; alt=&quot;Dudek Controls&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;Dudek Controls&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/dudek-crypto/dudek-interior.jpg&quot; alt=&quot;Dudek Interior&quot; width=&quot;50%&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;Interior of Dudek machine&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt;As opposed to other devices in the sixites, DUDEK was built using magnetic core logic building blocks of the so-called UNILOG-30 family. By using a toriod cores with several windings, it was possible to create the basic logic gates, such as AND, OR, XOR and Inverter circuits. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/dudek-crypto/dudek-plans.jpg&quot; alt=&quot;Dudek Circuit&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+&lt;p class=&quot;text-center&quot;&gt;&lt;small&gt;Circuit of TgS-1 DUDEK&lt;/small&gt;&lt;/p&gt;
+
+&lt;p&gt;Because of it's top secret cleareance, DUDEK was used almost in every special forces of the Ministry of Internal Affairs, Ministry of Foreign Affairs, Ministry of Defence, police and the National Bank of Poland. It is known that in 1986 there were already 1070 of such devices, and it was produced up until 2000, when the last units were pulled back from the police stations. &lt;/p&gt;
+
+&lt;p&gt;These machines were very longevous, as they were expected to work at least 20 years. The last DUDEK was retired from a police station in 2011, while many machines still work in the museums. Unfortunately this project has to be closed, as research teams were shut, Teletra was sold to Alcatel and went bankrupt. At the same time computers and internet started to appear in Poland leading to the final decline. &lt;/p&gt;
+
+&lt;h1&gt;Last Words&lt;/h1&gt;
+
+&lt;p&gt;For me it's always amazing to hear such stories, especially stories that aren't widely heard even in the country of origin. That's why I wanted to write about this topic, holding together huge number of 5 references and somehow glue them together. But as always I hope you enjoyed and learned something new! &lt;/p&gt;
+
+&lt;h1&gt;References&lt;/h1&gt;
+&lt;p&gt;[1] &lt;a href=&quot;https://en.wikipedia.org/wiki/DUDEK&quot;&gt;&lt;b&gt;Wikipedia&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[2] &lt;a href=&quot;http://www.cyberdefence24.pl/398532,urzadzenie-szyfrujace-dudek-polska-enigma&quot;&gt;&lt;b&gt;Cyberdefence24 (PL)&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[3] &lt;a href=&quot;http://www.cryptomuseum.com/crypto/pl/dudek/index.htm&quot;&gt;&lt;b&gt;CryptoMuseum&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[4] &lt;a href=&quot;http://www.cs.miami.edu/home/burt/learning/Csc609.051/notes/02.html&quot;&gt;&lt;b&gt;CSMiami&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Cryptography" /><summary type="html">Let's hear the history</summary></entry><entry><title type="html">Gynvael Polish Mission 006</title><link href="http://localhost:4000/gynvael-mission-6-polish/" rel="alternate" type="text/html" title="Gynvael Polish Mission 006" /><published>2017-06-29T10:00:00+02:00</published><updated>2017-06-29T10:00:00+02:00</updated><id>http://localhost:4000/gynvael-mission-6-polish</id><content type="html" xml:base="http://localhost:4000/gynvael-mission-6-polish/">&lt;h1&gt;Mission&lt;/h1&gt;
 
 &lt;p&gt;Another challenge from Gynvael's polish &lt;a href=&quot;https://www.youtube.com/watch?v=w-7vLvTKJbI&quot;&gt;stream&lt;/a&gt;. Let's see what we've got today.&lt;/p&gt;
 
@@ -1590,24 +1647,4 @@ Hacked_d &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  32235945868266575508970
 &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])])&lt;/span&gt;
 &lt;span class=&quot;s&quot;&gt;'flag{Are_any_RSA_vals_good_15878570577}'&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Great, we have another flag!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">SmallRSA - 120 PTS</summary></entry><entry><title type="html">PicoCTF - ComputeRSA</title><link href="http://localhost:4000/picoctf-computersa/" rel="alternate" type="text/html" title="PicoCTF - ComputeRSA" /><published>2017-04-19T02:00:00+02:00</published><updated>2017-04-19T02:00:00+02:00</updated><id>http://localhost:4000/picoctf-computersa</id><content type="html" xml:base="http://localhost:4000/picoctf-computersa/">&lt;h1&gt;ComputeRSA - 50 PTS&lt;/h1&gt;
-
-&lt;p&gt;RSA encryption/decryption is based on a formula that anyone can find and use, as long as they know the values to plug in. Given the encrypted number 150815, d = 1941, and N = 435979, what is the decrypted number?&lt;/p&gt;
-
-&lt;p&gt;In order to decrypt the message we have to take a look at this equation, as shown in &lt;a href=&quot;https://en.wikipedia.org/wiki/RSA_(cryptosystem)&quot;&gt;Wikipedia&lt;/a&gt; entry. &lt;/p&gt;
-
-&lt;p&gt;&lt;b&gt;m = c^d % n&lt;/b&gt;&lt;/p&gt;
-
-&lt;p&gt;So it's just a matter of computing this &lt;b&gt;m&lt;/b&gt; number, as everything is provided in the challenge. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~&amp;gt; python
-Python 3.6.0 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;default, Jan 16 2017, 12:12:55&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;GCC 6.3.1 20170109] on linux
-Type &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&quot;copyright&quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&quot;credits&quot;&lt;/span&gt; or &lt;span class=&quot;s2&quot;&gt;&quot;license&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;more information.
-&lt;span class=&quot;gp&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;c &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 150815
-&lt;span class=&quot;gp&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;d &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1941
-&lt;span class=&quot;gp&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;n &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 435979
-&lt;span class=&quot;gp&quot;&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;pow&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;c, d, n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-133337&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Easy and fun, right?&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">ComputeRSA - 50 PTS</summary></entry></feed>
+&lt;p&gt;Great, we have another flag!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">SmallRSA - 120 PTS</summary></entry></feed>

@@ -221,6 +221,10 @@
 <lastmod>2017-06-29T10:00:00+02:00</lastmod>
 </url>
 <url>
+<loc>http://localhost:4000/tgs-1-dudek/</loc>
+<lastmod>2017-07-03T10:00:00+02:00</lastmod>
+</url>
+<url>
 <loc>http://localhost:4000/about/</loc>
 </url>
 <url>
@@ -267,5 +271,8 @@
 </url>
 <url>
 <loc>http://localhost:4000/page11/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/page12/</loc>
 </url>
 </urlset>
