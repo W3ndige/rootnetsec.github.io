@@ -26,7 +26,7 @@ I themed this machine to make it feel a bit more realistic. You are breaking int
 
 <h1>Challenge</h1>
 
-<p>As always, we're going to start from finding an IP address of the machine using Nmap. </p>
+<p>As always, we're going to start from finding an IP address of the machine using nmap. </p>
 
 
 {% highlight bash %}
@@ -109,7 +109,7 @@ ircd:x:1003:1003:,,,:/home/ircd:/bin/bash<!--This is what we call 'dis-informati
 ?-->
 {% endhighlight %}
 
-<p>Great, we have the <b>/etc/passwd</b> file. But after trying to grab <b>/etc/shadow</b>, website presented us this with this nice info and connection was dropped. </p>
+<p>Great, we have the <b>/etc/passwd</b> file. But after trying to grab <b>/etc/shadow</b>, website presented us with this nice info and connection was dropped. </p>
 
 {% highlight html %}
 
@@ -120,7 +120,7 @@ view-source:http://192.168.56.101/?page=../../../etc/shadow
 
 {% endhighlight %}
 
-<p>Doing the Nmap scan showed us that the port 80 is no longer there. </p>
+<p>Doing the nmap scan showed us that the port 80 is no longer there. </p>
 
 {% highlight bash %}
 root@kali:~# nmap 192.168.56.101
@@ -373,7 +373,7 @@ www-data@ubuntu:/$ sudo iptables -F
 sudo iptables -F
 {% endhighlight %}
 
-<p>Now, let's check that by running another Nmap scan. </p>
+<p>Now, let's check that by running another nmap scan. </p>
 
 {% highlight bash %}
 root@kali:~# nmap 192.168.56.101
