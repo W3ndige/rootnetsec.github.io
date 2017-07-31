@@ -445,7 +445,7 @@ cat .htpasswd
 rene:$apr1$wfYjXf4U$0ZZ.qhGGrtkOxvKr5WFqX/
 {% endhighlight %}
 
-<p>As it wasn't essential, I decided to find it as tthey may sometimes hold valuable information. But after looking at <b>/etc/passwd</b> I noticed account using the same name <b>rene</b>. Let's check <strike>her</strike>  <a href="https://en.wikipedia.org/wiki/Ren%C3%A9">his</a> home directory. </p>
+<p>As it wasn't essential, I decided to find it as they may sometimes hold valuable information. But after looking at <b>/etc/passwd</b> I noticed account using the same name <b>rene</b>. Let's check <strike>her</strike>  <a href="https://en.wikipedia.org/wiki/Ren%C3%A9">his</a> home directory. </p>
 
 {% highlight text %}
 cat /etc/passwd
