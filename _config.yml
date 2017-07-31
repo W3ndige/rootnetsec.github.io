@@ -19,4 +19,4 @@ permalink: pretty
 paginate: 5
 exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
 include: ["_pages"]
-gems: [jekyll-paginate, jekyll-feed, rouge, jekyll-sitemap]
+plugins: [jekyll-paginate, jekyll-feed, rouge, jekyll-sitemap]

@@ -89,7 +89,7 @@
 <lastmod>2016-12-14T01:00:00+01:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/overthewire.org-natas/</loc>
+<loc>http://localhost:4000/overthewire.org-natas-1-10/</loc>
 <lastmod>2016-12-25T01:00:00+01:00</lastmod>
 </url>
 <url>
@@ -227,6 +227,10 @@
 <url>
 <loc>http://localhost:4000/vulnhub-wallabys-nightmare/</loc>
 <lastmod>2017-07-16T10:00:00+02:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/vulnhub-pipe/</loc>
+<lastmod>2017-07-31T10:00:00+02:00</lastmod>
 </url>
 <url>
 <loc>http://localhost:4000/about/</loc>
