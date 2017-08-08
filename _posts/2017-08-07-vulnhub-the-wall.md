@@ -759,7 +759,7 @@ $ whoami
 NickMason
 {% endhighlight %}
 
-<p>Correct answered, and we're logged into another account on the machine. Let's take a look at the directories. </p>
+<p>Correct answer, and we're logged into another account on the machine. Let's take a look at the directories. </p>
 
 {% highlight bash %}
 $ cd /home/NickMason
@@ -826,7 +826,7 @@ $ whoami
 RichardWright
 {% endhighlight %}
 
-<p>Quick check showed that now we're able torun previously restricted binary! </p>
+<p>Quick check showed that now we're able to run previously restricted binary! </p>
 
 {% highlight bash %}
 $ /usr/local/bin/shineon
