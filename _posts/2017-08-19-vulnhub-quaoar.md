@@ -378,7 +378,7 @@ define('DB_PASSWORD', 'rootpassword!');
 
 {% endhighlight %}
 
-<p>Wil it work? </p>
+<p>Will it work? </p>
 
 {% highlight bash %}
 www-data@Quaoar:/var/www/wordpress$ su root
