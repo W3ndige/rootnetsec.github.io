@@ -25,7 +25,6 @@ You challenge is simple... set your controls for the heart of the sun, get root,
 
 <h1>Write-Up</h1>
 
-<p></p>
 <p>Attacker: <b>Kali Linux 192.168.56.102</b></p>
 <p>Victim: <b>The Wall 192.168.56.103</b></p>
 
