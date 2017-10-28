@@ -4,7 +4,6 @@ title:      "Nebula 01"
 subtitle:   "Exploit Exercises Write-Up"
 date:       2017-06-07 0:00:00
 author:     "W3ndige"
-header-img: "img/nebula-header.jpg"
 permalink: /:title/
 category: "Exploit Exercises"
 ---

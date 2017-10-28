@@ -4,7 +4,6 @@ title:      "File Permissions"
 subtitle:   "Quick walkthrough"
 date:       2017-05-16 0:00:00
 author:     "W3ndige"
-header-img: "img/file-permission-header.jpeg"
 permalink: /:title/
 category: "Linux"
 ---

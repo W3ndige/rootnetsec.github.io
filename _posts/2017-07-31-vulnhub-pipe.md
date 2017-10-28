@@ -4,7 +4,6 @@ title:      "Vulnhub.com - /dev/random Pipe"
 subtitle:   "Write-Up"
 date:       2017-07-31 8:00:00
 author:     "W3ndige"
-header-img: "img/pipe-header.jpeg"
 permalink: /:title/
 category: Vulnhub
 ---

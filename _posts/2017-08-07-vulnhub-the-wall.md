@@ -4,12 +4,10 @@ title:      "Vulnhub.com - The Wall"
 subtitle:   "Write-Up"
 date:       2017-08-07 8:00:00
 author:     "W3ndige"
-header-img: "img/the-wall-header.jpg"
 permalink: /:title/
 category: Vulnhub
 ---
 
-<h1>Introduction</h1>
 <p>Hello everyone, today we're going to go through another machine from <a href="https://www.vulnhub.com/"><b>Vulnhub</b></a> called <b>The Wall</b>. Let's take a look at the description.  </p>
 
 {% highlight text %}

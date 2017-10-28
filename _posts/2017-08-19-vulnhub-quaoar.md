@@ -4,12 +4,10 @@ title:      "Vulnhub.com - Quaoar"
 subtitle:   "Write-Up"
 date:       2017-08-19 8:00:00
 author:     "W3ndige"
-header-img: "img/quaoar-header.jpeg"
 permalink: /:title/
 category: Vulnhub
 ---
 
-<h1>Introduction</h1>
 <p>Hello everyone, another week, another challenge from <a href="https://www.vulnhub.com/"><b>Vulnhub</b></a>. This time we're going to work on a short machine called <b>Quaoar</b>. </p>
 
 {% highlight text %}

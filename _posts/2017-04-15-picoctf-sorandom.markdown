@@ -4,7 +4,6 @@ title:      "PicoCTF - SoRandom"
 subtitle:   "Write-Ups"
 date:       2017-04-15 0:00:00
 author:     "W3ndige"
-header-img: "img/picoctf-header.jpg"
 permalink: /:title/
 category: PicoCTF 2017
 ---

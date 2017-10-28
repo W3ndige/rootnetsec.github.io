@@ -4,7 +4,6 @@ title:      "Vulnhub.com - D0not5top 1.2"
 subtitle:   "Write-Up"
 date:       2017-06-10 2:00:00
 author:     "W3ndige"
-header-img: "img/d0not5top-header.jpg"
 permalink: /:title/
 category: Vulnhub
 ---
