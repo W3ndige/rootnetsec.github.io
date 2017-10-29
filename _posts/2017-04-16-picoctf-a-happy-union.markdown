@@ -7,7 +7,6 @@ author:     "W3ndige"
 permalink: /:title/
 category: PicoCTF 2017
 ---
-<h1>A Happy Union - 110 PTS</h1>
 
 <p>I really need access to website, but I forgot my password and there is no reset. Can you help? I like lite sql :)</p>
 

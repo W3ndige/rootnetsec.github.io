@@ -8,7 +8,6 @@ permalink: /:title/
 category: "Exploit Exercises"
 ---
 
-<h1>Introduction</h1>
 
 <p>Finally, exams are over so it's time to get back to security topics. Today I'm going to start documenting journey through Nebula machine from <a href="https://exploit-exercises.com/">Exploit Exercises</a>. </p>
 

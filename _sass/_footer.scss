@@ -26,4 +26,11 @@ footer {
   font-weight: $footer-font-weight;
   padding: $footer-padding;
   text-align: center;
+
+  .dark-theme & {
+    background-color: $dark;
+    border-top: $dark;
+    color: $light;
+
+  }
 }

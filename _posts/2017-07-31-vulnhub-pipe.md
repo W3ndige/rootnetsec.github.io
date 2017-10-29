@@ -8,7 +8,6 @@ permalink: /:title/
 category: Vulnhub
 ---
 
-<h1>Introduction</h1>
 <p>Hello everyone, let's work on another machine from <a href="https://www.vulnhub.com/"><b>Vulnhub</b></a> called <b>Pipe</b>. Let's see how difficult it is! </p>
 
 <p>Author: <a href="https://www.vulnhub.com/author/sagi-,36/"><b>Sagi</b></a></p>

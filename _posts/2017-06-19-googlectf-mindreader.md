@@ -8,8 +8,6 @@ permalink: /:title/
 category: GoogleCTF 2017
 ---
 
-
-<h1>Introduction</h1>
 <p>GoogleCTF from this year was hard. I couldn't solve most of the challenges, the ones that I made took me a lot of time to finish. But that's why we're here, to learn from a good challenge and from mistakes made during attacks. That's why I'm looking forward to write ups for other challenges and I'm publishing ones for the challenges, that I have finished. Let's start from the one with biggest number of solves - mindreader. </p>
 
 {% highlight text %}

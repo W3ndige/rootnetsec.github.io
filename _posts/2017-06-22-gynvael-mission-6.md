@@ -8,8 +8,6 @@ permalink: /:title/
 category: Write-Ups
 ---
 
-<h1>Mission</h1>
-
 <p>Challenge from Gynvael's <a href="https://www.youtube.com/watch?v=KvyBn4Btv8E">stream</a>. Let's take a look at it. </p>
 <pre>
 Welcome back agent 1336.

@@ -19,6 +19,9 @@ pre {
   overflow-x: scroll;
   margin-bottom: 0.88em;
   background-color: $pre-background-color;
+  .dark-theme & {
+    color: $dark;
+  }
 }
 
 .highlight .p {

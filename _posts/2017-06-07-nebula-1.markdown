@@ -8,8 +8,6 @@ permalink: /:title/
 category: "Exploit Exercises"
 ---
 
-<h1>Introduction</h1>
-
 <p>Let's start another challenge from Nebula machine and see what's our target this time. </p>
 
 <h1>Challenge</h1>

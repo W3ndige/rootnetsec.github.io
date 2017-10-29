@@ -7,7 +7,6 @@ author:     "W3ndige"
 permalink: /:title/
 category: PicoCTF 2017
 ---
-<h1>WeirdRSA - 90 PTS</h1>
 
 <p>We recovered some data. It was labeled as RSA, but what in the world are "dq" and "dp"? Can you decrypt the ciphertext for us? </p>
 

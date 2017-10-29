@@ -4,10 +4,13 @@
 }
 
 .site-header a {
-  color: #333;
+  color: $dark;
   font-size: $h3;
   font-weight: 300;
   background-image: none;
+  .dark-theme & {
+    color: $light;
+  }
 }
 
 .site-header .site-title {

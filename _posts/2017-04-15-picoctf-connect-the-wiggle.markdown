@@ -7,7 +7,6 @@ author:     "W3ndige"
 permalink: /:title/
 category: PicoCTF 2017
 ---
-<h1>Connect The Wiggle - 140 PTS</h1>
 
 <p>Identify the data contained within wigle and determine how to visualize it.</p>
 

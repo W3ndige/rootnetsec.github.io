@@ -8,8 +8,6 @@ permalink: /:title/
 category: Write-Ups
 ---
 
-<h1>Mission</h1>
-
 <p>Another challenge from Gynvael's polish <a href="https://www.youtube.com/watch?v=w-7vLvTKJbI">stream</a>. Let's see what we've got today.</p>
 
 <pre>

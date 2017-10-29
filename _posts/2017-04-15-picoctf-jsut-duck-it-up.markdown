@@ -7,7 +7,6 @@ author:     "W3ndige"
 permalink: /:title/
 category: PicoCTF 2017
 ---
-<h1>JSut Duck It Up - 100 PTS</h1>
 
 <p>What in the world could this be?!?!</p>
 

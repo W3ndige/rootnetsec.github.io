@@ -7,7 +7,6 @@ author:     "W3ndige"
 permalink: /:title/
 category: PicoCTF 2017
 ---
-<h1>Leaked Hashes - 90 PTS</h1>
 
 <p>Someone got hacked! Check out some service's password hashes that were leaked at hashdump.txt! Do you think they chose strong passwords? We should check... The service is running at shell2017.picoctf.com:61096!</p>
 

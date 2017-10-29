@@ -13,9 +13,17 @@ MIT License http://opensource.org/licenses/MIT
 
 */
 
+$dark: #333;
+$light: #fff;
+
 html, body {
   height: auto;
   min-height: 100%;
+  background: $light;
+  &.dark-theme {
+    background-color: $dark;
+    color: $light;
+  }
 }
 
 img {

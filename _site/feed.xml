@@ -1502,8 +1502,7 @@ drwxr-xr-x   2 root  wheel   512 Oct 27  2015 tmp
     
       <item>
         <title>Vulnhub.com - /dev/random Pipe</title>
-        <description>&lt;h1&gt;Introduction&lt;/h1&gt;
-&lt;p&gt;Hello everyone, let's work on another machine from &lt;a href=&quot;https://www.vulnhub.com/&quot;&gt;&lt;b&gt;Vulnhub&lt;/b&gt;&lt;/a&gt; called &lt;b&gt;Pipe&lt;/b&gt;. Let's see how difficult it is! &lt;/p&gt;
+        <description>&lt;p&gt;Hello everyone, let's work on another machine from &lt;a href=&quot;https://www.vulnhub.com/&quot;&gt;&lt;b&gt;Vulnhub&lt;/b&gt;&lt;/a&gt; called &lt;b&gt;Pipe&lt;/b&gt;. Let's see how difficult it is! &lt;/p&gt;
 
 &lt;p&gt;Author: &lt;a href=&quot;https://www.vulnhub.com/author/sagi-,36/&quot;&gt;&lt;b&gt;Sagi&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Download: &lt;a href=&quot;https://www.vulnhub.com/entry/devrandom-pipe,124/&quot;&gt;&lt;b&gt;/dev/random/ Pipe&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;
@@ -2122,8 +2121,7 @@ Here&lt;span class=&quot;s1&quot;&gt;'s your flag: 0089cd4f9ae79402cdd4e7b893189
     
       <item>
         <title>Vulnhub.com - Wallaby's: Nightmare</title>
-        <description>&lt;h1&gt;Introduction&lt;/h1&gt;
-&lt;p&gt;Today we're going to play with another machine called &lt;b&gt;Wallaby's: Nightmare&lt;/b&gt;. Here's the description: &lt;/p&gt;
+        <description>&lt;p&gt;Today we're going to play with another machine called &lt;b&gt;Wallaby's: Nightmare&lt;/b&gt;. Here's the description: &lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;This is my first CTF/Vulnerable VM ever. I created it both for educational purposes and so people can have a little fun testing their skills in a legal, pentest lab environment.
 
@@ -2585,9 +2583,7 @@ Thanks guys!
     
       <item>
         <title>Dudek - Polish Cipher Machine</title>
-        <description>&lt;h1&gt;Let's hear the history&lt;/h1&gt;
-
-&lt;p&gt;Everyone should have heard about involvment of Polish cryptographers in breaking Enigma. But there's another great story containing cryptography - &lt;b&gt;DUDEK&lt;/b&gt; cipher machine. &lt;/p&gt;
+        <description>&lt;p&gt;Everyone should have heard about involvment of Polish cryptographers in breaking Enigma. But there's another great story containing cryptography - &lt;b&gt;DUDEK&lt;/b&gt; cipher machine. &lt;/p&gt;
 
 &lt;p&gt;After World War II, Polish People’s Republic was in need of system protecting undisclosed information. This task was assigned to Cipher Bureau of Ministry of Internal Affairs, so called &lt;b&gt;&quot;A&quot; Bureau&lt;/b&gt;. Many years of conducting research in cryptography and cryptanalysis, development of technologies made it the most specialized unit in whole country. Its history is still not fully revealed, but we know that in 1968 Bureau contained 5 departments and 2 independent sections. &lt;/p&gt;
 
@@ -2651,9 +2647,7 @@ Thanks guys!
     
       <item>
         <title>Gynvael Polish Mission 006</title>
-        <description>&lt;h1&gt;Mission&lt;/h1&gt;
-
-&lt;p&gt;Another challenge from Gynvael's polish &lt;a href=&quot;https://www.youtube.com/watch?v=w-7vLvTKJbI&quot;&gt;stream&lt;/a&gt;. Let's see what we've got today.&lt;/p&gt;
+        <description>&lt;p&gt;Another challenge from Gynvael's polish &lt;a href=&quot;https://www.youtube.com/watch?v=w-7vLvTKJbI&quot;&gt;stream&lt;/a&gt;. Let's see what we've got today.&lt;/p&gt;
 
 &lt;pre&gt;
 Mission 006            goo.gl/te47XT                  DIFFICULTY: ███░░░░░░░ [3/10]
@@ -2709,9 +2703,7 @@ IBM's Extended Binary Coded Decimal Interchange Code (usually abbreviated as EBC
     
       <item>
         <title>Gynvael Mission 006</title>
-        <description>&lt;h1&gt;Mission&lt;/h1&gt;
-
-&lt;p&gt;Challenge from Gynvael's &lt;a href=&quot;https://www.youtube.com/watch?v=KvyBn4Btv8E&quot;&gt;stream&lt;/a&gt;. Let's take a look at it. &lt;/p&gt;
+        <description>&lt;p&gt;Challenge from Gynvael's &lt;a href=&quot;https://www.youtube.com/watch?v=KvyBn4Btv8E&quot;&gt;stream&lt;/a&gt;. Let's take a look at it. &lt;/p&gt;
 &lt;pre&gt;
 Welcome back agent 1336.
 No mail.
@@ -2803,8 +2795,7 @@ P.S. I'll show/explain the solution on the stream next week.
     
       <item>
         <title>GoogleCTF - Mindreader</title>
-        <description>&lt;h1&gt;Introduction&lt;/h1&gt;
-&lt;p&gt;GoogleCTF from this year was hard. I couldn't solve most of the challenges, the ones that I made took me a lot of time to finish. But that's why we're here, to learn from a good challenge and from mistakes made during attacks. That's why I'm looking forward to write ups for other challenges and I'm publishing ones for the challenges, that I have finished. Let's start from the one with biggest number of solves - mindreader. &lt;/p&gt;
+        <description>&lt;p&gt;GoogleCTF from this year was hard. I couldn't solve most of the challenges, the ones that I made took me a lot of time to finish. But that's why we're here, to learn from a good challenge and from mistakes made during attacks. That's why I'm looking forward to write ups for other challenges and I'm publishing ones for the challenges, that I have finished. Let's start from the one with biggest number of solves - mindreader. &lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Can you read my mind?
 
@@ -3016,9 +3007,7 @@ GAE_MEMORY_MB=614HOSTNAME=a2c5f45b98c8GAE_INSTANCE=aef-mindreader--sss6w3uqjfrcn
     
       <item>
         <title>Vulnhub.com - D0not5top 1.2</title>
-        <description>&lt;h1&gt;Introduction&lt;/h1&gt;
-
-&lt;p&gt;Today we're going to play with another machine from &lt;a href=&quot;&quot;&gt;Vulnhub&lt;/a&gt; called &lt;a href=&quot;https://www.vulnhub.com/entry/d0not5top-12,191/&quot;&gt;D0not5top&lt;/a&gt;. Our aim is to find all 7 flags, and root the box. It seems to be a little harder then the previous ones, but all we want is a good challenge, right? &lt;/p&gt;
+        <description>&lt;p&gt;Today we're going to play with another machine from &lt;a href=&quot;&quot;&gt;Vulnhub&lt;/a&gt; called &lt;a href=&quot;https://www.vulnhub.com/entry/d0not5top-12,191/&quot;&gt;D0not5top&lt;/a&gt;. Our aim is to find all 7 flags, and root the box. It seems to be a little harder then the previous ones, but all we want is a good challenge, right? &lt;/p&gt;
 
 &lt;h1&gt;Write-Up&lt;/h1&gt;
 

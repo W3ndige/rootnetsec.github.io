@@ -8,8 +8,6 @@ permalink: /:title/
 category: Cryptography
 ---
 
-<h1>Introduction</h1>
-
 <p><b>Frequency analysis</b> is the study of the frequency of letters or groups of letters occuring next to each other. The most ancient description for what we know was made by Al-Kindi, dating back to the IXth century. This attack is used to break <b>monoalphabetic ciphers</b>, which work by simple and fixed substitution of letters. We now, that if the <b>a</b> in plaintext is encrypted to <b>x</b> letter, everytime in the ciphertext that <b>x</b> will convert to <b>a</b>.  </p>
 
 <p>But how can we attack the ciphertext without knowing the encryption key? Brute force? That may take too long for some, even basic, forms of encryption. What comes to the rescue is frequency analysis. With knowledge of how often each letter occurs in the language, we can try analyzing the ciphertext, substituting most occuring ones with the ones that are most frequent in specified language. Let's take a look at charts showing those frequencies in English. </p>

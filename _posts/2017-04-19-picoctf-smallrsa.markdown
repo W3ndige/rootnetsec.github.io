@@ -7,7 +7,6 @@ author:     "W3ndige"
 permalink: /:title/
 category: PicoCTF 2017
 ---
-<h1>SmallRSA - 120 PTS</h1>
 
 <p>You intercepted a single message. However, it appears to be encrypted. Can you decrypt it? Message</p>
 

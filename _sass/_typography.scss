@@ -8,8 +8,11 @@ abbr {
 }
 
 p {
-  color: #333;
+  color: $dark;
   line-height: 1.5;
+  .dark-theme & {
+    color: $light;
+  }
 }
 
 small,

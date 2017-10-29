@@ -7,7 +7,7 @@ author:     "W3ndige"
 permalink: /:title/
 category: Vulnhub
 ---
-<h1>Introduction</h1>
+
 <p>Today we're going to play with another machine called <b>Wallaby's: Nightmare</b>. Here's the description: </p>
 
 {% highlight text %}

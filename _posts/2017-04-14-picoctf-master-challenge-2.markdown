@@ -7,7 +7,6 @@ author:     "W3ndige"
 permalink: /:title/
 category: PicoCTF 2017
 ---
-<h1>Missing Identity - 100 PTS</h1>
 
 <p>Turns out, some of the files back from Master Challenge 1 were corrupted. Restore this one file and find the flag. </p>
 

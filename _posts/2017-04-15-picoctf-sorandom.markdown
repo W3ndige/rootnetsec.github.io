@@ -7,7 +7,6 @@ author:     "W3ndige"
 permalink: /:title/
 category: PicoCTF 2017
 ---
-<h1>SoRandom - 75 PTS</h1>
 
 <p>We found sorandom.py running at shell2017.picoctf.com:42263. It seems to be outputting the flag but randomizing all the characters first. Is there anyway to get back the original flag?</p>
 

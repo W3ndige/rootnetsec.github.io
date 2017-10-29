@@ -7,7 +7,6 @@ author:     "W3ndige"
 permalink: /:title/
 category: PicoCTF 2017
 ---
-<h1>I've got a secret - 75 PTS</h1>
 
 <p>Hopefully you can find the right format for my secret! Source. Connect on shell2017.picoctf.com:10750.</p>
 

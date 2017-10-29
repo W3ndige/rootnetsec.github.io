@@ -8,8 +8,6 @@ permalink: /:title/
 category: Vulnhub
 ---
 
-<h1>Introduction</h1>
-
 <p>Today we're going to play with another machine from <a href="">Vulnhub</a> called <a href="https://www.vulnhub.com/entry/d0not5top-12,191/">D0not5top</a>. Our aim is to find all 7 flags, and root the box. It seems to be a little harder then the previous ones, but all we want is a good challenge, right? </p>
 
 <h1>Write-Up</h1>
