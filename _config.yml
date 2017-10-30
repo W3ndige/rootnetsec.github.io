@@ -10,7 +10,7 @@ header_pages:
  - about.html
  - archive.html
  - contact.html
- - projects.html
+ - projects.md
  - resources.html
 
 
