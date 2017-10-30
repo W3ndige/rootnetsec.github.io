@@ -4,12 +4,9 @@ title:      "Vulnhub.com - Stapler"
 subtitle:   "Write-Up"
 date:       2016-09-15 2:00:00
 author:     "W3ndige"
-header-img: "img/stapler-header.jpeg"
 permalink: /:title/
 category: Vulnhub
 ---
-
-<h1>Introduction</h1>
 
 <p>Todays challenge is going to be more security concerned as we're going to give a try boot2root machine from Vulnhub called Stapler. It's aimed for begining/intermediate pentesters, with goal to get root access. Let's jump straight into the content! </p>
 

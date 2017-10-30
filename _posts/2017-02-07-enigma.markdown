@@ -4,12 +4,9 @@ title:      "Enigma"
 subtitle:   "Introduction to modern cryptography"
 date:       2017-02-07 00:00:00
 author:     "W3ndige"
-header-img: "img/enigma-header.jpg"
 permalink: /:title/
 category: Cryptography
 ---
-
-<h1>Brief history behind Enigma</h1>
 
 <p>The first Enigma machine was discovered by <b>Arthur Scherbius</b>, German engineer who acquired the patent in 1918. Name of this device originated from Greek word - riddle.  It was used commercially from the early 1920s, and was also adopted by the military and governmental services of a number of nations — most famously German Army. Communication during those days was sent over radio which means that everyone could easily listen. But at that moment no one could spy on Nazi messages - Scherbius' Enigma provided them with the strongest cryptographic cipher of the world. </p>
 

@@ -4,12 +4,9 @@ title:      "Vulnhub.com - Billy Madison 1.1"
 subtitle:   "Write-Up"
 date:       2017-03-19 2:00:00
 author:     "W3ndige"
-header-img: "img/billy-madison-header.jpeg"
 permalink: /:title/
 category: Vulnhub
 ---
-
-<h1>Introduction</h1>
 
 <p>Today we're going to try and root another machine from Vulnhub called <a href="https://www.vulnhub.com/entry/billy-madison-11,161/"><b>Billy Madison</b></a>. Our objective is to figure out how Eric took over the machine, undo his changes and recover Billy's 12th grade final project. Sounds great! </p>
 

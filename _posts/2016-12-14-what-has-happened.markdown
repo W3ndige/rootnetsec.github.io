@@ -4,12 +4,9 @@ title:      "Summary of 2016"
 subtitle:   "What has happened lately?"
 date:       2016-12-14 0:00:00
 author:     "W3ndige"
-header-img: "img/update-1-header.jpg"
 permalink: /:title/
 category: News
 ---
-
-<h1>Hey guys!</h1><hr>
 
 <p>As 2016 is getting closer to the end, I wanted to give you some brief insight in what has been happening in the past month or so, with additional information about updates on RootNetSec and plans for the future. </p>
 

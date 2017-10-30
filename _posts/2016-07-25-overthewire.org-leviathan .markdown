@@ -4,12 +4,9 @@ title:      "Overthewire.org - Leviathan"
 subtitle:   "Write-Up"
 date:       2016-07-25 10:00:00
 author:     "W3ndige"
-header-img: "img/overthewire-header.png"
 permalink: /:title/
 category: Overthewire
 ---
-
-<h1>Introduction</h1>
 
 <p>Today we're gonna give a try Leviathan wargame which requires some common sense and a little bit of knowledge about Unix commands.</p>
 <p>Let's get started!</p>

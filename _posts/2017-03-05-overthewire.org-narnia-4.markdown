@@ -4,12 +4,9 @@ title:      "Overthewire.org - Narnia 3 -> 4"
 subtitle:   "Write-Up"
 date:       2017-03-05 0:00:00
 author:     "W3ndige"
-header-img: "img/overthewire-header.png"
 permalink: /:title/
 category: Overthewire
 ---
-
-<h1>Introduction</h1>
 
 <p>Let's go back to another reverse engineering challenge from OverTheWire. Today we'll be dealing with a little different type of buffer overflow.  </p>
 

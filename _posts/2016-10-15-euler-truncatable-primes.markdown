@@ -4,12 +4,9 @@ title:      "Problem 37 - Truncatable Primes"
 subtitle:   "Project Euler Solutions"
 date:       2016-10-15 2:00:00
 author:     "W3ndige"
-header-img: "img/euler-header.jpg"
 permalink: /:title/
 category: Programming
 ---
-
-<h1>Introduction</h1>
 
 <p>Today I'm gonna try and solve another challenge from <a href="https://projecteuler.net">Project Euler</a> - site with various programming tasks heavily connected with mathematics. If you're learning any new programming language and don't have any ideas for new programs - just head over to this site, complete as many challenges as you can and you'll definitely improve your skills. Just take a look at this task: </p>
 

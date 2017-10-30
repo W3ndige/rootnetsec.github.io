@@ -4,11 +4,9 @@ title:      "Overthewire.org - Krypton"
 subtitle:   "Write-Up"
 date:       2016-11-19 0:00:00
 author:     "W3ndige"
-header-img: "img/overthewire-header.png"
 permalink: /:title/
 category: Overthewire
 ---
-<h1>Introduction</h1>
 
 <p>Krypton is another wargame from OverTheWire, that is based on cryptography and cryptoanalysis. As I really love this topic I decided to give it a try, unfortunately level 6 was way harder than I thought and I couldn't complete this, but I'm still happy with the results. </p>
 

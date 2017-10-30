@@ -4,12 +4,9 @@ title:      "Wireless Security"
 subtitle:   "WEP Hacking"
 date:       2016-09-25 2:00:00
 author:     "W3ndige"
-header-img: "img/wireless-security-wep-header.jpg"
 permalink: /:title/
 category: Networking
 ---
-
-<h1>Introduction</h1>
 
 <p>Wired Equivalent Privacy (WEP) was introduced in 1999 as a part of 802.11 standard. It's puprose was to assure the privacy of the wireless network in a way near to wired networks. It's using RC4 cipher (with different key size: 64 and 128 bits) and CRC-32 checksum to mantain integrity. In addition WEP is using a short, 24 bit initialization vector (IV), which is added to the key provided by user, creating 'unique' for each packet RC4 key. But because the IV is so short, and it's used with the same key, WEP is now considered outdated, easy to crack and insecure.  </p>
 

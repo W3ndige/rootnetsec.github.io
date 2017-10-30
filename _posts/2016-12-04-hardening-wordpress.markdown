@@ -4,12 +4,9 @@ title:      "Hardening WordPress"
 subtitle:   "How to secure your WordPress site?"
 date:       2016-12-04 0:00:00
 author:     "W3ndige"
-header-img: "img/hardening-wordpress-header.png"
 permalink: /:title/
 category: "Web Security"
 ---
-
-<h1>Introduction</h1>
 
 <p>WordPress is the most popular content management system (27.2% of all websites in 2016), bringing an ease in creating websites even for non technical users. Perfect option? Unfortunately not, as WordPress is also the most hacked platform (around 70% of all hacked CMS are WordPress based sites). </p>
 

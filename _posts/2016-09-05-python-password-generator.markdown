@@ -4,13 +4,10 @@ title:      "Simple Password Generator"
 subtitle:   "Using Python Programming Language"
 date:       2016-09-05 12:00:00
 author:     "W3ndige"
-header-img: "img/python-password-generator-header.png"
 permalink: /:title/
 category: Programming
 ---
 
-<h1>Introduction</h1>
-<p>Hi everyone!</p>
 <p>As a part of my weekly coding challenges I decided to create simple password generating program that allows an user to create strong and unique passwords depending on the wanted legth. It's great way to improve your programming skills and problem solving. Let's see how it works! </p>
 
 <h1>Code</h1>

@@ -4,11 +4,9 @@ title:      "Overthewire.org - Behemoth 1 -> 2"
 subtitle:   "Write-Up"
 date:       2017-04-02 0:00:00
 author:     "W3ndige"
-header-img: "img/overthewire-header.png"
 permalink: /:title/
 category: Overthewire
 ---
-<h1>Introduction</h1>
 
 <p>Today we're going to attack another reverse engineering challenge from <b>Behemoth</b> series, to improve our knowledge in reverse engineering.  </p>
 

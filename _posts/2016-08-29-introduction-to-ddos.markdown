@@ -4,7 +4,6 @@ title:      "Distributed Denial of Service Attack"
 subtitle:   "Introduction to DDOS Attacks"
 date:       2016-08-29 6:00:00
 author:     "W3ndige"
-header-img: "img/introduction-to-ddos-header.png"
 permalink: /:title/
 category: Networking
 ---

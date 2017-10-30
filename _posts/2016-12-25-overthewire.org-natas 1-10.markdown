@@ -4,12 +4,9 @@ title:      "Overthewire.org - Natas 1-10"
 subtitle:   "Write-Up"
 date:       2016-12-25 0:00:00
 author:     "W3ndige"
-header-img: "img/overthewire-header.png"
 permalink: /:title/
 category: Overthewire
 ---
-
-<h1>Introduction</h1>
 
 <p>Welcome back to another OverTheWire wargame called "Natas" - which is made only of tasks connected to web security. As the number of exercises is very big (33 at the time of publishing this post), I will break it down in a few smaller parts. Without wasting your time, let's get started! </p>
 

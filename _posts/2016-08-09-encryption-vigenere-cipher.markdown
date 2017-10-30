@@ -4,11 +4,9 @@ title:      "Let's Talk Encryption"
 subtitle:   "Part 2 - Vigenère cipher"
 date:       2016-08-09 12:00:00
 author:     "W3ndige"
-header-img: "img/encryption-vigenere-header.jpg"
 permalink: /:title/
 category: Cryptography
 ---
-<h1>Vigenère cipher - how it works?</h1>
 <p>Vigenère cipher is an method of encrypting message by using series of different Caesar ciphers based on the letters of a keyword. Basically to encrypt a message using the Vigenère cipher you first need to choose a keyword. After that repeat this keyword over and over until it is the same length as your secret message. </p>
 <p>Now for each plaintext letter, you find the letter on the left-vertical row of the tabula recta. Then you take the corresponding letter from your keyword, and find it at the top-horizontal row of the table. Where these two lines cross in the table is the ciphertext letter you use.</p>
 ![tabula-recta](/img/encryption-vigenere/tabula-recta.png){:class="img-responsive"}

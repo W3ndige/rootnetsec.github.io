@@ -4,12 +4,9 @@ title:      "Vulnhub.com - Pluck"
 subtitle:   "Write-Up"
 date:       2017-03-26 2:00:00
 author:     "W3ndige"
-header-img: "img/pluck-header.jpg"
 permalink: /:title/
 category: Vulnhub
 ---
-
-<h1>Introduction</h1>
 
 <p>In this post we're going to work on a short, but still great machine from <b>Vulnhub</b> called <a href="https://www.vulnhub.com/entry/pluck-1,178/"><b>Pluck</b></a>. Let's start! </p>
 

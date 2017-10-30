@@ -4,12 +4,10 @@ title:      "Overthewire.org - Narnia 0 -> 1"
 subtitle:   "Write-Up"
 date:       2017-01-01 0:00:00
 author:     "W3ndige"
-header-img: "img/overthewire-header.png"
 permalink: /:title/
 category: Overthewire
 ---
 
-<h1>Introduction</h1>
 
 <p>As a part of my New Year's resolutions I decided to improve my knowledge of binary exploitation, learn more by completing challenges from <a href="http://overthewire.org/wargames/">OverTheWire</a>, especially Narnia, as they are aimed to people wanting to learn about basics. </p>
 

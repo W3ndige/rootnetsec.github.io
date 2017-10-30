@@ -4,12 +4,9 @@ title:      "Vulnhub.com - 64Base 1.0.1"
 subtitle:   "Write-Up"
 date:       2017-02-12 00:00:00
 author:     "W3ndige"
-header-img: "img/64base-header.jpeg"
 permalink: /:title/
 category: Vulnhub
 ---
-
-<h1>Introduction</h1>
 
 <p>Today we're going to try and complete another challenge from Vulnhub, called 64Base. There are two objectives: the main one is to steal the plans for the Death Star before it's too late, and secondary quest consits of collecting all 6 flags. So without further suppression, let's jump in! </p>
 

@@ -4,12 +4,9 @@ title:      "Three Coding Challenges"
 subtitle:   "Largest Prime Factor, Largest Palindrom Product and 10001st Prime"
 date:       2016-09-10 12:00:00
 author:     "W3ndige"
-header-img: "img/coding-challenges-1-header.jpg"
 permalink: /:title/
 category: Programming
 ---
-
-<h1>Introduction</h1>
 
 <p>Hi, today we're gonna explore more about programming and math. I've chosen 3 challenges from <a href="https://projecteuler.net/">Project Euler</a>- Largest Prime Factor of a number, Largest Palindrom and 10001st Prime. Project Euler is a great site that provides us with many mathematical/programming problems that will undoubtedly help us gain a better insight in beautiful word of mathematics and programming. </p>
 

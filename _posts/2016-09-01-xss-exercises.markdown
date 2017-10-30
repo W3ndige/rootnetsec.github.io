@@ -4,7 +4,6 @@ title:      "Web for Pentester"
 subtitle:   "XSS Write-Up"
 date:       2016-09-01 6:00:00
 author:     "W3ndige"
-header-img: "img/cross-site-scripting-header.jpg"
 permalink: /:title/
 category: Write-Ups
 ---

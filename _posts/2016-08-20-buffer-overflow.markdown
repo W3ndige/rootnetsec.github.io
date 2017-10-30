@@ -4,11 +4,10 @@ title:      "Buffer Overflow"
 subtitle:   "Introduction to Reverse Engineering"
 date:       2016-08-20 10:00:00
 author:     "W3ndige"
-header-img: "img/buffer-overflow-header.jpg"
 permalink: /:title/
 category: "Reverse Engineering"
 ---
-<h1><a name="introduction">Introductions</a></h1>
+
 <p>Exploiting a buffer overflow vulnerability is very creative and a bit difficult to understand as it takes many different parts of computer technology knowledge to understand and pull off an attack. But after mastering, it's such a powerfull skill, as there are still programs with that kind of vulnerability. In addtion it lets you better understand how computers and programs work.</p>
 <p>Let's explore this topic together!</p>
 <p><b>Content</b></p>

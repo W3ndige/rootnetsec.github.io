@@ -4,12 +4,9 @@ title:      "Diffie-Hellman and PGP"
 subtitle:   "Introduction to modern cryptography"
 date:       2016-08-13 19:00:00
 author:     "W3ndige"
-header-img: "img/diffie-hellman-pgp-header.jpg"
 permalink: /:title/
 category: Cryptography
 ---
-<h1>Introduction to Diffie-Hellman</h1>
-
 <p>Alice and Bob - two friends from IRC (Internet Relay Chat) just learned about this powerful cipher that no computer can ever crack. As they're concerned about privacy of their conversations they want to implement it for everyday use. But they encountered one problem - they need to come up with secret key and as they are living 13516 km from each other they just can't talk about it in real life. They need to come up with a key through their messages. That's where Diffie-Hellman key exchange comes in. </p>
 
 <p>Diffie-Hellman is a key exchange protocol developed by Ralph Merkle and named after Whitfield Diffie and Martin Hellman - two cryptographers. The purpose of Diffie-Hellman is to allow anybody to exchange a secret over a public channel without having anything shared beforehand, and without the possibility of someone eavesdropping. Let's explore basics behind this concept.</p>

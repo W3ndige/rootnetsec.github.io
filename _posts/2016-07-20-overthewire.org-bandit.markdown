@@ -4,12 +4,9 @@ title:      "Overthewire.org - Bandit"
 subtitle:   "Write-Up"
 date:       2016-07-20 12:00:00
 author:     "W3ndige"
-header-img: "img/overthewire-header.png"
 permalink: /:title/
 category: Overthewire
 ---
-
-<h1>Introduction</h1>
 
 <p>Bandit wargame is ideal for begginers - it let's you get to know the basics of Linux operating system, and is a great start into the beautiful word of CTF's.</p>
 <p>Let's get started!</p>

@@ -4,12 +4,9 @@ title:      "Overthewire.org - Narnia 4 -> 5"
 subtitle:   "Write-Up"
 date:       2017-03-09 0:00:00
 author:     "W3ndige"
-header-img: "img/overthewire-header.png"
 permalink: /:title/
 category: Overthewire
 ---
-
-<h1>Introduction</h1>
 
 <p>Today we'll be dealing with another reverse engineering challenge from Overthewire - pretty quick, but fun as always!  </p>
 

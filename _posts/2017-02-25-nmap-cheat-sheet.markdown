@@ -4,12 +4,9 @@ title:      "Nmap"
 subtitle:   "Cheat Sheet"
 date:       2017-02-25 00:00:00
 author:     "W3ndige"
-header-img: "img/nmap-header.jpg"
 permalink: /:title/
 category: "Cheat Sheets"
 ---
-
-<h1>What is Nmap?</h1>
 
 <p><b>Nmap</b>, short for network mapper, is an open source security tool for network exploration, security scanning and auditing. It was originally written by Gordon Lyon AKA Fyodor, firstly published in September 1997 in a <a href="http://phrack.org/issues/51/11.html">Phrack Magazine</a>, with included source code. </p>
 

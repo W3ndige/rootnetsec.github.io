@@ -4,12 +4,10 @@ title:      "Overthewire.org - Narnia 1 -> 2"
 subtitle:   "Write-Up"
 date:       2017-02-02 0:00:00
 author:     "W3ndige"
-header-img: "img/overthewire-header.png"
 permalink: /:title/
 category: Overthewire
 ---
 
-<h1>Introduction</h1>
 <p>Another month, another challenge, next part of OverTheWire's Narnia wargames. Unfortunately lack of time, made it impossible for me to publish anything sooner. Sorry for that!</p>
 
 <h1>Challenge</h1>

@@ -4,12 +4,9 @@ title:      "Wireless Security"
 subtitle:   "Theory behind WPA and WPA2"
 date:       2016-10-01 2:00:00
 author:     "W3ndige"
-header-img: "img/wireless-security-wep-header.jpg"
 permalink: /:title/
 category: Networking
 ---
-
-<h1>Introduction</h1>
 
 <p>Hi everyone! Today we're gonna prepare a little bit before the next episode - in which we'll try to hack WPA and WPA Wi-Fi networks. But in order to do that we have to gain better understanding how it works, it's weaknesses (if any) and stronger sides that we shouldn't even try atttacking. Let's jump in to the world of theory! </p>
 

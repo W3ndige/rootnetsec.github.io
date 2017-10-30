@@ -4,11 +4,9 @@ title:      "Let's Talk Encryption"
 subtitle:   "Part 1 - Caesar Cipher"
 date:       2016-08-04 12:00:00
 author:     "W3ndige"
-header-img: "img/encryption-caesar-header.jpg"
 permalink: /:title/
 category: Cryptography
 ---
-<h1>How the Ceasar cipher works?</h1>
 <p><b>The Caesar cipher</b>, also called <b>Caesar's code</b>, <b>shift cipher</b> or <b>Caesar shift</b>, is one of the simplest and most known forms of encryption. It is a <b>substitution cipher</b> where each letter in the <b>plaintext</b> (original message) is replaced with a letter corresponding to a certain number of letters up or down in the alphabet creating a <b>cipher text</b>. </p>
 
 ![caesar-shift](/img/encryption-caesar/Caesar-cipher-shift.png){:class="img-responsive"}

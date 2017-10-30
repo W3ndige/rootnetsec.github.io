@@ -4,11 +4,9 @@ title:      "Hash Functions"
 subtitle:   "How passwords are stored?"
 date:       2016-08-18 5:00:00
 author:     "W3ndige"
-header-img: "img/hash-functions.jpg"
 permalink: /:title/
 category: Cryptography
 ---
-<h1>What Are Hash Functions?</h1>
 <p>A hash function is a function that takes the input value, and from that input creates an output value different from the input. For any x input value, you will always receive the same y output value whenever the hash function is run. </p>
 <p><i>f(x) = y</i></p>
 
