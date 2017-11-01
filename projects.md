@@ -17,4 +17,4 @@ Series of tools made to scan the network for other machines, check for open port
 
 ### [Root Network Security](https://github.com/W3ndige/w3ndige.github.io)
 #### Technology: Jekyll, HTML, SCSS, Javascript
-Place where I like to share my knowledge with other members of netsec communty. Current theme was made by John Otander, with some personal tweaks in order to make it more personal.
+Place where I like to share my knowledge with other members of netsec communty. Current theme was made by John Otander, with some small tweaks in order to make it more personal.
