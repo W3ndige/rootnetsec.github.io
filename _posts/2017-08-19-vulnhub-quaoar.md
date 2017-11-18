@@ -276,7 +276,7 @@ _______________________________________________________________
 
 ![Admin login](/img/quaoar/wp-admin.png){:class="img-responsive center-block"}
 
-<p>And there's even more, username of this account is simply <b>admin</b>! Now we're in the administrator panel of Wordpress, from where we can deploy a <a href="http://pentestmonkey.net/tools/web-shells/php-reverse-shell">PHP Reverse Shell</a>. </p>
+<p>And there's even more, password of this account is simply <b>admin</b>! Now we're in the administrator panel of Wordpress, from where we can deploy a <a href="http://pentestmonkey.net/tools/web-shells/php-reverse-shell">PHP Reverse Shell</a>. </p>
 
 <p>Reemeber to change the IP address. </p>
 

