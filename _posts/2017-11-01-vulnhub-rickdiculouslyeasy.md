@@ -1,7 +1,6 @@
 ---
 layout:     post
 title:      "Vulnhub.com - Rickdiculously Easy 1"
-subtitle:   "Write-Up"
 date:       2017-11-01 8:00:00
 author:     "W3ndige"
 permalink: /:title/

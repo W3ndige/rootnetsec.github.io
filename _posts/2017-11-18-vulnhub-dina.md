@@ -1,7 +1,6 @@
 ---
 layout:     post
 title:      "Vulnhub.com - Dina 1"
-subtitle:   "Write-Up"
 date:       2017-11-18 8:00:00
 author:     "W3ndige"
 permalink: /:title/

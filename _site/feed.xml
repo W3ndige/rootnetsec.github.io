@@ -7,6 +7,93 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Pwnable.kr - fd</title>
+        <description>&lt;p&gt;After feeling a big need improve my knowledge of &lt;em&gt;pwnable&lt;/em&gt; category, I decided  to check out &lt;a href=&quot;http://pwnable.kr&quot; title=&quot;pwnable.kr&quot;&gt;pwnable.kr&lt;/a&gt; and start from the beginning.&lt;/p&gt;
+
+&lt;p&gt;Here comes the &lt;strong&gt;&lt;em&gt;Toddler’s Bottle&lt;/em&gt;&lt;/strong&gt; and the first challenge - &lt;strong&gt;&lt;em&gt;fd&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Mommy! what is a file descriptor in Linux?&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In order to view the challenge, we have to connect via &lt;strong&gt;&lt;em&gt;ssh&lt;/em&gt;&lt;/strong&gt; with password &lt;strong&gt;&lt;em&gt;guest&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@main ~ % ssh fd@pwnable.kr &lt;span class=&quot;nt&quot;&gt;-p2222&lt;/span&gt;
+fd@pwnable.krs password:
+ ____  __    __  ____    ____  ____   _        ___      __  _  ____  
+|    &lt;span class=&quot;se&quot;&gt;\|&lt;/span&gt;  |__|  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; /    &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;| |      /  _]    |  |/ &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;|    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+|  o  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  |  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  _  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  o  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  o  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;| |     /  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;_     |  &lt;span class=&quot;s1&quot;&gt;' / |  D  )
+|   _/|  |  |  ||  |  ||     ||     || |___ |    _]    |    \ |    /
+|  |  |  `  '&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  _  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  O  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;_  __ |     &lt;span class=&quot;se&quot;&gt;\|&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+|  |   &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;     / |  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+|__|    &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;/&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;/  |__|__||__|__||_____||_____||_____||__||__|&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;__|&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;|
+
+- Site admin : daehee87.kr@gmail.com
+- IRC : irc.netgarage.org:6667 / &lt;span class=&quot;c&quot;&gt;#pwnable.kr&lt;/span&gt;
+- Simply &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;irssi&quot;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;to join IRC now
+- files under /tmp can be erased anytime. make your directory under /tmp
+- to use peda, issue &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; /usr/share/peda/peda.py&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;gdb terminal
+Last login: Thu Nov 23 11:25:25 2017 from 131.202.114.32
+fd@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 40
+drwxr-x---  5 root   fd   4096 Oct 26  2016 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x 80 root   root 4096 Jan 11  2017 ..
+d---------  2 root   root 4096 Jun 12  2014 .bash_history
+&lt;span class=&quot;nt&quot;&gt;-r-sr-x---&lt;/span&gt;  1 fd_pwn fd   7322 Jun 11  2014 fd
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root   root  418 Jun 11  2014 fd.c
+&lt;span class=&quot;nt&quot;&gt;-r--r-----&lt;/span&gt;  1 fd_pwn root   50 Jun 11  2014 flag
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 root   root  128 Oct 26  2016 .gdb_history
+dr-xr-xr-x  2 root   root 4096 Dec 19  2016 .irssi
+drwxr-xr-x  2 root   root 4096 Oct 23  2016 .pwntools-cache&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In this directory we have the challenge files - source code and binary. Firstly, let’s view the source to understand what’s going on.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[],&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;envp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]){&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;pass argv[1] a number&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;atoi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x1234&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;len&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strcmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;LETMEWIN&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)){&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;good job :)&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/bin/cat flag&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;learn about Linux file IO&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;By reading it, we get that firstly &lt;code class=&quot;highlighter-rouge&quot;&gt;atoi( argv[1] )&lt;/code&gt; will convert the argument into the integer, then it will substract from it &lt;code class=&quot;highlighter-rouge&quot;&gt;0x1234&lt;/code&gt;. After converting it into decimal we get number &lt;code class=&quot;highlighter-rouge&quot;&gt;4660&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x1234&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;4660&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After that &lt;code class=&quot;highlighter-rouge&quot;&gt;read(fd, buf, 32)&lt;/code&gt; syscall is executed. First argument of this function &lt;code class=&quot;highlighter-rouge&quot;&gt;fd&lt;/code&gt; is the file descriptor of where to read the input. Then &lt;code class=&quot;highlighter-rouge&quot;&gt;buf&lt;/code&gt; is the character array where the read content will be stored and &lt;code class=&quot;highlighter-rouge&quot;&gt;32&lt;/code&gt; is the number of bytes to read before truncating the data. The last step compares the content of &lt;code class=&quot;highlighter-rouge&quot;&gt;buf&lt;/code&gt; with a string &lt;code class=&quot;highlighter-rouge&quot;&gt;LETMEWIN\n&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;How can we enter this string to make the condition true? Firstly, we can learn that file descriptor is simply an integer that is used to access a file, or IO resource. Read more at &lt;a href=&quot;https://en.wikipedia.org/wiki/File_descriptor&quot; title=&quot;Wikipedia&quot;&gt;Wikipedia&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Each Unix process should have three standard &lt;strong&gt;&lt;em&gt;POSIX&lt;/em&gt;&lt;/strong&gt; file descriptors. With respective integers &lt;strong&gt;&lt;em&gt;0&lt;/em&gt;&lt;/strong&gt; is &lt;strong&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;em&gt;1&lt;/em&gt;&lt;/strong&gt; is &lt;strong&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;em&gt;2&lt;/em&gt;&lt;/strong&gt; is &lt;strong&gt;&lt;em&gt;stderr&lt;/em&gt;&lt;/strong&gt;. In our attack we’re going to use &lt;strong&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/strong&gt;, since it’s going to allow us to enter characters from the keyboard.&lt;/p&gt;
+
+&lt;p&gt;To make the &lt;code class=&quot;highlighter-rouge&quot;&gt;fd&lt;/code&gt; equall to 0, we’re going to make the &lt;code class=&quot;highlighter-rouge&quot;&gt;atoi( argv[1] )&lt;/code&gt; equall to the &lt;code class=&quot;highlighter-rouge&quot;&gt;4660&lt;/code&gt;. Then substraction will result in 0, and the &lt;code class=&quot;highlighter-rouge&quot;&gt;read&lt;/code&gt; function will read the characters that we enter.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;fd@ubuntu:~$ ./fd 4660
+LETMEWIN
+good job :)
+mommy! I think I know what a file descriptor is!!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here goes the flag!&lt;/p&gt;
+</description>
+        <pubDate>Thu, 23 Nov 2017 08:00:00 +0000</pubDate>
+        <link>http://localhost:4000/pwnable.kr-fd/</link>
+        <guid isPermaLink="true">http://localhost:4000/pwnable.kr-fd/</guid>
+      </item>
+    
+      <item>
         <title>Vulnhub.com - Dina 1</title>
         <description>&lt;p&gt;Let’s quickly jump into another machine from Vulnhub called &lt;strong&gt;Dina&lt;/strong&gt;.&lt;/p&gt;
 
@@ -3664,98 +3751,6 @@ IBM's Extended Binary Coded Decimal Interchange Code (usually abbreviated as EBC
         <pubDate>Thu, 29 Jun 2017 08:00:00 +0000</pubDate>
         <link>http://localhost:4000/gynvael-mission-6-polish/</link>
         <guid isPermaLink="true">http://localhost:4000/gynvael-mission-6-polish/</guid>
-      </item>
-    
-      <item>
-        <title>Gynvael Mission 006</title>
-        <description>&lt;p&gt;Challenge from Gynvael's &lt;a href=&quot;https://www.youtube.com/watch?v=KvyBn4Btv8E&quot;&gt;stream&lt;/a&gt;. Let's take a look at it. &lt;/p&gt;
-&lt;pre&gt;
-Welcome back agent 1336.
-No mail.
-&amp;gt; mission --take
-MISSION 006               goo.gl/Z4u9cv             DIFFICULTY: ███████░░░ [7╱10]
-┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-
-Finally we hired a new secret agent and moved agent Huffman to do some harmless
-paperwork. That's the good news. The bad news is that agent Huffman made it his
-mission to train our new agent and this went exactly as expected - i.e. we cannot
-decode the report received from the new agent.
-
-Long story short, agent Huffman Junior sent us this file:
-
-  http://goo.gl/S395x6
-
-We don't really know how to decode it, nor do we care at this point. Please take
-a look and decode it if you can.
-
-GOOD LUCK!
-
-If you decode the answer, put it in the comments under this video! If you write
-a blogpost / post your solution online, please add a link in the comments too!
-
-P.S. I'll show/explain the solution on the stream next week.
-&lt;/pre&gt;
-
-&lt;p&gt;After viewing the file, I can see something looking like coordinates. &lt;/p&gt;
-
-&lt;pre&gt;
-[11, 24]
-[6, 6]
-[18, 22]
-[12, 10]
-[24, 13]
-[17, 14]
-[12, 8]
-&lt;/pre&gt;
-
-&lt;p&gt;And after lots of math in this year, they quite remind me of vectors. By looking at the data, we can also assume that the biggest number is 24, so image should not be bigger than that. Now I decided to run another test, to see if all of the entries are unique and it's possible using Linux command line. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;w3ndige@w3ndige Programming]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;mission006.data | uniq &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;w3ndige@w3ndige Programming]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;diff &lt;span class=&quot;nb&quot;&gt;test &lt;/span&gt;mission006.data&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Firstly we pipe the file to the uniq tool that will print only unique entres, and save it to test file. After that we're going to run diff tool to see if there are any differences. And there are none, which means that the file is made of only unique entres. &lt;/p&gt;
-
-&lt;p&gt;Now, if all my understaning is correct, we can start plotting them on a bitmap using Python. To make script a little easier I converted it to new format using Atom's find and replace :D &lt;/p&gt;
-
-&lt;pre&gt;
-11,24
-6,6
-18,22
-&lt;/pre&gt;
-
-&lt;p&gt;Now we're ready to write a script! &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;PIL&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Image&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ImageDraw&lt;/span&gt;
-
-&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;mission006.data&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;r&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;coords&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;','&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;coords&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])))&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;img&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Image&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;RGB&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;25&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;25&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;white&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;draw&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ImageDraw&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Draw&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;coords&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;draw&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rectangle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fill&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;black&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;img&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;save&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'flag.png'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And our flag image looks like QR Code now. Let's open it with Gimp to make it a little bigger. Wait, is it vertically flipped? &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/gynvael-missions/qrcode.png&quot; alt=&quot;QR Code&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now it's much better, we can finally scan it. &lt;/p&gt;
-
-&lt;p&gt;&lt;b&gt;Mirrored QR? Seriously?!&lt;/b&gt;&lt;/p&gt;
-
-&lt;p&gt;Great challenge, I would like to thank Gynvael for his amazing streams and this fun task! &lt;/p&gt;
-</description>
-        <pubDate>Thu, 22 Jun 2017 08:00:00 +0000</pubDate>
-        <link>http://localhost:4000/gynvael-mission-6/</link>
-        <guid isPermaLink="true">http://localhost:4000/gynvael-mission-6/</guid>
       </item>
     
   </channel>
