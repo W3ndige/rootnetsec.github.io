@@ -7,8 +7,117 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Pwnable.kr - collision</title>
+        <description>&lt;p&gt;Let’s start another challenge from &lt;a href=&quot;http://pwnable.kr&quot; title=&quot;pwnable.kr&quot;&gt;pwnable.kr&lt;/a&gt; called &lt;strong&gt;&lt;em&gt;collision&lt;/em&gt;&lt;/strong&gt;, which is next one in &lt;strong&gt;&lt;em&gt;Toddler’s Bottle&lt;/em&gt;&lt;/strong&gt; category.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Daddy told me about cool MD5 hash collision today.
+I wanna do something like that too!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Once again we have to connect via &lt;strong&gt;&lt;em&gt;ssh&lt;/em&gt;&lt;/strong&gt; in order to view challenge files.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@main ~ % ssh col@pwnable.kr &lt;span class=&quot;nt&quot;&gt;-p2222&lt;/span&gt;
+col@pwnable.krs password:
+ ____  __    __  ____    ____  ____   _        ___      __  _  ____  
+|    &lt;span class=&quot;se&quot;&gt;\|&lt;/span&gt;  |__|  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; /    &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;| |      /  _]    |  |/ &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;|    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+|  o  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  |  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  _  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  o  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  o  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;| |     /  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;_     |  &lt;span class=&quot;s1&quot;&gt;' / |  D  )
+|   _/|  |  |  ||  |  ||     ||     || |___ |    _]    |    \ |    /
+|  |  |  `  '&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  _  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  O  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;_  __ |     &lt;span class=&quot;se&quot;&gt;\|&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+|  |   &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;     / |  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+|__|    &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;/&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;/  |__|__||__|__||_____||_____||_____||__||__|&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;__|&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;|
+
+- Site admin : daehee87.kr@gmail.com
+- IRC : irc.netgarage.org:6667 / &lt;span class=&quot;c&quot;&gt;#pwnable.kr&lt;/span&gt;
+- Simply &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;irssi&quot;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;to join IRC now
+- files under /tmp can be erased anytime. make your directory under /tmp
+- to use peda, issue &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; /usr/share/peda/peda.py&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;gdb terminal
+Last login: Fri Nov 24 12:21:39 2017 from 24.16.85.95
+col@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 36
+drwxr-x---  5 root    col     4096 Oct 23  2016 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x 80 root    root    4096 Jan 11  2017 ..
+d---------  2 root    root    4096 Jun 12  2014 .bash_history
+&lt;span class=&quot;nt&quot;&gt;-r-sr-x---&lt;/span&gt;  1 col_pwn col     7341 Jun 11  2014 col
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root    root     555 Jun 12  2014 col.c
+&lt;span class=&quot;nt&quot;&gt;-r--r-----&lt;/span&gt;  1 col_pwn col_pwn   52 Jun 11  2014 flag
+dr-xr-xr-x  2 root    root    4096 Aug 20  2014 .irssi
+drwxr-xr-x  2 root    root    4096 Oct 23  2016 .pwntools-cache&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And without hesitation, let’s jump straight into the code.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hashcode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x21DD09EC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;check_password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;res&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]){&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;usage : %s [passcode]&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strlen&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;passcode length should be 20 bytes&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hashcode&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;check_password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)){&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/bin/cat flag&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;wrong passcode.&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Firstly &lt;code class=&quot;highlighter-rouge&quot;&gt;int* ip = (int*)p;&lt;/code&gt; will cast the char, passed as the parameter into the &lt;code class=&quot;highlighter-rouge&quot;&gt;check_password&lt;/code&gt; function. In addition we know that the passcode has to be &lt;strong&gt;&lt;em&gt;20 bytes&lt;/em&gt;&lt;/strong&gt;. After doing simple mathematics, our input will have to consist of 5 integers, as the size of &lt;code class=&quot;highlighter-rouge&quot;&gt;int&lt;/code&gt; is &lt;strong&gt;&lt;em&gt;4 bytes&lt;/em&gt;&lt;/strong&gt;.  What next?&lt;/p&gt;
+
+&lt;p&gt;Function will return the sum of these 5 integers, which is calculated by the loop. Back in the &lt;code class=&quot;highlighter-rouge&quot;&gt;main&lt;/code&gt; function, this sum is checked for length, then compared with &lt;strong&gt;&lt;em&gt;hash&lt;/em&gt;&lt;/strong&gt; and if the answer is correct, it will view the flag for us.&lt;/p&gt;
+
+&lt;p&gt;Let’s convert &lt;strong&gt;&lt;em&gt;hash&lt;/em&gt;&lt;/strong&gt; into the decimal number.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x21DD09EC&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;568134124&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, now we can divide it into &lt;strong&gt;&lt;em&gt;5 pieces&lt;/em&gt;&lt;/strong&gt;. But as the number is not divisible by 5, we’ll have to use floor division which will truncate numbers after decimal point.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x21DD09EC&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;113626824&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;hex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;113626824&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'0x6c5cec8'&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now let’s use these 4 &lt;em&gt;pieces&lt;/em&gt;. We will substract them from the original hash, which will result in our fifth piece.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x21DD09EC&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;454507296&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;113626828&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;hex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;113626828&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'0x6c5cecc'&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Will it be true? We can check it with simple comparision operation.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x6c5cec8&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x6c5cecc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x21DD09EC&lt;/span&gt;
+&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, our math worked out! Now we will only have to convert these hex values into &lt;strong&gt;&lt;em&gt;little endian&lt;/em&gt;&lt;/strong&gt;, as that’s how C stores integers. After that we’re ready to exploit this application.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;col@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./col &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;python2 &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'print &quot;\xc8\xce\xc5\x06&quot; * 4 + &quot;\xcc\xce\xc5\x06&quot;;'&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+daddy! I just managed to create a &lt;span class=&quot;nb&quot;&gt;hash &lt;/span&gt;collision :&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+</description>
+        <pubDate>Fri, 24 Nov 2017 08:00:00 +0000</pubDate>
+        <link>http://localhost:4000/pwnable.kr-collision/</link>
+        <guid isPermaLink="true">http://localhost:4000/pwnable.kr-collision/</guid>
+      </item>
+    
+      <item>
         <title>Pwnable.kr - fd</title>
-        <description>&lt;p&gt;After feeling a big need improve my knowledge of &lt;em&gt;pwnable&lt;/em&gt; category, I decided  to check out &lt;a href=&quot;http://pwnable.kr&quot; title=&quot;pwnable.kr&quot;&gt;pwnable.kr&lt;/a&gt; and start from the beginning.&lt;/p&gt;
+        <description>&lt;p&gt;After feeling a big need to improve my knowledge of &lt;em&gt;pwnable&lt;/em&gt; category, I decided  to check out &lt;a href=&quot;http://pwnable.kr&quot; title=&quot;pwnable.kr&quot;&gt;pwnable.kr&lt;/a&gt; and start from the beginning.&lt;/p&gt;
 
 &lt;p&gt;Here comes the &lt;strong&gt;&lt;em&gt;Toddler’s Bottle&lt;/em&gt;&lt;/strong&gt; and the first challenge - &lt;strong&gt;&lt;em&gt;fd&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
 
@@ -3695,62 +3804,6 @@ Thanks guys!
         <pubDate>Tue, 04 Jul 2017 08:00:00 +0000</pubDate>
         <link>http://localhost:4000/tgs-1-dudek/</link>
         <guid isPermaLink="true">http://localhost:4000/tgs-1-dudek/</guid>
-      </item>
-    
-      <item>
-        <title>Gynvael Polish Mission 006</title>
-        <description>&lt;p&gt;Another challenge from Gynvael's polish &lt;a href=&quot;https://www.youtube.com/watch?v=w-7vLvTKJbI&quot;&gt;stream&lt;/a&gt;. Let's see what we've got today.&lt;/p&gt;
-
-&lt;pre&gt;
-Mission 006            goo.gl/te47XT                  DIFFICULTY: ███░░░░░░░ [3/10]
-┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅┅
-Looking through old documents from the sixties, we've noticed this note:
-
-  c5 c2 c3 c4 c9 c3 40 82 a8 93 82 a8 40 86 81 91 95 a8 40 87 84
-  a8 82 a8 40 82 a8 93 40 93 96 87 89 83 a9 95 a8 4b 40 c1 93 85
-  40 95 89 85 40 91 85 a2 a3 4b
-
-We're thinking that it's some sentence written in Polish, but we couldn't decode it. Now it's jour job to do it. Good luck!
-
---
-
-If you decode the answer, put it in the comments under this video! If you write
-a blogpost / post your solution online, please add a link in the comments too!
-
-P.S. I'll show/explain the solution on the stream next week.
-&lt;/pre&gt;
-
-&lt;p&gt;Firstly, let's take a look at different types of encodings used in the sixties. From this &lt;a href=&quot;https://en.wikipedia.org/wiki/Character_encoding#History&quot;&gt;Wikipedia article&lt;/a&gt;, we can learn that: &lt;/p&gt;
-
-&lt;pre&gt;
-ASCII was introduced in 1963 and is a seven-bit encoding scheme used to encode letters, numerals, symbols, and device control codes as fixed-length codes using integers.
-&lt;/pre&gt;
-
-&lt;p&gt;But as we know it's not ASCII, we can skip to the next encoding sheme created also in 1963: &lt;/p&gt;
-
-&lt;pre&gt;
-IBM's Extended Binary Coded Decimal Interchange Code (usually abbreviated as EBCDIC) is an eight-bit encoding scheme developed in 1963.
-&lt;/pre&gt;
-
-&lt;p&gt;Now we have to check if it's actually this. Looking at this EBCDIC to ASCII table we can see that it will print out polish words, but let's also write a Python script to decode that. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/gynvael-missions/ebcdic-to-ascii.png&quot; alt=&quot;EBCDIC Table&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;codecs&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  &lt;span class=&quot;s&quot;&gt;&quot;c5 c2 c3 c4 c9 c3 40 82 a8 93 82 a8 40 86 81 91 95 a8 40 87 84 a8 82 a8 40 82 a8 93 40 93 96 87 89 83 a9 95 a8 4b 40 c1 93 85 40 95 89 85 40 91 85 a2 a3 4b&quot;&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;chars&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot; &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;letter&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;chars&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;codecs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;decode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;letter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;decode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'hex'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;cp500&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Where &lt;b&gt;cp500&lt;/b&gt; is codec alias for EBCDIC-CP-BE, EBCDIC-CP-CH, IBM500. Running this script we get the message &lt;i&gt;EBCDIC bylby fajny gdyby byl logiczny. Ale nie jest.&lt;/i&gt;&lt;/p&gt;
-&lt;p&gt;This translates to &lt;i&gt;EBCDIC would be cool, if it was logical. But it's not.&lt;/i&gt;&lt;/p&gt;
-</description>
-        <pubDate>Thu, 29 Jun 2017 08:00:00 +0000</pubDate>
-        <link>http://localhost:4000/gynvael-mission-6-polish/</link>
-        <guid isPermaLink="true">http://localhost:4000/gynvael-mission-6-polish/</guid>
       </item>
     
   </channel>
