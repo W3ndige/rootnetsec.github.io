@@ -5,6 +5,11 @@ permalink: "/projects/"
 ---
 
 ___
+### [Chip-8 Emulator](https://github.com/W3ndige/chip-8)
+#### Technology: C
+Another simple, yet working recreation of [Chip-8](https://en.wikipedia.org/wiki/CHIP-8) machine made to learn more about ***C***. Provides great insight about how it works, from a technical point of view.    
+
+
 ### [Brainfuck Interpreter](https://github.com/W3ndige/brainfuck-c)
 #### Technology: C
 Simple interpreter for the brainfuck esoteric language. Capable of loading the file with the code, with plans to improve.
@@ -12,7 +17,7 @@ Simple interpreter for the brainfuck esoteric language. Capable of loading the f
 
 ### [Network Scanners](https://github.com/W3ndige/poor-network-scanner)
 #### Technology: Python
-Series of tools made to scan the network for other machines, check for open ports and grab their banners. In addition *webmap.py* allows to scan web application ang grab it's security headers.
+Series of tools made to scan the network for other machines, check for open ports and grab their banners. In addition *webmap.py* allows to scan web application and grab it's security headers.
 
 
 ### [Root Network Security](https://github.com/W3ndige/w3ndige.github.io)
