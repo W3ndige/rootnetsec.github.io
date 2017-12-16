@@ -28,8 +28,6 @@ category: News
 
 <p>Some of these changes are really small, unfortunately very visible, and essential for me. Sad life of  perfectionist :( </p>
 
-<p>I've also created a server on Discord that you can find under this <a href="https://discord.gg/BX8cWS6">link</a>. Idea behind it was to create a small group of security oriented students that want to learn together, have a little chat or exhange opinions on many different subjects. If you're interested, don't hesitate to join and see how will this work out for you. In addition you can shoot me a DM on Discord - it's the fastest way to get to me. </p>
-
 <p>For those of you concerned about privacy I have joined <a href="https://keybase.io/">Keybase.io</a> where you can know get my PGP key. It's great site and if you were thinking about joining I can undoubtedly recommend it to you! </p>
 
 <h1>Summary of 2016</h1><hr>
