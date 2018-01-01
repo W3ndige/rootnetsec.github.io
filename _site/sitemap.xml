@@ -289,6 +289,10 @@
 <lastmod>2017-12-29T22:00:00+01:00</lastmod>
 </url>
 <url>
+<loc>http://localhost:4000/34c3ctf-junior-spi/</loc>
+<lastmod>2018-01-01T01:00:00+01:00</lastmod>
+</url>
+<url>
 <loc>http://localhost:4000/about/</loc>
 </url>
 <url>
@@ -356,5 +360,8 @@
 </url>
 <url>
 <loc>http://localhost:4000/page18/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/page19/</loc>
 </url>
 </urlset>
