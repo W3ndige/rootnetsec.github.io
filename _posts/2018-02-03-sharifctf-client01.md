@@ -97,7 +97,7 @@ That doesn't tell much. Now I decided to take a look at the file using bless hex
 89 4E 47 0D 0A 1A 0A 00 00 00 0D 49 48 44 52 00 00 03 E8 00 00 00 C8 04 03 00 00 00 89 C9 D6 7C 00 00 00 1B 50 4C 54 45 00 00 00 FF FF FF 5F 5F 5F 9F 9F 9F BF BF BF DF DF DF 7F 7F 7F 3F 3F 3F 1F 1F 1F AD A0 D6 E1 00 00 00 09 70 48 59 73 00 00 0E C4 00 00 0E C4 01 95 2B 0E 1B 00 00 0E FC 49 44 41 54 78
 {% endhighlight %}
 
-If you look closely, you'll see slighlty broken ***PNG*** header which is `89 50 4E 47 0D 0A 1A 0A`. Let's modify ours, by adding value `50`, copying the whole hexdump from bless and creating a new file with the copied content.
+If you look closely, you'll see slightly broken ***PNG*** header which is `89 50 4E 47 0D 0A 1A 0A`. Let's modify ours, by adding value `50`, copying the whole hexdump from bless and creating a new file with the copied content.
 
 ![Flag](/img/sharifctf/client01-flag.png){:class="img-responsive center-block"}
 
