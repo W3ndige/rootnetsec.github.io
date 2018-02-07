@@ -33,6 +33,8 @@ pre {
     counter-reset: line-numbering;
     white-space: pre;
     overflow-x: auto;
+    max-height: 600px;
+    overflow-y: scroll;
     word-break: inherit;
     word-wrap: inherit;
 }
