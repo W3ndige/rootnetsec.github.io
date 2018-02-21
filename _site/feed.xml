@@ -7,6 +7,152 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>EasyCTF 2018 - Not OTP</title>
+        <description>&lt;p&gt;Today we’re going through cryptography challenge from EasyCTF called &lt;strong&gt;&lt;em&gt;Not OTP&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Category: Crypto&lt;/li&gt;
+  &lt;li&gt;Points: 100&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;It seems we've intercepted 2 strings that were both encrypted with what looks like OTP! Is it possible to decrypt them?
+
+c1 = 38445d4e5311544249005351535f005d5d0c575b5e4f481155504e495740145f4c505c5c0e196044454817564d4e12515a5f4f12465c4a45431245430050154b4d4d415c560c4f54144440415f595845494c125953575513454e11525e484550424941595b5a4b
+c2 = 3343464b415550424b415551454b00405b4553135e5f00455f540c535750464954154a5852505a4b00455f5458004b5f430c575b58550c4e5444545e0056405d5f53101055404155145d5f0053565f59524c54574f46416c5854416e525e11506f485206554e51&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In addition we get a hint telling us that there’s something about the &lt;strong&gt;&lt;em&gt;cribs&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
+
+&lt;p&gt;As the hint is about cribs, I decided to firstly use an attack called &lt;strong&gt;&lt;em&gt;crib dragging&lt;/em&gt;&lt;/strong&gt;, which works only when two messages are encrypted (xored as in OTP) using the same key. AS you probably know, OTP is only safe when each message has it’s own, unique key.&lt;/p&gt;
+
+&lt;p&gt;But back to the attack. To make sure the attack will work, we have to know some of the plaintext from one of the messages. It may be part of the flag, most common English words etc. Firstly, we xor two messages together. Then we xor the suspected plaintext with the xored messages, but at each position of the messages. If this operation produces some readable English text, we may suspect that the plaintext was a part of the message.&lt;/p&gt;
+
+&lt;p&gt;Now as we know the basics, let’s get into the task.&lt;/p&gt;
+
+&lt;p&gt;To make solution easier and the process of attacking faster, I decided to use a ready tool called &lt;a href=&quot;https://github.com/SpiderLabs/cribdrag&quot;&gt;CribDrag&lt;/a&gt; made by Daniel Crowley. Thanks!&lt;/p&gt;
+
+&lt;p&gt;From now we’re ready to attack both ciphertexts. Firstly, we’ll have to xor them with each other but luckily, CribDrag has separate script to do this.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;main:~/projects/easyctf/cribdrag &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; python2 xorstrings.py 38445d4e5311544249005351535f005d5d0c575b5e4f481155504e495740145f4c505c5c0e196044454817564d4e12515a5f4f12465c4a45431245430050154b4d4d415c560c4f54144440415f595845494c125953575513454e11525e484550424941595b5a4b 3343464b415550424b415551454b00405b4553135e5f00455f540c535750464954154a5852505a4b00455f5458004b5f430c575b58550c4e5444545e0056405d5f53101055404155145d5f0053565f59524c54574f46416c5854416e525e11506f485206554e51
+0b071b0512440400024106001614001d06490448001048540a04421a00105216184516045c493a0f450d4802154e590e195318491e09460b1756111d00065516121e514c034c0e0100191f410c0f071c1b00460e1c11147f1d1a503c0c1654002d01135f0e141&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now let’s the output and run it in cribdrag.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;main:~/projects/easyctf/cribdrag &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; python2 cribdrag.py 0b071b0512440400024106001614001d06490448001048540a04421a00105216184516045c493a0f450d4802154e590e195318491e09460b1756111d00065516121e514c034c0e0100191f410c0f071c1b00460e1c11147f1d1a503c0c1654002d01135f0e141a
+Your message is currently:
+0	________________________________________
+40	________________________________________
+80	_______________________
+Your key is currently:
+0	________________________________________
+40	________________________________________
+80	_______________________
+Please enter your crib:&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now the guessing part! Firstly, we know that the message will contain &lt;code class=&quot;highlighter-rouge&quot;&gt;easyctf{&lt;/code&gt; part as it’s part of the flag.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;74: &lt;span class=&quot;s2&quot;&gt;&quot;z vdh}{&quot;&lt;/span&gt;
+75: &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$m&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;|~of=&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;***&lt;/span&gt; 76: &lt;span class=&quot;s2&quot;&gt;&quot;intext u&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;***&lt;/span&gt; 77: &lt;span class=&quot;s2&quot;&gt;&quot;jfobc2hg&quot;&lt;/span&gt;
+78: &lt;span class=&quot;s2&quot;&gt;&quot;b}hy%zzj&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;***&lt;/span&gt; 79: &lt;span class=&quot;s2&quot;&gt;&quot;yzs?mhwo&quot;&lt;/span&gt;
+80: &lt;span class=&quot;s2&quot;&gt;&quot;~a5wer&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In one of this parts we see text that highly looks like part of the English sentence. Let’s take it’s position and place in the mesage.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;Enter the correct position, &lt;span class=&quot;s1&quot;&gt;'none'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;no match, or &lt;span class=&quot;s1&quot;&gt;'end'&lt;/span&gt; to quit: 76
+Is this crib part of the message or key? Please enter &lt;span class=&quot;s1&quot;&gt;'message'&lt;/span&gt; or &lt;span class=&quot;s1&quot;&gt;'key'&lt;/span&gt;: message
+Your message is currently:
+0	________________________________________
+40	____________________________________easy
+80	ctf&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;___________________
+Your key is currently:
+0	________________________________________
+40	____________________________________inte
+80	xt u___________________&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;My next guess was word &lt;code class=&quot;highlighter-rouge&quot;&gt;flag&lt;/code&gt;. Will it be a good one?&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;67: &lt;span class=&quot;s2&quot;&gt;&quot;*o-i&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;***&lt;/span&gt; 68: &lt;span class=&quot;s2&quot;&gt;&quot;e of&quot;&lt;/span&gt;
+69: &lt;span class=&quot;s2&quot;&gt;&quot;*b&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;g&lt;span class=&quot;s2&quot;&gt;&quot;
+70: &quot;&lt;/span&gt;hma~&lt;span class=&quot;s2&quot;&gt;&quot;
+Enter the correct position, 'none' for no match, or 'end' to quit: 68
+Is this crib part of the message or key? Please enter 'message' or 'key': message
+Your message is currently:
+0	________________________________________
+40	____________________________flag____easy
+80	ctf{___________________
+Your key is currently:
+0	________________________________________
+40	____________________________e of____inte
+80	xt u___________________&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can see that it’s getting more readable. After that we’re ready to add &lt;code class=&quot;highlighter-rouge&quot;&gt;is&lt;/code&gt; , but to make more readable strings, I decided to input whole &lt;code class=&quot;highlighter-rouge&quot;&gt;flag is easyctf{&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;66: &lt;span class=&quot;s2&quot;&gt;&quot;7 b+.hs9z vdh}{&quot;&lt;/span&gt;
+67: &lt;span class=&quot;s2&quot;&gt;&quot;*o-i!ij?&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$m&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;|~of=&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;***&lt;/span&gt; 68: &lt;span class=&quot;s2&quot;&gt;&quot;e of plaintext u&quot;&lt;/span&gt;
+69: &lt;span class=&quot;s2&quot;&gt;&quot;*b&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;g9v2,jfobc2hg&lt;span class=&quot;s2&quot;&gt;&quot;
+70: &quot;&lt;/span&gt;hma~?&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;/b&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;hy%zzj&lt;span class=&quot;s2&quot;&gt;&quot;
+Enter the correct position, 'none' for no match, or 'end' to quit: 68
+Is this crib part of the message or key? Please enter 'message' or 'key': message
+Your message is currently:
+0	________________________________________
+40	____________________________flag is easy
+80	ctf{___________________
+Your key is currently:
+0	________________________________________
+40	____________________________e of plainte
+80	xt u___________________&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After that part I was stuck for a while. I had no clue what to put there next, trying some random different characters until I noticed that there should be a space also before the &lt;code class=&quot;highlighter-rouge&quot;&gt;flag&lt;/code&gt; word. This simple operation will add another letter into the key, which may help us find the right crib.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;Enter the correct position, &lt;span class=&quot;s1&quot;&gt;'none'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;no match, or &lt;span class=&quot;s1&quot;&gt;'end'&lt;/span&gt; to quit: 67
+Is this crib part of the message or key? Please enter &lt;span class=&quot;s1&quot;&gt;'message'&lt;/span&gt; or &lt;span class=&quot;s1&quot;&gt;'key'&lt;/span&gt;: message
+Your message is currently:
+0	________________________________________
+40	___________________________ flag is easy
+80	ctf&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;___________________
+Your key is currently:
+0	________________________________________
+40	___________________________le of plainte
+80	xt u___________________&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;But no luck for me. After that part, my team mate proposed a word &lt;code class=&quot;highlighter-rouge&quot;&gt;sample&lt;/code&gt;, which gave pretty good results.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;Enter the correct position, &lt;span class=&quot;s1&quot;&gt;'none'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;no match, or &lt;span class=&quot;s1&quot;&gt;'end'&lt;/span&gt; to quit: 62
+Is this crib part of the message or key? Please enter &lt;span class=&quot;s1&quot;&gt;'message'&lt;/span&gt; or &lt;span class=&quot;s1&quot;&gt;'key'&lt;/span&gt;: key
+Your message is currently:
+0	________________________________________
+40	______________________uess! flag is easy
+80	ctf&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;___________________
+Your key is currently:
+0	________________________________________
+40	______________________ sample of plainte
+80	xt u___________________
+Please enter your crib:&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Lastly, after quite some time we were able to slowly reveal some parts of the message and key.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/easyctf/not_otp.png&quot; alt=&quot;Not OTP Solution&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;tools&quot;&gt;Tools&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/SpiderLabs/cribdrag1&quot;&gt;https://github.com/SpiderLabs/cribdrag&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://travisdazell.blogspot.com/2012/11/many-time-pad-attack-crib-drag.html&quot;&gt;https://travisdazell.blogspot.com/2012/11/many-time-pad-attack-crib-drag.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Known-plaintext_attack&quot;&gt;https://en.wikipedia.org/wiki/Known-plaintext_attack&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Wed, 21 Feb 2018 02:00:00 +0000</pubDate>
+        <link>http://localhost:4000/easyctf-not-otp/</link>
+        <guid isPermaLink="true">http://localhost:4000/easyctf-not-otp/</guid>
+      </item>
+    
+      <item>
         <title>Pwnable.kr - blackjack</title>
         <description>&lt;p&gt;This time we’re going to work on another challenge from &lt;a href=&quot;http://pwnable.kr&quot; title=&quot;pwnable.kr&quot;&gt;pwnable.kr&lt;/a&gt; called &lt;strong&gt;&lt;em&gt;blackjack&lt;/em&gt;&lt;/strong&gt; - and our goal is to spot the bug in the code.&lt;/p&gt;
 
@@ -875,7 +1021,7 @@ Enter Bet: $&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 &lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
 &lt;p&gt;…&lt;/p&gt;
 </description>
-        <pubDate>Mon, 05 Feb 2018 00:00:00 +0000</pubDate>
+        <pubDate>Wed, 07 Feb 2018 00:00:00 +0000</pubDate>
         <link>http://localhost:4000/pwnable.kr-blackjack/</link>
         <guid isPermaLink="true">http://localhost:4000/pwnable.kr-blackjack/</guid>
       </item>
@@ -1625,140 +1771,6 @@ We added a flag for your convenience.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
         <pubDate>Thu, 28 Dec 2017 21:00:00 +0000</pubDate>
         <link>http://localhost:4000/34c3ctf-junior-upload/</link>
         <guid isPermaLink="true">http://localhost:4000/34c3ctf-junior-upload/</guid>
-      </item>
-    
-      <item>
-        <title>Pwnable.kr - mistake</title>
-        <description>&lt;p&gt;Today we’re going to learn a lot about operator priority, and why some of mistakes made in this topic can be so devastating. Great example of that will be a challenge from &lt;a href=&quot;http://pwnable.kr&quot; title=&quot;pwnable.kr&quot;&gt;pwnable.kr&lt;/a&gt; called &lt;strong&gt;&lt;em&gt;mistake&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;We all make mistakes, let's move on.
-(don't take this too seriously, no fancy hacking skill is required at all)
-
-This task is based on real event
-Thanks to dhmonkey
-
-hint : operator priority&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;After connecting to &lt;strong&gt;&lt;em&gt;ssh&lt;/em&gt;&lt;/strong&gt; server, we can see two files waiting for us, compiled binary and source code.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;main:~ &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; ssh mistake@pwnable.kr &lt;span class=&quot;nt&quot;&gt;-p2222&lt;/span&gt;
-mistake@pwnable.krs password:
- ____  __    __  ____    ____  ____   _        ___      __  _  ____  
-|    &lt;span class=&quot;se&quot;&gt;\|&lt;/span&gt;  |__|  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; /    &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;| |      /  _]    |  |/ &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;|    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-|  o  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;  |  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  _  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  o  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  o  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;| |     /  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;_     |  &lt;span class=&quot;s1&quot;&gt;' / |  D  )
-|   _/|  |  |  ||  |  ||     ||     || |___ |    _]    |    \ |    /
-|  |  |  `  '&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  _  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  O  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;_  __ |     &lt;span class=&quot;se&quot;&gt;\|&lt;/span&gt;    &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-|  |   &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;     / |  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-|__|    &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;/&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;/  |__|__||__|__||_____||_____||_____||__||__|&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;__|&lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;|
-
-- Site admin : daehee87.kr@gmail.com
-- IRC : irc.netgarage.org:6667 / &lt;span class=&quot;c&quot;&gt;#pwnable.kr&lt;/span&gt;
-- Simply &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;irssi&quot;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;command &lt;/span&gt;to &lt;span class=&quot;nb&quot;&gt;join &lt;/span&gt;IRC now
-- files under /tmp can be erased anytime. make your directory under /tmp
-- to use peda, issue &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; /usr/share/peda/peda.py&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;gdb terminal
-Last login: Thu Dec 28 05:48:19 2017 from 93.234.107.184
-mistake@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 44
-drwxr-x---  5 root        mistake 4096 Oct 23  2016 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 87 root        root    4096 Dec 27 23:17 ..
-d---------  2 root        root    4096 Jul 29  2014 .bash_history
-&lt;span class=&quot;nt&quot;&gt;-r--------&lt;/span&gt;  1 mistake_pwn root      51 Jul 29  2014 flag
-dr-xr-xr-x  2 root        root    4096 Aug 20  2014 .irssi
-&lt;span class=&quot;nt&quot;&gt;-r-sr-x---&lt;/span&gt;  1 mistake_pwn mistake 8934 Aug  1  2014 mistake
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root        root     792 Aug  1  2014 mistake.c
-&lt;span class=&quot;nt&quot;&gt;-r--------&lt;/span&gt;  1 mistake_pwn root      10 Jul 29  2014 password
-drwxr-xr-x  2 root        root    4096 Oct 23  2016 .pwntools-cache&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Let’s take a look at the code firstly.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
-#include &amp;lt;fcntl.h&amp;gt;
-&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;#define PW_LEN 10
-#define XORKEY 1
-&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;xor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;s&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;XORKEY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]){&lt;/span&gt;
-
-	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/home/mistake/password&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;O_RDONLY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;0400&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;can't open password %d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;do not bruteforce...&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-	&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pw_buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PW_LEN&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pw_buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PW_LEN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)){&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;read error&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;		
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-	&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pw_buf2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PW_LEN&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;input password : &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%10s&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pw_buf2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-	&lt;span class=&quot;c1&quot;&gt;// xor your input&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;xor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pw_buf2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strncmp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pw_buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pw_buf2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PW_LEN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)){&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Password OK&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/bin/cat flag&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Wrong Password&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-	&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;endhigh&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Let’s study the code to find out where the mistakes are. We can clearly see the first bug in the &lt;code class=&quot;highlighter-rouge&quot;&gt;if&lt;/code&gt; statement.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(...)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;As the hint suggested, there’s a mistake in operator priority. We know that comparision operator &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;&lt;/code&gt; is given &lt;strong&gt;&lt;em&gt;higher priority&lt;/em&gt;&lt;/strong&gt; than assignment operator &lt;code class=&quot;highlighter-rouge&quot;&gt;=&lt;/code&gt;. Using parenthis this piece of code will look just like this.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(...)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)){&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And as we know, that open will return a non-negative integer representing the lowest numbered unused file descriptor, comparision will always &lt;strong&gt;&lt;em&gt;fail&lt;/em&gt;&lt;/strong&gt; and return &lt;strong&gt;&lt;em&gt;0&lt;/em&gt;&lt;/strong&gt;. Then 0 is assigned to the &lt;code class=&quot;highlighter-rouge&quot;&gt;fd&lt;/code&gt; variable. In addition, from the previous challenges, we know that file descriptor with value 0 is reserved for &lt;strong&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pw_buf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PW_LEN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)){&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;In this line, as &lt;code class=&quot;highlighter-rouge&quot;&gt;fd=0&lt;/code&gt;, program will copy the input from &lt;strong&gt;&lt;em&gt;stdin&lt;/em&gt;&lt;/strong&gt; to the &lt;code class=&quot;highlighter-rouge&quot;&gt;pw_buf&lt;/code&gt;. After that every character from the second input &lt;code class=&quot;highlighter-rouge&quot;&gt;pw_buf2&lt;/code&gt; will be xored with 1, and lastly password will be compared in this line.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(!&lt;/span&gt;strncmp&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;pw_buf, pw_buf2, PW_LEN&lt;span class=&quot;o&quot;&gt;)){&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;So if we find out combination where first character xored with the 1 will result in the second, we will be able to bypass the password check. I picked &lt;strong&gt;&lt;em&gt;1&lt;/em&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;em&gt;0&lt;/em&gt;&lt;/strong&gt;, as theire respective values in ASCII are &lt;strong&gt;&lt;em&gt;60&lt;/em&gt;&lt;/strong&gt;* and &lt;strong&gt;&lt;em&gt;61&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;61&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;60&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;^&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;61&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we’re ready to pass these numbers into the program.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;mistake@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./mistake
-&lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;not bruteforce...
-1111111111
-input password : 0000000000
-Password OK
-Mommy, the operator priority always confuses me :&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-</description>
-        <pubDate>Thu, 28 Dec 2017 08:00:00 +0000</pubDate>
-        <link>http://localhost:4000/pwnable.kr-mistake/</link>
-        <guid isPermaLink="true">http://localhost:4000/pwnable.kr-mistake/</guid>
       </item>
     
   </channel>
