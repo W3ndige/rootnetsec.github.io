@@ -14,6 +14,13 @@ Another simple, yet working recreation of [Chip-8](https://en.wikipedia.org/wiki
 #### Technology: C
 Simple interpreter for the brainfuck esoteric language. Capable of loading the file with the code, with plans to improve.
 
+### [Cryptography Visalization](https://github.com/W3ndige/cryptography)
+#### Technology: Python
+Simple attempt to visualize some of the most common attacks, which may help some of the vieweres to better remember style of these attacks.
+
+### [Genetic Algorithms](https://github.com/W3ndige/genetic-algorithms)
+#### Technology: Python
+As the title says, this project was made in order to learn more about genetic algorithms, by solving different problems. 
 
 ### [Network Scanners](https://github.com/W3ndige/poor-network-scanner)
 #### Technology: Python
