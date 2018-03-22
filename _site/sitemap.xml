@@ -333,8 +333,12 @@
 <lastmod>2018-03-10T01:00:00+01:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/vulnhub.com-bob-1/</loc>
+<loc>http://localhost:4000/vulnhub-bob-1/</loc>
 <lastmod>2018-03-18T01:00:00+01:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/angstromctf-madlibs/</loc>
+<lastmod>2018-03-21T03:00:00+01:00</lastmod>
 </url>
 <url>
 <loc>http://localhost:4000/about/</loc>
@@ -413,5 +417,8 @@
 </url>
 <url>
 <loc>http://localhost:4000/page21/</loc>
+</url>
+<url>
+<loc>http://localhost:4000/page22/</loc>
 </url>
 </urlset>

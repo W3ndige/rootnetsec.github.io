@@ -13,7 +13,6 @@ header_pages:
  - projects.md
  - resources.html
 
-
 # Google services
 google_verification:
 # Use either direct GA implementation or set up GTM account
@@ -73,7 +72,7 @@ telegram_username:
 vk_id:
 
 # Post sharing icons
-show_sharing_icons: true
+show_sharing_icons: false
 # Change to 'true' to enable individual icons
 share_facebook: false
 share_twitter: true
