@@ -7,130 +7,269 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
-        <title>AngstromCTF - madlibs</title>
-        <description>&lt;p&gt;Welcome to first write up from the Angstrom CTF, in which we’re going to focus on web security.&lt;/p&gt;
+        <title>AngstromCTF - slots</title>
+        <description>&lt;p&gt;In this challenge I’m going to show how focusing on only one attack vector may make you fail hard.&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;Category: Web&lt;/li&gt;
-  &lt;li&gt;Points: 120&lt;/li&gt;
+  &lt;li&gt;Category: Misc&lt;/li&gt;
+  &lt;li&gt;Points: 90&lt;/li&gt;
 &lt;/ul&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;When Ian was a kid, he loved to play goofy Madlibs all day long. Now, he's decided to write his own website to generate them!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
 &lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
 
-&lt;p&gt;We’re presented with the website generating Madlibs stories, getting them from the user input. If you don’t know what Madlibs is take a look &lt;a href=&quot;https://en.wikipedia.org/wiki/Mad_Libs&quot;&gt;here&lt;/a&gt;, but it won’t be needed in order to solve the challenge.&lt;/p&gt;
+&lt;p&gt;At the beginning, we’re given a source of an application running on certain port &lt;code class=&quot;highlighter-rouge&quot;&gt;web.angstromctf.com:3002&lt;/code&gt;. By connecting to this port using &lt;code class=&quot;highlighter-rouge&quot;&gt;nc&lt;/code&gt;, we’re given a simple blackjack game, taking an user bet and then making the random choice.&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;!doctype html&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;title&amp;gt;&lt;/span&gt;Angstrom MadLibs&lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-test&quot; data-lang=&quot;test&quot;&gt;$ nc web.angstromctf.com 3002                                                           
+Welcome to Fruit Slots!
+We've given you $10.00 on the house.
+Once you're a high roller, we'll give you a flag.
+You have $10.00.
+Enter your bet: 5
+🍐 : 🍈 : 🍈
+🍉 : 🍇 : 🍒 ◀
+🍒 : 🍌 : 🍒
+You lost everything.
+Play more to become a high roller!
+You have $5.00.
+Enter your bet: 5
+🍐 : 🍌 : 🍒
+🍇 : 🍌 : 🍒 ◀
+🍒 : 🍇 : 🍉
+You lost everything.
+You have no money left. Low roller.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
+&lt;p&gt;But as we have the source code, let’s take a look at it.&lt;/p&gt;
 
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;h4&amp;gt;&lt;/span&gt;The Tale of a Person&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h4&amp;gt;&lt;/span&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# coding: utf8&lt;/span&gt;
 
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;p&amp;gt;&lt;/span&gt;
-A long, long time ago, there lived a in person. This person had a prized possesion, it was a my.
-Every day before using their my, the person liked to closet.
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/p&amp;gt;&lt;/span&gt;
+import random
+import signal
+import SocketServer
 
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;h4&amp;gt;&lt;/span&gt;THE END&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h4&amp;gt;&lt;/span&gt;
+flag &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; open&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'flag.txt'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.read&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
 
-This MadLib with title The Tale of a Person was created by hello at 2018-03-21 19:48:06
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Click here to return to the home page.&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;&lt;/span&gt;
-MadLib generated using program found &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;../get-source&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;here&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+PORT &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 3002
 
-&lt;p&gt;As you can see, together with the interface we get a source code of this application, which is written in &lt;a href=&quot;http://flask.pocoo.org/&quot;&gt;Flask&lt;/a&gt;.&lt;/p&gt;
+FRUITS &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'🍌'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'🍒'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'🍐'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'🍈'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'🍇'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'🍊'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'🍉'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+COMBOS &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;s1&quot;&gt;'🍌3'&lt;/span&gt;: 1,
+	&lt;span class=&quot;s1&quot;&gt;'🍒2'&lt;/span&gt;: 1,
+	&lt;span class=&quot;s1&quot;&gt;'🍐2'&lt;/span&gt;: 3,
+	&lt;span class=&quot;s1&quot;&gt;'🍈2'&lt;/span&gt;: 3,
+	&lt;span class=&quot;s1&quot;&gt;'🍇2'&lt;/span&gt;: 3,
+	&lt;span class=&quot;s1&quot;&gt;'🍊2'&lt;/span&gt;: 3,
+	&lt;span class=&quot;s1&quot;&gt;'🍉2'&lt;/span&gt;: 3,
+	&lt;span class=&quot;s1&quot;&gt;'🍒3'&lt;/span&gt;: 3,
+	&lt;span class=&quot;s1&quot;&gt;'🍐3'&lt;/span&gt;: 10,
+	&lt;span class=&quot;s1&quot;&gt;'🍈3'&lt;/span&gt;: 10,
+	&lt;span class=&quot;s1&quot;&gt;'🍇3'&lt;/span&gt;: 10,
+	&lt;span class=&quot;s1&quot;&gt;'🍊3'&lt;/span&gt;: 10,
+	&lt;span class=&quot;s1&quot;&gt;'🍉3'&lt;/span&gt;: 10
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;flask&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Flask&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render_template&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render_template_string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;send_from_directory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;jinja2&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Environment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FileSystemLoader&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gmtime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;strftime&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;template_dir&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'./templates'&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Environment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FileSystemLoader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;template_dir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+def line&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;:
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;random.choice&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;FRUITS&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;range&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;3&lt;span class=&quot;o&quot;&gt;)]&lt;/span&gt;
 
+def payout&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;line&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
+	&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;fruit &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;line:
+		combo &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; fruit + str&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;line.count&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;fruit&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#count the number of occuring fruits&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;combo &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;COMBOS:
+			&lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;COMBOS[combo]
+	&lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;0
 
-&lt;span class=&quot;n&quot;&gt;madlib_names&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;The Tale of a Person&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;A Random Story&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;story_fields&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;&quot;The Tale of a Person&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Author Name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Adjective'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Noun'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Verb'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;&quot;A Random Story&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Author Name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Adjective'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Noun'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Any first name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Verb'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+class incoming&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;SocketServer.BaseRequestHandler&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
+	def handle&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;self&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
+		req &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; self.request
 
-&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Flask&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;secret_key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;flag.txt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+		def receive&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;:
+			buf &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;while &lt;/span&gt;not buf.endswith&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
+				buf +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; req.recv&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;buf[:-1]
 
-&lt;span class=&quot;nd&quot;&gt;@app.route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;methods&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;GET&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;home&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render_template&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;home.html&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;libs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;madlib_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		signal.alarm&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;60&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
 
-&lt;span class=&quot;nd&quot;&gt;@app.route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/form/&amp;lt;templatename&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;methods&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;GET&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;madlib&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;global&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;madlib_names&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;madlib_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;  
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render_template&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;home.html&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;libs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;madlib_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;story_fields&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;error_message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'The MadLib with title &quot;'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'&quot; could not be found.'&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render_template&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;home.html&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;libs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;madlib_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;error_message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Welcome to Fruit Slots!\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+		req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Weve given you $10.00 on the house.\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+		req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Once youre a high roller, well give you a flag.\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
 
-&lt;span class=&quot;nd&quot;&gt;@app.route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/result/&amp;lt;templatename&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;methods&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;POST&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;output&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+		money &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 10
+		&lt;span class=&quot;k&quot;&gt;while &lt;/span&gt;True:
+			req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'You have ${0:.2f}.\n'&lt;/span&gt;.format&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;money&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+			req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Enter your bet: '&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+			bet &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; receive&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
 
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;madlib_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;    
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Template not found.&quot;&lt;/span&gt;
+			try:
+				bet &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; float&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;bet&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+			except:
+				req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Your bet must be a number!\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+				req.close&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+				&lt;span class=&quot;k&quot;&gt;return
 
-    &lt;span class=&quot;n&quot;&gt;inpValues&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;story_fields&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])):&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;All form fields must be filled&quot;&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;inpValues&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)][:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;24&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+			if &lt;/span&gt;bet &amp;lt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0:
+				req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Sneaky, but not good enough.\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+				req.close&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+				&lt;span class=&quot;k&quot;&gt;return
+			elif &lt;/span&gt;bet &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; money:
+				req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'You dont have enough money to wager this.\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+				req.close&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+				&lt;span class=&quot;k&quot;&gt;return
 
-    &lt;span class=&quot;n&quot;&gt;authorName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;inpValues&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;comment&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render_template_string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'''This MadLib with title &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s was created by &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s at &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s'''&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;authorName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;strftime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Y-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;m-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;d &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;H:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;M:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;S&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gmtime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())))&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;except&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;comment&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Error generating comment.&quot;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render_template&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;_&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lower&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;.html&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;libtitle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;footer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;comment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;libentries&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;inpValues&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+			&lt;/span&gt;line1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; line&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+			line2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; line&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+			line3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; line&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;while &lt;/span&gt;payout&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;line2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
+				line2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; line&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+			win &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; bet &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; payout&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;line2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+			money +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; win - bet
 
+			req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'{}\n{} ◀\n{}\n'&lt;/span&gt;.format&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;' : '&lt;/span&gt;.join&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;line1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;' : '&lt;/span&gt;.join&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;line2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;' : '&lt;/span&gt;.join&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;line3&lt;span class=&quot;o&quot;&gt;)))&lt;/span&gt;
 
-&lt;span class=&quot;nd&quot;&gt;@app.route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/get-source&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;methods&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;GET&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;POST&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;send_from_directory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'./'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'app.py'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;win &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; 0:
+				req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'You won ${0:.2f}!'&lt;/span&gt;.format&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;win&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;:
+				req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'You lost everything.\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
 
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;__main__&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'0.0.0.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;7777&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threaded&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+			&lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;money &amp;lt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0:
+				req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'You have no money left. Low roller.\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+				req.close&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+				&lt;span class=&quot;k&quot;&gt;return
+			elif &lt;/span&gt;money &amp;lt; 1000000000:
+				req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Play more to become a high roller!\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;:
+				req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Wow, you\'&lt;/span&gt;re a high roller!&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;')
+				req.sendall('&lt;/span&gt;A flag: &lt;span class=&quot;o&quot;&gt;{}&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'.format(flag))
+				return
 
-&lt;p&gt;We can see the whole logic of written application, but is there something we can exploit? Let’s focus on the user input, and specifically &lt;code class=&quot;highlighter-rouge&quot;&gt;authorName&lt;/code&gt; variable that is used to store our name and print it inthe comment.&lt;/p&gt;
+class ReusableTCPServer(SocketServer.ForkingMixIn, SocketServer.TCPServer):
+	pass
 
-&lt;p&gt;Firstly, we can see that it’s being limited to only 12 characters, which we can easiliy check.&lt;/p&gt;
+SocketServer.TCPServer.allow_reuse_address = True
+server = ReusableTCPServer(('&lt;/span&gt;0.0.0.0&lt;span class=&quot;s1&quot;&gt;', PORT), incoming)
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;authorName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;inpValues&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+print '&lt;/span&gt;Server listening on port %d&lt;span class=&quot;s1&quot;&gt;' % PORT
+server.serve_forever()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;With author name &lt;code class=&quot;highlighter-rouge&quot;&gt;123456789abcd&lt;/code&gt;, which is 13 characters, only first 12 &lt;code class=&quot;highlighter-rouge&quot;&gt;123456789abc&lt;/code&gt; will be printed. That’s the first obstacle we have to keep in mind.&lt;/p&gt;
+&lt;p&gt;From the start we can see that the input is converting our numbers to float with &lt;code class=&quot;highlighter-rouge&quot;&gt;bet = float(bet)&lt;/code&gt;, then it performs checks that will determine whether the numbers isn’t smaller than 0, and if it’s not bigger than our current money status.&lt;/p&gt;
 
-&lt;p&gt;After that we’re getting to creating the comment with this line of code.&lt;/p&gt;
+&lt;p&gt;After that the application will generate three lines, with the second/middle one used to generate our outcome.&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;comment&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render_template_string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'''This MadLib with title &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s was created by &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s at &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s'''&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;authorName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;strftime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Y-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;m-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;d &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;H:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;M:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;S&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gmtime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;line1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;line2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# return [random.choice(FRUITS) for i in range(3)]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;line3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Firstly, we have to think about &lt;code class=&quot;highlighter-rouge&quot;&gt;render_template_string()&lt;/code&gt; function. Quick google will tell us, that it’s used in order to work with templates, that will look just like in this &lt;a href=&quot;http://flask.pocoo.org/docs/0.12/tutorial/templates/&quot;&gt;example&lt;/a&gt;. Further analysis of this code doesn’t provide us with any new, or more useful information so let’s stick to what we have already.&lt;/p&gt;
+&lt;p&gt;But as the random number generator isn’t seeded with any value, the sequence of values should be the same for each run of this program. That’s what I decided to dig into and check whether or not it’s correct. Below are the sample three 3 games.&lt;/p&gt;
 
-&lt;p&gt;Part of the job of every preson is IT is to learn how to google efficiently in order to look for information. That’s what I did this time, googled &lt;code class=&quot;highlighter-rouge&quot;&gt;flask template vulnerability&lt;/code&gt; and look what we have in &lt;a href=&quot;https://nvisium.com/resources/blog/2015/12/07/injecting-flask.html&quot;&gt;this&lt;/a&gt; link, which showed as the first one in this search engine.&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ nc web.angstromctf.com 3002                                                           
+Welcome to Fruit Slots!
+We've given you $10.00 on the house.
+Once you're a high roller, we'll give you a flag.
+You have $10.00.
+Enter your bet: 3
+🍐 : 🍈 : 🍈
+🍉 : 🍇 : 🍒 ◀
+🍒 : 🍌 : 🍒
+You lost everything.
+Play more to become a high roller!
+You have $7.00.
+Enter your bet: 3
+🍐 : 🍌 : 🍒
+🍇 : 🍌 : 🍒 ◀
+🍒 : 🍇 : 🍉
+You lost everything.
+Play more to become a high roller!
+You have $4.00.
+Enter your bet: 4
+🍉 : 🍇 : 🍇
+🍌 : 🍐 : 🍉 ◀
+🍊 : 🍈 : 🍈
+You lost everything.
+You have no money left. Low roller.
 
-&lt;p&gt;In addition we get very interesting &lt;a href=&quot;https://www.blackhat.com/docs/us-15/materials/us-15-Kettle-Server-Side-Template-Injection-RCE-For-The-Modern-Web-App-wp.pdf&quot;&gt;whitepaper&lt;/a&gt;, I advice everyone to read it. But back to the challenge. In quick words, we’re able to inject Python code into the template, which will be then executed. Simple test works by putting the input &lt;code class=&quot;highlighter-rouge&quot;&gt;{{7 * 7}}&lt;/code&gt; in our author name input.&lt;/p&gt;
+$ nc web.angstromctf.com 3002                                                           
+Welcome to Fruit Slots!
+We've given you $10.00 on the house.
+Once you're a high roller, we'll give you a flag.
+You have $10.00.
+Enter your bet: 3
+🍐 : 🍈 : 🍈
+🍉 : 🍇 : 🍒 ◀
+🍒 : 🍌 : 🍒
+You lost everything.
+Play more to become a high roller!
+You have $7.00.
+Enter your bet: 3
+🍐 : 🍌 : 🍒
+🍇 : 🍌 : 🍒 ◀
+🍒 : 🍇 : 🍉
+You lost everything.
+Play more to become a high roller!
+You have $4.00.
+Enter your bet: 4
+🍉 : 🍇 : 🍇
+🍌 : 🍐 : 🍉 ◀
+🍊 : 🍈 : 🍈
+You lost everything.
+You have no money left. Low roller.
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt; This MadLib with title The Tale of a Person was created by 49 at 2018-03-21 20:08:58&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+$ nc web.angstromctf.com 3002                                                           
+Welcome to Fruit Slots!
+We've given you $10.00 on the house.
+Once you're a high roller, we'll give you a flag.
+You have $10.00.
+Enter your bet: 3
+🍐 : 🍈 : 🍈
+🍉 : 🍇 : 🍒 ◀
+🍒 : 🍌 : 🍒
+You lost everything.
+Play more to become a high roller!
+You have $7.00.
+Enter your bet: 3
+🍐 : 🍌 : 🍒
+🍇 : 🍌 : 🍒 ◀
+🍒 : 🍇 : 🍉
+You lost everything.
+Play more to become a high roller!
+You have $4.00.
+Enter your bet: 4
+🍉 : 🍇 : 🍇
+🍌 : 🍐 : 🍉 ◀
+🍊 : 🍈 : 🍈
+You lost everything.
+You have no money left. Low roller.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;Great, it works! But how do we get the secret that is stored at &lt;code class=&quot;highlighter-rouge&quot;&gt;app.secret_key = open(&quot;flag.txt&quot;).read()&lt;/code&gt; variable. As it’s name is to long in order to work correctly, we’ll have to find a workaround. Luckily, there’s a &lt;a href=&quot;&quot;&gt;config&lt;/a&gt; that stores the configuration of our application. Let’s take a look at it  with &lt;code class=&quot;highlighter-rouge&quot;&gt;{{config}}&lt;/code&gt;. And ladies and gentlemen, here we have the config.&lt;/p&gt;
+&lt;p&gt;As you can see, values do not change with each game. That made me feel confident and that’s how I stopped further analyzing code and decided to dig into this problem, writing python script that will bet very small amounts of money in order to check where it’s possible to win some money. In quick words - &lt;strong&gt;&lt;em&gt;bad idea&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;This MadLib with title The Tale of a Person was created by &amp;amp;lt;Config {&amp;amp;#39;DEBUG&amp;amp;#39;: False, &amp;amp;#39;TESTING&amp;amp;#39;: False, &amp;amp;#39;PROPAGATE_EXCEPTIONS&amp;amp;#39;: None, &amp;amp;#39;PRESERVE_CONTEXT_ON_EXCEPTION&amp;amp;#39;: None, &amp;amp;#39;SECRET_KEY&amp;amp;#39;: &amp;amp;#39;actf{wow_ur_a_jinja_ninja}&amp;amp;#39;, &amp;amp;#39;PERMANENT_SESSION_LIFETIME&amp;amp;#39;: datetime.timedelta(31), &amp;amp;#39;USE_X_SENDFILE&amp;amp;#39;: False, &amp;amp;#39;LOGGER_NAME&amp;amp;#39;: &amp;amp;#39;__main__&amp;amp;#39;, &amp;amp;#39;LOGGER_HANDLER_POLICY&amp;amp;#39;: &amp;amp;#39;always&amp;amp;#39;, &amp;amp;#39;SERVER_NAME&amp;amp;#39;: None, &amp;amp;#39;APPLICATION_ROOT&amp;amp;#39;: None, &amp;amp;#39;SESSION_COOKIE_NAME&amp;amp;#39;: &amp;amp;#39;session&amp;amp;#39;, &amp;amp;#39;SESSION_COOKIE_DOMAIN&amp;amp;#39;: None, &amp;amp;#39;SESSION_COOKIE_PATH&amp;amp;#39;: None, &amp;amp;#39;SESSION_COOKIE_HTTPONLY&amp;amp;#39;: True, &amp;amp;#39;SESSION_COOKIE_SECURE&amp;amp;#39;: False, &amp;amp;#39;SESSION_REFRESH_EACH_REQUEST&amp;amp;#39;: True, &amp;amp;#39;MAX_CONTENT_LENGTH&amp;amp;#39;: None, &amp;amp;#39;SEND_FILE_MAX_AGE_DEFAULT&amp;amp;#39;: datetime.timedelta(0, 43200), &amp;amp;#39;TRAP_BAD_REQUEST_ERRORS&amp;amp;#39;: False, &amp;amp;#39;TRAP_HTTP_EXCEPTIONS&amp;amp;#39;: False, &amp;amp;#39;EXPLAIN_TEMPLATE_LOADING&amp;amp;#39;: False, &amp;amp;#39;PREFERRED_URL_SCHEME&amp;amp;#39;: &amp;amp;#39;http&amp;amp;#39;, &amp;amp;#39;JSON_AS_ASCII&amp;amp;#39;: True, &amp;amp;#39;JSON_SORT_KEYS&amp;amp;#39;: True, &amp;amp;#39;JSONIFY_PRETTYPRINT_REGULAR&amp;amp;#39;: True, &amp;amp;#39;JSONIFY_MIMETYPE&amp;amp;#39;: &amp;amp;#39;application/json&amp;amp;#39;, &amp;amp;#39;TEMPLATES_AUTO_RELOAD&amp;amp;#39;: None}&amp;amp;gt; at 2018-03-21 20:25:01&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;p&gt;That’s why:&lt;/p&gt;
 
-&lt;p&gt;Spot the flag and here you go.&lt;/p&gt;
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;payout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;line2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;line2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This loop will iterate as long as we’re able to win something, making sure that it’s impossible to win from any combo in this game. Banging my head after such a stupid mistake, I decided to look for something else in this code and in &lt;a href=&quot;https://docs.python.org/2/library/functions.html#float&quot;&gt;Python documentation&lt;/a&gt; about &lt;code class=&quot;highlighter-rouge&quot;&gt;float()&lt;/code&gt; function I’ve noticed something interesting.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Note
+
+When passing in a string, values for NaN and Infinity may be returned, depending on the underlying C library. Float accepts the strings nan, inf and -inf for NaN and positive or negative infinity. The case and a leading + are ignored as well as a leading - is ignored for NaN. Float always represents NaN and infinity as nan, inf or -inf.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Interesting, let’s check the &lt;code class=&quot;highlighter-rouge&quot;&gt;NaN&lt;/code&gt; value, as the &lt;code class=&quot;highlighter-rouge&quot;&gt;-+inf&lt;/code&gt; will be blocked by the boundary checks.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ nc web.angstromctf.com 3002                                                           
+Welcome to Fruit Slots!
+We've given you $10.00 on the house.
+Once you're a high roller, we'll give you a flag.
+You have $10.00.
+Enter your bet: NaN
+🍐 : 🍈 : 🍈
+🍉 : 🍇 : 🍒 ◀
+🍒 : 🍌 : 🍒
+You lost everything.
+Wow, you're a high roller!
+A flag: actf{fruity}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
 </description>
-        <pubDate>Wed, 21 Mar 2018 03:00:00 +0100</pubDate>
-        <link>http://localhost:4000/angstromctf-madlibs/</link>
-        <guid isPermaLink="true">http://localhost:4000/angstromctf-madlibs/</guid>
+        <pubDate>Thu, 22 Mar 2018 03:00:00 +0100</pubDate>
+        <link>http://localhost:4000/angstromctf-slots/</link>
+        <guid isPermaLink="true">http://localhost:4000/angstromctf-slots/</guid>
       </item>
     
       <item>
