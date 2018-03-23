@@ -13,6 +13,10 @@ In this challenge I'm going to show how focusing on only one attack vector may m
 - Category: Misc
 - Points: 90
 
+{% highlight text %}
+defund is building a casino empire. Break his slot machine, which is running at web.angstromctf.com:3002. Note: connect with netcat or an equivalent tool.
+{% endhighlight %}
+
 ### Solution
 
 At the beginning, we're given a source of an application running on certain port `web.angstromctf.com:3002`. By connecting to this port using `nc`, we're given a simple blackjack game, taking an user bet and then making the random choice.
