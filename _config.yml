@@ -7,7 +7,7 @@ baseurl:     ""
 url:         "https://www.rootnetsec.com"
 date_format: "%b %-d, %Y"
 header_pages:
- - about.html
+ - about.md
  - archive.html
  - contact.html
  - projects.md
