@@ -11,7 +11,7 @@ header_pages:
  - archive.html
  - contact.html
  - projects.md
- - resources.html
+ - resources.md
 
 # Google services
 google_verification:

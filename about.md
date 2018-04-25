@@ -39,7 +39,7 @@ As some of the problems require more OOP (object-oriented programming) approach,
 ## System Administration
 ### GNU/Linux
 
-I can sadly (or not) say that I know Linux more than Windows. After many years of distro hopping (Ubuntu -> Mint -> Manjaro -> Antergos -> Arch), I've been ablo to learn a lot about it, detecting and repairing issues.
+I can sadly (or not) say that I know Linux more than Windows. After many years of distro hopping (Ubuntu -> Mint -> Manjaro -> Antergos -> Arch), I've been able to learn a lot about it, detecting and repairing issues.
 
 ### Linux Server Configuration
 
