@@ -100,12 +100,12 @@ Firstly, let's make a small transfer.
 
 {% highlight text %}
 POST /user HTTP/1.1
-Host: 185.243.54.103:5000
+Host:  
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
 Accept-Language: en-US,en;q=0.5
 Accept-Encoding: gzip, deflate
-Referer: http://185.243.54.103:5000/user
+Referer: http:// /user
 Content-Type: application/x-www-form-urlencoded
 Content-Length: 17
 Cookie: session=eyJ1c2VyIjoiZyJ9.De86bA._5mt5MP3jSvnrSa93vYjwjiywsA
@@ -133,12 +133,12 @@ Now miner sends the response using `sendblock`.
 
 {% highlight text %}
 POST /sendblock HTTP/1.1
-Host: 185.243.54.103:5000
+Host:  
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0
 Accept: */*
 Accept-Language: en-US,en;q=0.5
 Accept-Encoding: gzip, deflate
-Referer: http://185.243.54.103:5000/user
+Referer: http:// /user
 Content-Type: application/json
 Content-Length: 263
 Cookie: session=eyJ1c2VyIjoiZyJ9.De86bA._5mt5MP3jSvnrSa93vYjwjiywsA
