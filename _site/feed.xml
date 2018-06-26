@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Root Network Security</title>
-    <description>Beginners's journey through the world of security, programming and system administration. In love with GNU/Linux and cryptography.</description>
+    <description></description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
@@ -95,12 +95,12 @@
 &lt;p&gt;Firstly, let’s make a small transfer.&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;POST /user HTTP/1.1
-Host: 185.243.54.103:5000
+Host:  
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
 Accept-Language: en-US,en;q=0.5
 Accept-Encoding: gzip, deflate
-Referer: http://185.243.54.103:5000/user
+Referer: http:// /user
 Content-Type: application/x-www-form-urlencoded
 Content-Length: 17
 Cookie: session=eyJ1c2VyIjoiZyJ9.De86bA._5mt5MP3jSvnrSa93vYjwjiywsA
@@ -124,12 +124,12 @@ Date: Tue, 29 May 2018 19:26:42 GMT
 &lt;p&gt;Now miner sends the response using &lt;code class=&quot;highlighter-rouge&quot;&gt;sendblock&lt;/code&gt;.&lt;/p&gt;
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;POST /sendblock HTTP/1.1
-Host: 185.243.54.103:5000
+Host:  
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0
 Accept: */*
 Accept-Language: en-US,en;q=0.5
 Accept-Encoding: gzip, deflate
-Referer: http://185.243.54.103:5000/user
+Referer: http:// /user
 Content-Type: application/json
 Content-Length: 263
 Cookie: session=eyJ1c2VyIjoiZyJ9.De86bA._5mt5MP3jSvnrSa93vYjwjiywsA

@@ -1,32 +1,40 @@
+---
+layout: compress
+---
 <!DOCTYPE html>
 <html>
-{% include head.html %}
-<body class="site{% if site.animated %} animated fade-in-down{% endif %}">
-  {% if site.google_tag_manager %}
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ site.google_tag_manager }}"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  {% endif %}
-	{% if site.facebook_comments %}
-		<div id="fb-root"></div>
-		<script>(function(d, s, id) {
-		  var js, fjs = d.getElementsByTagName(s)[0];
-		  if (d.getElementById(id)) return;
-		  js = d.createElement(s); js.id = id;
-		  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId={{ site.facebook_appid }}";
-		  fjs.parentNode.insertBefore(js, fjs);
-		}(document, 'script', 'facebook-jssdk'));</script>
-	{% endif %}
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if page.title %}{{ page.title }} - {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+<!--   <link href="https://fonts.googleapis.com/css?family=Lato:900|Work+Sans" rel="stylesheet"> -->
+  <link rel="stylesheet" href="{{site.baseurl}}/css/main.css">
+  {% seo %}
+</head>
+<body style="background-color: rgb(255, 255, 255)">
+ <script async src="{{site.baseurl}}/js/theme.min.js"></script>
+  <header>
+      <a href="{{site.baseurl}}/"><div class="home"></div></a>
+  </header>
 
-  <div class="site-wrap">
-    {% include header.html %}
+    <main>
+    <article>
+    {{ content }}
+    </article>
+    </main>
 
-    <div class="post p2 p-responsive wrap" role="main">
-      <div class="measure">
-        {{ content }}
-      </div>
+<footer>
+    <div class="links">
+        <a href="{{site.baseurl}}/about/">About</a>
+        <a href="{{site.baseurl}}/archive/">Archive</a>
+        <a href="{{site.baseurl}}/contact/">Contact</a>
+        <a href="{{site.baseurl}}/projects/">Projects</a>
+        <a href="{{site.baseurl}}/resources/">Resources</a>
+        <a href="{{site.baseurl}}/feed.xml">Feed</a>
+        <a class="theme" onclick="theme()">Dark/Light</a>
     </div>
-  </div>
-
-  {% include footer.html %}
+    <p class="copy"><small>Copyrights by {{site.title}} 2016 - {{ site.time | date: '%Y' }}</small></p>
+</footer>
+{% include analytics.html %}
 </body>
 </html>

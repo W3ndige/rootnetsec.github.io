@@ -6,6 +6,7 @@ date:       2018-06-03 0:00:00
 author:     "W3ndige"
 permalink: /:title/
 category: 'Write-Ups'
+lang: 'pl'
 ---
 
 I got this challenge from my friend **Yodak**, with simple instruction - become a millionaire. At first we are presented with a webpage containing 2 forms - register and login.
