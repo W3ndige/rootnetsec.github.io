@@ -18,14 +18,6 @@ layout: compress
   <header>
       <a href="{{site.baseurl}}/"><div class="home"></div></a>
   </header>
-
-    <main>
-    <article>
-    {{ content }}
-    </article>
-    </main>
-
-<footer>
     <div class="links">
         <a href="{{site.baseurl}}/about/">About</a>
         <a href="{{site.baseurl}}/archive/">Archive</a>
@@ -35,6 +27,13 @@ layout: compress
         <a href="{{site.baseurl}}/feed.xml">Feed</a>
         <a class="theme" onclick="theme()">Dark/Light</a>
     </div>
+    <main>
+    <article>
+    {{ content }}
+    </article>
+    </main>
+
+<footer>
     <p class="copy"><small>Copyrights by {{site.title}} 2016 - {{ site.time | date: '%Y' }}</small></p>
 </footer>
 {% include analytics.html %}
