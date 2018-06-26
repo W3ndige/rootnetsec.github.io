@@ -1,7 +1,8 @@
 title: Root Network Security
 baseurl: ''
 email: w3ndige@protonmail.com
-
+author: W3ndige
+description: "Beginners's journey through the world of security, programming and system administration. In love with GNU/Linux and cryptography."
 # Tracker
 analytics: UA-92681943-1
 
@@ -25,7 +26,7 @@ compress_html:
 markdown: kramdown
 redcarpet:
   extensions: ['smart', 'tables', 'with_toc_data']
-permalink: pretty
+permalink: prettyt
 paginate: 5
 paginate_path: /page:num/
 
