@@ -1,12 +1,13 @@
 ---
-layout:     post
-title:      "Blockchain challenge"
-description: "With this bad implementation of blockhain, let's become a millionaire."
-date:       2018-06-03 0:00:00
-author:     "W3ndige"
-permalink: /:title/
-category: 'Write-Ups'
-lang: 'pl'
+layout: post
+title: Blockchain challenge
+description: 'With this bad implementation of blockhain, let''s become a millionaire.'
+date: 2018-06-03T00:00:00.000Z
+author: W3ndige
+permalink: '/:title/'
+category: Write-Ups
+lang: pl
+published: true
 ---
 
 I got this challenge from my friend **Yodak**, with simple instruction - become a millionaire. At first we are presented with a webpage containing 2 forms - register and login.
@@ -214,4 +215,8 @@ Now we're ready to send the new information through the repeater.
 {"date": 1527622270.298562, "difficulty": 4, "hash": "00008b0833e08517be5dbc1fd645d188e747f8bd4fd170e6dead6696b7e10008", "nonce": 38925, "previusHash": "000021492e9b9b756122db048705babd4cb3e3098a6afb1d33b9d842864d1939", "transactions": [["g", "b", 10], ["minedReward", "g", 100000000]]}
 {% endhighlight %}
 
-And here's the flag `RSCTF_{F1RST_MILLION$$_U_H$VE_TO_STEAL}`!
+And here's the flag!
+
+{% highlight text %}
+RSCTF_{F1RST_MILLION$$_U_H$VE_TO_STEAL}
+{% endhighlight %}
