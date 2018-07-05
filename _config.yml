@@ -3,8 +3,9 @@ baseurl: ''
 email: w3ndige@protonmail.com
 author: W3ndige
 description: "Beginners's journey through the world of security, programming and system administration. In love with GNU/Linux and cryptography."
+
 # Tracker
-analytics: UA-92681943-1
+google_analytics: UA-92681943-1
 
 # Comments
 # disqus-shortname:
