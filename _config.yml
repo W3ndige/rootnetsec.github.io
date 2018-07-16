@@ -4,30 +4,13 @@ email: w3ndige@protonmail.com
 author: W3ndige
 description: "Beginners's journey through the world of security, programming and system administration. In love with GNU/Linux and cryptography."
 
-# Tracker
+# Google tracker
 google_analytics: UA-92681943-1
-
-# Comments
-# disqus-shortname:
-
-
-# Optimization
-# compress.html
-compress_html:
-  clippings: [html,div, p, ul, td, h1, h2, h3, h4,link, meta, footer, nav, img, header, hr, br, head, style, li, ul, ol, time, main, script, title]
-  comments: ["<!-- ", " -->"]
-  endings: [all]
-  ignore:
-    envs: [local]
-  blanklines: false
-  profile: false
-  startings: []
-
 
 markdown: kramdown
 redcarpet:
   extensions: ['smart', 'tables', 'with_toc_data']
-permalink: prettyt
+permalink: pretty
 paginate: 5
 paginate_path: /page:num/
 

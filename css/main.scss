@@ -40,12 +40,13 @@ $on-laptop:        1000px;
     }
 }
 
-
+@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.css);
 
 // Import partials from `sass_dir` (defaults to `_sass`)
 // Do not make any changes to this file. Go to /_sass and find the appropriate SCSS file and make changes there.
 @import
         "style",
         "google-fonts",
-        "syntax"
+        "syntax",
+        "author"
 ;

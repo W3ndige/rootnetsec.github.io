@@ -2,13 +2,18 @@
 layout: default
 ---
 <h1 class="headline">{{site.title}}</h1>
-<div class="article-list">
-{% assign posts = paginator.posts %}
+{% assign paginator_posts = paginator.posts %}
 
-{% for post in posts %}
-    <h2><a href="{{post.url | prepend: site.baseurl}}">{{post.title}}</a></h2>
-    <p>{{post.excerpt | strip_html}}</p>
-{% endfor %}
+<div class="article-list">
+  {% for post in paginator_posts %}
+    <div class="article">
+      <time datetime="{{ post.date }}" class="time">{{ post.date | date: "%B %d, %Y" }}</time>
+      <h2><a href="{{post.url | prepend: site.url}}">{{post.title}}</a></h2>
+      <p>{{post.excerpt | strip_html}}</p>
+    </div>
+  {% endfor %}
+</div>
+
 <!-- pagination -->
 {% if paginator.total_pages > 1 %}
 <div class="pagination">
@@ -25,4 +30,3 @@ layout: default
   {% endif %}
 </div>
 {% endif %}
-</div>

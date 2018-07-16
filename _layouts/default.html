@@ -1,41 +1,34 @@
----
-layout: compress
----
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% if page.title %}{{ page.title }} - {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
-  <!--   <link href="https://fonts.googleapis.com/css?family=Lato:900|Work+Sans" rel="stylesheet"> -->
-  <meta name="description" content="{{ site.description }}">
-  <meta name="author" content="{{ site.author }}">
   <link rel="stylesheet" href="{{site.baseurl}}/css/main.css">
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ site.baseurl }}/feed.xml">
   {% seo %}
 </head>
 <body style="background-color: rgb(255, 255, 255)">
- <script async src="{{site.baseurl}}/js/theme.min.js"></script>
-  <header>
-      <a href="{{site.baseurl}}/"><div class="home"></div></a>
-  </header>
+    <script async src="{{site.baseurl}}/js/theme.min.js"></script>
+    <header>
+        <a href="{{site.baseurl}}/"><div class="home"></div></a>
+    </header>
     <div class="links">
+        <a href="{{site.baseurl}}/">Home</a>
         <a href="{{site.baseurl}}/about/">About</a>
         <a href="{{site.baseurl}}/archive/">Archive</a>
-        <a href="{{site.baseurl}}/contact/">Contact</a>
         <a href="{{site.baseurl}}/projects/">Projects</a>
         <a href="{{site.baseurl}}/resources/">Resources</a>
-        <a href="{{site.baseurl}}/feed.xml">Feed</a>
         <a class="theme" onclick="theme()">Dark/Light</a>
     </div>
     <main>
-    <article>
-    {{ content }}
-    </article>
+        <article>
+            <h1 class="post-headline">{{page.title}}</h1>
+        {{ content }}
+        </article>
     </main>
-
-<footer>
-    <p class="copy"><small>Copyrights by {{site.title}} 2016 - {{ site.time | date: '%Y' }}</small></p>
-</footer>
-{% include analytics.html %}
+    <footer>
+        <p class="copy"><small>Copyrights by {{site.title}} 2016 - {{ site.time | date: '%Y' }}</small></p>
+    </footer>
+    {% include analytics.html %}
 </body>
 </html>

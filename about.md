@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: default
 title: "About"
 nav: 1
 permalink: "/about/"

@@ -60,7 +60,6 @@ p a {
     }
 }
 
-
 figure {
     margin: 0;
 }
@@ -72,19 +71,23 @@ img {
 pre,
 code {
     overflow: auto;
-    font-size: 0.7*$base-font-size;
-    border-radius: 3px;
-    border: 1px solid $brand-color;
+    color: #fafafa;
+    font-size: 0.77 * $base-font-size;
     > code {
         border: none;
     }
 }
+
 pre {
-        padding: 1em;
-    }
+    padding: 1em;
+    background: #272822;
+}
 code {
-    padding: 0.1em;
-    }
+    background: #272822;
+    color: #fff;
+}
+
+    
 blockquote {
     border-left: 2px solid $brand-color;
     padding-left: 1em;
@@ -93,11 +96,9 @@ blockquote {
     font-style: italic;
 }
 
-
-
 .headline, .post-headline {
     font-size: 4em;
-    margin-bottom: 0.5em;
+    margin-bottom: 0.3em;
 
         @include media-query($on-palm) {
             font-size: 2em;
@@ -127,11 +128,19 @@ blockquote {
     }
 }
 
-
-
 /* Article list in index/home page */
 .article-list {
     margin: 1em 0;
+}
+
+.article {
+    padding-top: 1em;
+    border-bottom: 1px solid $grey-color;
+}
+
+.time {
+    color: $grey-color;
+    letter-spacing: .5px;
 }
 
 .pagination a, .pagination span {
@@ -192,6 +201,7 @@ blockquote {
 
 /* Footer */
 footer {
+    text-align: center;
     position: relative;
     top: 2em;
 }
