@@ -9,20 +9,19 @@
 </head>
 <body style="background-color: rgb(255, 255, 255)">
     <script async src="{{site.baseurl}}/js/theme.min.js"></script>
-    <header>
-        <a href="{{site.baseurl}}/"><div class="home"></div></a>
-    </header>
-    <div class="links">
-        <a href="{{site.baseurl}}/">Home</a>
-        <a href="{{site.baseurl}}/about/">About</a>
-        <a href="{{site.baseurl}}/archive/">Archive</a>
-        <a href="{{site.baseurl}}/projects/">Projects</a>
-        <a href="{{site.baseurl}}/resources/">Resources</a>
-        <a class="theme" onclick="theme()">Dark/Light</a>
+    <div class="nav">
+        <h1 class="post-headline">{{site.title}}</h1>
+        <div class="links">
+            <a href="{{site.baseurl}}/">Home</a>
+            <a href="{{site.baseurl}}/about/">About</a>
+            <a href="{{site.baseurl}}/archive/">Archive</a>
+            <a href="{{site.baseurl}}/projects/">Projects</a>
+            <a href="{{site.baseurl}}/resources/">Resources</a>
+            <a class="theme" onclick="theme()">Dark/Light</a>
+         </div>
     </div>
     <main>
         <article>
-            <h1 class="post-headline">{{page.title}}</h1>
         {{ content }}
         </article>
     </main>

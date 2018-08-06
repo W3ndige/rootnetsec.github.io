@@ -4,7 +4,7 @@ title: "Projects"
 permalink: "/projects/"
 ---
 
-# 2018
+<h2 class="post-title">2018</h2>
 ______
 
 ## [Connected Quiz](https://github.com/W3ndige/connected-quiz)

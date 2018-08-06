@@ -4,7 +4,7 @@ title: "Resources"
 permalink: "/resources/"
 ---
 
-# CTF challenges
+<h2 class="post-title">CTF challenges</h2>
 
 **[CTFTime](https://ctftime.org)** - CTF archive and place, where you can get some another CTF-related info - current overall Capture The Flag team rating, per-team statistics etc.
 

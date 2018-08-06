@@ -1,11 +1,10 @@
 ---
 layout: default
 title: "About"
-nav: 1
 permalink: "/about/"
 ---
 
-# Backstory
+<h2 class="post-title">Backstory</h2>
 ## Quick run through my life
 
 
@@ -16,7 +15,6 @@ From obeying the parental control software that my parents installed on my compu
 
 
 Now, my passion to explore computer technologies is much stronger than in my childhood. Being motivated more than ever to work in network security, I'm spending lots of time to learn programming, networking and security. By doing small projects, CTFs etc I want to keep getting better and better in what I do, day by day improving my skills and learning new ones. All driven by passion for curiosity and hunger for knowledge.
-
 
 # Experience
 
