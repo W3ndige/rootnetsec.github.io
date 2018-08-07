@@ -14,7 +14,8 @@ permalink: pretty
 paginate: 5
 paginate_path: /page:num/
 
-exclude:
-- README.md
+exclude: [README.md]
+
+keep_files: [images]
 
 plugins: [jekyll-paginate, jekyll-seo-tag]
