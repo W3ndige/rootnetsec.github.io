@@ -64,25 +64,42 @@ img {
     max-width: 100%;
 }
 
-pre,
-code {
+pre, code {
+    font-family: 'PT Mono', monospace;
+    color: #4f6268;
+    font-size: 0.9em;
+    background-color: #fafafa;
+    //font-size: ($font-size-base - 3);
+  }
+  code {
+    color: #4f6268;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  
+  
+  pre { // only apply for code blocks
     overflow: auto;
-    color: #fafafa;
-    font-size: 0.77 * $base-font-size;
-    > code {
-        border: none;
-    }
-}
-
-pre {
+    display: block;
     padding: 1em;
-    background: #272822;
-}
-code {
-    background: #272822;
-    color: #fff;
-}
-
+    // margin: 0 0 1em;
+    line-height: $base-line-height * 0.925;
+    //word-break: break-all;
+    white-space: pre; 
+    word-wrap: normal; // break-word;
+    border-radius: 0;
+    font-weight: normal;
+  }
+  pre code {
+    background: transparent;
+    white-space: pre;
+    overflow: auto;
+    word-wrap: normal;
+    color: #586e75; // #525252;
+    span {
+      word-break: break-all;
+    }
+  }
     
 blockquote {
     border-left: 2px solid $brand-color;
