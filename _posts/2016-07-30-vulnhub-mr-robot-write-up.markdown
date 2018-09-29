@@ -7,7 +7,10 @@ author:     "W3ndige"
 permalink: /:title/
 category: Vulnhub
 ---
-<p>This VM is a great way to celebrate the upcoming of a season 2 of Mr. Robot. As it's designed for beginners-intermediate it will be fun challenge and opportunity to learn something new. Our task is to find three different keys located somewhere in the machine. </p>
+
+This VM is a great way to celebrate the upcoming of a season 2 of Mr. Robot. As it's designed for beginners-intermediate it will be fun challenge and opportunity to learn something new. Our task is to find three different keys located somewhere in the machine.
+
+
 <p>Let's get started!</p>
 <h1>How to join the #fsociety?</h1>
 <p>Firstly, let's find out what IP address is assigned to this VM using nmap, in addition we can scan for the OS version of this machine, and are there any open ports.</p>
