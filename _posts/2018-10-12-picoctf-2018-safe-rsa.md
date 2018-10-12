@@ -7,9 +7,7 @@ permalink: /:title/
 category: PicoCTF 2018
 ---
 
-{% highlight text %}
- Now that you know about RSA can you help us decrypt this ciphertext? We don't have the decryption key but something about those values looks funky.. 
-{% endhighlight %}
+Now that you know about RSA can you help us decrypt this ciphertext? We don't have the decryption key but something about those values looks funky.. 
 
 ### Solution
 

@@ -7,9 +7,7 @@ permalink: /:title/
 category: PicoCTF 2018
 ---
 
-{% highlight text %}
- Wow, he made the exponent really large so the encryption MUST be safe, right?! Connect with nc 2018shell2.picoctf.com 29483. 
-{% endhighlight %}
+Wow, he made the exponent really large so the encryption MUST be safe, right?!
 
 ### Solution
 
