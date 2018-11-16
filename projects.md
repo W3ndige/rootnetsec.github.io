@@ -4,8 +4,7 @@ title: "Projects"
 permalink: "/projects/"
 ---
 
-<h2 class="post-title">2018</h2>
-______
+# 2018
 
 ## [Connected Quiz](https://github.com/W3ndige/connected-quiz)
 ### Technology: C
@@ -28,7 +27,6 @@ Assignment was simple, make a quiz for multiple players in so called Hot Seat mo
 This projects was created in order to demonstrate how Flood Fill algorithm works, but I decided to improve it into the small paint clone with abilities to save files, read them, draw lines and circles.
 
 # 2017
-______
 
 ## [Chip-8 Emulator](https://github.com/W3ndige/chip-8)
 ### Technology: C
