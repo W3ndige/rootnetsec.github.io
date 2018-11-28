@@ -1,0 +1,6 @@
+# skills section data
+
+label: Ability
+id : cs
+aspects: C/C++, Cryptography, Python, GNU/Linux, Rust
+percentage: 80, 65, 70, 90, 55

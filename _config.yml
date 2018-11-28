@@ -1,153 +1,77 @@
-
-# The name of your website.
-name: Root Network Security
-
-description:
-
-  # Description of your site. This will show up in google.
-  meta: "Beginners's journey through the world of security, programming and system administration. In love with GNU/Linux and cryptography."
-
-  # Description of your site. This will show up on the front page.
-  subtitle: "Beginners's journey through the world of security, programming and system administration. In love with GNU/Linux and cryptography."
-
-author:
-  name: W3ndige
-
-  # Necessary for contact page
-  email: w3ndige@protonmail.com
-
-  # Optional text (html) to display after author name. Leave empty if you don't
-  # want it.
-  info:
-
+#
+###################################
+# Site wide configuration
+####################################
+#
+title: Root Network Security
+email: w3ndige@protonmail.com
+description: Beginners's journey through the world of security, programming and system administration. In love with GNU/Linux and cryptography. 
 url: https://www.rootnetsec.com
 baseurl: ""
+keywords: ["blog", "jekyll"]
 
-# language attribute in <html> element.
-lang: en
+plugins: [jekyll-paginate]
+paginate_path: "/page:num/"
+paginate: 5
 
 google_analytics: UA-92681943-1
 
-# FROM THIS POINT ON EVERYTHING IS OPTIONAL
-
-##############
-# APPEREANCE #
-##############
-
-# If you want to show the subtitle anywhere else than the front page, use
-# {% include subtitle.html %} to include it anywhere you want.
-show-subtitle: true
-display-social-icons: true
-# If you want social links to open in a new tab, set this as true
-social-icons-open-newtab: true
-
-# Preferably 64px in height. Leave empty = disable.
-logo-image: # /img/logo.png
-
-# Toolbar color for Chrome on Android.
-theme-color-attr: "#00f0ff"
-
-# Color of Microsoft live Tile.
-ms-tile-color: "#00f0ff"
-
-# Color used throughout the theme. Format: R, G, B.
-theme-color: 0, 240, 255 # Original: 0, 240, 255
-
-# Text color used throughout the theme. Format: R, G, B.
-text-color: 0, 0, 0 # Original: 0, 0, 0
-
-# Background color used throughout the theme. Format: R, G, B.
-# Note: if you change the background color AND you use cover images, you should
-#       also change the CSS gradient in "_includes\gradient.css" to match the
-#       background color. Edit and copy it from here:
-#       http://www.colorzilla.com/gradient-editor/#ffffff+0,ffffff+100&0+0,1+100
-background-color: 255, 255, 255 # Original: 255, 255, 255
-
-display-author-post-page: true
-display-author-front-page: true
-
-# http://alanwsmith.com/jekyll-liquid-date-formatting-examples
-date_format: "%b %-d, %Y"
-
-# Minimal screen-width after which the navigation will change position from
-# vertical to horizontal.
-nav-breaking-point: 520px
-
-# Number of posts on each page.
-paginate: 3
-
-# Display links for the previous and next post on post pages.
-display-next-prev-post: false
-
-# Leave empty if you don't want comments on post pages.
-disqus-shortname:
+#
+###################################
+# Jekyll configuration
+####################################
+#
+timezone:          Europe/Warsaw
+markdown:          kramdown
+highlighter:       rouge
 
 
-################
-# SOCIAL ICONS #
-################
-
-# Use a complete url here, including http:// and such. Requiring just usernames
-# has been considered, but this is way more customizable.
-twitter: https://twitter.com/w3ndige
-youtube:
-instagram:
-tumblr:
-facebook:
-google-plus:
-reddit: https://www.reddit.com/user/W3ndige
-soundcloud:
-medium:
-linkedin:
-github: https://github.com/W3ndige
-behance:
-codepen:
-dribbble:
-trello:
-stack-overflow:
-bitcoin:
-paypal:
-
-
-#####################
-# CUSTOMIZABLE TEXT #
-#####################
-
-# Useful for translating into other languages.
-
-var_on_the_web: Social
-var_read: Read # Text after each post summary on the homepage.
-var_newer: Newer
-var_older: Older
-var_next_post: Next post
-var_previous_post: Previous post
-var_less_than_a_minute_read: Less than a minute read
-var_min_read: min read # Text after reading time. Example: 5 min read.
-var_post_by: Post by
-var_guest_post_by: Guest post by
-var_your_email: Your email
-var_your_message: Your message
-
-
-##################
-# BUILD SETTINGS #
-##################
-
-# You don't have to change these.
-
-plugins: [jekyll-paginate]
-
-exclude: [vendor]
-highlighter: rouge
 kramdown:
-  input: GFM
-paginate_path: "/page:num/"
-permalink: pretty
-defaults:
-  -
-    scope:
-      path: ""
-      type: "posts"
-    values:
-      layout: "post"
-      #excerpt_separator: "\n"
+  auto_ids: true
+  footnote_nr: 1
+  entity_output: as_char
+  toc_levels: 1..6
+  enable_coderay: false
+
+#
+###################################
+# Site Owner configuration
+####################################
+#
+owner:
+  name: W3ndige
+  avatar: w3ndige.jpg
+  job: "Student"
+  bio: "Beginners's journey through the world of security, programming and system administration. In love with GNU/Linux and cryptography."
+  email: w3ndige@protonmail.com
+  disqus-shortname:
+  twitter: W3ndige
+  facebook: #username
+  google:
+    plus: #username
+    analytics:
+    verify:
+    ad-client:
+    ad-slot:
+  bing-verify:
+  github: W3ndige
+  gitlab: #username
+  stackoverflow: #123456/username   from a "http://stackoverflow.com/users/123456/username" link
+  linkedin: #username
+  skype: #username
+  xing: #username
+  instagram: #username
+  lastfm: #username
+  tumblr: #username
+  pinterest: #username
+  foursquare: #username
+  steam: #username
+  dribbble: #username
+  youtube: #username
+  soundcloud: #username
+  weibo: #username
+  flickr: #username
+  500px: #username
+  codepen: #username
+  reddit: W3ndige
+  telegram: #username

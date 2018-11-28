@@ -1,0 +1,19 @@
+- name: Connected Quiz
+  tech: C
+  descr: "Assignment was simple, make a quiz for multiple players in so called Hot Seat mode. But as that would be too easy, I decided to make networking version with both server and client allowing players to challenge themselves on local network."
+  github: https://github.com/W3ndige/connected-quiz
+
+- name: Flood Fill Algorithm
+  tech: C++
+  descr: "This projects was created in order to demonstrate how Flood Fill algorithm works, but I decided to improve it into the small paint clone with abilities to save files, read them, draw lines and circles."
+  github: https://github.com/W3ndige/flood-fill-algorithm
+
+- name: Chip-8 Emulator
+  tech: C
+  descr: "Another simple, yet working recreation of Chip-8 machine made to learn more about C. Provides great insight about how it works, from a technical point of view."
+  github: https://github.com/W3ndige/chip-8
+
+- name: Brainfuck Interpreter
+  tech: C
+  descr: "Simple interpreter for the brainfuck esoteric language. Capable of loading the file with the code, with plans to improve."
+  github: https://github.com/W3ndige/brainfuck-c
