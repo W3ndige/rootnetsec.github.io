@@ -2,5 +2,5 @@
 
 label: Ability
 id : cs
-aspects: C/C++, Cryptography, Python, GNU/Linux, Rust
-percentage: 80, 65, 70, 90, 55
+aspects: GNU/Linux, Cryptography, Python, Rust, C/C++
+percentage: 90, 60, 70, 55, 80
