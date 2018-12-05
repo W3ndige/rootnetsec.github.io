@@ -1,10 +1,12 @@
 <h1><span data-i18n="skills.my_skills">Projects</span></h1>
 
+
 {% for project in site.data.index.projects %}
     <div class="row">
             <div class="col">
                 <h2 style="margin: 0"><a href="{{ project.github }} ">{{project.name}}</a></h2>
                 <h6>Technology: {{project.tech}}</h6>
+                <h6>Year: {{ project.year }}</h6>
                 <p style="margin: 0">{{ project.descr }}</p>
             </div>
     </div>
