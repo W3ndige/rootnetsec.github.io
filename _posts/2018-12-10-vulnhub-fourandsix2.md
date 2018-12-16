@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Vulnhub.com - CTF FourAndSix2"
+title:      "Vulnhub.com - FourAndSix2"
 date:       2018-12-10 0:00:00
 author:     "W3ndige"
 permalink: /:title/

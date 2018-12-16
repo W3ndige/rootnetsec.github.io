@@ -1,7 +1,7 @@
 - name: Gameboy Emulator
   year: 2018
   tech: C++
-  desc: ""
+  desc: "Simple Gameboy Emulator written in C++ and SDL2, with debugger and disassembler."
   github: https://github.com/W3ndige/gameboy-emulator
 
 - name: Connected Quiz
