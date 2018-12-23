@@ -12,6 +12,8 @@ Task is to become root and read /root/flag.txt.
 * Author: [Fred](https://www.vulnhub.com/author/fred,583/)
 * Download: [https://www.vulnhub.com/entry/fourandsix-201,266/](https://www.vulnhub.com/entry/fourandsix-201,266/)
 
+### Solution
+
 We can start by running `nmap` on our target IP.
 
 {% highlight text %}
