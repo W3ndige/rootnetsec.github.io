@@ -150,7 +150,7 @@ Version=Biosig/TMSiLOGbiosig/tmsilog =+}Synergy89(&88)&888&8888=?~CRawDataElemen
  $Version:0x%x!
  ```
 
-If we can enter our own magic directory - `santa` home folder, it will try to parse all the files from that directory and try to aprse them as magic files. 
+If we can enter our own magic directory - `santa` home folder, it will try to parse all the files from that directory and try to parse them as magic files. 
 
 ```
 shelper@1211_lostpresent:~$ sudo -u santa /usr/bin/file -m /home/santa/ 
