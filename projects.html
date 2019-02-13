@@ -1,0 +1,27 @@
+---
+layout: default
+title: Projects
+permalink: /projects/
+---
+
+{% assign num_of_projects = 0 %}
+{% for section in site.data.projects %}
+    {% assign num_of_projects = num_of_projects | plus: section.projects.size %}
+{% endfor %}
+
+<h2>{{ num_of_projects }} <small> - Total number of projects</small></h2>
+
+{% for section in site.data.projects %}
+    <h1><span>{{ section.year }}</span></h1>
+    {% for project in section.projects %}
+        <div class="row">
+            <div class="col">
+                <h2 style="margin: 0"><a href="{{ project.github }} ">{{ project.name }}</a></h2>
+                <h6>Technologies: {{ project.technologies }}</h6>
+                <p style="margin: 0">{{ project.description }}</p>
+            </div>
+        </div>
+        <br>
+    {% endfor %}
+
+{% endfor %}

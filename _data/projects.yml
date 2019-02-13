@@ -1,0 +1,33 @@
+- year: 2018
+  projects:
+    - name: Gameboy Emulator
+      technologies: C++, SDL2, cxxopts
+      description: Simple Gameboy Emulator capable of running several games like famous Tetris, Tic-Tac-Toe, etc. Does not suppport memory banking yet, but I have plans to add it in the future. Emulator also has built in debugger and disassembler to better understand low lever architecture of Gameboy, all while running your favourite childhood games.
+      github: https://github.com/W3ndige/gameboy-emulator
+
+    - name: Oh My Kernel
+      technologies: C, Assembly
+      description: Failed and unfiinished attempt at creating small kernel. Ability to move cursor, delete characters or print hexadecmial values for debugging. Would love to come back to it and write more features while learning about operating systems.
+      github: https://github.com/W3ndige/oh-my-kernel
+
+    - name: Connected Quiz
+      technologies: C, SDL2
+      description: Assignment was simple, make a quiz for multiple players in so called Hot Seat mode. But as that would be too easy, I decided to make networking version with both server and client allowing players to challenge themselves on local network. Networking is based on Linux sockets, while ability to serve multiple players at the same time is capable because of mulitple forked processes, communicating together with parent process. 
+      github: https://github.com/W3ndige/connected-quiz
+    
+    - name: Flood Fill Algorithm
+      technologies: C++, SDL2, CImg
+      description: This projects was created in order to demonstrate how Flood Fill algorithm works, but I decided to improve it into the small paint clone with abilities to save files, read them, draw lines and circles.
+      github: https://github.com/W3ndige/flood-fill-algorithm
+
+- year: 2017
+  projects:
+    - name: Chip-8 Emulator
+      technologies: C, SDL
+      description: Another simple, yet working recreation of Chip-8 machine made to learn more about C. Provides great insight about how it works, from a technical point of view.
+      github: https://github.com/W3ndige/chip-8
+
+    - name: Brainfuck Interpreter
+      technologies: C
+      description: Simple interpreter for the brainfuck esoteric language. Capable of loading the file with the code, with plans to improve.
+      github: https://github.com/W3ndige/brainfuck-c
