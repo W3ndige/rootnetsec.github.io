@@ -5,7 +5,7 @@
 #
 title: Root Network Security
 email: w3ndige@protonmail.com
-description: Beginners's journey through the world of security, programming and system administration. In love with GNU/Linux and cryptography. 
+description: Just a student with passion for security. Interested in operating systems, reverse engineering and how things work at low level. 
 url: https://www.rootnetsec.com
 baseurl: ""
 keywords: ["blog", "jekyll"]
@@ -42,7 +42,7 @@ owner:
   name: W3ndige
   avatar: w3ndige.jpg
   job: "Student"
-  bio: "Beginners's journey through the world of security, programming and system administration. In love with GNU/Linux and cryptography."
+  bio: "Just a student with passion for security. Interested in operating systems, reverse engineering and how things work at low level."
   email: w3ndige@protonmail.com
   disqus-shortname:
   twitter: W3ndige

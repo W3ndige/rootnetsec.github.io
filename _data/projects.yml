@@ -1,3 +1,9 @@
+- year: 2019
+  projects:
+    - name: Below VM
+      technologies: Rust
+      description: Simple Virtual Machine written in Rust. Together with NASM macros for my own assembly syntax, it allows you to write simple programs, assemble them and execute. With plans to add debugger, graphical output and optimize execution.
+      github: https://github.com/W3ndige/below-vm
 - year: 2018
   projects:
     - name: Gameboy Emulator
