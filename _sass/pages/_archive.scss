@@ -45,3 +45,27 @@
     }
   }
 }
+
+.tag-box {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  overflow: hidden;
+}
+
+.tag-box.inline li {
+  float: left;
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 2.5;
+}
+
+.tag-box a {
+  padding: 4px 6px;
+  margin: 2px;
+  background-color: #e6e6e6;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  text-decoration: none;
+}

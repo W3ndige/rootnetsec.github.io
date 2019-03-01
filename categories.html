@@ -6,12 +6,13 @@ permalink: /categories/
 
 <h2>{{ site.posts | size }} <small> - Total number of posts</small></h2>
 
-<p>
+<div class='tags'>
   {% assign categories = site.categories | sort %}
+  <ul class='tag-box inline'>
   {% for category in categories %}
-  <a  href="#{{ category[0] | slugify }}">{{ category[0] }} {{ category | last | size }}</a>
+    <li><a  href="#{{ category[0] | slugify }}">{{ category[0] }} {{ category | last | size }}</a></li>
   {% endfor %}
-</p>
+</div>
 
 <div class="tag-list">
 {% for cat in categories %}
