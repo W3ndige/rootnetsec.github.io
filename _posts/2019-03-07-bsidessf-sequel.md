@@ -1,10 +1,10 @@
 ---
 layout:     post
-title:      'BsidesSF - sequel'
+title:      'BsidesSF CTF 2019 - sequel'
 date:       2019-03-07 0:00:00
 author:     'W3ndige'
 permalink: /:title/
-category: 'Write-ups'
+category: 'Write-Ups'
 ---
 
 BsidesSF was a great CTF, but as I could not finish many tasks withing the duration of the competition, I decided to come back to the ones with which I struggled the most. Here's my write up for ***sequel***, which is cool ***web*** challenge rated ***200*** points. 
