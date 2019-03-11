@@ -1,11 +1,10 @@
 ---
 layout:     post
 title:      "AngstromCTF - slots"
-description: "Slots is an easy challenge that made me struggle a bit."
 date:       2018-03-23 2:00:00
 author:     "W3ndige"
 permalink: /:title/
-category: AngstromCTF
+category: "AngstromCTF 2018"
 ---
 
 In this challenge I'm going to show how focusing on only one attack vector may make you fail hard.

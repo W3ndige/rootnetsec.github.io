@@ -1,11 +1,10 @@
 ---
 layout:     post
 title:      "AngstromCTF - md5"
-description: "The story about why we have to check types of the input passed in PHP."
 date:       2018-03-23 4:00:00
 author:     "W3ndige"
 permalink: /:title/
-category: AngstromCTF
+category: "AngstromCTF 2018"
 ---
 
 As we've finished the previous web challenge, let's jump into the next one called `md5`.

@@ -1,11 +1,10 @@
 ---
 layout:     post
 title:      "AngstromCTF - madlibs"
-description: "In this challenge we're going to explore common vulnerability in Flask framework."
 date:       2018-03-23 2:00:00
 author:     "W3ndige"
 permalink: /:title/
-category: AngstromCTF
+category: "AngstromCTF 2018"
 ---
 
 Welcome to first write up from the Angstrom CTF, in which we're going to focus on web security.
