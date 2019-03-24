@@ -7,7 +7,7 @@ permalink: /:title/
 category: 'BsidesSF 2019'
 ---
 
-Another challenge that I've missed during the CTF was the ***scgmagick*** challenge rated for 100 points. Solution is very esay, but required some trial and error. Let's take a look. 
+Another challenge that I've missed during the CTF was the ***scgmagick*** challenge rated for 100 points. Solution is very easy, but required some trial and error. Let's take a look. 
 
 ```text
 When I render SVGs to PNGs, it's like magic!
