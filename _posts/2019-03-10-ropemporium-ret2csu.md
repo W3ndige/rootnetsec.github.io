@@ -351,7 +351,7 @@ To sum up our steps:
 
 * Call first gadget at address `0x0040089a`.
 * Put the desired values at the stack.
-* Register `R12` should be an pointer to `__init' address.
+* Register `R12` should be an pointer to `__init` address.
 * Register `R15` shoud have value `0xdeadcafebabebeef`
 * Register `RBX` should have value `0x00` while `RBP` `0x01`.
 * Use second gadget at address `0x400880` that will put the values at correct registers.

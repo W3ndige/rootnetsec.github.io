@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      'Securinets Prequals 2019 - AutomateMe'
-date:       2019-03-11 0:00:00
+date:       2019-03-24 0:00:00
 author:     'W3ndige'
 permalink: /:title/
 category: 'Securinets Prequals 2019'
